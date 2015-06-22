@@ -368,7 +368,10 @@ msgid "sins_stg_stg"
 msgstr "Studiengang"
 
 msgid "sins_stg_allgInf"
-msgstr "Allgemeine Informationen"
+msgstr "Allgemeines zum Studiengang"
+
+msgid "sins_tfv_allgInf"
+msgstr "Allgemeines zum Studienfach"
 
 msgid "sins_stg_bewerb_tip1"
 msgstr "Bewerbungsportal für das 1. Fachsemester"

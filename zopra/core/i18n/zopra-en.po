@@ -371,7 +371,10 @@ msgid "sins_stg_stg"
 msgstr "Study programme"
 
 msgid "sins_stg_allgInf"
-msgstr "General information"
+msgstr "General information for the study programme"
+
+msgid "sins_tfv_allgInf"
+msgstr "General information for the course"
 
 msgid "sins_stg_bewerb_tip1"
 msgstr "Application portal for 1st Semester"
