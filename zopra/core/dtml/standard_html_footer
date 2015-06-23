@@ -1,0 +1,14 @@
+    </td>
+    <td width="10%" valign="top">
+      <dtml-if plantimage.jpg>
+        <img src="plantimage.jpg" alt="plant picture" width="120" heigth="100"><br><br>
+      </dtml-if>
+      <dtml-if "_.has_key('contextMenu')">
+          <dtml-var expr="contextMenu(REQUEST=REQUEST)">
+      </dtml-if>
+    </td>
+   </tr>
+  </table>
+
+ </body>
+</html>

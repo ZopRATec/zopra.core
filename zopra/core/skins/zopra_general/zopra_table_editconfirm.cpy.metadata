@@ -1,0 +1,9 @@
+[default]
+title=Edit Confirmation
+
+[security]
+View=0:Authenticated
+
+[actions]
+action.success=traverse_to:string:zopra_table_show_form
+action.failure=traverse_to:string:zopra_table_edit_form

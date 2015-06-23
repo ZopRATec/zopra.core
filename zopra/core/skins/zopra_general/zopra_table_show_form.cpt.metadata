@@ -1,0 +1,9 @@
+[default]
+title=Show Form   
+
+[security]
+View=0:Authenticated
+
+[actions]
+action.success..Edit=traverse_to:string:zopra_table_edit_form
+action.success=traverse_to:string:zopra_table_edit_form

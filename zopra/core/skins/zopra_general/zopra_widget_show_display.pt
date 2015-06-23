@@ -1,0 +1,164 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      i18n:domain="plone">
+
+<body>
+<tal:comment tal:replace="nothing">
+
+</tal:comment>
+<metal:widget_selector define-macro="widget_selector">
+    <metal:block metal:use-macro="python:path('here/zopra_widget_show_display/macros/widget_'+attr_type)" />
+</metal:widget_selector>
+
+<metal:widget_string define-macro="widget_string">
+    <span tal:content="python:attr_value">value</span>
+</metal:widget_string>
+
+<metal:widget_int define-macro="widget_int" tal:define="w_pre widget_prepend | string:; w_app widget_append | string:">
+    <span tal:content="python:str(w_pre) + str(attr_value) + str(w_app)">value</span>
+</metal:widget_int>
+
+<metal:widget_float define-macro="widget_float">
+     <span tal:define="number python: str(attr_value).replace('.', ',');
+                      number python: (len(number) > 2) and number[-2:] == ',0' and number[:-2] or number"
+           tal:content="number">value</span>
+</metal:widget_float>
+
+<metal:widget_currency define-macro="widget_currency">
+    <span tal:content="python: context.prepare_zopra_currency_value(attr_value)">value</span>
+</metal:widget_currency>
+
+<metal:widget_date define-macro="widget_date">
+    <span tal:content="attr_value">value</span>
+</metal:widget_date>
+
+<metal:widget_bool define-macro="widget_bool">
+  <input type="checkbox"
+         disabled="disabled"
+         tabindex=""
+         tal:attributes="checked python:bool(attr_value) and attr_value != '0';"
+    />
+</metal:widget_bool>
+
+<metal:widget_memo define-macro="widget_memo">
+  <tal:block tal:define="attr_value python: here.prepareLinks(attr_value);
+                         attr_value python: attr_value.replace('\n', '<br />');">
+    <span tal:content="structure attr_value">value</span>
+  </tal:block>
+</metal:widget_memo>
+
+<metal:widget_singlelist define-macro="widget_singlelist" tal:define="style widget_style | string:'line'">
+    <tal:block tal:condition="python: style!='force_single'">
+        <tal:comment tal:replace="nothing">singlelist show display now accomodates for multivalues (chosen criteria display on search result page, with attr_sort and concatenator params) and None values</tal:comment>
+        <tal:block tal:define="lobj python:here.listHandler.getList(table, attr_name);
+                               textvalues python:lobj.getValueByAutoid(attr_value, lang);
+                               do_sort attr_sort|nothing;
+                               dummy python: do_sort and not isinstance(textvalues, (unicode, str)) and textvalues and textvalues.sort();
+                               concatenator concatenator|string:, ;
+                               onestring python: isinstance(textvalues, (unicode, str)) and textvalues or concatenator.join(textvalues or []);">
+            <span tal:content="onestring" />
+        </tal:block>
+    </tal:block>
+    <tal:block tal:condition="python: style=='force_single'">
+        <tal:block tal:define="lobj python:here.listHandler.getList(table, attr_name);
+                               textvalue python:len(attr_value) > 0 and lobj.getValueByAutoid(attr_value[0]) or '';">
+            <span tal:content="python: textvalue" />
+        </tal:block>
+    </tal:block>
+</metal:widget_singlelist>
+
+<metal:widget_multilist define-macro="widget_multilist"
+                        tal:define="style widget_style | string:list;
+                                    do_sort attr_sort | python: True;
+                                    selnotes attr_notes|nothing">
+    <tal:block tal:condition="python: style == 'list'">
+        <ul tal:define="lobj python:here.listHandler.getList(table, attr_name);
+                        notes python: lobj.notes;
+                        valstore python: [(lobj.getValueByAutoid(onevalue), onevalue) for onevalue in attr_value];
+                        tmp python: do_sort and valstore.sort()">
+            <tal:block tal:repeat="onepart valstore">
+                <li>
+                    <span tal:content="python:onepart[0]">Value</span>
+                    <tal:block tal:condition="python: notes and selnotes"
+                               tal:define="notesname python: attr_name + 'notes' + str(onepart[1]);">
+                        <tal:block tal:condition="python: isinstance(notes, (unicode, str))">
+                            <span tal:define="notesobj python: notes and here.listHandler[notes];
+                                              notesvalue python: notesobj.getValueByAutoid(selnotes.get(notesname), lang);"
+                                  tal:condition="notesvalue"
+                                  tal:content="python: '(%s)' % notesvalue">
+                                Notesvalue
+                            </span>
+                        </tal:block>
+                        <tal:block tal:condition="python: isinstance(notes, bool) and selnotes.get(notesname)">
+                            (<span tal:content="python: selnotes.get(notesname)">Textfeld</span>)
+                        </tal:block>
+                    </tal:block>
+                </li>
+            </tal:block>
+        </ul>
+    </tal:block>
+    <tal:block tal:condition="python: style == 'line'">
+        <span tal:define="lobj python:here.listHandler.getList(table, attr_name);
+                          textvalues python:lobj.getValueByAutoid(attr_value, lang);
+                          dummy python: do_sort and not isinstance(textvalues, (unicode, str)) and textvalues and textvalues.sort();
+                          concatenator concatenator|string:, ;
+                          onestring python: isinstance(textvalues, (unicode, str)) and textvalues or concatenator.join(textvalues or []);"
+              tal:content="onestring">
+            Content
+        </span>
+    </tal:block>
+    <tal:block tal:condition="python: style == 'block'">
+        <span tal:define="lobj python:here.listHandler.getList(table, attr_name);
+                          textvalues python:lobj.getValueByAutoid(attr_value);
+                          dummy python: do_sort and not isinstance(textvalues, (unicode, str)) and textvalues.sort();
+                          onestring python: isinstance(textvalues, (unicode, str)) and textvalues or '<br />'.join(textvalues or []);"
+            tal:content="structure onestring">
+            Content
+        </span>
+    </tal:block>
+</metal:widget_multilist>
+
+<metal:widget_hierarchylist define-macro="widget_hierarchylist" tal:define="lobj python:here.listHandler.getList(table, attr_name);">
+<!-- might need to add a tal-block for style=='line' / style=='block' that does not use ul/li -->
+    <!--if it is a list -->
+    <tal:block tal:condition ="python: attr_value and len(attr_value) > 1">
+        <ul>
+            <tal:block tal:repeat="onevalue attr_value">
+                <!-- should catch the parent nodes here and display them too in one line with '>' as divider -->
+                <li>
+                    <tal:block tal:repeat="item_id python:lobj.getHierarchyListAncestors(onevalue)">
+                    <!-- filter out 0-->
+                        <tal:block tal:condition="python:item_id != 0">
+                            <!-- identation -->
+                            <span
+                                tal:define="number repeat/item_id/index;
+                                            indent python:'&nbsp;;'*(number-1);"
+                                tal:content="structure indent">
+                            </span>> <span tal:content="python:lobj.getValueByAutoid(item_id)">Value</span>
+                            <br/>
+                        </tal:block>
+                    </tal:block>
+                </li>
+            </tal:block>
+        </ul>
+    </tal:block>
+    <!-- if it is a single value-->
+    <tal:block tal:condition ="python: not attr_value or len(attr_value) == 1">
+        <!-- should catch the parent nodes here and display them too in one line with '>' as divider -->
+        <tal:block tal:repeat="item_id python:lobj.getHierarchyListAncestors(attr_value[0])">
+        <!-- filter out 0-->
+            <tal:block tal:condition="python:item_id != 0">
+                <!-- identation -->
+                <span
+                    tal:define="number repeat/item_id/index;
+                                indent python:'&nbsp;;'*(number-1);"
+                    tal:content="structure indent">
+                </span>> <span tal:content="python:lobj.getValueByAutoid(item_id)">Value</span>
+                <br/>
+            </tal:block>
+        </tal:block>
+    </tal:block>
+
+</metal:widget_hierarchylist>
+
+</body>
+</html>

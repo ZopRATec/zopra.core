@@ -1,0 +1,35 @@
+<html>
+ <head>
+  <dtml-if "REQUEST.SESSION.get('header_popup')">
+    <script type="text/javascript">
+      function OpenWindow () {
+        Window1 = window.open(<dtml-var "REQUEST.SESSION['header_popup']">, "MessageWindow", "width=500,height=400,left=100,top=100");
+        Window1.focus();
+        }
+      OpenWindow()
+    </script>
+    <dtml-call "REQUEST.SESSION.set('header_popup', None)">
+  </dtml-if>
+  <title></title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <link href="getCSS" rel="stylesheet">
+  <dtml-if "REQUEST.SESSION.get('header_extension')">
+    <dtml-var "REQUEST.SESSION['header_extension']">
+    <dtml-call "REQUEST.SESSION.set('header_extension', None)">
+  </dtml-if>
+ </head>
+ <body bgcolor="#FFFFFF">
+
+ <table width="100%">
+  <tr>
+   <td width="10%" valign="top" align="center">
+     <dtml-if "_.has_key('navigationMenu')">
+       <dtml-var expr="navigationMenu(REQUEST=REQUEST)">
+       <br>
+       <div class="form-label"><b>Additional Information</b></div>
+       <br>
+       <!--<a href="<dtml-var dirHome>MPWiki" target="_blank">Bug Report (Wiki)</a>-->
+       <a href="www.zopra.de" target="_blank">ZopRATec</a>
+     </dtml-if>
+   </td>
+   <td width="80%" valign="top" align="center">

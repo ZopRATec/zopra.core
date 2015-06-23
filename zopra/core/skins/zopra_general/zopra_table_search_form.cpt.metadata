@@ -1,0 +1,14 @@
+[default]
+title=Search Form   
+
+[security]
+View=0:Authenticated
+
+[validators]
+validators=zopra_validate_input
+
+[actions]
+action.success..Cancel=traverse_to:string:zopra_manager_main_form
+action.success..Search=traverse_to:string:zopra_table_search_result
+action.success=traverse_to:string:zopra_table_search_result
+action.failure=traverse_to:string:zopra_table_search_form

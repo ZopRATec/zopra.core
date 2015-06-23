@@ -1,0 +1,17 @@
+Metadata-Version: 1.0
+Name: zopra.core
+Version: 0.9dev
+Summary: ZopRATec's ZopRA middleware
+Home-page: UNKNOWN
+Author: Ingo Keller
+Author-email: Ingo.Keller@zopratec.de
+License: GPL
+Description: Introduction
+        ============
+        
+        
+        
+        
+Platform: UNKNOWN
+Classifier: Programming Language :: Python
+Classifier: Topic :: Software Development :: Libraries :: Python Modules

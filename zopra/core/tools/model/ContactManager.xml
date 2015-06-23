@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<Tabledefinition>
+    <Table name="person" label="Person" uid="116502798757">
+        <Column name="uri"           type="string"        label="URL / URI"/>
+        <Column name="address"       type="memo"          label="Address"/>
+        <Column name="phone"         type="string"        label="Phone No."/>
+        <Column name="tollfreephone" type="string"        label="Toll Free Phone No."/>
+        <Column name="email"         type="string"        label="EMail"/>
+        <Column name="fax"           type="string"        label="Fax"/>
+        <Column name="lastname"      type="string"        label="Last Name"/>
+        <Column name="firstname"     type="string"        label="First Name"/>
+        <Column name="midinitials"   type="string"        label="Mid Initials"/>
+        <Column name="organisation"  type="singlelist"    label="Organisation" manager="ContactManager" function="organisation()"/>
+    </Table>
+    <Table name="organisation" label="Organisation" uid="116502798758">
+        <Column name="uri"           type="string"        label="URL / URI"/>
+        <Column name="address"       type="memo"          label="Address"/>
+        <Column name="phone"         type="string"        label="Phone No."/>
+        <Column name="tollfreephone" type="string"        label="Toll Free Phone No."/>
+        <Column name="email"         type="string"        label="EMail"/>
+        <Column name="fax"           type="string"        label="Fax"/>
+        <Column name="name"          type="string"        label="Name"/>
+        <Column name="parent"        type="singlelist"    label="Affiliation" manager="ContactManager" function="organisation()"/>
+    </Table>
+</Tabledefinition>

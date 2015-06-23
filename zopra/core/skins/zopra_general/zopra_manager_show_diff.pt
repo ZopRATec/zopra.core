@@ -1,0 +1,41 @@
+<tal:comment tal:replace="nothing">
+
+</tal:comment>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US"
+      lang="en-US"
+      metal:use-macro="here/main_template/macros/master"
+      i18n:domain="zopra">
+
+  <body>
+
+    <metal:css_slot fill-slot="css_slot">
+      <link rel="stylesheet" type="text/css" tal:attributes="href string:${portal_url}/zopra.css" />
+      <link rel="stylesheet" type="text/css" tal:attributes="href string:${portal_url}/smoothness/jquery-ui-1.8.16.custom.css" />
+      <link rel="stylesheet" type="text/css" tal:attributes="href string:${portal_url}/zopra_diff.css" />
+    </metal:css_slot>
+
+    <metal:main fill-slot="main">
+
+    <tal:block tal:condition="isAnon">
+      <div tal:define="dummy python: request.RESPONSE.redirect('/login_form')" />
+    </tal:block>
+
+    <h1 tal:content="python:'Anzeige Unterschiede für Log-Eintrag: ' + request.get('logid')"></h1>
+    <metal:block metal:use-macro="here/zopra_button_link_bar/macros/buttons_search_result" />
+
+    <tal:diff replace="structure python: here.app.pm.getEntryLogDiff(request.get('logid'))"></tal:diff>
+    <metal:block metal:use-macro="here/zopra_button_link_bar/macros/buttons_search_result" />
+
+    </metal:main>
+
+    <metal:column_two_slot fill-slot="column_two_slot">
+      <metal:block metal:use-macro="here/zopra_context_menu/macros/context_menu" />
+    </metal:column_two_slot>
+
+    <metal:bottom fill-slot="bottom">
+      <metal:block metal:use-macro="here/zopra_bottom/macros/bottom" />
+    </metal:bottom>
+
+  </body>
+
+</html>

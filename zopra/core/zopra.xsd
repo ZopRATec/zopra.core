@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs='http://www.w3.org/2001/XMLSchema'>
+    
+    <xs:element name="columnlist">
+        <xs:complexType>
+            <xs:attribute name="list" type="xs:list"/>                   
+        </xs:complexType>        
+    </xs:element>
+
+    <xs:element name="column">
+        <xs:complexType>            
+            <xs:attribute name="name"     type="xs:key"     use="required" />
+            <xs:attribute name="type"     type="xs:string"  use="required" />
+            <xs:attribute name="label"    type="xs:string"  default=" "/>
+            <xs:attribute name="default"  type="xs:string"/>
+            <xs:attribute name="notnull"  type="xs:boolean" default="False"/>
+            <xs:attribute name="autoinc"  type="xs:boolean" default="False"/>            
+            <xs:attribute name="manager"  type="xs:string"/>
+            <xs:attribute name="function" type="xs:string"/>
+            <xs:attribute name="notes"    type="xs:string"/>
+            <xs:attribute name="noteslabel" type="xs:string"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="constraints">
+        <xs:complexType>            
+            <xs:sequence>
+                <xs:element name='unique'      minOccurs='0' maxOccurs='unbounded' type="xs:columnlist"/>
+                <xs:element name='index'       minOccurs='0' maxOccurs='unbounded' type="xs:columnlist"/>
+                <xs:element name='foreignkey'  minOccurs='0' maxOccurs='unbounded' type="xs:columnlist"/>
+            </xs:sequence>            
+        </xs:complexType>
+    </xs:element>
+    
+    <xs:element name="table">
+        <xs:complexType> 
+            <xs:attribute name="name"       type="xs:key"    use="required"/>            
+            <xs:attribute name="primarykey" type="xs:string" />             
+            <xs:sequence>
+                <xs:element ref='column'      minOccurs='0' maxOccurs='unbounded'/>
+                <xs:element ref='constraints' minOccurs='0' maxOccurs='unbounded'/>
+                <xs:element ref='checks'      minOccurs='0' maxOccurs='unbounded'/>
+            </xs:sequence>
+            
+        </xs:complexType>
+    </xs:element>
+    
+    <xs:element name="tabledefinition">
+        <xs:complexType>            
+            <xs:sequence>
+                <xs:element ref='table' minOccurs='0' maxOccurs='unbounded'/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+</xs:schema>

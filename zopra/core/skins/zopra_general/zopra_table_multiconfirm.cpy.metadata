@@ -1,0 +1,9 @@
+[default]
+title=Multiple Confirmation Form
+
+[security]
+View=0:Authenticated
+
+[actions]
+action.success=traverse_to:string:zopra_table_multiconfirm_form
+action.failure=traverse_to:string:zopra_table_multiconfirm_form

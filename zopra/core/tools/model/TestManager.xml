@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<Tabledefinition>
+    <Table name="test" uid="116502799395">
+        <Column name="testid"          type="int"           label="Test No."/>
+        <Column name="astring"         type="string"        label="String"/>
+        <Column name="amemo"           type="memo"          label="Memo"/>
+        <Column name="acheckbox"       type="bool"          label="Boolean"/>
+        <Column name="adate"           type="date"          label="Date"/>
+        <Column name="afloat"          type="float"         label="Float"/>
+        <Column name="asinglelist"     type="singlelist"    label="SingleList"/>
+        <Column name="amultilist"      type="multilist"     label="MultiList" map="amultilist"/>
+        <Column name="ahierarchylist"  type="hierarchylist" label="HierarchyList"/>
+        <Column name="filesingle"      type="singlelist"    label="Single File"      manager="FileManager" function="getFile"/>
+        <Column name="imagemulti"      type="multilist"     label="Multi Image"      manager="FileManager" function="getImage" map="imagemulti"/>
+        <Column name="fsinglelist"     type="singlelist"    label="Foreign SingleList" manager="TestManager" function="amultilist()"/>
+        <Column name="fmultilist"      type="multilist"     label="Foreign MultiList" manager="TestManager" function="asinglelist()" map="fmultilist"/>
+        <Column name="csinglelist"     type="singlelist"    label="Complex SingleList" manager="ContactManager" function="person(firstname, lastname)"/>
+        <Column name="cmultilist"      type="multilist"     label="Complex MultiList" manager="ContactManager" function="person()" map="cmultilist"/>
+        <Column name="frl_singlefilter" type="singlelist"   label="singlefilter"      manager="ContactManager" function="person()" labelsearch="1"/>
+        <Column name="frl_multifilter"  type="multilist"    label="multifilter"       manager="ContactManager" function="person()" map="a" labelsearch="1"/>
+        <Column name="frl_singlerange"  type="singlelist"   label="singlerange"       manager="ContactManager" function="person()" maxshown="5"/>
+        <Column name="frl_multirange"   type="multilist"    label="multirange"        manager="ContactManager" function="person()" map="b" maxshown="5"/>
+        <Column name="frl_singlerafil"  type="singlelist"   label="singlerangefilter" manager="ContactManager" function="person()" labelsearch="1" maxshown="5"/>
+        <Column name="frl_multirafil"   type="multilist"    label="multirangefilter"  manager="ContactManager" function="person()" map="c" labelsearch="1" maxshown="5"/>
+    </Table>
+    <List name="asinglelist"     label="SingleList"/>
+    <List name="amultilist"      label="MultiList"/>
+    <List name="ahierarchylist"  label="HierarchyList"/>
+</Tabledefinition>

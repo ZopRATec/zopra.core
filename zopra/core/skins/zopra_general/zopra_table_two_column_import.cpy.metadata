@@ -1,0 +1,10 @@
+[default]
+title=Edit File
+
+[security]
+View=0:Authenticated
+
+[actions]
+action.success..Save=traverse_to:string:zopra_table_two_column_import_form
+action.success=traverse_to:string:zopra_table_two_column_import_form
+action.failure=traverse_to:string:zopra_table_two_column_import_form

@@ -1,0 +1,62 @@
+<dtml-var manage_page_header>
+<dtml-if SQLConnectionIDs>
+    <form action="manage_addProductGeneric">
+        <table>
+            <tr><td>Id</td><td><input type="type" name="zope_id" value="%s"></td></tr>
+            <tr>
+                <td align="left" valign="top">
+                    <div class="form-optional">
+                        Title
+                    </div>
+                </td>
+                <td align="left" valign="top">
+                    <input type="type" name="title" value="%s">
+                </td>
+            </tr>
+            <tr>	
+                <td align="left" valign="top">
+                    <div class="form-lable">
+                        Connection Id
+                    </div>
+                </td>
+                <td align="left" valign="top">
+                    <div class="form-element">
+                    <select name="connection_id">
+                        <dtml-in SQLConnectionIDs>
+                            <option value="&dtml-sequence-item;">
+                                <dtml-var sequence-key>
+                            </option>
+                        </dtml-in>
+                    </select>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="form-label">ZopRA Type</div>
+                </td>
+                <td>
+                    <input type="type"  name="zopratype" value="">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="form-label">Do not create Tables</div>
+                </td>
+                <td>
+                    <input type="checkbox"  name="nocreate" value="1">
+                </td>
+            </tr>
+        </table>
+        <br>
+        <input type="submit" name="submit" value="  Add  ">
+        <input type="hidden" name="manager" value="%s">
+        <input type="hidden" name="pkg"     value="%s">
+    </form>
+<dtml-else>
+    <p class="form-text">
+    There are no SQL database connections. You need to add a Zope
+    SQL database connection before you can create a Product.
+    </p>
+</dtml-if>
+<dtml-var manage_page_footer>

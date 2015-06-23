@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<Tabledefinition>
+    <Table name="labeling" label="Labeling" uid="116502799412">
+        <Column name="name"          type="string"   label="Format"/>
+        <Column name="margin_top"    type="float"    label="Margin Top (mm)"/>
+        <Column name="margin_left"   type="float"    label="Margin Left (mm)"/>
+        <Column name="margin_right"  type="float"    label="Margin Right (mm)"/>
+        <Column name="margin_bottom" type="float"    label="Margin Bottom (mm)"/>
+        <Column name="padding_rows"  type="float"    label="Padding hor (mm)"/>
+        <Column name="padding_cols"  type="float"    label="Padding ver (mm)"/>
+        <Column name="row_count"     type="int"      label="Row Count"/>
+        <Column name="col_count"     type="int"      label="Col Count"/>
+        <Column name="cell_width"    type="float"    label="Cell Width (mm)"/>
+        <Column name="cell_height"   type="float"    label="Cell Height (mm)"/>
+        <Column name="page_height"   type="float"    label="Page Height (mm)"/>
+        <Column name="page_width"    type="float"    label="Page Width (mm)"/>
+        <Column name="font_size"     type="int"      label="Font Size (pt)"/>
+        <Column name="multi_line"    type="bool"     label="Multiline"/>
+        <Column name="short_label"   type="bool"     label="Short Label"/>
+    </Table>
+</Tabledefinition>

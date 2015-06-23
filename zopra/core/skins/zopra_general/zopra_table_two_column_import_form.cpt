@@ -1,0 +1,141 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US"
+      lang="en-US"
+      metal:use-macro="here/main_template/macros/master"
+      i18n:domain="zopra">
+
+  <body>
+    <tal:comment tal:replace="nothing">
+
+    </tal:comment>
+    
+    <metal:css_slot fill-slot="css_slot">
+       <link rel="stylesheet" type="text/css" media="all"  tal:attributes="href string:${portal_url}/zopra.css" />
+       <link rel="stylesheet" type="text/css" media="all"  tal:attributes="href string:${portal_url}/zopra_edit.css" />
+       <link rel="stylesheet" type="text/css" tal:attributes="href string:${portal_url}/smoothness/jquery-ui-1.8.16.custom.css" />
+    </metal:css_slot>
+
+    <metal:javascriptslot fill-slot="javascript_head_slot">
+        <script type="text/javascript" tal:attributes="src string:${portal_url}/jquery-ui-1.8.16.custom.min.js"></script>
+           
+    <script language="javascript">
+    <!--
+        $(document).ready(function() {
+            var suggestedEncodings = [
+                "ascii",
+                "macroman",
+                "utf8",
+                "latin1",
+            ];
+            $( "#encoding" ).autocomplete({
+                source: suggestedEncodings
+            });
+        });
+    -->
+    </script>
+
+    </metal:javascriptslot>    
+    
+    <metal:main fill-slot="main" tal:define="global importresult nothing;">
+
+      <tal:block tal:condition="isAnon">
+        <div tal:define="dummy python: request.RESPONSE.redirect('/login_form')" />
+      </tal:block>
+
+      <ul>
+        <tal:block repeat="error python:path('options/state/getErrors').keys()">
+            <li tal:content="python:path('options/state/getErrors').get(error,'')"></li>
+        </tal:block>
+      </ul>
+      
+      <form name="import_form"
+            method="post"
+            enctype="multipart/form-data"
+            tal:define="errors options/state/getErrors;"
+            tal:attributes="action string:${here/getId}/${template/getId}">
+
+        <fieldset>
+
+          <legend i18n:translate="">Zwei-Spalten-Tabellen-Import</legend>
+          
+          <div class="field">
+            <label for="table" i18n:translate="">Ziel-Tabelle</label>
+            <div class="formHelp" i18n:translate="">                
+            Die Tabelle in welcher die Eintr&auml;ge importiert werden sollen.
+            </div>
+            <select size="1" name="table">  
+                <tal:block repeat="tobj python:[here.app.infoapp.tableHandler[key] for key in here.app.infoapp.tableHandler.keys()]">
+                    <option tal:attributes="value tobj/getName;selected python:here.REQUEST.get('table','') == tobj.getName()" tal:content="string:${tobj/getName} (${tobj/getLabel})"> Table-ID</option>
+                </tal:block>
+            </select>
+          </div>
+          
+          <div class="field">
+            <label for="file" i18n:translate="">CVS-Datei</label>
+            <div class="formHelp" i18n:translate="">
+                Die Studiengangsdatei (excel) als mit einem Trennzeichen separierten Text. Das zu aktualisierende Attribut wird automatisch erkannt.
+            </div>
+            
+            <input type="file" name="file" />
+
+          </div>
+
+          <div class="field">
+            <label for="table" i18n:translate="">CVS-Encoding</label>
+            <div class="formHelp" i18n:translate="">                
+            In welchem Format wurde die CVS-Datei gespeichert, z.B.: macroman, latin1, utf8.
+            </div>
+
+            <input type="text" name="encoding:string:required" id="encoding" tal:attributes="value request/encoding|string:utf8"/>
+            
+          </div>
+          
+          <div class="field">
+            <label for="delim" i18n:translate="">Trennzeichen</label>
+            <div class="formHelp" i18n:translate="">
+                Standard-Trennzeichen, z.B.: Semikolon, Komma, Tabulator (\t)
+            </div>
+              
+            <input type="text" name="delim" tal:attributes="value request/delim|string:;;" />
+
+          </div>
+        </fieldset>
+
+          <div class="formControls"
+               tal:define="process_creation request/process_creation|nothing;">
+      
+            <input class="context"
+                   tabindex=""
+                   type="submit"
+                   name="form.button.Save"
+                   value="Save"
+                   i18n:domain="plone"
+                   i18n:attributes="value"
+                   tal:attributes="tabindex tabindex/next;" 
+            />
+        
+            <input class="standalone"
+                   tabindex=""
+                   type="submit"
+                   name="form.button.Cancel"
+                   value="Cancel"
+                   i18n:attributes="value"
+                   tal:attributes="tabindex tabindex/next;" 
+            />
+
+          </div>
+          
+          <input type="hidden" name="form.submitted" value="1" />
+      </form>
+    </metal:main>
+
+    <metal:column_two_slot fill-slot="column_two_slot">
+      <metal:block metal:use-macro="here/zopra_context_menu/macros/context_menu" />
+    </metal:column_two_slot>
+
+    <metal:bottom fill-slot="bottom">
+      <metal:block metal:use-macro="here/zopra_bottom/macros/bottom" />
+    </metal:bottom>
+
+  </body>
+
+</html>

@@ -1,0 +1,166 @@
+@media all {
+/* temporary internal link extra correction for test system */
+.documentContent a[href*="141.30.37.134"],
+.documentContent a[name="documentContent"] {
+    background-image: none;
+    padding:0;
+}
+/* zopra_list_edit_form tablesorter styles */
+table.zopra_listvalues thead tr th, table.zopra_listvalues tfoot tr th {
+  background-color: #FFFFFF;
+}
+table.zopra_listvalues thead tr .header {
+  border-right: none;
+}
+/* no external link marking for right column */
+td#portal-column-two .portletContent a[href^="http"] {
+    background-image: none;
+    padding:0;
+    line-height: 140%;
+}
+td#portal-column-two .portletContent a[href^="http"] img {
+    margin-left:0px;
+    vertical-align: top;
+}
+/* Navigation corrections*/
+#newNavigationList .ebene2node {
+    background-position:left;
+    background-repeat:no-repeat;
+    color:#333;
+    display:block;
+    text-decoration:none;
+    margin:0 0 0 1em;
+    padding:.3em .3em .4em 28px;
+    background-color:#ccd6df;
+    background-image:url(https://tu-dresden.de/little_node_close.gif);
+    width:15em;
+}
+#newNavigationList .ebene2node:hover {
+    background-color:#A4AEB8;
+}
+#newNavigationList #ebene2selected {
+  background-color: #A4AEB8;
+  background-image: url("https://tu-dresden.de/little_emptynode_open.gif");
+}
+#newNavigationList a.ebene3 {
+    background-color:#CCD6DF;
+}
+#newNavigationList a.ebene3#ebene3selected {
+    background-color:#A4AEB8;
+    color: #333333;
+}
+#newNavigationList a.ebene3:hover {
+    background-color:#A4AEB8;
+    color: #333333;
+}
+/* contact details */
+.contact-item {
+  margin-bottom: 2px;
+}
+.contact-item img {
+  vertical-align: top
+}
+.contact-item div {
+  display: inline-block
+}
+td#portal-column-two .portletContent a.noborder {
+  border: none;
+}
+#portal-column-two .visualPadding {padding-top: 1em}
+.stg_kontakt_aussen {padding:0 0 1em 1em}
+.stg_kontakt_innen {padding:0 0 0.5em 0}
+.kontakt h5 {background-image:none;border-bottom:dotted 1px
+#333;color:#333; margin: 0 0 .5em; padding:.5625em 0 0;
+line-height:1.5em font-size:1em;
+font-style:normal;
+font-weight:700;
+letter-spacing:0.1em;
+text-transform:uppercase;}
+.kontakt h4 {font-weight:bold; font-style:normal; margin:0 0 0 -1em;
+line-height:1.5em}
+.kontakt h3 {font-weight:normal; font-style:italic; margin:0.5em 0 0;
+line-height:1.5em}
+.portletContent p {margin:0;}
+.portletContent ul {list-style-type:square; padding-left:0;
+margin-left:1em;}
+.portletContent li {padding-left:0; margin:0 0 0.5em;}
+/* search result page */
+table.search_criteria {
+    margin-top:0;
+}
+table.search_criteria th {
+    width: 250px;
+    border-bottom:1px solid #ddd;
+    text-align:left;
+    font-weight:bold;
+    color:#999;
+    padding:0.3em;
+    margin:0 8px 0 0
+}
+table.search_criteria td {
+    border-bottom:1px solid #ddd;
+    padding:0.3em 0.3em 0.3em 16px;
+    margin:0 8px 0 0;
+    background:#fff url(https://tu-dresden.de/studium/angebot/studienmoeglichkeiten/icons/arrow-left2right.png) left center no-repeat;
+}
+/*pagination*/
+#pagelinks {
+    line-height: 220%;
+    margin-bottom: 5px;}
+#pagelinks .pagelink, #pagelinks .selected_pagelink {
+    border: 1px solid #40779E;
+    background-color: #DDDDDD;
+    background-image: none;
+    padding: 1px 2px;
+    font-weight: 200;
+}
+#pagelinks .selected_pagelink {
+    border: 2px dotted #0B2A51;
+}
+#pagelinks a:visited {
+    color: #40779E;
+}
+/* help texts*/
+.pageHelp {
+  color: #76797C;
+  font-size: 90%;
+  margin: 0 0 0.5em;
+}
+.text_small {
+    font-size: 9px;
+    line-height: 1em;
+}
+.tooltip {
+    background-image: url(https://tu-dresden.de/studium/angebot/studienmoeglichkeiten/icons/tooltip.png)!important;
+    background-position: right center !important;
+    background-repeat: no-repeat;
+    padding-right:16px !important;
+    cursor:help;
+}
+.bold{
+    font-weight: bold;
+}
+.keywordsearch label {
+    color: #999;
+    font-weight: bold;
+}
+/* content styles */
+.documentContent p {margin-bottom:1em;}
+.documentContent h2 {border-bottom:dotted 1px
+#333;color:#333;margin:2.44em 0 1em -.5625em; padding:0 .5625em .375em}
+.documentContent h3 {margin-top:2em;}
+.documentContent ol {margin:0 0 1em 1em; padding:0 0 0 1em;}
+.documentContent li {margin-bottom:0.5em; list-style-type: circle;}
+.documentContent .button {padding:0 0 2px 0; margin:0 0;}
+.documentContent .button a {background-color:#A4AEB8; padding:4px 8px;
+color:#fff; font-weight:bold; border:1px solid #ccc; border-color:#ddd
+#666 #666 #ddd; background-image: none;}
+/*buttons*/
+.formControlsZopRA {
+    margin: 0 1em 0 0;
+    padding: 0.5em 0;
+}
+.hidden {
+	display: none;
+}
+}

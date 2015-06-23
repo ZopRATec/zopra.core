@@ -1,0 +1,11 @@
+[default]
+title=Delete Confirmation Form
+
+[security]
+View=0:Authenticated
+
+[actions]
+action.success..Delete=traverse_to:string:zopra_table_delete
+action.success..Cancel=traverse_to:string:zopra_table_show_form
+action.success=traverse_to:string:zopra_table_delete
+action.failure=traverse_to:string:zopra_table_show_form

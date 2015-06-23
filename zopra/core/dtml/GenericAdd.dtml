@@ -1,0 +1,66 @@
+<html>
+<head>
+</head>
+<body>
+<dtml-if expr="getProductManager()">
+  <form action="manage_addGeneric" class="boxedForm">
+    <table>
+      <tr>
+        <td><div class="form-label">Id</div></td>
+        <td><input type="type" name="zope_id" value="%s"></td></tr>
+      <tr>
+        <td align="left" valign="top">
+          <div class="form-optional">
+            Title
+          </div>
+        </td>
+        <td align="left" valign="top">
+          <input type="type" name="title" value="%s">
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <div class="form-label">ZopRA Type</div>
+        </td>
+        <td>
+          <input type="type"  name="zopratype" value="">
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <div class="form-label">Do not create Tables</div>
+        </td>
+        <td>
+          <input type="checkbox"  name="nocreate" value="1">
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <div class="form-label">activate EBaSe</div>
+        </td>
+        <td>
+          <input type="checkbox"  name="ebase" value="1">
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <div class="form-label">activate AccessGroups</div>
+        </td>
+        <td>
+          <input type="checkbox" name="accessgroups" value="1">
+        </td>
+      </tr>
+    </table>
+    <br>
+      <input type="submit" name="submit"  value="  Add  ">
+      <input type="hidden" name="manager" value="%s">
+      <input type="hidden" name="pkg"     value="%s">
+  </form>
+<dtml-else>
+  <p class="form-text">
+    There is no Product. You need to add a Product Manager 
+    before you can create Product Components.
+  </p>
+</dtml-if>
+</body>
+</html>

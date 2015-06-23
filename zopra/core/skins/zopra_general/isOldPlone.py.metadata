@@ -1,0 +1,6 @@
+[default]
+title=isOldPlone
+proxy=Manager
+
+[security]
+View=0:Authenticated

@@ -1,0 +1,18 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      i18n:domain="plone">
+
+<body>
+<tal:comment tal:replace="nothing">
+
+</tal:comment>
+<metal:bottom define-macro="bottom">
+  <tal:additional tal:define="add_path python: 'zopra_bottom_%s' % here.meta_type;"
+                  tal:condition="exists: here/?add_path/macros/bottom">
+    <metal:use metal:use-macro="here/?add_path/macros/bottom">
+      project specific context menu
+    </metal:use>
+  </tal:additional>
+</metal:bottom>
+
+</body>
+</html>

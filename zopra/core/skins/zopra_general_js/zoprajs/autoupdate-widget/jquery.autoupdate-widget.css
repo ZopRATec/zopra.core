@@ -1,0 +1,13 @@
+/*!
+ * jquery autoupdate widget ( for popup only )
+ *
+ * Copyright 2011, Paul Grunewald
+ *
+ * Erstellt: 17:21 Samstag, 5. November 2011
+ */
+
+body { margin:0px; padding:0px; }
+iframe { display:none; width:100%; }
+.background { margin:50px; line-height:32px; vertical-align:middle; padding-left:50px; font-family:Arial; font-weight:bold; color:#555; font-size:17px; position:absolute; z-index:-1; background:#fff url('loading.gif') no-repeat left top; }
+
+

@@ -1,0 +1,16 @@
+# conventions for labeling
+
+BTN_L   -   Button Label
+BTN_F   -   Button Function
+COL     -   Column stuff
+DLG     -   Dialog stuff
+LN      -   List Name
+MASK    -   Mask releated stuff
+RE      -   Regular Expression
+STR     -   String
+TN      -   Table Name
+TCN     -   Table Attribute Name
+ZMOM    -   Core Component / Manager
+ACTION  -   Standard Action Identifier for generic button handling
+ZCOL    -   Table Attribute Type
+SC      -   Security Constants for permissions

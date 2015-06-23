@@ -1,0 +1,246 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US"
+      lang="en-US"
+      metal:use-macro="here/main_template/macros/master"
+      i18n:domain="zopra">
+
+  <body>
+<tal:comment tal:replace="nothing">
+
+</tal:comment>
+
+    <metal:css_slot fill-slot="css_slot">
+       <link rel="stylesheet" type="text/css" media="all"  tal:attributes="href string:${portal_url}/zopra.css" />
+       <link rel="stylesheet" type="text/css" media="all"  tal:attributes="href string:${portal_url}/zopra_edit.css" />
+    </metal:css_slot>
+
+    <metal:main fill-slot="main">
+
+      <tal:block tal:condition="isAnon">
+        <div tal:define="dummy python: request.RESPONSE.redirect('/login_form')" />
+      </tal:block>
+      <form name="zopra_list_edit_form"
+            action="."
+            method="post"
+            enctype="multipart/form-data"
+            tal:define="errors options/state/getErrors;
+                     listname request/listname;
+                     lobj python: here.listHandler[listname];
+                     is_hierarchy_list python: here.isHierarchyList(listname);
+                     rowcount python: lobj.getValueCount();
+                     entries python: lobj.getEntries();
+                     edit_permitted python: here.getPermissionInfo(listname, 'list_edit');"
+            tal:attributes="action string:${here/getId}/${template/getId}" >
+        
+        <tal:block condition="python: not edit_permitted">
+          <div tal:define="dummy python: request.RESPONSE.redirect('require_login?came_from=' + here.absolute_url_path() +'/zopra_main_form')" />
+        </tal:block>
+
+<tal:block tal:condition="not: is_hierarchy_list">
+
+      <h1 i18n:translate="" tal:content="python: 'Auflistung ' + lobj.getLabel()"></h1>
+      <script type="text/javascript" tal:attributes="src string:${portal_url}/jquery.tablesorter.js"></script>
+      <script type="text/javascript" tal:attributes="src string:${portal_url}/jquery.tablesorter.staticrow.min.js"></script>
+      <table class="zopra_listvalues tablesorter">
+        <thead>
+          <tr>
+            <th scope="col">&Auml;ndern</th>
+            <th scope="col">Wert</th>
+            <th scope="col"
+                tal:repeat="translation python: lobj.translations"
+                tal:content="python: 'Übersetzung '+translation">en</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr tal:repeat="entry entries">
+            <td>
+              <span class="hidden" tal:content="python: entry['autoid']">1</span>
+              <input type="checkbox" name="edit_autoid" tal:attributes="value python: entry['autoid'];" /></td>
+            <td>
+              <span class="hidden" tal:content="python: here.correctUTF8(entry['value'])">Value</span>
+              <input size="50"
+                     type="text"
+                     tal:attributes="name python:'edit_value_'+ str(entry['autoid']);
+                                     value python: here.correctUTF8(entry['value']);"
+                />
+            </td>
+            <td tal:repeat="translation python: lobj.translations">
+              <span class="hidden" tal:content="python: entry.get('value_'+translation)">Value</span>
+              <input size="50"
+                     type="text"
+                     tal:attributes="name python:'edit_value_'+ str(entry['autoid'])+'_'+translation;
+                                     value python: entry.get('value_'+translation);"
+                />
+            </td>
+            <td></td>
+          </tr>
+
+	      <tr class="zopra_newvalue static">
+	        <td></td>
+	        <td>
+	          <input type="text" name="new_value" size="50" />
+	          <input type="hidden" name="listname"
+	                 tal:attributes="value listname" />
+	        </td>
+	        <td tal:repeat="translation python: lobj.translations">
+	          <input size="50"
+	                 type="text"
+	                 tal:attributes="name python:'new_value_'+translation;"
+	            />
+	        </td>
+	        <td>
+	          <input class="standalone"
+	                 tabindex=""
+	                 type="submit"
+	                 name="form.button.Add"
+	                 value="Add"
+	                 i18n:domain="plone"
+	                 i18n:attributes="value"
+	                 tal:attributes="tabindex tabindex/next;"
+	          />
+	        </td>
+	      </tr>
+	    </tbody>
+      </table>
+      <script>
+$(window).ready(function() {
+  var $colnum = ($("table.zopra_listvalues").find("tr:first th").length - 1).toString();
+  var $definition = {
+	// add empty headers object
+    headers: {},
+	// sort by column 1, sort ascending (second 0)
+	//sortList: [[0,0]],
+	widgets: ['zebra', 'staticRow']
+  };
+  $definition.headers[$colnum] = {
+    // disable the calculated last column by setting the property sorter to false
+    sorter: false};
+  // initialize tablesorter
+  $("table.zopra_listvalues").tablesorter($definition);
+});
+      </script>
+
+</tal:block>
+      
+<tal:block tal:condition="is_hierarchy_list">
+
+      <h1>
+        <span i18n:translate="">Hierarchiedarstellung</span>
+        <span tal:content="python: lobj.getLabel()"></span>
+      </h1>
+
+      <table class="zopra_listvalues"
+             tal:define="entries python: here.prepareHierarchylistDisplayEntries(entries)">
+        <tr>
+          <th>&Auml;ndern</th>
+          <th>Nr.</th>
+          <th>Wert</th>
+          <th>Elternknoten</th>
+          <th tal:repeat="translation python: lobj.translations"
+              tal:content="python: 'Übersetzung '+translation">en</th>
+          <th>&nbsp;</th>
+        </tr>
+        <tr tal:repeat="entry entries">
+			<td><input type="checkbox" name="edit_autoid" tal:attributes="value python: entry['autoid'];" /></td>
+			<td>
+			  <span tal:content="python:entry['autoid']">12</span>
+			</td>
+			<td>
+			  <span tal:content="python: entry.get('level', 0) * '&nbsp;;'">&nbsp;</span>
+			  <input size="50"
+			         type="text"
+			         tal:attributes="name python:'edit_value_'+ str(entry['autoid']);
+			                         value python: here.correctUTF8(entry['value']);"
+			    />
+			</td>
+			<td>
+			  <input size="10"
+			         type="text"
+			         tal:attributes="name python:'edit_rank_'+ str(entry['autoid']);
+			                         value python: entry['rank'];"
+			    />
+			</td>
+			<td tal:repeat="translation python: lobj.translations">
+			  <input size="50"
+			         type="text"
+			         tal:attributes="name python:'edit_value_'+ str(entry['autoid'])+'_'+translation;
+			                         value python: entry.get('value_'+translation);"
+			    />
+			</td>
+        </tr>
+
+        <tr class="zopra_newvalue">
+          <td></td>
+          <td></td>
+          <td>
+            <input type="text" name="new_value" size="50" />
+            <input type="hidden" name="listname"
+                   tal:attributes="value listname" />
+          </td>
+          <td>
+            <input type="text" name="new_rank" size="10" value="0" />
+          </td>
+          <td tal:repeat="translation python: lobj.translations">
+            <input size="50"
+                   type="text"
+                   tal:attributes="name python:'new_value_'+translation;"
+              />
+          </td>
+          <td>
+            <input class="standalone"
+                   tabindex=""
+                   type="submit"
+                   name="form.button.Add"
+                   value="Add"
+                   i18n:domain="plone"
+                   i18n:attributes="value"
+                   tal:attributes="tabindex tabindex/next;"
+            />
+          </td>
+        </tr>
+      </table>        
+        
+        
+</tal:block>
+      
+      <div>
+          <input class="standalone"
+                   tabindex=""
+                   type="submit"
+                   name="form.button.Update"
+                   value="Update"
+                   i18n:attributes="value"
+                   tal:attributes="tabindex tabindex/next;"
+            />
+          <input class="standalone"
+                   tabindex=""
+                   type="submit"
+                   name="form.button.Delete"
+                   value="Löschen"
+                   i18n:attributes="value"
+                   tal:attributes="tabindex tabindex/next;"
+            />
+          <input class="standalone"
+                   tabindex=""
+                   type="submit"
+                   name="form.button.Cancel"
+                   value="Zurück"
+                   i18n:attributes="value"
+                   tal:attributes="tabindex tabindex/next;"
+            />
+          <input type="hidden" name="form.submitted" value="1" />
+        </div>
+      </form>
+    </metal:main>
+
+    <metal:column_two_slot fill-slot="column_two_slot">
+      <metal:block metal:use-macro="here/zopra_context_menu/macros/context_menu" />
+    </metal:column_two_slot>
+
+    <metal:bottom fill-slot="bottom">
+      <metal:block metal:use-macro="here/zopra_bottom/macros/bottom" />
+    </metal:bottom>
+
+  </body>
+
+</html>

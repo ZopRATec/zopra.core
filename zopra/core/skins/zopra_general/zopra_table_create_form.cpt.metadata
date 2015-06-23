@@ -1,0 +1,16 @@
+[default]
+title=Create Entry Form
+
+[security]
+View=0:Authenticated
+
+[validators]
+validators..Cancel=
+validators..Close=
+validators=zopra_validate_input
+
+[actions]
+action.success..Cancel=traverse_to:string:zopra_manager_main_form
+action.success..Save=traverse_to:string:zopra_table_create
+action.success=traverse_to:string:zopra_table_create
+action.failure=traverse_to:string:zopra_table_create_form

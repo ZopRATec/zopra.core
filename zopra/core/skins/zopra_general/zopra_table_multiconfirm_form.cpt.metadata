@@ -1,0 +1,14 @@
+[default]
+title=Edit Form
+
+[security]
+View=0:Authenticated
+
+[validators]
+validators=
+
+[actions]
+action.success..Confirm=traverse_to:string:zopra_table_multiconfirm
+action.success..Cancel=traverse_to:string:zopra_manager_main_form
+action.success=traverse_to:string:zopra_table_multiconfirm
+action.failure=traverse_to:string:zopra_table_multiconfirm_form

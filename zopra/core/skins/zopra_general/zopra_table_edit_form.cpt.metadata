@@ -1,0 +1,23 @@
+[default]
+title=Edit Form
+
+[security]
+View=0:Authenticated
+
+[validators]
+validators..Cancel=
+validators..importPosition=erp_importCSV
+validators=zopra_validate_input
+
+[actions]
+action.success..Save=traverse_to:string:zopra_table_edit
+action.success..Confirm=traverse_to:string:zopra_table_editconfirm
+action.success..Translate=traverse_to:string:zopra_table_edittranslate
+action.success..CopyDelete=traverse_to:string:zopra_table_deleteconfirm_form
+action.success..ChangeWorkflowState1=traverse_to:string:zopra_table_workflow_switch
+action.success..ChangeWorkflowState2=traverse_to:string:zopra_table_workflow_switch
+action.success..ChangeWorkflowState3=traverse_to:string:zopra_table_workflow_switch
+action.success..Cancel=traverse_to:string:zopra_table_show_form
+action.success..importPosition=traverse_to:string:zopra_table_edit_form
+action.success=traverse_to:string:zopra_table_edit
+action.failure=traverse_to:string:zopra_table_edit_form

@@ -1,0 +1,533 @@
+# Gettext Message File for ZopRA/ZMOM
+# Peter Seifert <peter.seifert@zopra.de>, 2010
+msgid ""
+msgstr ""
+"Project-Id-Version: ZMOM 1.0\n"
+"POT-Creation-Date: 2010-05-06 14:11+0000\n"
+"PO-Revision-Date: 2010-05-06 14:11+0100\n"
+"Last-Translator: Peter Seifert <peter.seifert@zopra.de>\n"
+"Language-Team: ZMOM i18n <i18n@zopra.de>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"Language-Code: en\n"
+"Language-Name: English\n"
+"Preferred-Encodings: utf-8\n"
+"Domain: zopra\n"
+"X-Is-Fallback-For: en-au en-bz en-ca en-ie en-jm en-nz en-ph en-za en-tt en-gb en-us en-zw\n"
+
+# SINS Fachberater translations
+msgid "sins_fachberater_desc"
+msgstr "Special Course Guidance Counselors sorted by programmes and courses:"
+
+msgid "sins_fachberater_heading"
+msgstr "Special Course Guidance"
+
+msgid "sins_immaberater_desc"
+msgstr "Admission officials sorted by degree programmes:"
+
+# SINS translations
+
+msgid "sins_editorial_mail_title"
+msgstr "Please use this mail address for technical problems only. Questions regarding the programmes can be addressed to the special course guidance counselors and the central student counselling service, that are giving on the programme-specific contact details pages."
+
+msgid "sins_editorial_mail_name"
+msgstr "Student Marketing"
+
+msgid "sins_editorial_mail_label"
+msgstr "Editorial:"
+
+msgid "sins_editorial_immamail_name"
+msgstr "Admissions office"
+
+msgid "sins_editorial_immamail_title"
+msgstr "Questions regarding the programmes can be addressed to the admission officials, that are listed on the programme-specific contact details pages."
+
+msgid "search"
+msgstr "Search"
+
+msgid "Redaktion"
+msgstr "Editorial"
+
+msgid "sins_editorial"
+msgstr "Home Editorial"
+
+msgid "sins_aktInform"
+msgstr "News"
+
+msgid "sins_editStg"
+msgstr "Edit course"
+
+msgid "sins_m_bekanntmachungen"
+msgstr "&raquo;Official proclamation"
+
+msgid "sins_sr_criteria"
+msgstr "Chosen criteria:"
+
+msgid "sins_sr_label_entries"
+msgstr "Show Entries"
+
+msgid "sins_sr_heading"
+msgstr "Search Results"
+
+msgid "sins_start_keysearch"
+msgstr "Keyword search"
+
+msgid "sins_sort_alph"
+msgstr "sorted alphabetically"
+
+msgid "sins_sort"
+msgstr "sorted by"
+
+msgid "sins_start_title"
+msgstr "Dear prospective students!"
+
+msgid "sins_start_listingsHeading"
+msgstr "Listings of all programmes"
+
+msgid "sins_start_TooltipGrundst"
+msgstr ""
+
+msgid "sins_start_TooltipWeiterf"
+msgstr ""
+
+msgid "sins_stg_ForeignIHI_tip"
+msgstr "Foreign applications can find more information on the ${ihi}."
+
+msgid "sins_stg_ForeignIHI_link"
+msgstr "webpages of the International Institute Zittau"
+
+msgid "sins_start_req"
+msgstr "Requirements"
+
+msgid "sins_start_typ"
+msgstr "Type"
+
+msgid "sins_start_indiv"
+msgstr "Individual search"
+
+msgid "sins_start_choose"
+msgstr "- choose -"
+
+msgid "sins_start_grundst"
+msgstr "undergraduate"
+
+msgid "sins_start_weiterf"
+msgstr "postgraduate"
+
+msgid "sins_studiengaenge_Grundst"
+msgstr "Undergraduate"
+
+msgid "sins_studiengaenge_Weiterf"
+msgstr "Postgraduate"
+
+msgid "sins_studiengaenge_angeb"
+msgstr "Degree Programmes"
+
+msgid "sins_start_alphabetical"
+msgstr "alphabetical"
+
+msgid "sins_start_byDegr"
+msgstr "by degree"
+
+msgid "sins_start_byFac"
+msgstr "by faculty"
+
+msgid "sins_start_byAr"
+msgstr "by area of science"
+
+msgid "sins_start_studSax"
+msgstr "The web presentation of degree programmes was financed by the Free State of Saxony with the campaign \"PACK DEIN STUDIUM\"."
+
+msgid "sins_start_listEN"
+msgstr "degree programmes taught in english"
+
+# Sins Studiengang translations
+
+msgid "regtime"
+msgstr "Standard period of study for full time studies"
+
+msgid "sins_stg_regtime_tip"
+msgstr "Full-time studies require students to invest at least 40h/week in order to finish their studies within regular study time."
+
+msgid "sins_stg_semesters"
+msgstr "semesters"
+
+msgid "disconDegree"
+msgstr "Discontinued study programme"
+
+msgid "studyfees"
+msgstr "Tuition fees per semester"
+
+msgid "sins_stg_studyart"
+msgstr "Type of study"
+
+msgid "sins_stg_studyart_tip"
+msgstr "Students must be present at campus for direct studies."
+
+msgid "sins_stg_studyart_tip2"
+msgstr "Participation at lectures directly at the university are not envisaged. Studies are usually self-studies absolved online or with the help of sent material."
+
+msgid "sins_stg_toPostgrad"
+msgstr "Go to the postgraduate study programmes"
+
+msgid "sins_stg_toDiscont"
+msgstr "Go to the discontinued study programmes"
+
+msgid "sins_stg_discontinued"
+msgstr "discontinued"
+
+msgid "studyform"
+msgstr "Form of study"
+
+msgid "studytype"
+msgstr "Programme type"
+
+msgid "sins_studyplace"
+msgstr "Place of study"
+
+msgid "sins_studiengang_letztanmeldung"
+msgstr "Matriculation for ${semester} ${year} for the ${number}. Semester "
+
+msgid "sins_stg_acc"
+msgstr "accredited"
+
+msgid "sins_studiengang_hoeher"
+msgstr "and higher"
+
+msgid "sins_firstsem"
+msgstr "First semester"
+
+msgid "sins_adminrestr"
+msgstr "Limited admission"
+
+msgid "sins_adminrestr_tip"
+msgstr "Explanations can be found within the glossary."
+
+msgid "sins_studiengang_beginn"
+msgstr "Beginning of studies"
+
+msgid "sins_studiengang_anmdgeign"
+msgstr "Application deadline for aptitude test"
+
+msgid "sins_detail"
+msgstr "&raquo;Details down below"
+
+msgid "sins_detail_eig"
+msgstr "&raquo;Details regarding the aptitude test (down below)"
+
+msgid "sins_studiengang_frist"
+msgstr "Application deadline"
+
+msgid "sins_studiengang_friststud"
+msgstr "Application deadline for study programme"
+
+msgid "sins_bwrbportal"
+msgstr "Application portal"
+
+msgid "sins_bewerb"
+msgstr "Application procedure"
+
+msgid "sins_nc"
+msgstr "Nc (numerus clausus) selection procedure"
+
+msgid "sins_HigherSem"
+msgstr "Higher semesters"
+
+msgid "sins_stg_bwbtime"
+msgstr "Application dates"
+
+msgid "sins_stg_bwbtimeNotEU"
+msgstr "Application dates for not-EU applicants"
+
+msgid "sins_stg_bwbtimeEU"
+msgstr "Application dates for EU applicants"
+
+msgid "sins_stg_bwbtimeStudy"
+msgstr "Application dates (with preparatory course)"
+
+msgid "sins_stg_bwbtimeNoStudy"
+msgstr "Application dates (without preparatory course)"
+
+msgid "sins_stg_tfv1"
+msgstr "Study programmes in which"
+
+msgid "sins_stg_tfv2"
+msgstr "Study programme in which"
+
+msgid "sins_stg_tfv3"
+msgstr "this course"
+
+msgid "sins_stg_tfv4"
+msgstr "this supplementary course"
+
+msgid "sins_stg_tfv5"
+msgstr "can be chosen"
+
+msgid "sins_stg_tfv6"
+msgstr "Information regarding application and other information can be found with"
+
+msgid "sins_stg_tfv7"
+msgstr "the corresponding study course:"
+
+msgid "sins_stg_tfv8"
+msgstr "the corresponding study courses:"
+
+msgid "sins_stg_course"
+msgstr "Courses"
+
+msgid "sins_stg_studyadmres_tip"
+msgstr "This course falls under admission restriction."
+
+msgid "sins_stg_disconDegree_tip"
+msgstr "This course is discontinued and is not open to first Semester application."
+
+msgid "sins_stg_studyprereq"
+msgstr "Study prerequisites"
+
+msgid "sins_stg_studyprereq_tip1"
+msgstr "Prerequisite to application is the general highschool graduation cetificate (Abitur) or"
+
+msgid "sins_stg_studyprereq_tip2"
+msgstr "a comparable certificate of preparedness for higher education"
+
+msgid "stg_sins_ForeignIHI_tip"
+msgstr "International applicants please refer to <a href=\"http://www.ihi-zittau.de/index.php?lg=de&whl=11070400&ank=290#290\">the information on the websites of IHI Zittau.</a>"
+
+msgid "sins_stg_Foreign_tip"
+msgstr "International applicants please refer to <a href=\"http://tu-dresden.de/internationales/int_stud/abschluss/applic_degree/admission_requirements\">the information on the websites of the International Office.</a>"
+
+msgid "sins_stg_AdmProcNC"
+msgstr "Aptitude assessment procedure and Nc selection procedure"
+
+msgid "sins_stg_AdmProc"
+msgstr "Aptitude assessment procedure"
+
+msgid "sins_stg_verif"
+msgstr "Appropriate documentation that the applicant fulfills the application requirements"
+
+msgid "sins_stg_adress"
+msgstr "Application address"
+
+msgid "sins_stg_langDE"
+msgstr "Language skills German"
+
+msgid "sins_stg_foreignAppl"
+msgstr "For international applicants with foreign university entrance certificate:"
+
+msgid "sins_stg_detailsforeignAppl"
+msgstr "&raquo;Details language requirements"
+
+msgid "sins_stg_detailsforeignAppl_tip"
+msgstr "You will find a detailed listing of recognised language certificates here."
+
+msgid "sins_stg_europRef"
+msgstr "European Framework of Reference"
+
+msgid "sins_stg_appltip"
+msgstr "Application tips"
+
+msgid "sins_stg_combDgr"
+msgstr "Combination degree"
+
+msgid "sins_stg_stdcontent"
+msgstr "Study contents"
+
+msgid "sins_stg_modDescr"
+msgstr "&raquo;To the module description"
+
+msgid "sins_stg_struc"
+msgstr "Structure"
+
+msgid "sins_stg_partic"
+msgstr "Particularities"
+
+msgid "sins_stg_doubleDgr"
+msgstr "Double degree"
+
+msgid "sins_stg_doubleDgr_txt"
+msgstr "Double degrees can be aquired in cooperation with following universities:"
+
+msgid "sins_stg_reqPract"
+msgstr "Required internship during studies"
+
+msgid "sins_stg_practBefore"
+msgstr "Internship before study"
+
+msgid "sins_stg_profFld"
+msgstr "Professional field"
+
+msgid "sins_stg_postStd"
+msgstr "Postgraduate studies"
+
+msgid "sins_stg_extRecom"
+msgstr "External recommendations"
+
+msgid "sins_stg_plnndChngs"
+msgstr "Planned changes"
+
+msgid "sins_stg_stg"
+msgstr "Study programme"
+
+msgid "sins_stg_allgInf"
+msgstr "General information"
+
+msgid "sins_stg_bewerb_tip1"
+msgstr "Application portal for 1st Semester"
+
+msgid "sins_stg_bewerb_tipa"
+msgstr "Application portal for foreign students"
+
+msgid "sins_stg_bewerb_tiph"
+msgstr "Application portal for higher Semesters"
+
+msgid "sins_mtrl_find"
+msgstr "... you will find on the respective "
+
+msgid "sins_mtrl_fac"
+msgstr "faculty site"
+
+msgid "sins_m_Ord"
+msgstr "Documents"
+
+msgid "sins_cstct_tip"
+msgstr "Go to contact details"
+
+msgid "sins_cstct_info"
+msgstr "Information about the person"
+
+msgid "sins_cstct_agdist"
+msgstr "AG Distance learning"
+
+msgid "sins_cstct_subj"
+msgstr "Subject"
+
+msgid "sins_ct_details"
+msgstr "Contact details"
+
+msgid "sins_miss_notfound"
+msgstr "Study programme not found"
+
+msgid "zopra_missing_label_missing"
+msgstr "The study programme ${with_id} was not found."
+
+msgid "zopra_missing_label_with_id"
+msgstr "with the id ${autoid}"
+
+msgid "sins_miss_back"
+msgstr "Go to SInS:Home"
+
+
+##################### original translations ################################
+# general zopra template translations
+
+# SINS content translations
+msgid "Unterrichtssprache"
+msgstr "Language of instruction"
+
+msgid "Zentrale Studienberatung"
+msgstr "Central Student Information and Counselling Services"
+
+msgid "Immatrikulationsamt"
+msgstr "Matrikulation office"
+
+msgid "Examination office"
+msgstr "Examination office"
+
+msgid "sins_heading_contact"
+msgstr "Contact"
+
+msgid "sins_link_institution_title"
+msgstr "Link to institution"
+
+msgid "sins_link_institution"
+msgstr "&raquo;to the institution"
+
+msgid "sins_link_information"
+msgstr "&raquo;more details"
+
+# SINS template translations
+#./skins/zopra_sins/zopra_table_show_form_nice_studiengang.pt
+msgid "sins_stg_bewerb_deutsch_ein"
+msgstr ""
+
+msgid "sins_stg_bewerb_deutsch"
+msgstr "Application procedure for German applicants and ${inlaender}"
+
+msgid "sins_stg_inlaender"
+msgstr "educational residents"
+
+msgid "sins_stg_tip_inlaender"
+msgstr "Educational residents are applicants with foreign citizenship and a German graduation certificate (Abitur)"
+
+msgid "sins_stg_regtimetzs"
+msgstr "Regular study time for part-time studies"
+
+msgid "sins_stg_tzs_tip"
+msgstr "Part-time studies are available for this course. Students must invest at least 20h/week in order to finish their studies within regular study time."
+
+msgid "sins_stg_einblenden"
+msgstr "show"
+
+msgid "sins_stg_ausblenden"
+msgstr "hide"
+
+msgid "sins_stg_bewerb_auslaender"
+msgstr "Application procedure for ${auslaender}"
+
+msgid "sins_stg_bewerb_auslaender_ein"
+msgstr ""
+
+msgid "sins_stg_auslaender"
+msgstr "international applicants"
+
+msgid "sins_stg_tip_auslaender"
+msgstr "applies to international applicants (except for educational residents)"
+
+msgid "sins_stg_tip_selfassessment"
+msgstr "Selfassessments are online consulaton tools with tests which help interested study applicants determine their aptitude and affinity for their desired study courses."
+
+msgid "zopra_sr_label_pages"
+msgstr "Pages:"
+
+msgid "zopra_sr_label_pages_first"
+msgstr "first"
+
+msgid "zopra_sr_label_pages_before"
+msgstr "back"
+
+msgid "zopra_sr_label_pages_next"
+msgstr "next"
+
+msgid "zopra_sr_label_pages_last"
+msgstr "last"
+
+msgid "sins_sr_text_empty"
+msgstr "No results were found. Please choose fewer constraints on your search to ensure more results."
+
+msgid "Wissenschaftsgebiet"
+msgstr "area of science"
+
+msgid "Abschluss"
+msgstr "Degree"
+
+msgid "Fakultät"
+msgstr "faculty"
+
+msgid "Studiendokumente"
+msgstr "Documents"
+
+msgid "Weitere Informationen"
+msgstr "Further information"
+
+msgid "sins_csnav_faq"
+msgstr "Study programme - FAQ"
+
+msgid "tobeginning"
+msgstr "Go to the top"
+
+############################### ERP translations ##################################
+msgid "erp_importHelp"
+msgstr "Here you may upload a .csv-file with your data. If no errors are encountered, the data will be transfered. You may find a template to use with this feature with the instructionschapter 'Instruction to use the CSV Import'."
+

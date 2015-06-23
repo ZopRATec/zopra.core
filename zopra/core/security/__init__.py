@@ -1,0 +1,4 @@
+SC_READ  = 4
+SC_LREAD = 1
+SC_WRITE = 2
+SC_DEL   = 8

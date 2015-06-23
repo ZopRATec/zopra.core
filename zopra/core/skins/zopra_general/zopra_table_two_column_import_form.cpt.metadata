@@ -1,0 +1,11 @@
+[default]
+title=Import Form
+
+[security]
+View=0:Authenticated
+
+[actions]
+action.success..Cancel=traverse_to:string:zopra_manager_main_form
+action.success..Save=traverse_to:string:zopra_table_two_column_import
+action.success=traverse_to:string:zopra_table_two_column_import
+action.failure=traverse_to:string:zopra_table_two_column_import

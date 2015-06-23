@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<Tabledefinition>
+    <Table name="content" label="Content" uid="116502799411">
+        <Column name="entrydate"     type="date"          label="Creation Date"/>
+        <Column name="creator"       type="singlelist"    label="Creator"             manager="ContactManager" function="person(firstname, lastname)"/>
+        <Column name="heading"       type="string"        label="Heading"/>
+        <Column name="topic"         type="singlelist"    label="Topic"/>
+        <Column name="content"       type="memo"          label="Content"/>
+        <Column name="file"          type="multilist"     label="Additional Files"   manager="FileManager" function="getFile" map="file"/>
+        <Column name="sorting"       type="int"           label="Sorting"/>
+    </Table>
+    <List name="topic" label="Topic"/>
+</Tabledefinition>

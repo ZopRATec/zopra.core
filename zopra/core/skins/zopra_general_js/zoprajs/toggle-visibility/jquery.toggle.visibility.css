@@ -1,0 +1,22 @@
+/*!
+ * toggle visibility
+ *
+ * Copyright 2011, Paul Grunewald
+ *
+ * Datum: 18:58 Donnerstag, 14. Juli 2011
+ */
+
+    .toggle-visibility-show-text{
+    }
+    
+    .toggle-visibility-hide-text {
+    }    
+    
+    .toggle-visibility-shown-target {
+        display:block;
+        
+    }    
+
+    .toggle-visibility-hidden-target {
+        display:none;
+    }    

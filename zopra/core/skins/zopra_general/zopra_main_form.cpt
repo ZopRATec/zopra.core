@@ -1,0 +1,71 @@
+<tal:comment tal:replace="nothing">
+
+</tal:comment>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US"
+      lang="en-US"
+      metal:use-macro="here/main_template/macros/master"
+      i18n:domain="zopra">
+
+  <body>
+    <metal:css_slot fill-slot="css_slot">
+       <link rel="stylesheet" type="text/css" media="all"  tal:attributes="href string:${portal_url}/zopra.css" />
+       <link rel="stylesheet" type="text/css" media="all"  tal:attributes="href string:${portal_url}/zopra_edit.css" />
+    </metal:css_slot>
+    <metal:css_slot fill-slot="style_slot">
+       <link rel="stylesheet" type="text/css" media="all"  tal:attributes="href string:${portal_url}/zopra.css" />
+       <link rel="stylesheet" type="text/css" media="all"  tal:attributes="href string:${portal_url}/zopra_edit.css" />
+    </metal:css_slot>
+
+    <metal:topslot fill-slot="top_slot">
+       <tal:block tal:define="
+                 global toLocalizedTime nocall:context/@@plone/toLocalizedTime;
+                 global portal_properties context/portal_properties;
+                 global site_properties context/portal_properties/site_properties;
+                 global portal context/@@plone_portal_state/portal;
+                 global isAnon context/@@plone_portal_state/anonymous;
+                 global member context/@@plone_portal_state/member;
+                 global mtool context/portal_membership;
+                 global wtool context/portal_workflow;
+                 global wf_state context/@@plone_context_state/workflow_state;
+                 global default_language context/@@plone_portal_state/default_language;
+       ">
+       </tal:block>
+     </metal:topslot>
+
+    <metal:main fill-slot="main">
+      <tal:block tal:condition="python: isAnon or not (user.has_role(('SInSAuthor', 'SInSReviewer', 'ZopRAAuthor', 'ZopRAReviewer', 'Admin'), here))">
+        <div tal:define="dummy python: request.RESPONSE.redirect('login_form?came_from=' + here.absolute_url() +'/zopra_main_form')" />
+      </tal:block>
+
+      <tal:block tal:define="zpath python: hasattr(here, 'zopra_path') and here.zopra_path or 'app/pm';
+	                         pm python:here.path2ob(zpath);
+							 check python: pm or here.migrate_raiser('Product not found, check the zopra_path property or name your Product Manager pm.');
+                             all python:pm.getNaviManagerUrls(None, False);">
+        <h1 i18n:translate="">Module</h1>
+        <ul>
+          <li tal:repeat="onemgr python:all.keys()">
+            <a tal:attributes="href python:all[onemgr] + '/zopra_manager_main_form';"
+               tal:content="onemgr">Link to manager</a>
+          </li>
+        </ul>
+        <tal:block tal:repeat="onemgr python:all.keys()">
+          <div tal:define="manager python: getattr(here, all[onemgr].split('/')[-1]);
+                           tname python: 'zopra_manager_info_' + manager.getClassName()"
+               tal:condition="exists: here/?tname">
+            <metal:block metal:use-macro="here/?tname/macros/manager_info" />
+          </div>
+        </tal:block>
+        <br />
+        <a tal:condition="exists:here/anonymous_zopra_main_form" href="anonymous_zopra_main_form">Zurück zur Startseite</a>
+      </tal:block>
+    </metal:main>
+
+    <metal:column_two_slot fill-slot="column_two_slot">
+      <metal:block metal:use-macro="here/zopra_context_menu/macros/context_menu" />
+    </metal:column_two_slot>
+
+    <metal:bottom fill-slot="bottom">
+      <metal:block metal:use-macro="here/zopra_bottom/macros/bottom" />
+    </metal:bottom>
+  </body>
+</html>

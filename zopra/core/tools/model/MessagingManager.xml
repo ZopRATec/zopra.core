@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<Tabledefinition>
+    <Table name="globalmessage" label="System Messages" uid="116502798768">
+        <Column name="subject"        type="string"      label="Subject"/>
+        <Column name="content"        type="memo"        label="Content"/>
+        <Column name="notes"          type="memo"        label="Notes"/>
+        <Column name="gsender"        type="singlelist"  label="Sender"      manager="SecurityManager"  function="user()"/>
+    </Table>
+    <Table name="thread" label="Sent Messages" uid="116502798767">
+        <Column name="subject"        type="string"      label="Subject"/>
+        <Column name="origin"         type="singlelist"  label="Sender"      manager="MessagingManager"  function="messageuser()"/>
+        <Column name="msent"          type="int"         label="Sent Message Count"/>
+        <Column name="mlocal"         type="int"         label="Local Message Count"/>
+    </Table>
+    <Table name="sentmessage" label="Sent Messages" uid="116502798769">
+        <Column name="content"        type="memo"        label="Content"/>
+        <Column name="subject"        type="string"      label="Subject"/>
+        <Column name="ssender"        type="singlelist"  label="Sender"      manager="MessagingManager"  function="messageuser()"/>
+        <Column name="sreceiver"      type="multilist"   label="Receiver"    manager="MessagingManager"  function="messageuser()" map="sreceiver"/>
+        <Column name="thread"         type="int"         label="Thread"      manager="MessagingManager"  function="thread()"/>
+        <Column name="repliesto"      type="int"         label="Replies to"  manager="MessagingManager"  function="localmessage()"/>
+        <Column name="draft"          type="bool"        label="Draft"/>
+    </Table>
+    <Table name="localmessage" label="Messages" uid="116502798770">
+        <Column name="content"        type="memo"        label="Content"/>
+        <Column name="subject"        type="string"      label="Subject"/>
+        <Column name="lsender"        type="singlelist"  label="Sender"      manager="MessagingManager"  function="messageuser()"/>
+        <Column name="lreceiver"      type="multilist"   label="Receiver"    manager="MessagingManager"  function="messageuser()" map="lreceiver"/>
+        <Column name="mowner"         type="singlelist"  label="Owner"       manager="MessagingManager"  function="messageuser()"/>
+        <Column name="read"           type="bool"        label="Read"/>
+        <Column name="trash"          type="bool"        label="Trashed"/>
+        <Column name="thread"         type="int"         label="Thread"      manager="MessagingManager"  function="thread()"/>
+        <Column name="folder"         type="singlelist"  label="Folder"      manager="MessagingManager"  function="folder()"/>
+    </Table>
+    <Table name="messageuser" label="Message User Data" uid="116502798771">
+        <Column name="sid"            type="singlelist"  label="User"        manager="SecurityManager"  function="user()"/>
+        <Column name="globalcounter"  type="int"         label="Last Global Message"/>
+        <Column name="entriespp"      type="int"         label="Entries per Page"/>
+        <Column name="threadview"     type="bool"        label="Thread View"/>
+        <Column name="signature"      type="memo"        label="Signature"/>
+        <Column name="precedence"     type="bool"        label="Filter Precedence"/>
+    </Table>
+    <Table name="msgfolder" label="Folder" uid="116502798772">
+        <Column name="mowner"         type="singlelist"  label="Owner"       manager="MessagingManager"  function="messageuser()"/>
+        <Column name="foldername"     type="string"      label="Folder Name"/>
+        <Column name="sortid"         type="int"         label="Sorting ID"/>
+    </Table>
+    <Table name="filter" label="Filter" uid="116502798773">
+        <Column name="name"           type="string"      label="Name" />
+        <Column name="mowner"         type="singlelist"  label="Owner"       manager="MessagingManager"  function="messageuser()"/>
+        <Column name="knf"            type="bool"        label="Mode" />
+        <Column name="sortid"         type="int"         label="Sorting ID"/>
+        <Column name="blocks"         type="multilist"   label="Rule Blocks" manager="MessagingManager"  function="ruleblock()" map="blocks"/>
+        <Column name="target"         type="singlelist"  label="Folder"      manager="MessagingManager"  function="folder()"/>
+    </Table>
+    <Table name="ruleblock" label="Filter" uid="116502798774">
+        <Column name="mowner"         type="singlelist"  label="Owner"       manager="MessagingManager"  function="messageuser()"/>
+        <Column name="rules"          type="multilist"   label="Rules"       manager="MessagingManager"  function="rule()" map="rules"/>
+    </Table>
+    <Table name="rule" label="Filter" uid="116502798775">
+        <Column name="mowner"         type="singlelist"  label="Owner"       manager="MessagingManager"  function="messageuser()"/>
+        <Column name="field"          type="string"      label="Field" />
+        <Column name="value"          type="string"      label="Value" />
+        <Column name="negation"       type="bool"        label="Negation" />
+        <Column name="predicate"      type="string"      label="Predicate" />
+    </Table>
+</Tabledefinition>

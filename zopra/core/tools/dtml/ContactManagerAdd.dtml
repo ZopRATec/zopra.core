@@ -1,0 +1,113 @@
+<dtml-var manage_page_header>
+<dtml-var "manage_form_title(this(), _,
+		form_title='Add a ZopRA Contact Manager'
+		)">
+
+<dtml-if expr="getProductManager()">
+	<form action="manage_addGeneric" class="boxedForm">
+		<table>
+			<tr><td>Id</td><td><input type="text" name="zope_id" value="cm"></td></tr>
+			<tr>
+				<td align="left" valign="top">
+					<div class="form-optional">
+					Title
+					</div>
+				</td>
+				<td align="left" valign="top">
+					<input type="text" name="title" value="Contact Manager">
+				</td>
+			</tr>
+            <tr>
+                <td>
+                    <div class="form-label">Do not create Tables</div>
+                </td>
+                <td>
+                    <input type="checkbox"  name="nocreate" value="1">
+                </td>
+            </tr>
+			<tr>
+				<td>&nbsp;</td>
+			</tr>
+			<tr>
+				<td><div class="form-title">Organisation</div></td>
+			</tr>
+			<tr>
+				<td>&nbsp;Name</td>
+				<td><input type="text" name="org_name"></td>
+			</tr>
+			<tr>
+				<td>&nbsp;Address</td>
+				<td><textarea name="org_address" cols="60" rows="4"></textarea></td>
+			</tr>
+			<tr>
+				<td>&nbsp;Phone number (e.g. reception)</td>
+				<td><input type="text" name="org_phone"></td>
+			</tr>
+			<tr>
+				<td>&nbsp;Phone number for toll free call</td>
+				<td><input type="text" name="org_tollFreePhone"></td>
+			</tr>
+			<tr>
+				<td>&nbsp;EMail</td>
+				<td><input type="text" name="org_email"></td>
+			</tr>
+			<tr>
+				<td>&nbsp;Fax</td>
+				<td><input type="text" name="org_fax"></td>
+			</tr>
+				<td>&nbsp;URL/URI (e.g. Website)</td>
+				<td><input type="text" name="org_uri"></td>
+			</tr>
+			<tr>
+				<td>&nbsp;</td>
+			</tr>
+			<tr>
+				<td><div class="form-title">Administrator</div></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>&nbsp;Name (First / Mid Initials / Last)</td>
+				<td>
+					<input type="text" name="person_firstname" maxsize="10" size="10"> /
+					<input type="text" name="person_midinitials" maxsize="5" size="5"> /
+					<input type="text" name="person_lastname" maxsize="10" size="10">
+				</td>
+			</tr>
+			<tr>
+				<td>&nbsp;Address</td>
+				<td><textarea name="person_address" cols="60" rows="4"></textarea></td>
+			</tr>
+			<tr>
+				<td>&nbsp;Phone number</td>
+				<td><input type="text" name="person_phone"></td>
+			</tr>
+			<tr>
+				<td>&nbsp;Phone number for toll free call</td>
+				<td><input type="text" name="person_tollFreePhone"></td>
+			</tr>
+			<tr>
+				<td>&nbsp;EMail</td>
+				<td><input type="text" name="person_email"></td>
+			</tr>
+			<tr>
+				<td>&nbsp;Fax</td>
+				<td><input type="text" name="person_fax"></td>
+			</tr>
+			<tr>
+				<td>&nbsp;URL/URI (e.g. Website)</td>
+				<td><input type="text" name="person_uri"></td>
+			</tr>
+        </table>
+        <br>
+        <input type="hidden" name="org_head" value="0">
+        <input type="hidden" name="person_affiliation" value="1">
+        <input type="submit" name="submit"  value="  Add  ">
+        <input type="hidden" name="manager" value="ContactManager">
+        <input type="hidden" name="pkg"     value="zopra.core.tools.ContactManager">
+	</form>
+<dtml-else>
+	<p class="form-text">
+	There is no ZopRA Product Manager. You need to add a Product Manager before you can create a Manager.
+	</p>
+</dtml-if>
+<dtml-var manage_page_footer>

@@ -1,0 +1,15 @@
+[default]
+title=
+
+[security]
+View=0:Authenticated
+
+[actions]
+action.success..DelFromResult=traverse_to:string:zopra_table_search_result
+action.success..DelFromList=traverse_to:string:zopra_table_list_form
+action.success..Delete=traverse_to:string:zopra_main_form
+action.failure..DelFromResult=traverse_to:string:zopra_table_search_result
+action.failure..DelFromList=traverse_to:string:zopra_table_list_form
+action.failure..Delete=traverse_to:string:zopra_table_show_form
+action.success=traverse_to:string:zopra_table_list_form
+action.failure=traverse_to:string:zopra_table_list_form

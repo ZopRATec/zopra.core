@@ -1,0 +1,13 @@
+[default]
+title=List Edit Form
+
+[security]
+View=0:Authenticated
+
+[actions]
+action.success..Add=traverse_to:string:zopra_list_edit_add
+action.success..Cancel=traverse_to:string:zopra_manager_main_form
+action.success..Delete=traverse_to:string:zopra_list_edit_del
+action.success..Update=traverse_to:string:zopra_list_edit_upd
+action.success=traverse_to:string:zopra_list_edit_upd
+action.failure=traverse_to:string:zopra_list_edit_form

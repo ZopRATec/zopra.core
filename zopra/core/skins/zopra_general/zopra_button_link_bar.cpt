@@ -1,0 +1,303 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      i18n:domain="plone">
+
+<body>
+<tal:comment tal:replace="nothing">
+Macro Definition fuer Button-Bar and Link-Bar
+</tal:comment>
+
+<metal:block metal:define-macro="buttons_edit">
+        <div class="formControlsZopRA"
+               tal:define="process_creation request/process_creation|nothing;">
+
+            <input class="context"
+                   tabindex=""
+                   type="submit"
+                   name="form.button.Save"
+                   value="Save"
+                   i18n:domain="plone"
+                   i18n:attributes="value"
+                   tal:attributes="tabindex tabindex/next;"
+            />
+
+            <input class="standalone"
+                   tabindex=""
+                   onclick="history.back(-1)"
+                   type="button"
+                   name="form.button.Cancel"
+                   value="Back"
+                   i18n:attributes="value"
+                   i18n:domain="zopra"
+                   tal:condition="not: request/origid|nothing"
+                   tal:attributes="tabindex tabindex/next;"
+            />
+
+            <input class="standalone"
+                   tabindex=""
+                   onclick="top.close()"
+                   type="button"
+                   name="form.button.Close"
+                   value="Close"
+                   i18n:attributes="value"
+                   i18n:domain="zopra"
+                   tal:condition="request/origid|nothing"
+                   tal:attributes="tabindex tabindex/next;"
+            />
+
+            <input tal:condition="python: context.doesTranslations(table) and not entry.get('istranslationof') and not entry.get('hastranslation')"
+                   class="standalone"
+                   tabindex=""
+                   type="submit"
+                   name="form.button.Translate"
+                   value="Translate"
+                   i18n:attributes="value"
+                   i18n:domain="zopra"
+                   tal:attributes="tabindex tabindex/next;"
+            />
+            <tal:block tal:condition="python: context.doesWorkingCopies(table) and entry.get('iscopyof') and user.has_role(('SInSReviewer', 'ZopRAReviewer'), here)">
+              <tal:block tal:condition="not: set_del_autoid|nothing">
+                <input tal:define="global set_del_autoid string:1" type="hidden" name="del_autoid" tal:attributes="value python: entry.get('autoid')" />
+              </tal:block>
+              <input class="standalone"
+                     tabindex=""
+                     type="submit"
+                     name="form.button.CopyDelete"
+                     value="Delete Workingcopy"
+                     i18n:attributes="value"
+                     i18n:domain="zopra"
+                     tal:attributes="tabindex tabindex/next;"
+              />
+            </tal:block>
+
+            <input tal:condition="python: context.doesWorkingCopies(table) and entry.get('iscopyof') and user.has_role(('SInSReviewer', 'ZopRAReviewer'), here)"
+                   class="standalone"
+                   tabindex=""
+                   type="submit"
+                   name="form.button.Confirm"
+                   value="Unfreeze"
+                   i18n:attributes="value"
+                   i18n:domain="zopra"
+                   tal:attributes="tabindex tabindex/next;"
+            />
+
+            <tal:block tal:condition="python: context.doesWorkflows(table) and entry.get('state')">
+              <tal:block tal:define="infos python: context.getStateTransferInfo(table, entry)">
+                  <input tal:repeat="info infos"
+                       class="standalone"
+                       tabindex=""
+                       type="submit"
+                       name="form.button.ChangeWorkflowState"
+                       i18n:attributes="value"
+                       tal:attributes="tabindex tabindex/next;
+                                       value info/label;
+                                        name python: 'form.button.ChangeWorkflowState' + str(repeat['info'].index + 1)"
+                />
+              </tal:block>
+            </tal:block>
+
+        </div>
+
+
+</metal:block>
+
+<metal:block metal:define-macro="links_edit">
+      <div class="zopra_special_links">
+        <tal:block tal:condition="python: context.doesWorkingCopies(table) and entry.get('iscopyof') and user.has_role('SInSReviewer', here)">
+          <a tal:attributes="href python: context.absolute_url() + '/zopra_manager_show_log?entryid=%s&table=%s' % (entry['autoid'], table)">
+            Änderungen zeigen
+          </a>
+        </tal:block>
+        <tal:block tal:condition="not:origid|nothing">
+          <a tal:attributes="href python:'zopra_table_show_form?table=%s&autoid=%s' % (table, entry.get('autoid'))">
+            Zur Redaktionsansicht
+          </a>
+        </tal:block>
+        <tal:block tal:condition="python:hasattr(here, 'zopra_table_show_form_'+table)">
+          <a tal:attributes="href python:'zopra_table_show_form_%s?autoid=%s&force_showcopy=1' % (table, autoid)">
+            Zur Spezialansicht
+          </a>
+        </tal:block>
+        <tal:block tal:condition="python: entry.get('hastranslation')">
+          <a tal:define="origs python: here.tableHandler[table].getEntryList(constraints={'istranslationof': entry.get('iscopyof') or entry.get('autoid')});
+                         origautoid python: origs and origs[0].get('autoid')"
+             tal:condition="origautoid"
+             tal:attributes="href python:'zopra_table_edit_form?table=%s&autoid=%s' % (table, origautoid)">
+            Zur Übersetzung
+          </a>
+        </tal:block>
+        <tal:block tal:condition="python: entry.get('istranslationof')">
+          <a tal:attributes="href python:'zopra_table_edit_form?table=%s&autoid=%s' % (table, entry.get('istranslationof'))">
+            Zur Originalsprache
+          </a>
+        </tal:block>
+        <tal:block tal:condition="python: request.get('table') == 'studiengang'">
+          <a tal:attributes="href python:'/'.join(here.absolute_url().split('/')[:-2]) + '/qrcodeimage?url=http://tu-dresden.de/sins/stg/%s&filename=%s' % (autoid,'qr_'+str(autoid))">
+            QR-Code generieren
+          </a>
+        </tal:block>
+        <tal:block tal:condition="python: request.get('table') == 'veranstaltung'">
+          <a tal:attributes="href python: here.absolute_url() + '/integrale_export_veranstaltung?autoid=%s' % (autoid)">
+            LaTex exportieren
+          </a>
+        </tal:block>
+        <tal:block tal:condition="not: request/origid|nothing">
+          <tal:block tal:condition="python: here.getPermissionInfo(table, 'table_create')">
+            <a tal:attributes="href python:'zopra_table_create_form?table=%s' % (table)"
+               style="float: right">
+              Neuen Eintrag erstellen
+            </a>
+          </tal:block>
+        </tal:block>
+      </div>
+</metal:block>
+
+<metal:block metal:define-macro="buttons_search">
+      <div class="formControlsZopRA">
+
+            <input class="context"
+                   tabindex=""
+                   type="submit"
+                   name="form.button.Search"
+                   value="Search"
+                   i18n:domain="plone"
+                   i18n:attributes="value"
+                   tal:attributes="tabindex tabindex/next;"
+            />
+
+            <input class="standalone"
+                   tabindex=""
+                   type="submit"
+                   name="form.button.Cancel"
+                   value="Cancel"
+                   i18n:attributes="value"
+                   tal:attributes="tabindex tabindex/next;"
+            />
+
+          </div>
+</metal:block>
+
+<metal:block metal:define-macro="buttons_search_result">
+      <div class="formControlsZopRA">
+
+            <input class="standalone"
+                 tabindex=""
+                 onclick="history.back(-1)"
+                 type="button"
+                 name="form.button.Cancel"
+                 value="Back"
+                 i18n:attributes="value"
+                 i18n:domain="zopra"
+                 tal:attributes="tabindex tabindex/next;"
+              />
+
+          </div>
+</metal:block>
+
+<metal:block metal:define-macro="buttons_show">
+        <div class="formControlsZopRA"
+              tal:define="process_creation request/process_creation|nothing;">
+
+          <input class="standalone"
+                 tabindex=""
+                 onclick="history.back(-1)"
+                 type="button"
+                 name="form.button.Cancel"
+                 value="Back"
+                 i18n:attributes="value"
+                 i18n:domain="zopra"
+                 tal:condition="not: request/origid|nothing"
+                 tal:attributes="tabindex tabindex/next;"
+              />
+          <input class="standalone"
+                   tabindex=""
+                   onclick="top.close()"
+                   type="button"
+                   name="form.button.Close"
+                   value="Close"
+                   i18n:attributes="value"
+                   i18n:domain="zopra"
+                   tal:condition="request/origid|nothing"
+                   tal:attributes="tabindex tabindex/next;"
+            />
+        </div>
+</metal:block>
+
+<metal:block metal:define-macro="buttons_add">
+        <div class="formControlsZopRA"
+               tal:define="process_creation request/process_creation|nothing;">
+
+            <input class="context"
+                   tabindex=""
+                   type="submit"
+                   name="form.button.Save"
+                   value="Save"
+                   i18n:domain="plone"
+                   i18n:attributes="value"
+                   tal:attributes="tabindex tabindex/next;"
+            />
+
+            <input class="standalone"
+                   tabindex=""
+                   type="button"
+                   onclick="history.back(-1)"
+                   name="form.button.Cancel"
+                   value="Cancel"
+                   i18n:attributes="value"
+                   tal:condition="not: request/origid|nothing"
+                   tal:attributes="tabindex tabindex/next;"
+            />
+            <input class="standalone"
+                   tabindex=""
+                   onclick="top.close()"
+                   type="button"
+                   name="form.button.Close"
+                   value="Close"
+                   i18n:attributes="value"
+                   i18n:domain="zopra"
+                   tal:condition="request/origid|nothing"
+                   tal:attributes="tabindex tabindex/next;"
+            />
+
+          </div>
+</metal:block>
+
+<metal:block metal:define-macro="links_show">
+        <div class="zopra_special_links">
+        <tal:block tal:condition="python:hasattr(here, 'zopra_table_show_form_'+table)">
+          <a tal:attributes="href python:'zopra_table_show_form_%s?autoid=%s&force_showcopy=1' % (table, autoid)">
+             Zur Spezialansicht
+          </a>
+        </tal:block>
+        <tal:block tal:condition="python: entry.get('hastranslation')">
+          <a tal:define="origs python: here.tableHandler[table].getEntryList(constraints={'istranslationof': entry.get('iscopyof') or entry.get('autoid')});
+                         origautoid python: origs and origs[0].get('autoid')"
+             tal:condition="origautoid"
+             tal:attributes="href python:'zopra_table_show_form?table=%s&autoid=%s' % (table, origautoid)">
+             Zur Übersetzung
+          </a>
+        </tal:block>
+        <tal:block tal:condition="python: entry.get('istranslationof')">
+          <a tal:attributes="href python:'zopra_table_show_form?table=%s&autoid=%s' % (table, entry.get('istranslationof'))">
+             Zum Original
+          </a>
+        </tal:block>
+        <tal:block tal:condition="python: len(request.get('autoidlist', []))<2">
+          <tal:block tal:condition="python: 'edit' in here.getPermissionEntryInfo(table, entry)">
+            <a tal:attributes="href python:'zopra_table_edit_form?table=%s&autoid=%s' % (table, entry.get('autoid'))">
+              Eintrag bearbeiten
+            </a>
+          </tal:block>
+        </tal:block>
+        <tal:block tal:condition="not:origid|nothing">
+          <tal:block tal:condition="python: here.getPermissionInfo(table, 'table_create')">
+            <a tal:attributes="href python:'zopra_table_create_form?table=%s' % (table)"
+               style="float: right">
+              Neuen Eintrag erstellen
+            </a>
+          </tal:block>
+        </tal:block>
+      </div>
+</metal:block>
+
+</body>
+</html>

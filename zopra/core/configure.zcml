@@ -1,0 +1,16 @@
+<configure
+    xmlns       = "http://namespaces.zope.org/zope"
+    xmlns:zcml  = "http://namespaces.zope.org/zcml"
+    i18n_domain = "zopra.core"> 
+
+    <!-- assuming "not-have plone-4" means we are on plone 2 since we do not 
+         support plone 3 -->        
+    <include 
+        file            = "configure_plone2.zcml"
+        zcml:condition  = "not-have plone-4" />
+  
+    <include 
+        file            = "configure_plone4.zcml"
+        zcml:condition  = "have plone-4" />
+
+</configure>

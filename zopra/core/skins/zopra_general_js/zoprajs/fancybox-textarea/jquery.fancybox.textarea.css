@@ -1,0 +1,71 @@
+/*!
+ * fancybox textarea-popup 
+ *
+ * Copyright 2011, Paul Grunewald
+ *
+ * Datum: 15:15 Freitag, 24. Juni 2011
+ */
+
+    .fancybox-textarea  {    
+    position:relative;         
+    margin-bottom:10px;    
+    padding:0px;
+    } 
+    .fancybox-textarea textarea {
+    -moz-resize: none;
+    resize: none;        
+    }
+
+    
+    .fancybox-textarea-button {
+        position:absolute;
+                
+        height:16px;       
+        
+        top:-18px;
+        right:0px;
+        background-image:url(fullscreen.png);        
+        background-position:right bottom;
+        background-repeat:no-repeat;
+        padding-right:23px; 
+        
+    }
+    .fancybox-textarea-button:hover {
+        cursor:pointer;
+    }    
+    .fancybox-textarea-disposable textarea {
+        -moz-resize: none;
+        resize: none;                
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        font-size:16px;
+        padding: 0px;
+    }
+    
+    .hidden {
+    display:none;
+    }
+    #fancybox-title-inside  .fancybox-textarea-close {
+        vertical-align: middle;
+        cursor: pointer;
+    }
+    #fancybox-title-inside   {
+        font-size:14px !important;    
+    }
+
+    #fancybox-title-inside  a {
+        font-size:17px !important;    
+        text-decoration:none;
+        color:#000;
+    }
+    #fancybox-title-inside  a:hover {
+        background-color:yellow;
+        font-weight:bold;
+    }    
+    
+	.ui-resizable-se {
+		bottom: 20px !important;
+        right: 7px !important;
+	}
+    

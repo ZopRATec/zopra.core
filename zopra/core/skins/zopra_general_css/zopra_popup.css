@@ -1,0 +1,4 @@
+/* for popup: hides header and side columns */
+
+body { background-color: white !important; }
+#portal-column-one, #portal-column-two, #portal-top, #portal-breadcrumbs, #portal-globalnav, .contentViews, .contentActions, .documentBottomLine, #portal-footer { display:none !important; }
