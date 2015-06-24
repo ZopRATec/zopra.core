@@ -516,6 +516,7 @@ class TemplateBaseManager(GenericManager):
                   table with autoid autoid via multilist named attribute (backref)"""
         # FIXME: saving such an entry, you have to check the translations and their relations
         # FIXME: Do you? could just jump to the translations every time you call it
+        # FIXED: return all entries for all languages, in template select only relevant languages
         lobj = self.listHandler.getList(table, attribute)
         getEntry = self.tableHandler[table].getEntry
         return [getEntry(autoid, lang) for autoid in lobj.getMLRef(None, autoid)]

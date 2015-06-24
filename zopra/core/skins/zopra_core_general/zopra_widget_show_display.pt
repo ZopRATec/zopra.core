@@ -73,7 +73,7 @@
     <tal:block tal:condition="python: style == 'list'">
         <ul tal:define="lobj python:here.listHandler.getList(table, attr_name);
                         notes python: lobj.notes;
-                        valstore python: [(lobj.getValueByAutoid(onevalue), onevalue) for onevalue in attr_value];
+                        valstore python: [(lobj.getValueByAutoid(onevalue, lang), onevalue) for onevalue in attr_value];
                         tmp python: do_sort and valstore.sort()">
             <tal:block tal:repeat="onepart valstore">
                 <li>
@@ -108,7 +108,7 @@
     </tal:block>
     <tal:block tal:condition="python: style == 'block'">
         <span tal:define="lobj python:here.listHandler.getList(table, attr_name);
-                          textvalues python:lobj.getValueByAutoid(attr_value);
+                          textvalues python:lobj.getValueByAutoid(attr_value, lang);
                           dummy python: do_sort and not isinstance(textvalues, (unicode, str)) and textvalues.sort();
                           onestring python: isinstance(textvalues, (unicode, str)) and textvalues or '<br />'.join(textvalues or []);"
             tal:content="structure onestring">
