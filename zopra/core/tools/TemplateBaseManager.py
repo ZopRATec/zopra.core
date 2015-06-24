@@ -511,14 +511,14 @@ class TemplateBaseManager(GenericManager):
         return newlist
 
 
-    def getRelatedEntries(self, autoid, table, attribute):
+    def getRelatedEntries(self, autoid, table, attribute, lang = None):
         """\brief get Entries of table that are connected to an entry of another
                   table with autoid autoid via multilist named attribute (backref)"""
         # FIXME: saving such an entry, you have to check the translations and their relations
         # FIXME: Do you? could just jump to the translations every time you call it
         lobj = self.listHandler.getList(table, attribute)
         getEntry = self.tableHandler[table].getEntry
-        return [getEntry(autoid) for autoid in lobj.getMLRef(None, autoid)]
+        return [getEntry(autoid, lang) for autoid in lobj.getMLRef(None, autoid)]
 
 
     def prepareLinks(self, text):

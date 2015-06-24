@@ -391,6 +391,12 @@ msgstr "... you will find on the respective "
 msgid "sins_mtrl_fac"
 msgstr "faculty site"
 
+msgid "sins_intv_ref"
+msgstr "Interview was appointed to the following courses:"
+
+msgid "sins_intv_link"
+msgstr "Link to the interview"
+
 msgid "sins_m_Ord"
 msgstr "Documents"
 

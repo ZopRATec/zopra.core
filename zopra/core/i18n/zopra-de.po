@@ -388,6 +388,12 @@ msgstr "... finden Sie auf der entsprechenden "
 msgid "sins_mtrl_fac"
 msgstr "Fakultätsseite"
 
+msgid "sins_intv_ref"
+msgstr "Interview wurde folgenden Studiengängen zugeordnet:"
+
+msgid "sins_intv_link"
+msgstr "Link zum Interview"
+
 msgid "sins_m_Ord"
 msgstr "Ordnungen"
 
