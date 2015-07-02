@@ -386,7 +386,7 @@ class ForeignList(GenericList):
         raise ValueError('Couldn\'t find foreign list.')
 
 
-    def getEntries(self, value = None, with_hidden = False, manager = None):
+    def getEntries(self, value = None, with_hidden = False, manager = None, lang=None):
         """\brief Returns all list entries of one list."""
         completelist = []
 
@@ -425,7 +425,10 @@ class ForeignList(GenericList):
                         val = ''
                         if not self.cols:
                             # empty, use getLabelString
-                            val = manager.getLabelString(self.foreign, None, entry)
+                            if manager.doesTranslations(self.foreign):
+                                val = manager.getLabelString(self.foreign, None, entry, lang)
+                            else:
+                                val = manager.getLabelString(self.foreign, None, entry)
                         else:
                             vals = []
                             for col in self.cols:
@@ -443,6 +446,7 @@ class ForeignList(GenericList):
                 # get data from list
                 elif self.foreign in manager.listHandler:
                     lobj = manager.listHandler[self.foreign]
+                    # call getEntries of the ZMOMLIst object that is referenced
                     completelist = lobj.getEntries(value, with_hidden)
                 else:
                     raise ValueError('Couldn\'t find foreign list %s:%s for %s' % (manager._className, self.foreign, self.listname))
@@ -1149,7 +1153,7 @@ class ForeignList(GenericList):
                     # collist given, table-standard-function used
                     if self.foreign in manager.tableHandler:
                         tobj  = manager.tableHandler[self.foreign]
-                        value = tobj.getEntryValue( aid, self.cols )
+                        value = tobj.getEntryValue( aid, self.cols, lang )
                     elif self.foreign in manager.listHandler:
                         lobj  = manager.listHandler[self.foreign]
                         value = lobj.getValueByAutoid(aid, lang)

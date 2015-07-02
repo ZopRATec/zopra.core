@@ -1609,7 +1609,7 @@ class Table(SimpleItem, PropertyManager):
 #
 # Foreign List management generic functions
 #
-    def getEntryValue(self, autoid, cols):
+    def getEntryValue(self, autoid, cols, lang=None):
         """\brief Returns a Valuestring consisting of the content of cols
                   for the entry with the given autoid.
         """
@@ -1622,7 +1622,12 @@ class Table(SimpleItem, PropertyManager):
             if not cols:
                 mgr = self.getManager()
                 if IGenericManager.providedBy(mgr):
-                    return mgr.getLabelString(self.tablename, None, entry)
+                    # check for language
+                    if mgr.doesTranslations(self.tablename):
+                        # TODO: unify getLabelString to always have a lang parameter
+                        return mgr.getLabelString(self.tablename, None, entry, lang)
+                    else:
+                        return mgr.getLabelString(self.tablename, None, entry)
                 else:
                     return entry.get(TCN_AUTOID)
             else:
