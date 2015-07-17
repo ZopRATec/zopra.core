@@ -36,7 +36,7 @@ msgid "sins_editorial_mail_name"
 msgstr "Student Marketing"
 
 msgid "sins_editorial_mail_label"
-msgstr "Editorial:"
+msgstr "Editor:"
 
 msgid "sins_editorial_immamail_name"
 msgstr "Admissions office"
@@ -287,7 +287,7 @@ msgid "sins_stg_studyprereq"
 msgstr "admission requirements"
 
 msgid "sins_stg_studyprereq_tip1"
-msgstr "Prerequisite to application is the general highschool graduation cetificate (Abitur) or"
+msgstr "A prerequisite for application is the general high-school graduation certificate (Abitur) or"
 
 msgid "sins_stg_studyprereq_tip2"
 msgstr "a comparable qualification for admission to higher education"
@@ -311,10 +311,10 @@ msgid "sins_stg_adress"
 msgstr "application address"
 
 msgid "sins_stg_langDE"
-msgstr "language skills German"
+msgstr "Language skills German"
 
 msgid "sins_stg_foreignAppl"
-msgstr "For international applicants with foreign university entrance certificate:"
+msgstr "For international applicants with foreign qualification for admission to higher education:"
 
 msgid "sins_stg_detailsforeignAppl"
 msgstr "&raquo;Details language requirements"
@@ -439,10 +439,10 @@ msgid "Zentrale Studienberatung"
 msgstr "Central Student Information and Counselling Services"
 
 msgid "Immatrikulationsamt"
-msgstr "Matrikulation office"
+msgstr "Matriculation Office"
 
 msgid "Examination office"
-msgstr "Examination office"
+msgstr "Examination Office"
 
 msgid "sins_heading_contact"
 msgstr "Contact"
