@@ -439,7 +439,7 @@ msgid "Zentrale Studienberatung"
 msgstr "Central Student Information and Counselling Services"
 
 msgid "Immatrikulationsamt"
-msgstr "Matriculation Office"
+msgstr "Admissions Office"
 
 msgid "Examination office"
 msgstr "Examination Office"
