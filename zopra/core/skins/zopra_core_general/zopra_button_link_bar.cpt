@@ -140,13 +140,11 @@ Macro Definition fuer Button-Bar and Link-Bar
             LaTex exportieren
           </a>
         </tal:block>
-        <tal:block tal:condition="not: request/origid|nothing">
-          <tal:block tal:condition="python: here.getPermissionInfo(table, 'table_create')">
-            <a tal:attributes="href python:'zopra_table_create_form?table=%s' % (table)"
-               style="float: right">
-              Neuen Eintrag erstellen
-            </a>
-          </tal:block>
+        <tal:block tal:condition="python: here.getPermissionInfo(table, 'table_create')">
+          <a tal:attributes="href python:'zopra_table_create_form?table=%s' % (table)"
+             style="float: right">
+            Neuen Eintrag erstellen
+          </a>
         </tal:block>
       </div>
 </metal:block>
