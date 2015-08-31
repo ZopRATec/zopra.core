@@ -32,6 +32,7 @@
                   });
             -->
             </script>
+            <script type="text/javascript" tal:attributes="src string:${portal_url}/zoprajs/multi-select_filter.js"></script>
       </metal:javascriptslot>
 
       <metal:main fill-slot="main" tal:define="table request/table;">
