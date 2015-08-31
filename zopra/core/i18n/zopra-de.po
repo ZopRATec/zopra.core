@@ -289,11 +289,17 @@ msgstr "Voraussetzung für die Aufnahme des Studiums ist die allgemeine Hochschu
 msgid "sins_stg_studyprereq_tip2"
 msgstr "vergleichbare Hochschulzugangsberechtigung"
 
-msgid "stg_sins_ForeignIHI_tip"
-msgstr "Für ausländische Bewerber gelten die <a href=\"http://www.ihi-zittau.de/index.php?lg=de&whl=11070400&ank=290#290\">Informationen auf den Webseiten des IHI Zittau.</a>"
+msgid "sins_stg_foreignIHI_tip"
+msgstr "Für ausländische Bewerber gelten die Informationen auf den ${ihi}."
 
-msgid "sins_stg_Foreign_tip"
-msgstr "Für ausländische Bewerber gelten die <a href=\"http://tu-dresden.de/internationales/int_stud/abschluss/applic_degree/admission_requirements\">Informationen auf den Webseiten des Akademischen Auslandsamtes.</a>"
+msgid "sins_stg_foreignIHI_link"
+msgstr "Webseiten des IHI Zittau"
+
+msgid "sins_stg_foreign_tip"
+msgstr "Für ausländische Bewerber gelten die Informationen auf den ${foreign}."
+
+msgid "sins_stg_foreign_link"
+msgstr "Webseiten des Akademischen Auslandsamtes"
 
 msgid "sins_stg_AdmProcNC"
 msgstr "Eignungsfeststellungsverfahren und Nc-Auswahlverfahren"

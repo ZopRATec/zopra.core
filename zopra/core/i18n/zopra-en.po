@@ -92,11 +92,17 @@ msgstr ""
 msgid "sins_start_TooltipWeiterf"
 msgstr ""
 
-msgid "sins_stg_ForeignIHI_tip"
+msgid "sins_stg_foreignIHI_tip"
 msgstr "Foreign applications can find more information on the ${ihi}."
 
-msgid "sins_stg_ForeignIHI_link"
+msgid "sins_stg_foreignIHI_link"
 msgstr "webpages of the International Institute Zittau"
+
+msgid "sins_stg_foreign_tip"
+msgstr "International applicants please refer to ${foreign}."
+
+msgid "sins_stg_foreign_link"
+msgstr "the information on the websites of the International Office"
 
 msgid "sins_start_req"
 msgstr "limited admission"
@@ -291,12 +297,6 @@ msgstr "A prerequisite for application is the general high-school graduation cer
 
 msgid "sins_stg_studyprereq_tip2"
 msgstr "a comparable qualification for admission to higher education"
-
-msgid "stg_sins_ForeignIHI_tip"
-msgstr "International applicants please refer to <a href=\"http://www.ihi-zittau.de/index.php?lg=de&whl=11070400&ank=290#290\">the information on the websites of IHI Zittau.</a>"
-
-msgid "sins_stg_Foreign_tip"
-msgstr "International applicants please refer to <a href=\"http://tu-dresden.de/internationales/int_stud/abschluss/applic_degree/admission_requirements\">the information on the websites of the International Office.</a>"
 
 msgid "sins_stg_AdmProcNC"
 msgstr "aptitude assessment procedure and NC (numerus clausus) selection procedure"
