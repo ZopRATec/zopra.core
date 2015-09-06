@@ -13,11 +13,11 @@
             <link rel="stylesheet" type="text/css" media="all"  tal:attributes="href string:${portal_url}/zopra_edit.css" />
             <link rel="stylesheet" type="text/css" media="print"  tal:attributes="href string:${portal_url}/sins_print.css" />
             
-            <link rel="stylesheet" type="text/css" tal:attributes="href string:${portal_url}/zoprajs/multi-select/multi-select.css" media="screen" />
+            <link rel="stylesheet" type="text/css" tal:attributes="href string:${portal_url}/multi-select/multi-select.css" media="screen" />
       </metal:css_slot>
 
       <metal:javascriptslot fill-slot="javascript_head_slot">
-            <script type="text/javascript" tal:attributes="src string:${portal_url}/zoprajs/multi-select/jquery.multi-select.1.6.js"></script>
+            <script type="text/javascript" tal:attributes="src string:${portal_url}/multi-select/jquery.multi-select.1.6.js"></script>
             <script language="javascript">
                   <!--
                   $(document).ready(function() {
@@ -48,7 +48,7 @@
                   });
                   -->
             </script>
-            <script type="text/javascript" tal:attributes="src string:${portal_url}/zoprajs/multi-select_filter.js"></script>
+            <script type="text/javascript" tal:attributes="src string:${portal_url}/multi-select_filter.js"></script>
       </metal:javascriptslot>
 
     <metal:main fill-slot="main">

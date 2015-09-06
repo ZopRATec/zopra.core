@@ -26,7 +26,8 @@ setup( name                 = 'zopra.core',
        install_requires     = [
            'setuptools',
            # -*- Extra requirements: -*-
-           'importlib'
+           'importlib',
+           'PyHtmlGUI'
        ],
        entry_points         = """
        # -*- Entry points: -*-

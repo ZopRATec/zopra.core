@@ -8,7 +8,7 @@
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 
     <script type="text/javascript" tal:attributes="src string:${portal_url}/jquery.js"></script>
-    <link rel="stylesheet" type="text/css" tal:attributes="href string:${portal_url}/zoprajs/autoupdate-widget/jquery.autoupdate-widget.css" media="screen" />
+    <link rel="stylesheet" type="text/css" tal:attributes="href string:${portal_url}/autoupdate-widget/jquery.autoupdate-widget.css" media="screen" />
     <title>Popup: TUD - ZopRA - Redaktion</title>
     <script language="javascript">
 

@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<object
+    name="portal_javascripts"
+    meta_type="JavaScripts Registry">
+
+    <javascript
+        authenticated       = "False"
+        bundle              = "default"
+        cacheable           = "True"
+        compression         = "safe"
+        conditionalcomment  = ""
+        cookable            = "True"
+        enabled             = "True"
+        expression          = ""
+        id                  = "jquery.lightbox-0.5.js"
+        inline              = "False" />
+
+
+    <javascript
+        authenticated       = "False"
+        bundle              = "default"
+        cacheable           = "True"
+        compression         = "safe"
+        conditionalcomment  = ""
+        cookable            = "True"
+        enabled             = "True"
+        expression          = ""
+        id                  = "jquery.tablesorter.js"
+        inline              = "False" />
+
+
+    <javascript
+        authenticated       = "False"
+        bundle              = "default"
+        cacheable           = "True"
+        compression         = ""
+        conditionalcomment  = ""
+        cookable            = "True"
+        enabled             = "True"
+        expression          = ""
+        id                  = "jquery.tablesorter.staticrow.min.js"
+        inline              = "False" />
+
+
+    <javascript
+        authenticated       = "False"
+        bundle              = "default"
+        cacheable           = "True"
+        compression         = ""
+        conditionalcomment  = ""
+        cookable            = "True"
+        enabled             = "True"
+        expression          = ""
+        id                  = "jquery-1.6.2.min.js"
+        inline              = "False" />
+
+
+    <javascript
+        authenticated       = "False"
+        bundle              = "default"
+        cacheable           = "True"
+        compression         = ""
+        conditionalcomment  = ""
+        cookable            = "True"
+        enabled             = "True"
+        expression          = ""
+        id                  = "jquery-ui-1.8.16.custom.min.js"
+        inline              = "False" />
+
+</object>

@@ -176,7 +176,7 @@
                               global level python:0;
                            do_sort attr_sort|nothing;
                            dummy python: do_sort and entries.sort(key=lambda item: item['value']);">
-        <script type="text/javascript" tal:attributes="src string:${portal_url}/zoprajs/hierarchylist.js"></script>
+        <script type="text/javascript" tal:attributes="src string:${portal_url}/hierarchylist.js"></script>
 		<div tal:attributes="id python: 'hierarchylist_' + attr_name">
 		    <div class="container">
 			    <input type="hidden"  name="zopra_attr_present:list"
@@ -192,7 +192,7 @@
 				</div>
 		    </div>
 		    <div class="loading" style="visibility:collapse;">
-			    <img tal:attributes="src string:${portal_url}/zoprajs/autoupdate-widget/loading.gif"  alt="Loading..."/> Bearbeite ihre Anfrage. Bitte warten...
+			    <img tal:attributes="src string:${portal_url}/autoupdate-widget/loading.gif"  alt="Loading..."/> Bearbeite ihre Anfrage. Bitte warten...
 		    </div>
         </div>
     </tal:block>
