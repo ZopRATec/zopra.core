@@ -21,19 +21,19 @@
 
  <object name = "zopra_core_general"
     meta_type = "Filesystem Directory View"
-    directory = "zopra.core:skins/general"/>
+    directory = "zopra.core:skins/zopra_core_general"/>
  
  <object name = "zopra_core_css"
     meta_type = "Filesystem Directory View"
-    directory = "zopra.core:skins/css"/>
+    directory = "zopra.core:skins/zopra_core_css"/>
  
  <object name = "zopra_core_js"
     meta_type = "Filesystem Directory View"
-    directory = "zopra.core:skins/js"/>
+    directory = "zopra.core:skins/zopra_core_js"/>
 
  <object name = "zopra_core_thirdparty"
     meta_type = "Filesystem Directory View"
-    directory = "zopra.core:skins/thirdparty"/>
+    directory = "zopra.core:skins/zopra_core_thirdparty"/>
 
  <!-- A skin-path in this file corresponds to a Skin Selection in the
      'Properties' tab of the portal_skins tool, in the ZMI.
