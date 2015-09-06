@@ -1,5 +1,5 @@
 /.project
 /.pydevproject
 /zopra.core.egg-info/
-/**/*.pyc
-/**/*.pyo
+**/*.pyc
+**/*.pyo
