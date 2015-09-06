@@ -18,7 +18,7 @@ from PyHtmlGUI.widgets.hgComboBox           import hgComboBox
 from PyHtmlGUI.widgets.hgLabel              import hgLabel, hgProperty
 
 #
-# ZMOM Imports
+# ZopRA Imports
 #
 from zopra.core                             import HTML, ZM_PM
 from zopra.core.constants                   import VALUE, SHOW, WIDGET_CONFIG, TCN_AUTOID
@@ -70,7 +70,7 @@ class ForeignList(GenericList):
                   manager = None,
                   function = None,
                   label    = None):
-        """Constructs a ZMOMForeignList."""
+        """Constructs a ForeignList."""
         GenericList.__init__( self, listname, label )
 
         # no additional checks for manager / function, because of the dummy-usage of this list
@@ -186,7 +186,7 @@ class ForeignList(GenericList):
         """\brief Set maxshown property
                 If set, list size is reduced to maxshown to increase speed for display.
                 The target widget only gets loaded with the needed entries and offers functions
-                to determine limit and offset. Used in getWidget and ZMOMMultiList.getComplexWidget
+                to determine limit and offset. Used in getWidget and MultiList.getComplexWidget
                 to select the target widget (not set -> hgComboBox / hgComplexMultiList or 
                 set and len(entries) > maxshown -> hgFilteredRangeList)
         """
@@ -789,7 +789,7 @@ class ForeignList(GenericList):
             return hgLabel('%s not found' % self.manager, parent = parent)
 
         # standard case, normal connected list, forward
-        # FIXME: we forward to ZMOMList, would be better to have this done by getEntries
+        # FIXME: we forward to List, would be better to have this done by getEntries
         # and build the widget ourself
 #            if manager.listHandler.has_key(self.foreign):
 #                _list = manager.listHandler[self.foreign]
@@ -1026,7 +1026,7 @@ class ForeignList(GenericList):
 
 
     # DEPRECATED special function to fill the special widget
-    # used by ZMOMForeignList/ZMOMMultiList.getSpecialWidget
+    # used by ForeignList/MultiList.getSpecialWidget
     def fillSpecialWidget(self, widget, entrylist, expr = None):
         """\brief fill widget with entrylist, evaluating expr, if present"""
         assert isinstance(entrylist, ListType)

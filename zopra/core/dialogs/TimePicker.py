@@ -23,7 +23,7 @@ from PyHtmlGUI.widgets.hgDateEdit            import hgDate
 from PyHtmlGUI.widgets.hgVBox                import hgVBox
 
 #
-# ZMOM Imports
+# ZopRA Imports
 #
 from zopra.core.dialogs.Dialog               import Dialog
 

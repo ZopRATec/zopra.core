@@ -41,7 +41,7 @@ class TableCache(SimpleItem):
 #
 
     def __init__(self):
-        """\brief Constructs a ZMOMTableCache."""
+        """\brief Constructs a TableCache."""
         self.item    = {}
         self.idlist  = {}
         self.alllist = {}

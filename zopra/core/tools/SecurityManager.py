@@ -25,7 +25,7 @@ from PyHtmlGUI.widgets.hgPushButton          import hgPushButton
 from PyHtmlGUI.widgets.hgComboBox            import hgComboBox
 
 #
-# ZMOM Imports
+# ZopRA Imports
 #
 from zopra.core                              import HTML, getSecurityManager, ZM_CM,       \
                                                     ZM_SCM,      \
@@ -81,7 +81,7 @@ from zopra.core.security                     import SC_LREAD, SC_READ, SC_WRITE
 
 
 class SecurityManager(GenericManager):
-    """ ZMOM Security Manager """
+    """ Security Manager """
     _className          = ZM_SCM
     _classType          = GenericManager._classType + [_className]
     meta_type           = _className
@@ -233,12 +233,12 @@ class SecurityManager(GenericManager):
         check    = descr_dict.get('check')
 
         if not password:
-            error  = '[Error] ZMOMSecurityManager.updatePassword(): '
+            error  = '[Error] SecurityManager.updatePassword(): '
             error += 'Empty Password is not allowed.'
             raise ValueError(self.getErrorDialog( error ))
 
         if password != check:
-            error  = '[Error] ZMOMSecurityManager.updatePassword(): '
+            error  = '[Error] SecurityManager.updatePassword(): '
             error += 'Password mismatch. Please try again.'
             raise ValueError(self.getErrorDialog( error ))
 
@@ -951,7 +951,7 @@ class SecurityManager(GenericManager):
             check    = REQUEST.get('check')
             login    = REQUEST.get(TCN_LOGIN)
             if password and password != check:
-                error  = '[Error] ZMOMSecurityManager: '
+                error  = '[Error] SecurityManager: '
                 error += 'Password mismatch. Please try again.'
                 raise ValueError(self.getErrorDialog( error ))
             

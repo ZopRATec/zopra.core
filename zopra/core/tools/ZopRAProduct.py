@@ -27,7 +27,7 @@ from PyHtmlGUI.widgets.hgVBox         import hgVBox
 from zope.interface                   import implements
 
 #
-# ZMOM Imports
+# ZopRA Imports
 #
 from zopra.core import HTML, ClassSecurityInfo, getSecurityManager, modifyPermission, managePermission, ZM_PM, ZM_CM
 
@@ -310,7 +310,7 @@ class ZopRAProduct(ManagerPart):
             self.writeLog('del function %s' % name)
 
 #
-# ZMOM Component registration
+# ZopRA Component registration
 #
 
     # TODO: do we really need this?
@@ -318,7 +318,7 @@ class ZopRAProduct(ManagerPart):
     # attribute-Registration (which is done here) won't work out due to zope-reinstall of ProductManagers
     # the get-Functions use live-search in the containing folder anyway.
     def registerChild(self, child):
-        """\brief Implements a register method for ZMOM Components."""
+        """\brief Implements a register method for ZopRA Components."""
         # print 'bchilds: %s' % self.children
         # print 'registerChild: %s' % child.getId()
         child_list = []
@@ -333,7 +333,7 @@ class ZopRAProduct(ManagerPart):
 
 
     def removeChild(self, child):
-        """\brief Implements a register method for ZMOM Components."""
+        """\brief Implements a register method for ZopRA Components."""
         # print 'bchilds: %s' % self.children
         # print 'removeChild: %s' % child.getId()
         child_list = []
@@ -370,7 +370,7 @@ class ZopRAProduct(ManagerPart):
             for obj in container.objectValues():
 
                 if hasattr(obj, '_classType') and \
-                   'ZMOMManagerPart' in obj.getClassType():
+                   'ManagerPart' in obj.getClassType():
 
                     child_list.append(obj)
         return child_list
@@ -969,11 +969,11 @@ class ZopRAProduct(ManagerPart):
         """\brief Overwritten dummy function for manager specific debug output.
                 This function is called by the management view-tab to
                 display further debug output. Here, the links to updateAllDialogs
-                and updateZMOMTree are added for the ZMOMProduct ViewTab."""
+                and updateTree are added for the ZopRAProduct ViewTab."""
         # return a vbox with two links
         widget = hgTable()
 
-        url = '%s/updateZMOMTree' % self.absolute_url()
+        url = '%s/updateTree' % self.absolute_url()
         link = hgLabel('> update Version systemwide', url, parent = widget)
         widget[0, 0] = link
         url = '%s/updateAllDialogs' % self.absolute_url()
@@ -1012,9 +1012,9 @@ class ZopRAProduct(ManagerPart):
         return HTML( dlg.getHtml() )(self, None)
 
 
-    security.declareProtected(managePermission, 'updateZMOMTree')
+    security.declareProtected(managePermission, 'updateTree')
 
-    def updateZMOMTree(self):
+    def updateTree(self):
         """\brief update complete Folder hierarchy to new version."""
         dlg = getStdDialog( 'Update' )
         box = hgVBox(parent = dlg)

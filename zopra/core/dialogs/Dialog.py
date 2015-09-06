@@ -17,7 +17,7 @@ from PyHtmlGUI.widgets.hgPushButton  import hgPushButton
 from PyHtmlGUI.widgets.hgLabel       import hgProperty
 
 #
-# ZMOM Imports
+# ZopRA Imports
 #
 from zopra.core.dialogs.guiHandler      import guiHandler
 from zopra.core.elements.Styles.Default import ssiA, ssiA_VISITED

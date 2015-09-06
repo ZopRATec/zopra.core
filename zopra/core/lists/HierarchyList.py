@@ -25,7 +25,7 @@ from PyHtmlGUI.widgets.hgPushButton import hgPushButton
 from PyHtmlGUI.widgets.hgCheckBox   import hgCheckBox
 
 #
-# ZMOM Imports
+# ZopRA Imports
 #
 from zopra.core                     import HTML, ZM_PM
 from zopra.core.constants           import VALUE, RANK, SHOW, TCN_AUTOID

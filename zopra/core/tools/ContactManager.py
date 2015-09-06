@@ -23,7 +23,7 @@ from PyHtmlGUI.widgets.hgLineEdit            import hgLineEdit
 from PyHtmlGUI.widgets.hgVBox                import hgVBox
 
 #
-# ZMOM Imports
+# ZopRA Imports
 #
 from zopra.core                              import HTML, ZM_CM, ZM_SCM, ZM_MM
 from zopra.core.constants                    import TCN_AUTOID

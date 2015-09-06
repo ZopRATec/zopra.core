@@ -26,7 +26,7 @@ from zopra.core.Storage                       import nsStorage
 from zopra.core.elements.Buttons      import DLG_FUNCTION, \
                                                         BTN_HL_SELECT
 
-#from zopra.core.Storage.ZMOMStorageManager    import ZMOMStorageManager
+#from zopra.core.Storage.StorageManager    import StorageManager
 
 from zopra.core.CorePart  import MASK_ADD,       \
                                         MASK_EDIT,      \

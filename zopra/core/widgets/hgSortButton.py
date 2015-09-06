@@ -30,7 +30,7 @@ class hgSortButton(hgPushButton):
     DISABLED  = 'disabled'
 
     # prefix is added to the name and determines the next action on button click
-    # the name and prefix is used in list handling by ZMOMManagerPart
+    # the name and prefix is used in list handling by ManagerPart
     # i_ - increasing: on click list will be sorted in increasing order
     # d_ - decreasing: on click list will be sorted in decreasing order
     state2prefix = { SORT_OFF:  'i_',

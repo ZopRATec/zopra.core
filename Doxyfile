@@ -3,7 +3,7 @@
 #---------------------------------------------------------------------------
 # Project related configuration options
 #---------------------------------------------------------------------------
-PROJECT_NAME           = ZMOM
+PROJECT_NAME           = zopra.core
 PROJECT_NUMBER         = $VERSION$
 OUTPUT_DIRECTORY       = 
 CREATE_SUBDIRS         = YES

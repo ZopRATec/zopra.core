@@ -21,7 +21,7 @@ from PyHtmlGUI.widgets.hgDateEdit           import hgDate,        \
 from PyHtmlGUI.widgets.hgComboBox           import hgComboBoxWeek
 
 #
-# ZMOM Imports
+# ZopRA Imports
 #
 from zopra.core.dialogs.Dialog              import Dialog
 

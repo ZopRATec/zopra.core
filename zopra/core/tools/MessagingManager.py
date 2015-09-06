@@ -24,7 +24,7 @@ from PyHtmlGUI.widgets.hgPopupMenu           import hgPopupMenu
 from PyHtmlGUI.stylesheet.hgStyleSheet       import hgStyleSheetItem
 
 #
-# ZMOM Imports
+# ZopRA Imports
 #
 from zopra.core                 import HTML, ZM_SCM, ZM_CM, ZM_MM
 
@@ -106,7 +106,7 @@ ssiFLD_DEFAULT.paragraph().setWordWrap( 'nowrap' )
 
 
 class MessagingManager(GenericManager):
-    """\class ZMOMContactManager
+    """\class ContactManager
 
     \brief Base class for all user managment interfaces.
     """
@@ -1029,7 +1029,7 @@ class MessagingManager(GenericManager):
 # service functions
 #
     def startupConfig(self, REQUEST):
-        """\brief Function called after creation by manageAddZMOMGeneric"""
+        """\brief Function called after creation by manageAddGeneric"""
         m_sec = self.getHierarchyUpManager(ZM_SCM)
 
         if m_sec:

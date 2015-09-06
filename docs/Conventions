@@ -10,7 +10,7 @@ RE      -   Regular Expression
 STR     -   String
 TN      -   Table Name
 TCN     -   Table Attribute Name
-ZMOM    -   Core Component / Manager
+mgr     -   Core Component / Manager
 ACTION  -   Standard Action Identifier for generic button handling
 ZCOL    -   Table Attribute Type
 SC      -   Security Constants for permissions

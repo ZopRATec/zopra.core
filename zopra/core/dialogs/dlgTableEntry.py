@@ -34,7 +34,7 @@ from PyHtmlGUI.widgets.hgValidator   import hgIntValidator,     \
 
 
 #
-# ZMOM Imports
+# ZopRA Imports
 #
 from zopra.core.dialogs.guiHandler   import guiHandler
 from zopra.core.widgets.zraNavBar    import zraNavBar

@@ -17,7 +17,7 @@ from types                              import IntType,     \
 from PyHtmlGUI.dialogs.hgDialog         import hgDialog
 
 #
-# ZMOM Imports
+# ZopRA Imports
 #
 from zopra.core.dialogs.dlgTableEntry   import dlgTableEntryPrivate
 from zopra.core.dialogs.guiHandler      import guiHandler

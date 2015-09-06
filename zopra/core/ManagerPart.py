@@ -41,7 +41,7 @@ from PyHtmlGUI.widgets.hgLineEdit    import hgLineEdit
 from PyHtmlGUI.widgets.hgRadioButton import hgRadioButton
 
 #
-# ZMOM Imports
+# ZopRA Imports
 #
 from zopra.core                      import viewPermission, \
                                             modifyPermission, \
@@ -709,7 +709,7 @@ class ManagerPart(CorePart):
         """\brief Create List objects for creator, editor and owner"""
         lobj = self.listHandler
 
-        # all lists are singlelists pointing to table 'person' in ZMOMContactManager
+        # all lists are singlelists pointing to table 'person' in ContactManager
         list_def = Column(None, 'singlelist')
         list_def.setManager('ContactManager')
         list_def.setFunction('person()')
@@ -747,7 +747,7 @@ class ManagerPart(CorePart):
         """ Basic function, forwards deletion request to Table object named table.
 
         This function is called by all deletion methods and dialogs (single / multi)
-        and gets overwritten by ZMOMGenericManager to add a deletion hook which
+        and gets overwritten by GenericManager to add a deletion hook which
         has to be used for custom deletion handling.
         @see GenericManager.prepareDelete()
         """
@@ -815,7 +815,7 @@ class ManagerPart(CorePart):
     security.declareProtected(viewPermission, 'forwardCheckType')
 
     def forwardCheckType(self, value, column_type, operator = False, label = None, do_replace = True):
-        """\brief forward the type check call to the next ZMOMProduct"""
+        """\brief forward the type check call to the next ZopRAProduct"""
         m_prod = self.getManager(ZM_PM)
         # m_prod could be self, but doesnt matter
         return m_prod.checkType(value, column_type, operator, label, do_replace)
@@ -1708,7 +1708,7 @@ class ManagerPart(CorePart):
             #       are displayed this way
             #       foreign lists referencing those lists or lists in other managers
             #       are omitted right now
-            tab[row, 0] = dlgLabel('<h3>ZMOMList (Basic Lists with dbtable) Overview</h3>')
+            tab[row, 0] = dlgLabel('<h3>List (Basic Lists with dbtable) Overview</h3>')
             row += 1
             tab[row, 0] = dlgLabel('List Name')
             tab[row, 1] = dlgLabel('Value Count')
@@ -1813,7 +1813,7 @@ class ManagerPart(CorePart):
 
         dlg.add( hgLabel(hgNEWLINE) )
 
-        # TODO: why is this here? Mixed in ZMOMGenericManager handling (getLink)
+        # TODO: why is this here? Mixed in GenericManager handling (getLink)
         # TODO: the guessing and attribute fetching is horrible anyway, refactor
         # a message if we have recently added something
         if REQUEST.get('zopra_message'):
@@ -2355,7 +2355,7 @@ class ManagerPart(CorePart):
             # nothing set yet, use autoid
             ordering.append(TCN_AUTOID)
             orderdir.append('asc')
-        # set order in ZMOMTableNode object
+        # set order in TableNode object
         treeRoot.setOrder(ordering, orderdir)
 
         # get row count right away to provide value for BTN_L_LAST
@@ -3423,7 +3423,7 @@ class ManagerPart(CorePart):
         # no boundary please -> new style?
 
         # messaging test
-        m_msg = self.getHierarchyUpManager('ZMOMMessagingManager')
+        m_msg = self.getHierarchyUpManager('MessagingManager')
         if m_msg:
             m_msg.setHeaderPopUp(REQUEST)
 
@@ -3482,8 +3482,8 @@ class ManagerPart(CorePart):
 
     ###########################################################################
     #                                                                         #
-    # Export form (Import is in ZMOMTable)                                    #
-    #   - handling is done in ZMOMTable / ZMOMGenericManager                  #
+    # Export form (Import is in Table)                                        #
+    #   - handling is done in Table / GenericManager                          #
     ###########################################################################
 
 
@@ -3674,7 +3674,7 @@ class ManagerPart(CorePart):
 
     def updateVersion(self):
         """\brief   The general update function that is called by
-                    the ZMOMProduct or the manager management screen on update.
+                    the ZopRAProduct or the manager management screen on update.
                     Updates the manager."""
         # get class-version (new) and instance-version (old)
         version = self.zopra_version

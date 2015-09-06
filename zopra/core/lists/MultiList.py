@@ -20,7 +20,7 @@ from PyHtmlGUI.widgets.hgMultiList  import hgMultiList
 from PyHtmlGUI.widgets.hgPushButton import hgPushButton
 
 #
-# ZMOM Imports
+# ZopRA Imports
 #
 from zopra.core                             import ZM_PM
 from zopra.core.constants                   import SHOW, VALUE, NOTES, WIDGET_CONFIG, TCN_AUTOID
@@ -435,7 +435,7 @@ class MultiList(ForeignList):
                 notes = True
                 notesLabel = None
             else:
-                # get the ZMOMList for the notes from manager, get its entries, build dummy widget
+                # get the List for the notes from manager, get its entries, build dummy widget
                 # TODO: this restricts notes-lists to basic lists (which is okay for now)
                 local = self.getManager()
                 ind = self.notes.find('.')

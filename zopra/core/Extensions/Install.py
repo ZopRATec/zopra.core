@@ -24,7 +24,7 @@ def install(self):
     """ External Method to install ZopRA into a CMF Site """
 
     out = StringIO()
-    print >> out, "Installation log of ZMOM:"
+    print >> out, "Installation log of ZopRA:"
 
     globals()['__name__'] = 'zopra.core'
     install_subskin(self, out, globals())

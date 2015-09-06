@@ -22,7 +22,7 @@ from PyHtmlGUI.widgets.hgLabel       import hgNEWLINE, hgProperty
 from PyHtmlGUI.widgets.hgPushButton  import hgPushButton
 
 #
-# ZMOM Imports
+# ZopRA Imports
 #
 from zopra.core                      import HTML, Folder
 from zopra.core.dialogs              import getStdDialog
@@ -53,7 +53,7 @@ COL_URL         = 'URL'
 COL_CURRENCY    = 'NUMERIC(10,2)'
 COL_LOOKUPLIST  = 'singlelist'
 
-# ZMOM Column Types
+# ZopRA Column Types
 ZCOL_STRING = 'string'
 ZCOL_MEMO   = 'memo'
 ZCOL_INT    = 'int'

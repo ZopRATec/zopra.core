@@ -13,7 +13,7 @@ from time         import strftime, strptime
 from types        import StringType, IntType, DictType, ListType
 
 #
-# ZMOM Imports
+# ZopRA Imports
 #
 from zopra.core           import SimpleItem
 from zopra.core.CorePart  import COL_FLOAT,       \
@@ -125,7 +125,7 @@ class SqlConnector(SimpleItem):
 
 
     def __init__ (self, id, connection_id):
-        """\brief Initialise the ZMOM SQL Part
+        """\brief Initialise the SQL Part
 
         \param connection_id   The argument \a connection_id contains the id of
                                the connection object that should be used.

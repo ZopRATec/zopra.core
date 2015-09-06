@@ -27,7 +27,7 @@ from PyHtmlGUI.widgets.hgPushButton import hgPushButton
 from PyHtmlGUI.widgets.hgCheckBox   import hgCheckBox
 
 #
-# ZMOM Imports
+# ZopRA Imports
 #
 from zopra.core                     import HTML, ZM_PM, ZM_SCM
 from zopra.core.constants           import VALUE, NOTES, RANK, SHOW, TCN_AUTOID
@@ -558,7 +558,7 @@ class List(GenericList):
 
     def editForm(self, REQUEST = None):
         """\brief Return the html source of the edit list form."""
-        # if the list is used by a ZMOMHierarchyList, then we have to forward to its special editForm
+        # if the list is used by a HierarchyList, then we have to forward to its special editForm
         # get all lists connected to this one
         mgr = self.getManager()
 
@@ -570,7 +570,7 @@ class List(GenericList):
                 break
         if tabname:
             # found hierarchylist using this list -> forward editForm
-            # FIXME: this means we need the value functions in ZMOMForeignList, needs to be moved here
+            # FIXME: this means we need the value functions in ForeignList, needs to be moved here
             fwd = lHandler.absolute_url() + '/' + tabname + '_' + self.listname + '/editForm'
             REQUEST.RESPONSE.redirect(fwd)
 

@@ -21,7 +21,7 @@ from types      import ListType, StringType
 import simplejson
 
 #
-# ZMOM Imports
+# ZopRA Imports
 #
 from zopra.core                         import ClassSecurityInfo, \
                                                getSecurityManager
@@ -55,7 +55,7 @@ class TemplateBaseManager(GenericManager):
 
 
     def startupConfig(self, REQUEST):
-        """\brief Function called after creation by manageAddZMOMGeneric"""
+        """\brief Function called after creation by manageAddGeneric"""
         # add table constraints
         pass
     
@@ -274,7 +274,7 @@ class TemplateBaseManager(GenericManager):
 
 
     def getEntryListCountProxy(self, table, constraints = None):
-        """\brief Proxy for ZMOMTable.getEntryListCount using searchTreeTemplate"""
+        """\brief Proxy for Table.getEntryListCount using searchTreeTemplate"""
         tobj = self.tableHandler[table]
         root = tobj.getSearchTreeTemplate()
         if constraints:
@@ -291,7 +291,7 @@ class TemplateBaseManager(GenericManager):
                       direction      = None,
                       constr_or       = False
                       ):
-        """\brief Proxy for ZMOMTable.getEntryList using searchTreeTemplate"""
+        """\brief Proxy for Table.getEntryList using searchTreeTemplate"""
         tobj = self.tableHandler[table]
         root = tobj.getSearchTreeTemplate()
         if order:
@@ -359,7 +359,7 @@ class TemplateBaseManager(GenericManager):
 
 
     def isHierarchyList(self, listname):
-        # check if a ZMOMList with that name is referenced by a table attribute
+        # check if a List with that name is referenced by a table attribute
         hlists = []
         for tablename in self.tableHandler.keys():
             hlists.extend(self.listHandler.getLists(tablename, ['hierarchylist']))
@@ -629,7 +629,7 @@ class TemplateBaseManager(GenericManager):
         return entries
   
 
-    # disable basic ZMOM Display Functions
+    # disable basic Display Functions
     def infoForm(self, table, id, REQUEST):
         """\brief Returns html of the generic entry info page."""
         pass

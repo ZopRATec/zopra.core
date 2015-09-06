@@ -31,7 +31,7 @@ from PyHtmlGUI.widgets.hgRadioButton import hgRadioButton
 from PyHtmlGUI.widgets.hgVBox        import hgVBox
 
 #
-# ZMOM Imports
+# ZopRA Imports
 #
 from zopra.core                      import ZM_PM
 from zopra.core.dialogs.Dialog       import Dialog

@@ -4,7 +4,7 @@
 # Copyright: See COPYING file that comes with this distribution           #
 #                                                                         #
 ###########################################################################
-"""\brief ZMOMFilter class for sql generation"""
+"""\brief Filter class for sql generation"""
 
 #
 # Python Language Imports
@@ -279,7 +279,7 @@ class Filter:
     OPERATOR = [AND, OR]
 
     def __init__(self, op = AND, temp = None):
-        """\brief Constructs a ZMOMFilter object."""
+        """\brief Constructs a Filter object."""
         assert op in Filter.OPERATOR
         if temp:
             self.template = temp
@@ -424,7 +424,7 @@ class Filter:
 
                     # test AND-concatenated multi/hierarchy-lists ... done extra, continue here
                     if field.get(COL_TYPE) == 'multilist' or field.get(COL_TYPE) == 'hierarchylist':
-                        # and-concat is handled in the ZMOMTableNode for len > 1 -> continue
+                        # and-concat is handled in the TableNode for len > 1 -> continue
                         if consdict.get(pre + entry + '_AND'):
                             values = consdict.get(pre + entry)
                             if isinstance(values, ListType) and len(values) > 1:
@@ -493,7 +493,7 @@ class Filter:
                   they can be complex filter trees."""
         if self.final:
             return
-        # only accept ZMOMFilter
+        # only accept Filter
         assert isinstance(filterobj, Filter)
         # with template set (neccessary for propagation) or final
         if not filterobj.getTemplate() and not filterobj.final:
@@ -533,7 +533,7 @@ class Filter:
 
         # for multi, listname.listname can be used (first 'listname' is an alias)
 
-        # if we don't have a template (for coltypes) we need tableData (ZMOMTablePrivate)
+        # if we don't have a template (for coltypes) we need tableData (TablePrivate)
         if not self.template and not tableData:
             err = 'Column info missing. Use tableData or template.'
             raise ValueError(err)

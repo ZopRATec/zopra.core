@@ -22,7 +22,7 @@ from PyHtmlGUI.widgets.hgMultiList          import hgMultiList
 from PyHtmlGUI.stylesheet.hgStyleSheetItem  import hgStyleSheetItem
 
 #
-# ZMOM Imports
+# ZopRA Imports
 #
 from zopra.core import HTML, ZM_PM, ZM_SCM, SimpleItem, PropertyManager
 from zopra.core.constants                   import TCN_AUTOID,     \
@@ -1798,7 +1798,7 @@ class Table(SimpleItem, PropertyManager):
 
 
     def getTableNode(self):
-        """\brief Builds a new table Node for this ZMOMTable"""
+        """\brief Builds a new table Node for this Table"""
         mgr = self.getManager()
 
         # FIXME: having the listHandler set in the TableNode is odd, but acquisition didn't work

@@ -16,7 +16,7 @@ from types        import StringType, IntType, DictType
 from time         import ctime
 
 #
-# ZMOM Imports
+# ZopRA Imports
 #
 from zopra.core          import E_PARAM_TYPE
 from zopra.core.CorePart import COL_TYPE,        \
@@ -94,7 +94,7 @@ class MySqlConnector(SqlConnector):
 #
 
     def convertType(self, coltype):
-        """\brief Converts ZMOM-intern types to db-types. MySQL special: string to varchar(255), float to double"""
+        """\brief Converts ZopRA-intern types to db-types. MySQL special: string to varchar(255), float to double"""
         # TODO: should incorporate an exact floating point type (decimal)
         if coltype == 'string':
             return 'VARCHAR(255)'

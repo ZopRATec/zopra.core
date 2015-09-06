@@ -26,7 +26,7 @@ from PyHtmlGUI.widgets.hgPushButton                 import hgPushButton
 
 
 #
-# ZMOM Imports
+# ZopRA Imports
 #
 from zopra.core                                     import HTML, Folder, ClassSecurityInfo
 from zopra.core.dialogs                             import getStdZMOMDialog

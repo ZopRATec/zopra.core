@@ -179,7 +179,7 @@ mpfRemoveHLButton.setToolTip('Remove list entry')
 
 
 # TODO: This is a function for a dialog object
-#       if a session oriented dialog class becomes available for ZMOM
+#       if a session oriented dialog class becomes available for ZopRA
 #       it should become a class function instead of procedural function
 def getPressedButton( REQUEST = None, buttonType = DLG_FUNCTION):
     """\brief Filteres the pressed button out of the REQUEST Handler.

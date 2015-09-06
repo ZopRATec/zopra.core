@@ -12,7 +12,7 @@ from os       import path
 from types    import StringType
 
 #
-# ZMOM Imports
+# ZopRA Imports
 #
 from zopra.core                              import Folder, Image, BadRequest
 from zopra.core.utils                        import getZopRAPath, getASTFromXML

@@ -40,7 +40,7 @@ from PyHtmlGUI.widgets.hgPushButton  import hgPushButton
 from PyHtmlGUI.widgets.hgRadioButton import hgRadioButton
 
 #
-# ZMOM Imports
+# ZopRA Imports
 #
 from zopra.core                      import HTML, ClassSecurityInfo, viewPermission, modifyPermission, ZM_SCM, ZM_CM, ZM_PM, ZM_IM
 from zopra.core.ImportHandler        import ImportHandler
@@ -201,7 +201,7 @@ class GenericManager(ManagerPart):
 
     # for now, multiedit dialog is added in each manager that uses it
     # adding it generally could lead to security holes
-    # _dlgs      = ZMOMManagerPart._dlgs + (('dlgMultiEdit',  ''),)
+    # _dlgs      = ManagerPart._dlgs + (('dlgMultiEdit',  ''),)
 
 #
 # Security
@@ -241,13 +241,13 @@ class GenericManager(ManagerPart):
 
     def doesTranslations(self, table):
         """\brief Translation indicator, should be overwritten to return True for tables that handle translations.
-            The translation handling is still not incorporated in the ZMOM Core."""
+            The translation handling is still not incorporated in the ZopRA Core."""
         return False
 
 
     def doesWorkingCopies(self, table):
         """\brief working copy indicator, should be overwritten to return True for tables that handle working copies.
-            The working copy handling is still not incorporated in the ZMOM Core."""
+            The working copy handling is still not incorporated in the ZopRA Core."""
         return False
 
 ##########################################################
@@ -417,7 +417,7 @@ class GenericManager(ManagerPart):
 
 
     def installConfig(self, REQUEST):
-        """\brief Hook Function called after creation by manageAddZMOMGeneric on each install.
+        """\brief Hook Function called after creation by manageAddGeneric on each install.
             Use it to get dtml-form values from REQUEST.
             For database action (only on first install) see startupConfig Hook"""
         pass
@@ -457,7 +457,7 @@ class GenericManager(ManagerPart):
                        REQUEST = None ):
         # Entry deletion, make sure to call superclass if overwritten.
         #            Does the calling of the prepareDelete hook and forwards 
-        #            to ZMOMTable.deleteEntries.
+        #            to Table.deleteEntries.
         if table not in self.tableHandler:
             return
 
@@ -516,13 +516,13 @@ class GenericManager(ManagerPart):
 
 
     def generateTableSearchTreeTemplate(self, table):
-        """\brief Virtual function for manager specific searchTree called by ZMOMTable.getSearchTreeTemplate.
+        """\brief Virtual function for manager specific searchTree called by Table.getSearchTreeTemplate.
                     The standard search tree is just the corresponding
                     TableNode for the table. This function forwards to the
-                    overwritten version in ZMOMManagerPart which returns
-                    the ZMOMTableNode. Overwrite it to produce a custom
+                    overwritten version in ManagerPart which returns
+                    the TableNode. Overwrite it to produce a custom
                     search tree and return the root node. To get the template for custom searches,
-                    use ZMOMTable.getSearchTreeTemplate (caching is done there)."""
+                    use Table.getSearchTreeTemplate (caching is done there)."""
         return ManagerPart.generateTableSearchTreeTemplate(self, table)
 
 
@@ -588,7 +588,7 @@ class GenericManager(ManagerPart):
     # NOTE: give desired max number of strings
     #       give start, stop number
     #       return total number, and found ids
-    # NOTE: now used for improved getAutoidByValue in ZMOMForeignList
+    # NOTE: now used for improved getAutoidByValue in ForeignList
     #       list object must have set option labelsearch == True to use this function
     def searchLabelStrings(self, table, search, start = 0, show = -1, tolerance = 0):
         """\brief Returns autoid list whose labels match search.
@@ -1651,7 +1651,7 @@ class GenericManager(ManagerPart):
             # same goes for visitors
             # temporary solution: allow view/edit of own person generally here
             # longterm: add user-group to sequencing, allow edit of own person-data
-            if self._className == 'ZMOMContactManager' and table == 'person' and self.getCurrentUserId() == int(id):
+            if self._className == 'ContactManager' and table == 'person' and self.getCurrentUserId() == int(id):
                 # person is allowed to edit himself.
                 pass
             else:
@@ -1883,7 +1883,7 @@ class GenericManager(ManagerPart):
             # same goes for visitors
             # temporary solution: allow view/edit of own person generally here
             # longterm: add user-group to sequencing
-            if self._className == 'ZMOMContactManager' and table == 'person' and self.getCurrentUserId() == int(id):
+            if self._className == 'ContactManager' and table == 'person' and self.getCurrentUserId() == int(id):
                 # person is allowed to edit himself.
                 pass
             else:
@@ -1912,7 +1912,7 @@ class GenericManager(ManagerPart):
             # same goes for visitors
             # temporary solution: allow view/edit of own person generally here
             # longterm: add user-group to sequencing
-            if self._className == 'ZMOMContactManager' and table == 'person' and self.getCurrentUserId() == int(id):
+            if self._className == 'ContactManager' and table == 'person' and self.getCurrentUserId() == int(id):
                 # person is allowed to edit himself.
                 pass
             else:
@@ -2047,12 +2047,12 @@ class GenericManager(ManagerPart):
             #     cons = {}
             #     cons[key] = groups
             #     cons['creator'] = m_security.getCurrentCMId()
-            #     fil = ZMOMFilter(ZMOMFilter.OR, None)
+            #     fil = Filter(Filter.OR, None)
             #     fil.setConstraints(cons, None, root.data)
             #     fil.setFinal()
             #     filRoot = root.getFilter()
             #     if not filRoot:
-            #         filRoot = ZMOMFilter(ZMOMFilter.AND)
+            #         filRoot = Filter(Filter.AND)
             #         root.setFilter(filRoot)
             #     filRoot.addChild(fil)
             #      store groups for later

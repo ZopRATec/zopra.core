@@ -36,7 +36,7 @@ class TablePrivate:
     # TODO: Either flush searchTreeTemplate Cache on updateVersion or restructure here
     # TODO: get ListHandler on the fly from manager instead of storing it?
     def __init__(self):
-        """\brief Constructs a ZMOMTablePrivate object."""
+        """\brief Constructs a TablePrivate object."""
         self.tablename   = None
         self.tabledict   = None
         self.listHandler = None
@@ -375,7 +375,7 @@ class TableNode(SimpleItem):
             using the joinAttrs on parent and child side
             to make the join."""
         assert isinstance(node, TableNode), \
-            'Child has to a ZMOMTableNode object'
+            'Child has to a TableNode object'
         self.children.append(node)
         node.setJoinAttrParent(joinAttrParent)
         node.setJoinAttrSelf(joinAttrChild)
@@ -403,7 +403,7 @@ class TableNode(SimpleItem):
 
 
     def getAllChildren(self):
-        """\brief return the list of child-ZMOMTableNode-objects"""
+        """\brief return the list of child-TableNode-objects"""
         return self.children
 
 
@@ -629,7 +629,7 @@ class TableNode(SimpleItem):
 
                     else:
                         # function lists and table-reference lists without col def should
-                        # be joined as ZMOMTableNode Objects to order them by value
+                        # be joined as TableNode Objects to order them by value
                         # for all other lists:
                         # for the orderclause we have to join the listtables as well
                         # (for all types)
@@ -888,7 +888,7 @@ class TableNode(SimpleItem):
 
             # order by own attr
             if orderfield[COL_TYPE] in ALLLISTS and not function:
-                # function lists have to be joined as ZMOMTableNode Objects
+                # function lists have to be joined as TableNode Objects
                 # to order by value
                 # normal lists (even foreign) order on mgr+list.value
                 # foreign table ref lists without col def order on mgr+tab.list

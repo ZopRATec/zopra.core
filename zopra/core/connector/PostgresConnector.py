@@ -12,7 +12,7 @@ from copy         import deepcopy
 from types        import StringType, IntType, DictType
 
 #
-# ZMOM Imports
+# ZopRA Imports
 #
 from zopra.core           import E_PARAM_TYPE
 from zopra.core.constants import TCN_AUTOID
@@ -30,8 +30,8 @@ from zopra.core.CorePart  import COL_FLOAT,           \
 from zopra.core.connector.SqlConnector import SqlConnector, _edit_tracking_cols
 
 
-class ZMOMPostgresConnector(SqlConnector):
-    """\brief ZMOM SQL Connector Base Class"""
+class PostgresConnector(SqlConnector):
+    """\brief SQL Connector Base Class"""
     _className = 'SqlConnector'
     _classType = SqlConnector._classType + [_className]
 
@@ -106,7 +106,7 @@ class ZMOMPostgresConnector(SqlConnector):
 #
 
     def convertType(self, coltype):
-        """\brief Converts ZMOM-intern types to db-types."""
+        """\brief Converts ZopRA-intern types to db-types."""
         if coltype == 'string' or coltype == 'memo':
             return COL_TEXT
         elif coltype == 'int' or coltype == 'singlelist':

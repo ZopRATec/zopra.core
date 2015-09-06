@@ -187,7 +187,7 @@ class GenericList(SimpleItem):
                       parent       = None,
                       config       = None):
         """\brief Returns a list combobox."""
-        raise ValueError('TESTING REMOVAL OF ZMOMLIST.CREATEWIDGET')
+        raise ValueError('TESTING REMOVAL OF LIST.CREATEWIDGET')
         # NOTE: defaults to single list
 
         # load list data and build combobox
@@ -231,7 +231,7 @@ class GenericList(SimpleItem):
                    parent       = None,
                    config       = None):
         """\brief Returns a list combobox."""
-        raise ValueError('TESTING REMOVAL OF ZMOMLIST.GETWIDGET')
+        raise ValueError('TESTING REMOVAL OF LIST.GETWIDGET')
         # only used by multilist notes widgets
         # check how to remove it from here
 

@@ -653,7 +653,7 @@ class FileManager(GenericManager):
 
 
     def startupConfig(self, REQUEST):
-        """\brief Function called after creation by manageZMOMGeneric"""
+        """\brief Function called after creation by manageGeneric"""
         base_path = REQUEST.get('base_path')
         if base_path:
             if not base_path[-1] == '/':

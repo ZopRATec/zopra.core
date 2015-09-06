@@ -168,7 +168,7 @@
  -> not done.
  There should be a way (checkbox?) to remove selected items again. -> not done
  Double-Selection needs to be detected (and then nothing done). -> not done
- The node-structure could be delivered by the hierarchy-list-object (look into ZMOMHierarchyList) -> done
+ The node-structure could be delivered by the hierarchy-list-object (look into HierarchyList) -> done
  </tal:comment> 
     <tal:block tal:define="lobj python:here.listHandler.getList(table, attr_name);
                            entries python:lobj.getEntries();

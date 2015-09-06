@@ -33,7 +33,7 @@ from PyHtmlGUI.widgets.hgFrame       import hgFrame
 from PyHtmlGUI.widgets.hgGroupBox    import hgGroupBox
 
 #
-# ZMOM Imports
+# ZopRA Imports
 #
 from zopra.core.dialogs              import getStdDialog
 from zopra.core.dialogs.Dialog       import Dialog

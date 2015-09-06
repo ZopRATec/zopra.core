@@ -29,7 +29,7 @@ from zopra.core.widgets                     import dlgLabel
 
 
 class ContentManager(GenericManager):
-    """\brief ZMOM Content Manager for any content (heading, topic, content)
+    """\brief Content Manager for any content (heading, topic, content)
         to be used for news, proposals, or any other categorizable text entries."""
     _className = ZM_CTM
     _classType = GenericManager._classType + [_className]

@@ -20,7 +20,7 @@ from PyHtmlGUI.widgets.hgLabel       import hgLabel,       \
                                             hgProperty
 
 #
-# ZMOM Imports
+# ZopRA Imports
 #
 from zopra.core                     import HTML, Folder, ZM_PM, ZM_SCM
 from zopra.core.dialogs             import getStdDialog,       \

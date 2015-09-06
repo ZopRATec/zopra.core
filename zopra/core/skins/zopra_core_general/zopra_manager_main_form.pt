@@ -63,7 +63,7 @@
                      tal:define="name python:'f_'+table+'_intern_create';"
                      tal:attributes="href python: link_url + '&' + name + '=create'">
                     <img class="action_image" width="92" height="50" alt=""
-                       tal:attributes="src python:icon_url + '/ZMOM_ziCreate.png'" />
+                       tal:attributes="src python:icon_url + '/ziCreate.png'" />
                   </a>
                 </td><td>
                   <a class=""
@@ -71,7 +71,7 @@
                      tal:define="name python:'f_'+table+'_intern_search';"
                      tal:attributes="href python: link_url + '&' + name + '=search'">
                     <img class="action_image" width="50" height="50" alt=""
-                       tal:attributes="src python:icon_url + '/ZMOM_ziSearch.png'" />
+                       tal:attributes="src python:icon_url + '/ziSearch.png'" />
                   </a>
                 </td><td>
                   <a class=""
@@ -79,7 +79,7 @@
                      tal:define="name python:'f_'+table+'_intern_list';"
                      tal:attributes="href python: link_url + '&' + name + '=list'">
                     <img class="action_image" width="51" height="50" alt=""
-                       tal:attributes="src python:icon_url + '/ZMOM_ziList.png'" />
+                       tal:attributes="src python:icon_url + '/ziList.png'" />
                   </a>
                 </td></tr>
                 <tr><td>

@@ -26,7 +26,7 @@ from PyHtmlGUI.kernel.hgTable                import hgTable
 from PyHtmlGUI.stylesheet.hgStyleSheet       import hgStyleSheetItem
 
 #
-# ZMOM Imports
+# ZopRA Imports
 #
 from zopra.core                              import HTML, SimpleItem
 from zopra.core.dialogs                      import getStdZMOMDialog
@@ -63,7 +63,7 @@ class Basket(SimpleItem):
     _classType = [_className]
 
     def __init__(self):
-        """\brief Constructs a ZMOMBasket."""
+        """\brief Constructs a Basket."""
         pass
 
 
@@ -371,7 +371,7 @@ class Basket(SimpleItem):
     def isNotEmpty(self, mgr, session):
         """\brief check function to determine whether basket is empty,
                 also checks for correct zopratype and is
-                used by ZMOMManagerPart to determine whether to show basket or not."""
+                used by ManagerPart to determine whether to show basket or not."""
         self.checkBasketSanity(mgr, session)
 
         if self.getAllEntriesListFromBasket(session):

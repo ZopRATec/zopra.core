@@ -85,7 +85,7 @@ class PrintManager(GenericManager):
 
     def getPdfLabel(self, label_def, param, numpages, RESPONSE):
         """\brief Returns a pdf file with the labels."""
-        filename = '/tmp/ZMOMPrintManagerTemporaryDocument.pdf'
+        filename = '/tmp/PrintManagerTemporaryDocument.pdf'
         c = canvas.Canvas(filename)
         c.translate(0, 0)
 

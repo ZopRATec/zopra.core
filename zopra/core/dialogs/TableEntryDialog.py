@@ -33,7 +33,7 @@ from PyHtmlGUI.widgets.hgTimeChooser import hgTimeChooser
 
 
 #
-# ZMOM Imports
+# ZopRA Imports
 #
 from zopra.core.dialogs.Dialog       import Dialog
 
