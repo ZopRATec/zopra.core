@@ -108,7 +108,7 @@ msgid "sins_start_req"
 msgstr "limited admission"
 
 msgid "sins_start_typ"
-msgstr "type of study"
+msgstr "Style of study"
 
 msgid "sins_start_indiv"
 msgstr "Individual search"
