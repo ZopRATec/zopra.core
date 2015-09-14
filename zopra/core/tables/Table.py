@@ -805,12 +805,13 @@ class Table(SimpleItem, PropertyManager):
                                 res = True
                             else:
                                 # item still in there, check notes
-                                notes_new = descr_dict.get(multilist.listname + 'notes' + str(item))
-                                notes_new = notes_new != 'NULL' and notes_new or None
-                                notes_old = multilist.getMLNotes(autoid, item)
-                                # notes differ, change them in the DB
-                                if notes_new != notes_old:
-                                    multilist.updateMLNotes(autoid, item, notes_new)
+                                if multilist.notes:
+                                    notes_new = descr_dict.get(multilist.listname + 'notes' + str(item))
+                                    notes_new = notes_new != 'NULL' and notes_new or None
+                                    notes_old = multilist.getMLNotes(autoid, item)
+                                    # notes differ, change them in the DB
+                                    if notes_new != notes_old:
+                                        multilist.updateMLNotes(autoid, item, notes_new)
 
                                 # remove the item (remaining items will be added)
                                 valuelist.remove(item)
@@ -822,7 +823,12 @@ class Table(SimpleItem, PropertyManager):
                             res = True
 
             except Exception, all_:
-                raise ValueError([descr_dict, all_.args])
+                # not sure whether this works, test and remove try/except
+                try:
+                    all_.args.append(descr_dict)
+                except:
+                    pass
+                raise
 
             # caching
             if self.do_cache:
