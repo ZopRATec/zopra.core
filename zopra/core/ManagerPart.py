@@ -377,7 +377,7 @@ class ManagerPart(CorePart):
 
     def setDebugOutput(self):
         """\brief Dummy function for manager specific debug output.
-                This function is called by the management view-tab to 
+                This function is called by the management view-tab to
                 display further debug output."""
         return ''
 
@@ -660,7 +660,7 @@ class ManagerPart(CorePart):
                         iconHandler._setObject(name, image)
 
         # map icon properties to loaded images
-        self.iconHandler.xmlInit( getIconsDefinition )
+        self.iconHandler.xmlInit( getIconsDefinition(self) )
 
 
     security.declareProtected(managePermission, 'manage_installDialogs')
