@@ -131,7 +131,7 @@
                             <!-- identation -->
                             <span
                                 tal:define="number repeat/item_id/index;
-                                            indent python:'&nbsp;;'*(number-1);"
+                                            indent python:'&nbsp;'*(number-1);"
                                 tal:content="structure indent">
                             </span>> <span tal:content="python:lobj.getValueByAutoid(item_id)">Value</span>
                             <br/>
@@ -150,7 +150,7 @@
                 <!-- identation -->
                 <span
                     tal:define="number repeat/item_id/index;
-                                indent python:'&nbsp;;'*(number-1);"
+                                indent python:'&nbsp;'*(number-1);"
                     tal:content="structure indent">
                 </span>> <span tal:content="python:lobj.getValueByAutoid(item_id)">Value</span>
                 <br/>
