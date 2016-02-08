@@ -16,7 +16,7 @@
     <metal:main fill-slot="main">
 
       <tal:block tal:condition="isAnon">
-        <div tal:define="dummy python: request.RESPONSE.redirect('/login_form')" />
+        <tal:block replace="context/raiseUnauthorized"></tal:block>
       </tal:block>
       <form name="zopra_list_edit_form"
             action="."
@@ -30,7 +30,7 @@
                      entries python: lobj.getEntries();
                      edit_permitted python: here.getPermissionInfo(listname, 'list_edit');"
             tal:attributes="action string:${here/getId}/${template/getId}" >
-        
+
         <tal:block condition="python: not edit_permitted">
           <div tal:define="dummy python: request.RESPONSE.redirect('require_login?came_from=' + here.absolute_url_path() +'/zopra_main_form')" />
         </tal:block>
@@ -75,42 +75,42 @@
             <td></td>
           </tr>
 
-	      <tr class="zopra_newvalue static">
-	        <td></td>
-	        <td>
-	          <input type="text" name="new_value" size="50" />
-	          <input type="hidden" name="listname"
-	                 tal:attributes="value listname" />
-	        </td>
-	        <td tal:repeat="translation python: lobj.translations">
-	          <input size="50"
-	                 type="text"
-	                 tal:attributes="name python:'new_value_'+translation;"
-	            />
-	        </td>
-	        <td>
-	          <input class="standalone"
-	                 tabindex=""
-	                 type="submit"
-	                 name="form.button.Add"
-	                 value="Add"
-	                 i18n:domain="plone"
-	                 i18n:attributes="value"
-	                 tal:attributes="tabindex tabindex/next;"
-	          />
-	        </td>
-	      </tr>
-	    </tbody>
+          <tr class="zopra_newvalue static">
+            <td></td>
+            <td>
+              <input type="text" name="new_value" size="50" />
+              <input type="hidden" name="listname"
+                     tal:attributes="value listname" />
+            </td>
+            <td tal:repeat="translation python: lobj.translations">
+              <input size="50"
+                     type="text"
+                     tal:attributes="name python:'new_value_'+translation;"
+                />
+            </td>
+            <td>
+              <input class="standalone"
+                     tabindex=""
+                     type="submit"
+                     name="form.button.Add"
+                     value="Add"
+                     i18n:domain="plone"
+                     i18n:attributes="value"
+                     tal:attributes="tabindex tabindex/next;"
+              />
+            </td>
+          </tr>
+        </tbody>
       </table>
       <script>
 $(window).ready(function() {
   var $colnum = ($("table.zopra_listvalues").find("tr:first th").length - 1).toString();
   var $definition = {
-	// add empty headers object
+    // add empty headers object
     headers: {},
-	// sort by column 1, sort ascending (second 0)
-	//sortList: [[0,0]],
-	widgets: ['zebra', 'staticRow']
+    // sort by column 1, sort ascending (second 0)
+    //sortList: [[0,0]],
+    widgets: ['zebra', 'staticRow']
   };
   $definition.headers[$colnum] = {
     // disable the calculated last column by setting the property sorter to false
@@ -121,7 +121,7 @@ $(window).ready(function() {
       </script>
 
 </tal:block>
-      
+
 <tal:block tal:condition="is_hierarchy_list">
 
       <h1>
@@ -141,32 +141,32 @@ $(window).ready(function() {
           <th>&nbsp;</th>
         </tr>
         <tr tal:repeat="entry entries">
-			<td><input type="checkbox" name="edit_autoid" tal:attributes="value python: entry['autoid'];" /></td>
-			<td>
-			  <span tal:content="python:entry['autoid']">12</span>
-			</td>
-			<td>
-			  <span tal:content="python: entry.get('level', 0) * '&nbsp;;'">&nbsp;</span>
-			  <input size="50"
-			         type="text"
-			         tal:attributes="name python:'edit_value_'+ str(entry['autoid']);
-			                         value python: here.correctUTF8(entry['value']);"
-			    />
-			</td>
-			<td>
-			  <input size="10"
-			         type="text"
-			         tal:attributes="name python:'edit_rank_'+ str(entry['autoid']);
-			                         value python: entry['rank'];"
-			    />
-			</td>
-			<td tal:repeat="translation python: lobj.translations">
-			  <input size="50"
-			         type="text"
-			         tal:attributes="name python:'edit_value_'+ str(entry['autoid'])+'_'+translation;
-			                         value python: entry.get('value_'+translation);"
-			    />
-			</td>
+            <td><input type="checkbox" name="edit_autoid" tal:attributes="value python: entry['autoid'];" /></td>
+            <td>
+              <span tal:content="python:entry['autoid']">12</span>
+            </td>
+            <td>
+              <span tal:content="python: entry.get('level', 0) * '&nbsp;;'">&nbsp;</span>
+              <input size="50"
+                     type="text"
+                     tal:attributes="name python:'edit_value_'+ str(entry['autoid']);
+                                     value python: here.correctUTF8(entry['value']);"
+                />
+            </td>
+            <td>
+              <input size="10"
+                     type="text"
+                     tal:attributes="name python:'edit_rank_'+ str(entry['autoid']);
+                                     value python: entry['rank'];"
+                />
+            </td>
+            <td tal:repeat="translation python: lobj.translations">
+              <input size="50"
+                     type="text"
+                     tal:attributes="name python:'edit_value_'+ str(entry['autoid'])+'_'+translation;
+                                     value python: entry.get('value_'+translation);"
+                />
+            </td>
         </tr>
 
         <tr class="zopra_newvalue">
@@ -198,11 +198,11 @@ $(window).ready(function() {
             />
           </td>
         </tr>
-      </table>        
-        
-        
+      </table>
+
+
 </tal:block>
-      
+
       <div>
           <input class="standalone"
                    tabindex=""

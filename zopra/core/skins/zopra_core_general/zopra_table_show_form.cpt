@@ -8,11 +8,11 @@
        <link rel="stylesheet" type="text/css" media="all"  tal:attributes="href string:${portal_url}/zopra.css" />
        <link rel="stylesheet" type="text/css" media="all"  tal:attributes="href string:${portal_url}/zopra_edit.css" />
     </metal:css_slot>
-    
+
     <metal:main fill-slot="main">
 
       <tal:block tal:condition="isAnon">
-        <div tal:define="dummy python: request.RESPONSE.redirect('/login_form')" />
+        <tal:block replace="context/raiseUnauthorized"></tal:block>
       </tal:block>
 
       <form name="show_form"
@@ -60,7 +60,7 @@
                                    global br python: br or attr_name == '<br>'"
                        tal:condition="python: attr_name != '<br>'">
               <tal:check tal:define="dummy python: not coltypes.get(attr_name) and here.migrate_raiser('Field not found: ' + attr_name)"></tal:check>
-    
+
               <div class="field"
                    tal:define="attr_value python:entry.get(attr_name, '');
                                field python:coltypes[attr_name];
@@ -68,21 +68,21 @@
                                attr_sort python:attr_name in sortables;
                                attr_notes python: attr_type == 'multilist' and dict([[a,entry[a]] for a in entry.keys() if a.startswith(attr_name + 'notes')]) or {};"
                    tal:condition="python: not coltypes.get(attr_name).get('INVIS')# and attr_name not in r_fields">
-    
+
                 <label tal:attributes="for attr_name" tal:content="python: field['LABEL']" i18n:translate="">Attribute Name</label>
-    
-                <div class="formHelp" 
+
+                <div class="formHelp"
                      tal:content="helpTexts/?attr_name |nothing">
                   Hinweistext
                 </div>
-          
+
                 <metal:block metal:use-macro="here/zopra_widget_show_display/macros/widget_selector" />
-          
+
               </div>
               <tal:check tal:define="global br python:False"></tal:check>
             </tal:block>
           </tal:block>
-          
+
           <tal:comment tal:replace="nothing">
               What is this? Looks like repeated fields are assumed to be displayed together, but they are not.
               autoidlist is empty when showing an entry later on. Is this used directly after adding?
@@ -98,14 +98,14 @@
                                field python:coltypes[attr_name];
                                attr_type python:field['TYPE'];"
                    tal:condition="python: not coltypes.get(attr_name).get('INVIS')">
-  
+
                 <label tal:attributes="for attr_name" tal:content="python: field['LABEL']" i18n:translate="">Attribute Name</label>
-        
-                <div class="formHelp" 
+
+                <div class="formHelp"
                      tal:content="helpTexts/?attr_name |nothing">
                   Hinweistext
                 </div>
-        
+
                 <metal:block metal:use-macro="here/zopra_widget_show_display/macros/widget_selector" />
                 <div style="clear:both;"></div>
               </div>
@@ -125,7 +125,7 @@
           <metal:block metal:use-macro="here/zopra_button_link_bar/macros/buttons_show" />
 
         <input type="hidden" name="autoid" tal:attributes="value autoid" />
-          
+
         <input type="hidden" name="form.submitted" value="1" />
         <input type="hidden" name="table" tal:attributes="value table" />
 

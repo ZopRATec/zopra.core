@@ -34,7 +34,7 @@
 
     <metal:main fill-slot="main">
       <tal:block tal:condition="python: isAnon or not (user.has_role(('ZopRAAuthor', 'ZopRAReviewer', 'ZopRAAdmin'), here))">
-        <div tal:define="dummy python: request.RESPONSE.redirect('login_form?came_from=' + here.absolute_url() +'/zopra_main_form')" />
+        <tal:block replace="context/raiseUnauthorized"></tal:block>
       </tal:block>
 
       <tal:block tal:define="zpath python: hasattr(here, 'zopra_path') and here.zopra_path or 'app/pm';

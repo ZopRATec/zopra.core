@@ -63,10 +63,10 @@
                      ">
 
     <tal:block tal:condition="isAnon">
-        <div tal:define="dummy python: request.RESPONSE.redirect('/login_form')" />
+        <tal:block replace="context/raiseUnauthorized"></tal:block>
     </tal:block>
     <tal:block tal:condition="python: not listall and not listown">
-        <div tal:define="dummy python: request.RESPONSE.redirect('/login_form')" />
+        <tal:block replace="context/raiseUnauthorized"></tal:block>
     </tal:block>
 
     <form id="search_result_form"

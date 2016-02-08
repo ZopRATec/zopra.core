@@ -9,7 +9,7 @@
     </tal:comment>
 
       <metal:javascriptslot fill-slot="javascript_head_slot">
-            
+
       </metal:javascriptslot>
 
       <metal:css_slot fill-slot="css_slot">
@@ -19,7 +19,7 @@
 
       <metal:main fill-slot="main" tal:define="table request/table;">
             <tal:block tal:condition="isAnon">
-                  <div tal:define="dummy python: request.RESPONSE.redirect('/login_form')" />
+                  <tal:block replace="context/raiseUnauthorized"></tal:block>
             </tal:block>
             <tal:block tal:define="tobj python: here.tableHandler[table];
                                    entry python: request.get('autoid') and tobj.getEntry(request.get('autoid')) or here.getDefaultCreateValues(table);">
@@ -27,14 +27,14 @@
 
                   <h1 i18n:translate="" tal:content="python: 'Erstellung ' + tobj.getLabel()"></h1>
                   <p>
-                  	Der abhängige Eintrag für
-					<span tal:content="tobj/getLabel"></span>
-				    <span tal:content="python: here.getLabelString(table, None, entry)"></span>
-					wurde erstellt.
-				  </p>
-				  <p>Schliessen Sie dieses Fenster, um den neuen Eintrag in den Haupteintrag zu übernehmen.</p>
-				  <div class="formControlsZopRA">
-				  	<input class="standalone"
+                      Der abhängige Eintrag für
+                    <span tal:content="tobj/getLabel"></span>
+                    <span tal:content="python: here.getLabelString(table, None, entry)"></span>
+                    wurde erstellt.
+                  </p>
+                  <p>Schliessen Sie dieses Fenster, um den neuen Eintrag in den Haupteintrag zu übernehmen.</p>
+                  <div class="formControlsZopRA">
+                      <input class="standalone"
                            tabindex=""
                            onclick="top.close()"
                            type="button"
@@ -43,8 +43,8 @@
                            i18n:attributes="value"
                            i18n:domain="zopra"
                            tal:attributes="tabindex tabindex/next;"
-                    />	
-				  </div>
+                    />
+                  </div>
 
             </tal:block>
       </metal:main>
