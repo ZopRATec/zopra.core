@@ -168,13 +168,13 @@ class ListHandler(Folder):
         return self.hasObject(key)
 
     def keys(self):
-        """\brief returns all names of basic ZMOMList objects"""
+        """\brief returns all names of basic List objects"""
         keylist = []
         for item in dir(self):
             if hasattr(self, str(item)):
                 attr = getattr(self, item)
                 # just take genuine db lists
-                if hasattr(attr, '_classType') and 'ZMOMList' in attr._classType:
+                if hasattr(attr, '_classType') and 'List' in attr._classType:
                     keylist.append(item)
         return keylist
 
