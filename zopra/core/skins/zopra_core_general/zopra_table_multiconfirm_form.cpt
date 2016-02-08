@@ -6,19 +6,19 @@
     <tal:comment tal:replace="nothing">
 
     </tal:comment>
-    
-    <metal:javascriptslot fill-slot="javascript_head_slot">   
-        
+
+    <metal:javascriptslot fill-slot="javascript_head_slot">
+
     </metal:javascriptslot>
-    
+
     <metal:css_slot fill-slot="css_slot">
         <link rel="stylesheet" type="text/css" media="all"  tal:attributes="href string:${portal_url}/zopra.css" />
-        <link rel="stylesheet" type="text/css" media="all"  tal:attributes="href string:${portal_url}/zopra_edit.css" /> 
+        <link rel="stylesheet" type="text/css" media="all"  tal:attributes="href string:${portal_url}/zopra_edit.css" />
     </metal:css_slot>
-    
+
     <metal:main fill-slot="main">
 
-      <tal:block tal:condition="python: isAnon or not (user.has_role(('SInSAuthor', 'SInSReviewer', 'ZopRAAuthor', 'ZopRAReviewer', 'Admin'), here))">
+      <tal:block tal:condition="python: isAnon or not (user.has_role(('ZopRAAuthor', 'ZopRAReviewer', 'Admin'), here))">
         <div tal:define="dummy python: request.RESPONSE.redirect('require_login?came_from=' + here.absolute_url_path() +'/zopra_main_form')" />
       </tal:block>
 
@@ -29,50 +29,50 @@
             tal:define="errors options/state/getErrors;
                      table request/table;
                      tobj python: here.tableHandler[table];"
-		    tal:condition="python: here.doesWorkingCopies(table)"
+            tal:condition="python: here.doesWorkingCopies(table)"
             tal:attributes="action string:${here/getId}/${template/getId}">
-	
-	    <!-- Multiconfirmation of Working Copies -->
-	    <tal:block tal:condition="python: user.has_role(('SInSReviewer', 'ZopRAReviewer'), here)">
-	      <h1><span i18n:translate="">Freigabe</span> <span tal:content="python: tobj.getLabel()"></span></h1>
-	      <tal:block>
-	          <div tal:define="entries python: here.getWorkingCopies(table)"
-	               tal:condition="entries">
-	            <table id="result_tab">
-	              <tr>
-	              	<th></th>
-	                <th>Name</th>
-	                <th>Diff</th>
-	                <th>Freigabe</th>
-	              </tr>
-	              <tr tal:repeat="entry entries">
-	              	<td><input type="checkbox" name="confirm_ids:list:int" 
-					           tal:attributes="value entry/autoid" /></td>
-	                <td tal:content="python: here.getLabelString(table, None, entry)"></td>
-	                <td>
-	                  <tal:block content="python: ', '.join(here.getDiffLabels(table, entry))">
-	                  </tal:block>
-	                  <a target="_blank" tal:attributes="href python: here.absolute_url() + '/zopra_manager_show_log?entryid=%s&table=%s' % (entry['autoid'], table)">(Details)</a>
-	                </td>
-	                <td>
-	                  <a tal:attributes="href python: here.absolute_url() + '/zopra_table_edit_form?autoid=%s&table=%s' % (entry['autoid'], table)">&raquo;zur Freigabe</a>
-	                </td>
-	              </tr>
-				  <tr tal:condition="not: entries"><td colspan="4">Keine Arbeitskopien gefunden.</td></tr>
-	            </table>
-	          </div>
-	      </tal:block>
-	    </tal:block>
+
+        <!-- Multiconfirmation of Working Copies -->
+        <tal:block tal:condition="python: user.has_role(('ZopRAReviewer'), here)">
+          <h1><span i18n:translate="">Freigabe</span> <span tal:content="python: tobj.getLabel()"></span></h1>
+          <tal:block>
+              <div tal:define="entries python: here.getWorkingCopies(table)"
+                   tal:condition="entries">
+                <table id="result_tab">
+                  <tr>
+                      <th></th>
+                    <th>Name</th>
+                    <th>Diff</th>
+                    <th>Freigabe</th>
+                  </tr>
+                  <tr tal:repeat="entry entries">
+                      <td><input type="checkbox" name="confirm_ids:list:int"
+                               tal:attributes="value entry/autoid" /></td>
+                    <td tal:content="python: here.getLabelString(table, None, entry)"></td>
+                    <td>
+                      <tal:block content="python: ', '.join(here.getDiffLabels(table, entry))">
+                      </tal:block>
+                      <a target="_blank" tal:attributes="href python: here.absolute_url() + '/zopra_manager_show_log?entryid=%s&table=%s' % (entry['autoid'], table)">(Details)</a>
+                    </td>
+                    <td>
+                      <a tal:attributes="href python: here.absolute_url() + '/zopra_table_edit_form?autoid=%s&table=%s' % (entry['autoid'], table)">&raquo;zur Freigabe</a>
+                    </td>
+                  </tr>
+                  <tr tal:condition="not: entries"><td colspan="4">Keine Arbeitskopien gefunden.</td></tr>
+                </table>
+              </div>
+          </tal:block>
+        </tal:block>
         <div class="formControlsZopRA"
              tal:define="process_creation request/process_creation|nothing;">
-        
+
           <input class="standalone"
                  tabindex=""
                  type="submit"
                  name="form.button.Confirm"
                  value="Freigeben"
                  i18n:attributes="value"
-                 tal:attributes="tabindex tabindex/next;" 
+                 tal:attributes="tabindex tabindex/next;"
             />
           <input class="standalone"
                  tabindex=""
@@ -80,9 +80,9 @@
                  type="button"
                  name="form.button.Cancel"
                  value="Zurück"
-                 tal:attributes="tabindex tabindex/next;" 
+                 tal:attributes="tabindex tabindex/next;"
             />
-           
+
         </div>
         <input type="hidden" name="form.submitted" value="1" />
         <input type="hidden" name="table" tal:attributes="value table" />
