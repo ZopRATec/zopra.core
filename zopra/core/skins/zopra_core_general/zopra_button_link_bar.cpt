@@ -11,17 +11,14 @@ Macro Definition fuer Button-Bar and Link-Bar
                tal:define="process_creation request/process_creation|nothing;">
 
             <input class="context"
-                   tabindex=""
                    type="submit"
                    name="form.button.Save"
                    value="Save"
                    i18n:domain="plone"
                    i18n:attributes="value"
-                   tal:attributes="tabindex tabindex/next;"
             />
 
             <input class="standalone"
-                   tabindex=""
                    onclick="history.back(-1)"
                    type="button"
                    name="form.button.Cancel"
@@ -29,11 +26,9 @@ Macro Definition fuer Button-Bar and Link-Bar
                    i18n:attributes="value"
                    i18n:domain="zopra"
                    tal:condition="not: request/origid|nothing"
-                   tal:attributes="tabindex tabindex/next;"
             />
 
             <input class="standalone"
-                   tabindex=""
                    onclick="top.close()"
                    type="button"
                    name="form.button.Close"
@@ -41,56 +36,47 @@ Macro Definition fuer Button-Bar and Link-Bar
                    i18n:attributes="value"
                    i18n:domain="zopra"
                    tal:condition="request/origid|nothing"
-                   tal:attributes="tabindex tabindex/next;"
             />
 
             <input tal:condition="python: context.doesTranslations(table) and not entry.get('istranslationof') and not entry.get('hastranslation')"
                    class="standalone"
-                   tabindex=""
                    type="submit"
                    name="form.button.Translate"
                    value="Translate"
                    i18n:attributes="value"
                    i18n:domain="zopra"
-                   tal:attributes="tabindex tabindex/next;"
             />
             <tal:block tal:condition="python: context.doesWorkingCopies(table) and entry.get('iscopyof') and user.has_role(('ZopRAReviewer'), here)">
               <tal:block tal:condition="not: set_del_autoid|nothing">
                 <input tal:define="global set_del_autoid string:1" type="hidden" name="del_autoid" tal:attributes="value python: entry.get('autoid')" />
               </tal:block>
               <input class="standalone"
-                     tabindex=""
                      type="submit"
                      name="form.button.CopyDelete"
                      value="Delete Workingcopy"
                      i18n:attributes="value"
                      i18n:domain="zopra"
-                     tal:attributes="tabindex tabindex/next;"
               />
             </tal:block>
 
             <input tal:condition="python: context.doesWorkingCopies(table) and entry.get('iscopyof') and user.has_role(('ZopRAReviewer'), here)"
                    class="standalone"
-                   tabindex=""
                    type="submit"
                    name="form.button.Confirm"
                    value="Unfreeze"
                    i18n:attributes="value"
                    i18n:domain="zopra"
-                   tal:attributes="tabindex tabindex/next;"
             />
 
             <tal:block tal:condition="python: context.doesWorkflows(table) and entry.get('state')">
               <tal:block tal:define="infos python: context.getStateTransferInfo(table, entry)">
                   <input tal:repeat="info infos"
                        class="standalone"
-                       tabindex=""
                        type="submit"
                        name="form.button.ChangeWorkflowState"
                        i18n:attributes="value"
-                       tal:attributes="tabindex tabindex/next;
-                                       value info/label;
-                                        name python: 'form.button.ChangeWorkflowState' + str(repeat['info'].index + 1)"
+                       tal:attributes="value info/label;
+                                       name python: 'form.button.ChangeWorkflowState' + str(repeat['info'].index + 1)"
                 />
               </tal:block>
             </tal:block>
@@ -153,22 +139,18 @@ Macro Definition fuer Button-Bar and Link-Bar
       <div class="formControlsZopRA">
 
             <input class="context"
-                   tabindex=""
                    type="submit"
                    name="form.button.Search"
                    value="Search"
                    i18n:domain="plone"
                    i18n:attributes="value"
-                   tal:attributes="tabindex tabindex/next;"
             />
 
             <input class="standalone"
-                   tabindex=""
                    type="submit"
                    name="form.button.Cancel"
                    value="Cancel"
                    i18n:attributes="value"
-                   tal:attributes="tabindex tabindex/next;"
             />
 
           </div>
@@ -178,14 +160,12 @@ Macro Definition fuer Button-Bar and Link-Bar
       <div class="formControlsZopRA">
 
             <input class="standalone"
-                 tabindex=""
                  onclick="history.back(-1)"
                  type="button"
                  name="form.button.Cancel"
                  value="Back"
                  i18n:attributes="value"
                  i18n:domain="zopra"
-                 tal:attributes="tabindex tabindex/next;"
               />
 
           </div>
@@ -196,7 +176,6 @@ Macro Definition fuer Button-Bar and Link-Bar
               tal:define="process_creation request/process_creation|nothing;">
 
           <input class="standalone"
-                 tabindex=""
                  onclick="history.back(-1)"
                  type="button"
                  name="form.button.Cancel"
@@ -204,10 +183,8 @@ Macro Definition fuer Button-Bar and Link-Bar
                  i18n:attributes="value"
                  i18n:domain="zopra"
                  tal:condition="not: request/origid|nothing"
-                 tal:attributes="tabindex tabindex/next;"
               />
           <input class="standalone"
-                   tabindex=""
                    onclick="top.close()"
                    type="button"
                    name="form.button.Close"
@@ -215,7 +192,6 @@ Macro Definition fuer Button-Bar and Link-Bar
                    i18n:attributes="value"
                    i18n:domain="zopra"
                    tal:condition="request/origid|nothing"
-                   tal:attributes="tabindex tabindex/next;"
             />
         </div>
 </metal:block>
@@ -225,27 +201,22 @@ Macro Definition fuer Button-Bar and Link-Bar
                tal:define="process_creation request/process_creation|nothing;">
 
             <input class="context"
-                   tabindex=""
                    type="submit"
                    name="form.button.Save"
                    value="Save"
                    i18n:domain="plone"
                    i18n:attributes="value"
-                   tal:attributes="tabindex tabindex/next;"
             />
 
             <input class="standalone"
-                   tabindex=""
                    type="button"
                    onclick="history.back(-1)"
                    name="form.button.Cancel"
                    value="Cancel"
                    i18n:attributes="value"
                    tal:condition="not: request/origid|nothing"
-                   tal:attributes="tabindex tabindex/next;"
             />
             <input class="standalone"
-                   tabindex=""
                    onclick="top.close()"
                    type="button"
                    name="form.button.Close"
@@ -253,7 +224,6 @@ Macro Definition fuer Button-Bar and Link-Bar
                    i18n:attributes="value"
                    i18n:domain="zopra"
                    tal:condition="request/origid|nothing"
-                   tal:attributes="tabindex tabindex/next;"
             />
 
           </div>

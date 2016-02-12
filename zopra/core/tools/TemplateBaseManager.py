@@ -281,6 +281,8 @@ class TemplateBaseManager(GenericManager):
             root.setConstraints(constraints)
         return tobj.requestEntryCount(root)
 
+    def calculatePaginationPages(self, rowcount, count):
+        return (rowcount + count - 1) / count
 
     def getEntryListProxy(self, table,
                       show_number    = None,
@@ -305,6 +307,15 @@ class TemplateBaseManager(GenericManager):
             fi.setOperator(fi.OR)
         return tobj.requestEntries(root, show_number, start_number)
 
+    def handleHierarchyListOnSearch(self, table, cons):
+        """\brief Add to given branch item all his possible children"""
+        for key in cons:
+            if self.isHierarchyList(key):
+                selectList = []
+                for item in cons[key]:
+                    selectList.append(item)
+                    selectList = selectList + self.listHandler.getList(table, key).getHierarchyListDescendants(item)
+                cons[key] = selectList
 
     def parseConstraintsForOutput(self, attr_value, attr_type):
         """\brief Search Param Visualisation preparation"""

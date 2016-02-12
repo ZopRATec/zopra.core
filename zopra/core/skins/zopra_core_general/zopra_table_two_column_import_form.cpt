@@ -104,22 +104,18 @@
                tal:define="process_creation request/process_creation|nothing;">
 
             <input class="context"
-                   tabindex=""
                    type="submit"
                    name="form.button.Save"
                    value="Save"
                    i18n:domain="plone"
                    i18n:attributes="value"
-                   tal:attributes="tabindex tabindex/next;"
             />
 
             <input class="standalone"
-                   tabindex=""
                    type="submit"
                    name="form.button.Cancel"
                    value="Cancel"
                    i18n:attributes="value"
-                   tal:attributes="tabindex tabindex/next;"
             />
 
           </div>

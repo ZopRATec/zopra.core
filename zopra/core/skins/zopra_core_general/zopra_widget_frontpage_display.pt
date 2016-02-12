@@ -13,64 +13,50 @@
 <metal:widget_string define-macro="widget_string">
   <input type="text"
          size="40"
-         tabindex=""
-         tal:attributes="value attr_value; name attr_name; id attr_name;
-                         tabindex tabindex/next;"
+         tal:attributes="value attr_value; name attr_name; id attr_name"
     />
 </metal:widget_string>
 
 <metal:widget_int define-macro="widget_int">
   <input type="text"
          size="40"
-         tabindex=""
-         tal:attributes="value attr_value; name attr_name; id attr_name;
-                         tabindex tabindex/next;"
+         tal:attributes="value attr_value; name attr_name; id attr_name"
     />
 </metal:widget_int>
 
 <metal:widget_float define-macro="widget_float">
   <input type="text"
          size="40"
-         tabindex=""
-         tal:attributes="value attr_value; name attr_name; id attr_name;
-                         tabindex tabindex/next;"
+         tal:attributes="value attr_value; name attr_name; id attr_name"
     />
 </metal:widget_float>
 
 <metal:widget_currency define-macro="widget_currency">
   <input type="text"
          size="40"
-         tabindex=""
          tal:attributes="value python: ('%.2f' % attr_value).replace('.', ',');
-		                 name attr_name; id attr_name;
-                         tabindex tabindex/next;"
+		                 name attr_name; id attr_name"
     />
 </metal:widget_currency>
 
 <metal:widget_date define-macro="widget_date">
   <input type="text"
          size="40"
-         tabindex=""
-         tal:attributes="value attr_value; name attr_name; id attr_name;
-                         tabindex tabindex/next;"
+         tal:attributes="value attr_value; name attr_name; id attr_name"
     />
 </metal:widget_date>
 
 <metal:widget_bool define-macro="widget_bool">
   <input type="checkbox"
          value="1"
-         tabindex=""
-         tal:attributes="checked python:bool(attr_value) and attr_value != '0'; name attr_name; id attr_name;
-                         tabindex tabindex/next;"
+         tal:attributes="checked python:bool(attr_value) and attr_value != '0'; name attr_name; id attr_name"
     />
 </metal:widget_bool>
 
 <metal:widget_memo define-macro="widget_memo">
   <input type="text"
          size="40"
-         tabindex=""
-         tal:attributes="value attr_value; name attr_name; id attr_name;
-                         tabindex tabindex/next;"
+         tal:attributes="value attr_value; name attr_name; id attr_name"
     />
 </metal:widget_memo>
 

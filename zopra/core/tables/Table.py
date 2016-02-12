@@ -806,7 +806,7 @@ class Table(SimpleItem, PropertyManager):
                             else:
                                 # item still in there, check notes
                                 if multilist.notes:
-                                    notes_new = descr_dict.get(multilist.listname + 'notes' + str(item))
+                                    notes_new = descr_dict.get(multilist.listname + 'notes' + unicode(item))
                                     notes_new = notes_new != 'NULL' and notes_new or None
                                     notes_old = multilist.getMLNotes(autoid, item)
                                     # notes differ, change them in the DB
@@ -818,7 +818,7 @@ class Table(SimpleItem, PropertyManager):
                         # insert remaining new items
                         for item in valuelist:
                             # check for notes
-                            notes = descr_dict.get(multilist.listname + 'notes' + str(item), '')
+                            notes = descr_dict.get(multilist.listname + 'notes' + unicode(item), '')
                             multilist.addMLRef( autoid, item, notes )
                             res = True
 
@@ -1368,7 +1368,7 @@ class Table(SimpleItem, PropertyManager):
         # no caching for count requests
         results = mgr.getManager(ZM_PM).executeDBQuery( sql )
         if results:
-            return results[0][0]
+            return int(results[0][0])
         else:
             return 0
 
@@ -1640,7 +1640,7 @@ class Table(SimpleItem, PropertyManager):
                 value = []
                 for col in cols:
                     if entry.get(col):
-                        value.append( str(entry[col]) )
+                        value.append( unicode(entry[col]) )
                 return ' '.join(value)
         return ''
 

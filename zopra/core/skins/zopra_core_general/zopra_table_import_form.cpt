@@ -13,6 +13,10 @@
        <link rel="stylesheet" type="text/css" media="all"  tal:attributes="href string:${portal_url}/zopra_edit.css" />
     </metal:css_slot>
 
+    <metal:topslot fill-slot="top_slot">
+          <tal:block tal:define="global isAnon context/@@plone_portal_state/anonymous;"></tal:block>
+    </metal:topslot>
+
     <metal:main fill-slot="main" tal:define="global importresult nothing;">
 
       <tal:block tal:condition="isAnon">
@@ -65,22 +69,18 @@
                tal:define="process_creation request/process_creation|nothing;">
 
             <input class="context"
-                   tabindex=""
                    type="submit"
                    name="form.button.Save"
                    value="Save"
                    i18n:domain="plone"
                    i18n:attributes="value"
-                   tal:attributes="tabindex tabindex/next;"
             />
 
             <input class="standalone"
-                   tabindex=""
                    type="submit"
                    name="form.button.Cancel"
                    value="Cancel"
                    i18n:attributes="value"
-                   tal:attributes="tabindex tabindex/next;"
             />
 
           </div>
@@ -94,9 +94,9 @@
       </form>
     </metal:main>
 
-    <metal:column_two_slot fill-slot="column_two_slot">
+    <!--<metal:column_two_slot fill-slot="column_two_slot">
       <metal:block metal:use-macro="here/zopra_context_menu/macros/context_menu" />
-    </metal:column_two_slot>
+    </metal:column_two_slot>-->
 
     <metal:bottom fill-slot="bottom">
       <metal:block metal:use-macro="here/zopra_bottom/macros/bottom" />

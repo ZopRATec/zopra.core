@@ -34,7 +34,6 @@
 <metal:widget_bool define-macro="widget_bool">
   <input type="checkbox"
          disabled="disabled"
-         tabindex=""
          tal:attributes="checked python:bool(attr_value) and attr_value != '0';"
     />
 </metal:widget_bool>
@@ -109,7 +108,7 @@
                             <!-- identation -->
                             <span 
                                 tal:define="number repeat/item_id/index;
-                                            indent python:'&nbsp;;'*(number-1);" 
+                                            indent python:'&nbsp;'*(number-1);"
                                 tal:content="structure indent">
                             </span>> <span tal:content="python:lobj.getValueByAutoid(item_id)">Value</span>
                             <br/>

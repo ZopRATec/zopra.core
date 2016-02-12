@@ -434,7 +434,7 @@ class ForeignList(GenericList):
                             for col in self.cols:
                                 col = col.strip()
                                 if entry.get(col):
-                                    vals.append(str(entry.get(col)))
+                                    vals.append(unicode(entry.get(col)))
                             val = ' '.join(vals)
 
                         if value is None or \

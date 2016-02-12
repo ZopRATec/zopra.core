@@ -514,7 +514,8 @@ class List(GenericList):
                     value = 'any'
             else:
                 assert isinstance(aid, IntType) or \
-                       isinstance(aid, StringType), \
+                       isinstance(aid, StringType) or \
+                       isinstance(aid, UnicodeType), \
                        E_PARAM_TYPE % ('aid', 'IntType/StringType', aid)
 
                 aid = int(aid)

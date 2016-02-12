@@ -13,6 +13,10 @@
        <link rel="stylesheet" type="text/css" media="all"  tal:attributes="href string:${portal_url}/zopra_edit.css" />
     </metal:css_slot>
 
+      <metal:topslot fill-slot="top_slot">
+          <tal:block tal:define="global isAnon context/@@plone_portal_state/anonymous;"></tal:block>
+      </metal:topslot>
+
     <metal:main fill-slot="main">
 
       <tal:block tal:condition="isAnon">
@@ -91,33 +95,28 @@
                tal:define="process_creation request/process_creation|nothing;">
 
             <input class="context"
-                   tabindex=""
                    type="submit"
                    name=""
                    value="Löschen"
                    i18n:domain="plone"
                    i18n:attributes="value"
-                   tal:attributes="tabindex tabindex/next; name button"
+                   tal:attributes="name button"
             />
 
             <input class="standalone"
-                   tabindex=""
                    onclick="history.back(-1)"
                    type="button"
                    name="form.button.Cancel"
                    value="Zurück"
                    tal:condition="not:request/origid|nothing"
-                   tal:attributes="tabindex tabindex/next;"
             />
 
             <input class="standalone"
-                   tabindex=""
                    onclick="top.close()"
                    type="button"
                    name="form.button.Cancel"
                    value="Schliessen"
                    tal:condition="request/origid|nothing"
-                   tal:attributes="tabindex tabindex/next;"
             />
         </div>
         <input type="hidden" name="form.submitted" value="1" />
@@ -127,9 +126,9 @@
       </form>
     </metal:main>
 
-    <metal:column_two_slot fill-slot="column_two_slot">
+    <!--<metal:column_two_slot fill-slot="column_two_slot">
       <metal:block metal:use-macro="here/zopra_context_menu/macros/context_menu" />
-    </metal:column_two_slot>
+    </metal:column_two_slot>-->
 
     <metal:bottom fill-slot="bottom">
       <metal:block metal:use-macro="here/zopra_bottom/macros/bottom" />

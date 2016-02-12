@@ -35,14 +35,12 @@
                   <p>Schliessen Sie dieses Fenster, um den neuen Eintrag in den Haupteintrag zu übernehmen.</p>
                   <div class="formControlsZopRA">
                       <input class="standalone"
-                           tabindex=""
                            onclick="top.close()"
                            type="button"
                            name="form.button.Close"
                            value="Close"
                            i18n:attributes="value"
                            i18n:domain="zopra"
-                           tal:attributes="tabindex tabindex/next;"
                     />
                   </div>
 
