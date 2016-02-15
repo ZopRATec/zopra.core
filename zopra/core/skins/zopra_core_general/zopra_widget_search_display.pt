@@ -16,31 +16,25 @@
 <metal:widget_string define-macro="widget_string">
   <input type="text"
          size="40"
-         tabindex=""
          data-sfarp="*"
-         tal:attributes="value attr_value; name python: attr_prefix + attr_name; id python: attr_prefix + attr_name;
-                         tabindex tabindex/next;"
+         tal:attributes="value attr_value; name python: attr_prefix + attr_name; id python: attr_prefix + attr_name"
     />
 </metal:widget_string>
 
 <metal:widget_int define-macro="widget_int">
   <input type="text"
          size="40"
-         tabindex=""
          data-sfarp="_not_NULL"
-         tal:attributes="value attr_value; name python: attr_prefix + attr_name; id python: attr_prefix + attr_name;
-                         tabindex tabindex/next;"
+         tal:attributes="value attr_value; name python: attr_prefix + attr_name; id python: attr_prefix + attr_name"
     />
 </metal:widget_int>
 
 <metal:widget_float define-macro="widget_float">
   <input type="text"
          size="40"
-         tabindex=""
          data-sfarp="_not_NULL"
          tal:attributes="value python: ('%s' % attr_value).replace('.', ',');
-                         name python: attr_prefix + attr_name; id python: attr_prefix + attr_name;
-                         tabindex tabindex/next;"
+                         name python: attr_prefix + attr_name; id python: attr_prefix + attr_name"
     />
 </metal:widget_float>
 
@@ -48,21 +42,17 @@
   <input type="text"
          class="numberinput"
          size="10"
-         tabindex=""
          data-sfarp="_not_NULL"
          tal:attributes="value python: context.prepare_zopra_currency_value(attr_value);
-                         name python: attr_prefix + attr_name; id python: attr_prefix + attr_name;
-                         tabindex tabindex/next;"
+                         name python: attr_prefix + attr_name; id python: attr_prefix + attr_name"
     />
 </metal:widget_currency>
 
 <metal:widget_date define-macro="widget_date">
   <input type="text"
          size="40"
-         tabindex=""
          data-sfarp="*"
-         tal:attributes="value attr_value; name python: attr_prefix + attr_name; id python: attr_prefix + attr_name;
-                         tabindex tabindex/next;"
+         tal:attributes="value attr_value; name python: attr_prefix + attr_name; id python: attr_prefix + attr_name;"
     />
 </metal:widget_date>
 
@@ -70,32 +60,26 @@
     hat/ist
     <input type="checkbox"
             value="1"
-            tabindex=""
             tal:attributes="checked python:bool(attr_value) and attr_value == 1;
                             name python: attr_prefix + attr_name;
                             id python: attr_prefix + attr_name;
-                            class python: attr_prefix + attr_name;
-                            tabindex tabindex/next;"
+                            class python: attr_prefix + attr_name;"
     />
     hat/ist nicht
     <input type="checkbox"
             value="NULL"
-            tabindex=""
             tal:attributes="checked python:bool(attr_value) and attr_value == 'NULL';
                             name python: attr_prefix + attr_name;
                             id python: attr_prefix + attr_name + 'not';
-                            class python: attr_prefix + attr_name;
-                            tabindex tabindex/next;"
+                            class python: attr_prefix + attr_name;"
     />
 </metal:widget_bool>
 
 <metal:widget_memo define-macro="widget_memo">
   <input type="text"
          size="40"
-         tabindex=""
          data-sfarp="*"
-         tal:attributes="value attr_value; name python: attr_prefix + attr_name; id python: attr_prefix + attr_name;
-                         tabindex tabindex/next;"
+         tal:attributes="value attr_value; name python: attr_prefix + attr_name; id python: attr_prefix + attr_name"
     />
 </metal:widget_memo>
 

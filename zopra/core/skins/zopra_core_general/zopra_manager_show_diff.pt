@@ -17,7 +17,7 @@
     <metal:main fill-slot="main">
 
     <tal:block tal:condition="isAnon">
-      <div tal:define="dummy python: request.RESPONSE.redirect('/login_form')" />
+      <tal:block replace="context/raiseUnauthorized"></tal:block>
     </tal:block>
 
     <h1 tal:content="python:'Anzeige Unterschiede für Log-Eintrag: ' + request.get('logid')"></h1>

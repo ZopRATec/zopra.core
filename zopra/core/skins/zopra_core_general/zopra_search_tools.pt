@@ -8,7 +8,7 @@
         <div id="pagelinks"
              tal:define="url python: '%s/sins_suchergebnisse' % (context.absolute_url());
                          url python: url + getparam + '&offset=';
-                         pages python: (rowcount + count - 1) / count;">
+                         pages python: context.calculatePaginationPages(rowcount, count)">
             <span i18n:translate="zopra_sr_label_pages">Pages:</span>
             <span tal:repeat="page python: xrange(pages)">
                 <a tal:define="thisurl python: url + str(page*count);
@@ -36,7 +36,7 @@
         <div id="pagelinks"
              tal:define="url      python: '%s/%s' % (context.absolute_url(),result_page);
                          url      python: url + getparam + '&offset=';
-                         pages    python: (rowcount + count - 1) / count;
+                         pages    python: context.calculatePaginationPages(rowcount, count);
                          
                          cur_page python: offset/count;">
             <span i18n:translate="zopra_sr_label_pages">Pages:</span>
@@ -93,7 +93,7 @@
         <div id="pagelinks"
              tal:define="url python: '%s/zopra_table_search_result?' % (here.absolute_url());
                          url python: url + quotedcons + '&offset=';
-                         pages python: (rowcount + count - 1) / count;">
+                         pages python: context.calculatePaginationPages(rowcount, count)">
             <span i18n:translate="zopra_sr_label_pages">Pages:</span>
             <span tal:repeat="page python: xrange(pages)">
                 <a tal:define="pageoffset python: page*count;
@@ -115,7 +115,7 @@
         <div id="pagelinks"
              tal:define="url python: '%s/zopra_manager_show_log?' % (here.absolute_url());
                          url python: url + 'offset=';
-                         pages python: (rowcount + count - 1) / count;">
+                         pages python: context.calculatePaginationPages(rowcount, count)">
             <span i18n:translate="zopra_sr_label_pages">Pages:</span>
             <span tal:repeat="page python: xrange(pages)">
                 <a tal:define="pageoffset python: page*count;

@@ -36,6 +36,11 @@
         </script>
 
     </metal:javascriptslot>
+
+    <metal:topslot fill-slot="top_slot">
+          <tal:block tal:define="global isAnon context/@@plone_portal_state/anonymous;"></tal:block>
+    </metal:topslot>
+
     <metal:main fill-slot="main"
          tal:define="table request/table;
                      tobj python: here.tableHandler[table];
@@ -63,10 +68,10 @@
                      ">
 
     <tal:block tal:condition="isAnon">
-        <div tal:define="dummy python: request.RESPONSE.redirect('/login_form')" />
+        <tal:block replace="context/raiseUnauthorized"></tal:block>
     </tal:block>
     <tal:block tal:condition="python: not listall and not listown">
-        <div tal:define="dummy python: request.RESPONSE.redirect('/login_form')" />
+        <tal:block replace="context/raiseUnauthorized"></tal:block>
     </tal:block>
 
     <form id="search_result_form"
@@ -290,9 +295,9 @@
         </div>
     </metal:portal_message>
 
-    <metal:column_two_slot fill-slot="column_two_slot">
+    <!--<metal:column_two_slot fill-slot="column_two_slot">
         <metal:block metal:use-macro="here/zopra_context_menu/macros/context_menu" />
-    </metal:column_two_slot>
+    </metal:column_two_slot>-->
 
     <metal:bottom fill-slot="bottom">
         <metal:block metal:use-macro="here/zopra_bottom/macros/bottom" />

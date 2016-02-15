@@ -229,7 +229,9 @@ class MultiList(ForeignList):
 
         if not tableid or not listid:
             return False
-
+        # replace None or empty list with empty string
+        if not notes:
+            notes = ''
         # escape notes
         notes = notes.replace( "\'", "\\\'" ).replace( "\\\\'", "\\\'")
         query = "Update %s set notes = '%s' where tableid = %s and %s = %s"\
@@ -260,7 +262,8 @@ class MultiList(ForeignList):
 
         result = mgr.getManager(ZM_PM).executeDBQuery(query)
         if result:
-            return result[0][0]
+            # make sure we return empty string if result is an empty item
+            return result[0][0] or ''
         else:
             return ''
 

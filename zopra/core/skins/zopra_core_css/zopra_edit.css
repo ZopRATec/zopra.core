@@ -106,7 +106,6 @@ fieldset.list_actions {
     padding: 2px;
     float: left;
     min-height: 40px;
-    width: 404px;
 }
 .error {
     width: 404px;
@@ -158,7 +157,7 @@ select.single {
 }
 
 .multiselect {
-    width: 400px;
+    /*width: 400px;*/
 }
 
 .multiselect select {

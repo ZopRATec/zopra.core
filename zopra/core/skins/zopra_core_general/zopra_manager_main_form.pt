@@ -36,9 +36,9 @@
     <metal:main fill-slot="main">
 
       <tal:block tal:condition="isAnon">
-        <div tal:define="dummy python: request.RESPONSE.redirect('/login_form')" />
+        <tal:block replace="context/raiseUnauthorized"></tal:block>
       </tal:block>
-      
+
       <tal:block tal:define="targetname python: 'zopra_manager_main_form_' + here.getClassName()"
                  tal:condition="exists: here/?targetname">
         <div tal:define="dummy python: request.RESPONSE.redirect(targetname)" />
@@ -53,13 +53,13 @@
                         tal:define="icon_url here/iconHandler/absolute_url;
                                     link_url python:here.absolute_url()+'/zopra_table_action_selector?table=%s' % table;">
                 <legend class="" tal:content="python: tobj.getLabel()">Tablename</legend>
-                  <form class="" method="post" action="" 
+                  <form class="" method="post" action=""
                         tal:attributes="action python:here.absolute_url()+'/zopra_table_action_selector'">
 
                 <table border="0">
                 <tr><td>
-                  <a class="" 
-                     title="Neuen Eintrag anlegen" 
+                  <a class=""
+                     title="Neuen Eintrag anlegen"
                      tal:define="name python:'f_'+table+'_intern_create';"
                      tal:attributes="href python: link_url + '&' + name + '=create'">
                     <img class="action_image" width="92" height="50" alt=""
@@ -103,10 +103,10 @@
 
           <tal:block tal:repeat="listname lists">
             <div class="field"
-                 tal:define="lobj python:here.listHandler[listname]" 
+                 tal:define="lobj python:here.listHandler[listname]"
                  tal:condition="python:lobj.noedit != True">
               <a tal:define="global foundone python: foundone or not lobj.noedit;"
-                 href="" 
+                 href=""
                  tal:attributes="href python:here.absolute_url()+'/zopra_list_edit_form?listname=' + listname;" tal:content="python: lobj.getLabel()">
                 Listname
               </a>
