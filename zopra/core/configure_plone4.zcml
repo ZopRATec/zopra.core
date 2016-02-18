@@ -6,9 +6,9 @@
     xmlns:cmf           = "http://namespaces.zope.org/cmf"
     i18n_domain         = "zopra.core">
 
-    <five:registerPackage 
-        package     =  "." 
-        initialize  = ".initialize" 
+    <five:registerPackage
+        package     =  "."
+        initialize  = ".initialize"
         />
 
     <genericsetup:registerProfile
@@ -20,13 +20,29 @@
         />
 
     <!-- not yet to retain backward compatibility
-        <i18n:registerTranslations directory="locales" /> 
+        <i18n:registerTranslations directory="locales" />
     -->
 
-    <cmf:registerDirectory 
-        name        = "skins" 
-        directory   = "skins" 
-        recursive   = "True" 
+    <cmf:registerDirectory
+        name        = "skins"
+        directory   = "skins"
+        recursive   = "True"
         />
-  
+
+    <utility
+      factory=".sharing.ZopRAAuthorRoleDelegation"
+      provides="plone.app.workflow.interfaces.ISharingPageRole"
+      name="ZopRAAuthor"
+      />
+    <utility
+      factory=".sharing.ZopRAReviewerRoleDelegation"
+      provides="plone.app.workflow.interfaces.ISharingPageRole"
+      name="ZopRAReviewer"
+      />
+    <utility
+      factory=".sharing.ZopRAAdminRoleDelegation"
+      provides="plone.app.workflow.interfaces.ISharingPageRole"
+      name="ZopRAAdmin"
+      />
+
 </configure>

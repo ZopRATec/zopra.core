@@ -7,16 +7,20 @@
     <tal:comment tal:replace="nothing">
 
     </tal:comment>
-    
+
     <metal:css_slot fill-slot="css_slot">
        <link rel="stylesheet" type="text/css" media="all"  tal:attributes="href string:${portal_url}/zopra.css" />
        <link rel="stylesheet" type="text/css" media="all"  tal:attributes="href string:${portal_url}/zopra_edit.css" />
     </metal:css_slot>
-    
+
+      <metal:topslot fill-slot="top_slot">
+          <tal:block tal:define="global isAnon context/@@plone_portal_state/anonymous;"></tal:block>
+      </metal:topslot>
+
     <metal:main fill-slot="main">
 
       <tal:block tal:condition="isAnon">
-        <div tal:define="dummy python: request.RESPONSE.redirect('/login_form')" />
+        <tal:block replace="context/raiseUnauthorized"></tal:block>
       </tal:block>
 
       <form name="delete_form"
@@ -29,15 +33,15 @@
                      coltypes python:tobj.getColumnDefs();
                      fieldsets python:here.getLayoutInfo(table, 'edit');
                      autoid request/del_autoid;
-					 cons python: context.getTableEntryFromRequest(table, request, search=True);
+                     cons python: context.getTableEntryFromRequest(table, request, search=True);
                      entry python:tobj.getEntry(autoid);
                      copyentry python: here.zopra_forceCopy(table, entry);
                      origentry python: here.zopra_forceOriginal(table, entry);
                      ak python: entry.get('autoid') != origentry.get('autoid');
                      sk python: entry.get('istranslationof');
-					 button_res request/form.button.DelFromResult|nothing;
-					 button_list request/form.button.DelFromList|nothing;
-					 button python: button_res and 'form.button.DelFromResult' or button_list and 'form.button.DelFromList' or 'form.button.Delete';"
+                     button_res request/form.button.DelFromResult|nothing;
+                     button_list request/form.button.DelFromList|nothing;
+                     button python: button_res and 'form.button.DelFromResult' or button_list and 'form.button.DelFromList' or 'form.button.Delete';"
             tal:attributes="action string:${here/getId}/${template/getId}" >
 
       <h1>
@@ -48,10 +52,10 @@
         <span i18n:translate="" tal:content="python: tobj.getLabel()"></span>
         <span tal:content="python: here.getLabelString(table, autoid, entry)"></span>
       </h1>
-	  
-	  <!-- table cons set as hidden inputs for the form to be able to traverse back to search result afterwards (if button_res is set) -->
+
+      <!-- table cons set as hidden inputs for the form to be able to traverse back to search result afterwards (if button_res is set) -->
         <tal:block tal:condition="button_res"
-		           tal:repeat="con python: cons.keys()">
+                   tal:repeat="con python: cons.keys()">
             <tal:def tal:define="attr_type python: tobj.getField(con).get('TYPE')">
                 <tal:block tal:condition="python: attr_type in ['multilist', 'singlelist']">
                     <tal:block tal:repeat="oneval python: cons.get(con, [])">
@@ -65,59 +69,54 @@
                 </tal:block>
             </tal:def>
         </tal:block>
-	  
+
       <div class="formHelp">
-      	<span tal:condition="python: ak">
+          <span tal:condition="python: ak">
           Beim Löschen einer Arbeitskopie wird der Originaleintrag nicht verändert. Die Änderungen der Arbeitskopie gehen verloren.
         </span>
-		<span tal:condition="python: not ak and not sk">
+        <span tal:condition="python: not ak and not sk">
           Beim Löschen eines Originaleintrags werden automatisch die Sprachkopie und die Arbeitskopie mit gelöscht, sofern vorhanden.
         </span>
-      	<span tal:condition="python: not ak and sk">
+          <span tal:condition="python: not ak and sk">
           Beim Löschen einer Sprachkopie wird der Originaleintrag nicht verändert. Eine eventuell existierende Arbeitskopie der Sprachkopie wird mit gelöscht.
-		</span>
+        </span>
       </div>
-      
+
       <div class="formHelp" tal:condition="request/origtable|nothing">
         Sie löschen einen verknüpften Eintrag. Die Verknüpfung im dazugehörigen Haupteintrag vom Typ <span tal:content="request/origtable"></span> wird beim Löschen entfernt.
         <input type="hidden" name="origtable" tal:attributes="value request/origtable" />
         <input type="hidden" name="origid" tal:attributes="value request/origid" />
         <input type="hidden" name="origattribute" tal:attributes="value request/origattribute" />
       </div>
-      
+
       <span>Sind sie sicher?</span>
-      
+
         <div class="formControlsZopRA"
                tal:define="process_creation request/process_creation|nothing;">
-      
+
             <input class="context"
-                   tabindex=""
                    type="submit"
                    name=""
                    value="Löschen"
                    i18n:domain="plone"
                    i18n:attributes="value"
-                   tal:attributes="tabindex tabindex/next; name button" 
+                   tal:attributes="name button"
             />
-        
+
             <input class="standalone"
-                   tabindex=""
                    onclick="history.back(-1)"
                    type="button"
                    name="form.button.Cancel"
                    value="Zurück"
-				   tal:condition="not:request/origid|nothing"
-                   tal:attributes="tabindex tabindex/next;" 
+                   tal:condition="not:request/origid|nothing"
             />
-			
-			<input class="standalone"
-                   tabindex=""
+
+            <input class="standalone"
                    onclick="top.close()"
                    type="button"
                    name="form.button.Cancel"
                    value="Schliessen"
                    tal:condition="request/origid|nothing"
-                   tal:attributes="tabindex tabindex/next;" 
             />
         </div>
         <input type="hidden" name="form.submitted" value="1" />
@@ -127,9 +126,9 @@
       </form>
     </metal:main>
 
-    <metal:column_two_slot fill-slot="column_two_slot">
+    <!--<metal:column_two_slot fill-slot="column_two_slot">
       <metal:block metal:use-macro="here/zopra_context_menu/macros/context_menu" />
-    </metal:column_two_slot>
+    </metal:column_two_slot>-->
 
     <metal:bottom fill-slot="bottom">
       <metal:block metal:use-macro="here/zopra_bottom/macros/bottom" />

@@ -58,7 +58,7 @@ class TemplateBaseManager(GenericManager):
         """\brief Function called after creation by manageAddGeneric"""
         # add table constraints
         pass
-    
+
 
     def index_html(self, REQUEST):
         """\brief forward one level up"""
@@ -86,18 +86,18 @@ class TemplateBaseManager(GenericManager):
         """\brief Overwrite for special permission settings. Returns list of allowed roles."""
         # Standarddefinition
         # permissions: list_edit, table_create, table_show, table_edit, table_list, table_delete, table_show_own, table_list_own, table_edit_own, table_delete_own
-        # "own" permissions are checked via userlogin field 
+        # "own" permissions are checked via userlogin field
         # -> extra field for transition phase, later integrated into edit_tracking_fields
-        
+
         # ZopRAAuthor can list_edit, table_show / table_edit / table_list
         # ZopRAReviewer can publish if publishing is active
-        stddef = {'list_edit': ['Admin', 'ZopRAAuthor', 'ZopRAReviewer'],
-                  'table_create': ['Admin', 'ZopRAAuthor', 'ZopRAReviewer'],
-                  'table_show': ['Admin', 'ZopRAAuthor', 'ZopRAReviewer'],
-                  'table_edit': ['Admin', 'ZopRAAuthor', 'ZopRAReviewer'],
-                  'table_list': ['Admin', 'ZopRAAuthor', 'ZopRAReviewer'],
-                  'table_delete': ['Admin', 'ZopRAReviewer'],
-                  'table_publish': ['Admin', 'ZopRAReviewer']}
+        stddef = {'list_edit': ['ZopRAAdmin', 'ZopRAAuthor', 'ZopRAReviewer'],
+                  'table_create': ['ZopRAAdmin', 'ZopRAAuthor', 'ZopRAReviewer'],
+                  'table_show': ['ZopRAAdmin', 'ZopRAAuthor', 'ZopRAReviewer'],
+                  'table_edit': ['ZopRAAdmin', 'ZopRAAuthor', 'ZopRAReviewer'],
+                  'table_list': ['ZopRAAdmin', 'ZopRAAuthor', 'ZopRAReviewer'],
+                  'table_delete': ['ZopRAAdmin', 'ZopRAReviewer'],
+                  'table_publish': ['ZopRAAdmin', 'ZopRAReviewer']}
         # check for these roles
         roles = stddef.get(permission, [])
         if not roles:
@@ -112,23 +112,23 @@ class TemplateBaseManager(GenericManager):
         # this isn't the final solution, this should be integrated with entry-permissions and gui-permissions
         # which were used before, unfortunately the handling was centered around the security-manager
         # this handling works with zope roles only, but covers workflows and working copies
-        
+
         # no workflows
             # working copies -> author can do show / edit, Reviewer can delete
             # no working copies -> author can do anything (show / edit / delete)
         user = getSecurityManager().getUser()
-        perms = []    
+        perms = []
 
         if not self.doesWorkingCopies(table):
             # check Author
-            if user.has_role(['ZopRAAuthor', 'Admin'], self):
+            if user.has_role(['ZopRAAuthor', 'ZopRAAdmin'], self):
                 perms = ['show', 'edit', 'delete']
         else:
             # check Author
             if user.has_role('ZopRAAuthor', self):
                 perms = ['show', 'edit']
             # check Reviewer (for del)
-            if user.has_role(['ZopRAReviewer', 'Admin'], self):
+            if user.has_role(['ZopRAReviewer', 'ZopRAAdmin'], self):
                 perms = ['show', 'edit', 'delete']
 
         return perms
@@ -137,15 +137,15 @@ class TemplateBaseManager(GenericManager):
     def doesWorkingCopies(self, table):
         """\brief """
         return False
-    
+
 
     def getWorkingCopies(self, table):
         """\brief """
         tobj = self.tableHandler[table]
         cons = {'iscopyof': '_not_NULL'}
         return tobj.getEntryList(constraints = cons)
-    
-    
+
+
     def getWorkingCopy(self, table, autoid):
         """\brief Return the working copy or None"""
         if self.doesWorkingCopies(table):
@@ -154,14 +154,14 @@ class TemplateBaseManager(GenericManager):
                 return copy[0]
 
         return None
-    
-    
+
+
     def createWorkingCopy(self, table, entry):
         # used to create a working copy of an entry
         tobj = self.tableHandler[table]
-        
+
         # TODO: Check if a WC exists, return it instead of creating?
-        
+
         # copy the objects
         copy = deepcopy(entry)
         # set copy data
@@ -173,8 +173,8 @@ class TemplateBaseManager(GenericManager):
         copy['autoid'] = int(autoid)
         # return copy for further usage
         return copy
-    
-    
+
+
     def updateWorkingCopy(self, table, entry_diff):
         # this is useful when the edit-functionality of another table makes changes to entries of a table using working copies
         # and when a working copy is confirmed and there is a translation of the entry that also has a working copy
@@ -200,7 +200,7 @@ class TemplateBaseManager(GenericManager):
     def doesTranslations(self, table):
         """\brief """
         return False
-    
+
 
     def updateTranslation(self, table, entry_diff):
         # this is useful when the edit-functionality of another table makes changes to entries of a table using translations
@@ -281,6 +281,8 @@ class TemplateBaseManager(GenericManager):
             root.setConstraints(constraints)
         return tobj.requestEntryCount(root)
 
+    def calculatePaginationPages(self, rowcount, count):
+        return (rowcount + count - 1) / count
 
     def getEntryListProxy(self, table,
                       show_number    = None,
@@ -305,15 +307,24 @@ class TemplateBaseManager(GenericManager):
             fi.setOperator(fi.OR)
         return tobj.requestEntries(root, show_number, start_number)
 
+    def handleHierarchyListOnSearch(self, table, cons):
+        """\brief Add to given branch item all his possible children"""
+        for key in cons:
+            if self.isHierarchyList(key):
+                selectList = []
+                for item in cons[key]:
+                    selectList.append(item)
+                    selectList = selectList + self.listHandler.getList(table, key).getHierarchyListDescendants(item)
+                cons[key] = selectList
 
     def parseConstraintsForOutput(self, attr_value, attr_type):
         """\brief Search Param Visualisation preparation"""
-        # general behaviour: this is called by the search result template to generate 
+        # general behaviour: this is called by the search result template to generate
         # nicer values for constraint display
         # problem: complex search with sub-tables is ignored, the prefixed constraints get treated as string
         #  (resulting in empty labels and autoids in the constraint display for lists
         # TODO: Fix the sub-table workaround and check constraints for every sub-table separately -> need sub-table layout for that
-        
+
         # for memo and string fields, ListTypes can arrive here, and for list fields as well, check type
         if attr_type == 'string' and isinstance(attr_value, ListType):
             # strip the <any>-Operator (*) from each value part and join them by space
@@ -334,7 +345,7 @@ class TemplateBaseManager(GenericManager):
     def generateMailLink(self, email):
         """\brief generate link string from email to avoid tal:attributes quoting of scrambled email string"""
         return '<a href="mailto:%s">%s</a>' % (email, email)
-        
+
 
     def encrypt_ordtype(self, s):
         # listcomprehensions nested and with evaluation expression for speed
@@ -382,12 +393,12 @@ class TemplateBaseManager(GenericManager):
             res = getattr(self, name)(table, action)
         if res:
             return res
-        
+
         if hasattr(self, 'getLayoutInfoHook'):
             res = self.getLayoutInfoHook(table, action)
         if res:
             return res
-        
+
         # default
         if action in ['create', 'edit', 'show']:
             fields = self.tableHandler[table].getColumnDefs(vis_only = False, edit_tracking = False).keys()
@@ -395,8 +406,8 @@ class TemplateBaseManager(GenericManager):
             fields = self.tableHandler[table].getColumnDefs(vis_only = True, edit_tracking = False).keys()
         res = [{'label': 'Datenfelder', 'fields': fields}]
         return res
-        
-        
+
+
     def getHelpTexts(self, table):
         """\brief helptexts"""
         # allow external scripts
@@ -406,20 +417,20 @@ class TemplateBaseManager(GenericManager):
             res = getattr(self, name)(table)
         if res:
             return res
-        
+
         if hasattr(self, 'getHelpTextsHook'):
             res = self.getHelpTextsHook(table)
         if res:
             return res
-        
+
         return {}
-    
-    
+
+
     def getDefaultSearchValues(self, table):
         """\brief return default value dict for search"""
         return {}
-        
-    
+
+
     def getDefaultCreateValues(self, table):
         """\brief return default value dict for creation"""
         return {}
@@ -492,7 +503,7 @@ class TemplateBaseManager(GenericManager):
 # Display Support Functions
 #
 
-    
+
     # the really nice formatting is bad for parsing on edit -> dropped it for now
     #def formatCurrency(self, value):
     #    """\brief Format value as currency with 1000er breaker points and one comma"""
@@ -511,14 +522,15 @@ class TemplateBaseManager(GenericManager):
         return newlist
 
 
-    def getRelatedEntries(self, autoid, table, attribute):
+    def getRelatedEntries(self, autoid, table, attribute, lang = None):
         """\brief get Entries of table that are connected to an entry of another
                   table with autoid autoid via multilist named attribute (backref)"""
         # FIXME: saving such an entry, you have to check the translations and their relations
         # FIXME: Do you? could just jump to the translations every time you call it
+        # FIXED: return all entries for all languages, in template select only relevant languages
         lobj = self.listHandler.getList(table, attribute)
         getEntry = self.tableHandler[table].getEntry
-        return [getEntry(autoid) for autoid in lobj.getMLRef(None, autoid)]
+        return [getEntry(autoid, lang) for autoid in lobj.getMLRef(None, autoid)]
 
 
     def prepareLinks(self, text):
@@ -551,7 +563,7 @@ class TemplateBaseManager(GenericManager):
                 return s.group()
         # apply the function to all hits of the expression
         return expr.sub(apply, text)
-    
+
     def removeLinks(self, text):
         """\brief find all links in text starting with www or http and remove the []-label"""
         expr = re.compile(r'((?:mailto\:|https?\://){1}\S+)\s*?(\[.*?\])')
@@ -617,7 +629,7 @@ class TemplateBaseManager(GenericManager):
             # (where adding and removing a selection from a multilist results in an empty list being transmitted as search param)
             if search and col_types[col] in ('multilist', 'hierarchylist') and entry.get(col) == []:
                 del entry[col]
-                
+
         return entry
 
 
@@ -627,7 +639,7 @@ class TemplateBaseManager(GenericManager):
         for entry in entries:
             entry['level'] = 0
         return entries
-  
+
 
     # disable basic Display Functions
     def infoForm(self, table, id, REQUEST):
@@ -836,4 +848,3 @@ class TemplateBaseManager(GenericManager):
         \result html page - export dialog
         """
         pass
-    

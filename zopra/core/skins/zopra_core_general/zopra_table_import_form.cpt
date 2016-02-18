@@ -7,20 +7,24 @@
     <tal:comment tal:replace="nothing">
 
     </tal:comment>
-    
+
     <metal:css_slot fill-slot="css_slot">
        <link rel="stylesheet" type="text/css" media="all"  tal:attributes="href string:${portal_url}/zopra.css" />
        <link rel="stylesheet" type="text/css" media="all"  tal:attributes="href string:${portal_url}/zopra_edit.css" />
     </metal:css_slot>
-    
+
+    <metal:topslot fill-slot="top_slot">
+          <tal:block tal:define="global isAnon context/@@plone_portal_state/anonymous;"></tal:block>
+    </metal:topslot>
+
     <metal:main fill-slot="main" tal:define="global importresult nothing;">
 
       <tal:block tal:condition="isAnon">
-        <div tal:define="dummy python: request.RESPONSE.redirect('/login_form')" />
+        <tal:block replace="context/raiseUnauthorized"></tal:block>
       </tal:block>
 
       <tal:block tal:define="fhandle python: request.get('file');
-	                         table request/table|nothing"
+                             table request/table|nothing"
                  tal:condition="fhandle">
         <tal:call tal:define="global importresult python: here.importTable(fhandle, table, request.get('tabs'))" />
       </tal:block>
@@ -45,7 +49,7 @@
             <div class="formHelp" i18n:translate="">
                 Die Importdaten (z.B. aus Excel) als komma-separierter oder tabstopp-separierter Text (CSV).
             </div>
-              
+
             <input type="file" name="file" />
 
           </div>
@@ -55,7 +59,7 @@
             <div class="formHelp" i18n:translate="">
                 Aktivieren Sie diese Option, wenn die Datei als tab-separierter Text formatiert ist.
             </div>
-              
+
             <input type="checkbox" name="tabs" value="1" />
 
           </div>
@@ -63,28 +67,24 @@
 
           <div class="formControls"
                tal:define="process_creation request/process_creation|nothing;">
-      
+
             <input class="context"
-                   tabindex=""
                    type="submit"
                    name="form.button.Save"
                    value="Save"
                    i18n:domain="plone"
                    i18n:attributes="value"
-                   tal:attributes="tabindex tabindex/next;" 
             />
-        
+
             <input class="standalone"
-                   tabindex=""
                    type="submit"
                    name="form.button.Cancel"
                    value="Cancel"
                    i18n:attributes="value"
-                   tal:attributes="tabindex tabindex/next;" 
             />
 
           </div>
-          <div id="import result" 
+          <div id="import result"
                tal:condition="importresult" tal:content="structure python: importresult.replace('\n', '<br />')">
             Import Result
           </div>
@@ -94,9 +94,9 @@
       </form>
     </metal:main>
 
-    <metal:column_two_slot fill-slot="column_two_slot">
+    <!--<metal:column_two_slot fill-slot="column_two_slot">
       <metal:block metal:use-macro="here/zopra_context_menu/macros/context_menu" />
-    </metal:column_two_slot>
+    </metal:column_two_slot>-->
 
     <metal:bottom fill-slot="bottom">
       <metal:block metal:use-macro="here/zopra_bottom/macros/bottom" />

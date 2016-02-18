@@ -14,10 +14,8 @@
   <tal:block tal:define="urllookup python:attr_name.startswith('url') or attr_name.startswith('image_')">
     <input type="text"
            size="50"
-           tabindex=""
            tal:attributes="value attr_value; name attr_name; id attr_name;
-                           class python: urllookup and 'urlinput' or 'textinput';
-                           tabindex tabindex/next;"
+                           class python: urllookup and 'urlinput' or 'textinput'"
     />
     <input tal:condition="urllookup"
            class="standalone"
@@ -35,9 +33,7 @@
   <input type="text"
          class="numberinput"
          size="10"
-         tabindex=""
-         tal:attributes="value attr_value; name attr_name; id attr_name;
-                         tabindex tabindex/next;"
+         tal:attributes="value attr_value; name attr_name; id attr_name"
     />
 </metal:widget_int>
 
@@ -45,10 +41,8 @@
   <input type="text"
          class="numberinput"
          size="10"
-         tabindex=""
          tal:attributes="value python: ('%s' % attr_value).replace('.', ',');
-                         name attr_name; id attr_name;
-                         tabindex tabindex/next;"
+                         name attr_name; id attr_name"
     />
 </metal:widget_float>
 
@@ -56,10 +50,8 @@
   <input type="text"
          class="numberinput"
          size="10"
-         tabindex=""
          tal:attributes="value python: context.prepare_zopra_currency_value(attr_value);
-                         name attr_name; id attr_name;
-                         tabindex tabindex/next;"
+                         name attr_name; id attr_name"
     />
 </metal:widget_currency>
 
@@ -67,9 +59,7 @@
   <input type="text"
          class="numberinput"
          size="10"
-         tabindex=""
-         tal:attributes="value attr_value; name attr_name; id attr_name;
-                         tabindex tabindex/next;"
+         tal:attributes="value attr_value; name attr_name; id attr_name"
     />
 </metal:widget_date>
 
@@ -79,9 +69,7 @@
   <input type="checkbox"
          class="checkbox"
          value="1"
-         tabindex=""
-         tal:attributes="checked python:bool(attr_value) and attr_value != '0'; name attr_name; id attr_name;
-                         tabindex tabindex/next;"
+         tal:attributes="checked python:bool(attr_value) and attr_value != '0'; name attr_name; id attr_name"
     />
 </metal:widget_bool>
 
@@ -163,7 +151,7 @@
                        tal:content="python: tmp_store.get(int(selected), '')">Value</a>
                 </td>
                 <tal:block tal:condition="notes">
-                    <td tal:define="notesname python: attr_name + 'notes' + str(selected);
+                    <td tal:define="notesname python: attr_name + 'notes' + unicode(selected);
                                     val python: attr_notes.get(notesname);">
                         <tal:block tal:condition="python: isinstance(notes, bool)">
                             <input type="text" tal:attributes="name notesname;

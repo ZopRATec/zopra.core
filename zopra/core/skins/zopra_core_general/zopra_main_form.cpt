@@ -33,13 +33,13 @@
      </metal:topslot>
 
     <metal:main fill-slot="main">
-      <tal:block tal:condition="python: isAnon or not (user.has_role(('SInSAuthor', 'SInSReviewer', 'ZopRAAuthor', 'ZopRAReviewer', 'Admin'), here))">
-        <div tal:define="dummy python: request.RESPONSE.redirect('login_form?came_from=' + here.absolute_url() +'/zopra_main_form')" />
+      <tal:block tal:condition="python: isAnon or not (user.has_role(('ZopRAAuthor', 'ZopRAReviewer', 'ZopRAAdmin'), here))">
+        <tal:block replace="context/raiseUnauthorized"></tal:block>
       </tal:block>
 
       <tal:block tal:define="zpath python: hasattr(here, 'zopra_path') and here.zopra_path or 'app/pm';
-	                         pm python:here.path2ob(zpath);
-							 check python: pm or here.migrate_raiser('Product not found, check the zopra_path property or name your Product Manager pm.');
+                             pm python:here.path2ob(zpath);
+                             check python: pm or here.migrate_raiser('Product not found, check the zopra_path property or name your Product Manager pm.');
                              all python:pm.getNaviManagerUrls(None, False);">
         <h1 i18n:translate="">Module</h1>
         <ul>
@@ -60,9 +60,9 @@
       </tal:block>
     </metal:main>
 
-    <metal:column_two_slot fill-slot="column_two_slot">
+    <!--<metal:column_two_slot fill-slot="column_two_slot">
       <metal:block metal:use-macro="here/zopra_context_menu/macros/context_menu" />
-    </metal:column_two_slot>
+    </metal:column_two_slot>-->
 
     <metal:bottom fill-slot="bottom">
       <metal:block metal:use-macro="here/zopra_bottom/macros/bottom" />

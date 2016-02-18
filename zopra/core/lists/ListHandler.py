@@ -167,6 +167,16 @@ class ListHandler(Folder):
     def __contains__(self, key):
         return self.hasObject(key)
 
+    def keys(self):
+        """\brief returns all names of basic List objects"""
+        keylist = []
+        for item in dir(self):
+            if hasattr(self, str(item)):
+                attr = getattr(self, item)
+                # just take genuine db lists
+                if hasattr(attr, '_classType') and 'List' in attr._classType:
+                    keylist.append(item)
+        return keylist
 
     def getListIDs(self):
         """ This method returns all the IDs for the handled table.

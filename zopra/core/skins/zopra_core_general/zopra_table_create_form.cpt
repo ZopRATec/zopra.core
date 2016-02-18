@@ -12,7 +12,7 @@
             <link rel="stylesheet" type="text/css" media="all"  tal:attributes="href string:${portal_url}/zopra.css" />
             <link rel="stylesheet" type="text/css" media="all"  tal:attributes="href string:${portal_url}/zopra_edit.css" />
             <link rel="stylesheet" type="text/css" media="print"  tal:attributes="href string:${portal_url}/sins_print.css" />
-        
+
             <link rel="stylesheet" type="text/css" tal:attributes="href string:${portal_url}/fancybox/jquery.fancybox-1.3.4.css" media="screen" />
             <link rel="stylesheet" type="text/css" tal:attributes="href string:${portal_url}/fancybox-textarea/jquery.fancybox.textarea.css" media="screen" />
             <link rel="stylesheet" type="text/css" tal:attributes="href string:${portal_url}/multi-select/multi-select.css" media="screen" />
@@ -28,15 +28,20 @@
             <!--
                   $(document).ready(function() {
                       $("textarea").textareaPopup();
-                      $("select.multi").multiSelect({selectedHeader:"&nbsp;Gewählte Items", selectableHeader: "&nbsp;Auswählbare Items", });
+                      $('select[multiple]').multiSelect({selectedHeader:"&nbsp;Gewählte Items", selectableHeader: "&nbsp;Auswählbare Items", });
                   });
             -->
             </script>
+            <script type="text/javascript" tal:attributes="src string:${portal_url}/multi-select_filter.js"></script>
       </metal:javascriptslot>
+
+    <metal:topslot fill-slot="top_slot">
+          <tal:block tal:define="global isAnon context/@@plone_portal_state/anonymous;"></tal:block>
+    </metal:topslot>
 
       <metal:main fill-slot="main" tal:define="table request/table;">
             <tal:block tal:condition="isAnon">
-                  <div tal:define="dummy python: request.RESPONSE.redirect('/login_form')" />
+                  <tal:block replace="context/raiseUnauthorized"></tal:block>
             </tal:block>
             <form name="edit_form"
                   action="."
@@ -57,11 +62,11 @@
 
               <h1 i18n:translate="" tal:content="python: 'Erstellung ' + tobj.getLabel()"></h1>
               <metal:block metal:use-macro="here/zopra_button_link_bar/macros/buttons_add" />
-				  
+
               <tal:block tal:define="show_additional python: not here.doesTranslations(table) or entry.get('language') == 'de'"
                          tal:repeat="fieldset fieldsets">
                 <fieldset id="addFieldset"
-				          tal:define="add_macro python: 'additional_%s_%s' % (table, fieldset.get('label'));
+                          tal:define="add_macro python: 'additional_%s_%s' % (table, fieldset.get('label'));
                                       add_path python: 'zopra_table_create_additional_%s' % here.meta_type;
                             add_check python: 'zopra_table_create_has_additional_%s' % here.meta_type;
                             add_checked python: exists(add_check) and getattr(here, add_check)(table, entry, request);
@@ -73,9 +78,9 @@
                                                fieldlist python: 'repeatfields' in fieldset.keys() and context.listdiff(fieldset['fields'], fieldset['repeatfields']) or fieldset['fields'];"
                                    tal:repeat="attr_name fieldlist">
                           <tal:block tal:define="br br|nothing;
-						                         global br python: br or attr_name == '<br>'"
-						             tal:condition="python: attr_name != '<br>'">
-						   
+                                                 global br python: br or attr_name == '<br>'"
+                                     tal:condition="python: attr_name != '<br>'">
+
                             <tal:check tal:define="dummy python: not coltypes.get(attr_name) and here.migrate_raiser('Field not found: ' + attr_name)"></tal:check>
 
                             <div class="field"
@@ -109,8 +114,8 @@
                               <metal:block metal:use-macro="here/zopra_widget_edit_display/macros/widget_selector" />
 
                             </div>
-							<tal:check tal:define="global br python:False"></tal:check>
-						  </tal:block>
+                            <tal:check tal:define="global br python:False"></tal:check>
+                          </tal:block>
                         </tal:block>
                         <tal:repeatfields condition="python: 'repeatfields' in fieldset.keys()">
                               <div style="clear:both;"></div>
@@ -217,7 +222,7 @@
                         </tal:additional>
 
                   </fieldset>
-				</tal:block>
+                </tal:block>
 
                 <metal:block metal:use-macro="here/zopra_button_link_bar/macros/buttons_add" />
 
@@ -240,9 +245,9 @@
             </form>
       </metal:main>
 
-      <metal:column_two_slot fill-slot="column_two_slot">
+      <!--<metal:column_two_slot fill-slot="column_two_slot">
             <metal:block metal:use-macro="here/zopra_context_menu/macros/context_menu" />
-      </metal:column_two_slot>
+      </metal:column_two_slot>-->
 
       <metal:bottom fill-slot="bottom">
             <metal:block metal:use-macro="here/zopra_bottom/macros/bottom" />

@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<rolemap>
+    <roles>
+        <role name="ZopRAAuthor"/>
+        <role name="ZopRAReviewer"/>
+        <role name="ZopRAAdmin"/>
+    </roles>
+    <permissions>
+    </permissions>
+</rolemap>

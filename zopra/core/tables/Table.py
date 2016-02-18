@@ -805,24 +805,30 @@ class Table(SimpleItem, PropertyManager):
                                 res = True
                             else:
                                 # item still in there, check notes
-                                notes_new = descr_dict.get(multilist.listname + 'notes' + str(item))
-                                notes_new = notes_new != 'NULL' and notes_new or None
-                                notes_old = multilist.getMLNotes(autoid, item)
-                                # notes differ, change them in the DB
-                                if notes_new != notes_old:
-                                    multilist.updateMLNotes(autoid, item, notes_new)
+                                if multilist.notes:
+                                    notes_new = descr_dict.get(multilist.listname + 'notes' + unicode(item))
+                                    notes_new = notes_new != 'NULL' and notes_new or None
+                                    notes_old = multilist.getMLNotes(autoid, item)
+                                    # notes differ, change them in the DB
+                                    if notes_new != notes_old:
+                                        multilist.updateMLNotes(autoid, item, notes_new)
 
                                 # remove the item (remaining items will be added)
                                 valuelist.remove(item)
                         # insert remaining new items
                         for item in valuelist:
                             # check for notes
-                            notes = descr_dict.get(multilist.listname + 'notes' + str(item), '')
+                            notes = descr_dict.get(multilist.listname + 'notes' + unicode(item), '')
                             multilist.addMLRef( autoid, item, notes )
                             res = True
 
             except Exception, all_:
-                raise ValueError([descr_dict, all_.args])
+                # not sure whether this works, test and remove try/except
+                try:
+                    all_.args.append(descr_dict)
+                except:
+                    pass
+                raise
 
             # caching
             if self.do_cache:
@@ -1362,7 +1368,7 @@ class Table(SimpleItem, PropertyManager):
         # no caching for count requests
         results = mgr.getManager(ZM_PM).executeDBQuery( sql )
         if results:
-            return results[0][0]
+            return int(results[0][0])
         else:
             return 0
 
@@ -1609,7 +1615,7 @@ class Table(SimpleItem, PropertyManager):
 #
 # Foreign List management generic functions
 #
-    def getEntryValue(self, autoid, cols):
+    def getEntryValue(self, autoid, cols, lang=None):
         """\brief Returns a Valuestring consisting of the content of cols
                   for the entry with the given autoid.
         """
@@ -1622,14 +1628,19 @@ class Table(SimpleItem, PropertyManager):
             if not cols:
                 mgr = self.getManager()
                 if IGenericManager.providedBy(mgr):
-                    return mgr.getLabelString(self.tablename, None, entry)
+                    # check for language
+                    if mgr.doesTranslations(self.tablename):
+                        # TODO: unify getLabelString to always have a lang parameter
+                        return mgr.getLabelString(self.tablename, None, entry, lang)
+                    else:
+                        return mgr.getLabelString(self.tablename, None, entry)
                 else:
                     return entry.get(TCN_AUTOID)
             else:
                 value = []
                 for col in cols:
                     if entry.get(col):
-                        value.append( str(entry[col]) )
+                        value.append( unicode(entry[col]) )
                 return ' '.join(value)
         return ''
 

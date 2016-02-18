@@ -1,45 +1,46 @@
 <tal:comment replace="nothing">
     Use this, when you want to load additional widgets via Ajax.
     Additionally there will be posted the autoid (to check if there is a working copy).
-	
+
 </tal:comment>
 <tal:if condition="python: int(request.get('checkCopy','0')) == 1">
     <tal:block define="
-		table request/table;
-		autoid request/autoid;
-		tobj python: here.tableHandler[table];
-		origentry python: tobj.getEntry(autoid);
-		entry python: here.zopra_forceCopy(table, origentry);    
+        table request/table;
+        autoid request/autoid;
+        tobj python: here.tableHandler[table];
+        origentry python: tobj.getEntry(autoid);
+        entry python: here.zopra_forceCopy(table, origentry);
     ">
         <tal:block tal:replace="python:entry['autoid']"></tal:block>
     </tal:block>
 </tal:if>
 
 <tal:else condition="python: not request.get('checkCopy')">
-	<tal:block define="
-		errors python: {};
-		table request/table;
-		autoid request/autoid;
-		label request/label;
-		tobj python: here.tableHandler[table];
-		coltypes python:tobj.getColumnDefs();             
-		origentry python: tobj.getEntry(autoid);
-		entry python: here.zopra_forceCopy(table, origentry, request);
-		origentry python: here.zopra_forceOriginal(table, origentry);
-		diff python: origentry['autoid'] != entry['autoid'] and here.getDiff(origentry, entry) or [];
-		autoid python: entry.get('autoid')#again to get copy;
-		required python: here.getGenericConfig(table).get('required',[]);
-		edit_lang python: here.doesTranslations(table) and entry.get('language');
+    <tal:block define="
+        global lang here/portal_languages/getPreferredLanguage|here/language_used|here/Language|site_properties/default_language;
+        errors python: {};
+        table request/table;
+        autoid request/autoid;
+        label request/label;
+        tobj python: here.tableHandler[table];
+        coltypes python:tobj.getColumnDefs();
+        origentry python: tobj.getEntry(autoid);
+        entry python: here.zopra_forceCopy(table, origentry, request);
+        origentry python: here.zopra_forceOriginal(table, origentry);
+        diff python: origentry['autoid'] != entry['autoid'] and here.getDiff(origentry, entry) or [];
+        autoid python: entry.get('autoid')#again to get copy;
+        required python: here.getGenericConfig(table).get('required',[]);
+        edit_lang python: here.doesTranslations(table) and entry.get('language');
         portal_url here/portal_url;
-		">
-			  <tal:condition tal:condition="python: not here.doesTranslations(table) or entry.get('language') == 'de'">
-				<tal:additional tal:define="add_macro python: 'additional_%s_%s' % (table, label);
-                                            add_path python: 'zopra_table_edit_additional_%s' % here.meta_type;"
-                                tal:condition="exists: here/?add_path/macros/?add_macro">
-				  <metal:use metal:use-macro="here/?add_path/macros/?add_macro">
-					Additional Fields
-				  </metal:use>
-				</tal:additional>
-			  </tal:condition>
-	</tal:block>    
+        ">
+        <tal:condition tal:condition="python: not here.doesTranslations(table) or entry.get('language') == 'de'">
+            <tal:additional tal:define="add_macro python: 'additional_%s_%s' % (table, label);
+                                        add_path python: 'zopra_table_edit_additional_%s' % here.meta_type;"
+                            tal:condition="exists: here/?add_path/macros/?add_macro">
+                <metal:use metal:use-macro="here/?add_path/macros/?add_macro">
+                    Additional Fields
+                </metal:use>
+            </tal:additional>
+        </tal:condition>
+    </tal:block>
 </tal:else>

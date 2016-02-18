@@ -7,12 +7,12 @@
       i18n:domain="zopra">
 
   <body>
-  
+
       <metal:css_slot fill-slot="css_slot">
             <link rel="stylesheet" type="text/css" media="all"  tal:attributes="href string:${portal_url}/zopra.css" />
             <link rel="stylesheet" type="text/css" media="all"  tal:attributes="href string:${portal_url}/zopra_edit.css" />
             <link rel="stylesheet" type="text/css" media="print"  tal:attributes="href string:${portal_url}/sins_print.css" />
-            
+
             <link rel="stylesheet" type="text/css" tal:attributes="href string:${portal_url}/multi-select/multi-select.css" media="screen" />
       </metal:css_slot>
 
@@ -51,10 +51,14 @@
             <script type="text/javascript" tal:attributes="src string:${portal_url}/multi-select_filter.js"></script>
       </metal:javascriptslot>
 
+      <metal:topslot fill-slot="top_slot">
+          <tal:block tal:define="global isAnon context/@@plone_portal_state/anonymous;"></tal:block>
+      </metal:topslot>
+
     <metal:main fill-slot="main">
 
       <tal:block tal:condition="isAnon">
-        <div tal:define="dummy python: request.RESPONSE.redirect('/login_form')" />
+        <tal:block replace="context/raiseUnauthorized"></tal:block>
       </tal:block>
 
       <form name="search_form"
@@ -87,32 +91,32 @@
             <tal:block tal:define="br br|nothing;
                                    global br python: br or attr_name == '<br>'"
                        tal:condition="python: attr_name != '<br>'">
-		      <tal:check tal:define="dummy python: not coltypes.get(attr_name) and here.migrate_raiser('Field not found: ' + attr_name)"></tal:check>
-		
-		      <div class="field"
-		           tal:define="error python: errors.get(attr_name);
-		                       attr_value python:request.get(attr_name, '') or default.get(attr_name, '');
-		                       field python:coltypes[attr_name];
-		                       attr_type python:field['TYPE'];
-		                       attr_sort python:attr_name in sortables;"
-		           tal:attributes="class python: 'field' + (error and ' error' or '') + (br and ' floatclearer' or '')">
-		
-		        <label tal:attributes="for attr_name" tal:content="python: field['LABEL']" i18n:translate="">Attribute Name</label>
-		
-		        <div class="formHelp"
-		             tal:content="helpTexts/?attr_name |nothing">
-		          Hinweistext
-		        </div>
-		
-		        <div tal:condition="error" tal:content="error" i18n:domain="zopra" i18n:translate="">Validation error output</div>
-		
-		        <metal:block metal:use-macro="here/zopra_widget_search_display/macros/widget_selector" />
-		
-		      </div>
-		      <tal:check tal:define="global br python:False"></tal:check>
+              <tal:check tal:define="dummy python: not coltypes.get(attr_name) and here.migrate_raiser('Field not found: ' + attr_name)"></tal:check>
+
+              <div class="field"
+                   tal:define="error python: errors.get(attr_name);
+                               attr_value python:request.get(attr_name, '') or default.get(attr_name, '');
+                               field python:coltypes[attr_name];
+                               attr_type python:field['TYPE'];
+                               attr_sort python:attr_name in sortables;"
+                   tal:attributes="class python: 'field' + (error and ' error' or '') + (br and ' floatclearer' or '')">
+
+                <label tal:attributes="for attr_name" tal:content="python: field['LABEL']" i18n:translate="">Attribute Name</label>
+
+                <div class="formHelp"
+                     tal:content="helpTexts/?attr_name |nothing">
+                  Hinweistext
+                </div>
+
+                <div tal:condition="error" tal:content="error" i18n:domain="zopra" i18n:translate="">Validation error output</div>
+
+                <metal:block metal:use-macro="here/zopra_widget_search_display/macros/widget_selector" />
+
+              </div>
+              <tal:check tal:define="global br python:False"></tal:check>
             </tal:block>
           </tal:block>
-		  <tal:condition tal:condition="show_additional">
+          <tal:condition tal:condition="show_additional">
             <tal:additional tal:condition="exists: here/?add_path/macros/?add_macro">
               <metal:use metal:use-macro="here/?add_path/macros/?add_macro">
                 Additional Fields
@@ -131,9 +135,9 @@
 
 </metal:main>
 
-    <metal:column_two_slot fill-slot="column_two_slot">
+    <!--<metal:column_two_slot fill-slot="column_two_slot">
       <metal:block metal:use-macro="here/zopra_context_menu/macros/context_menu" />
-    </metal:column_two_slot>
+    </metal:column_two_slot>-->
 
     <metal:bottom fill-slot="bottom">
       <metal:block metal:use-macro="here/zopra_bottom/macros/bottom" />
