@@ -484,26 +484,36 @@ class ZopRAProduct(ManagerPart):
             no_diff_check = ['autoid', 'owner', 'entrydate', 'editor', 'changedate', 'creator']
             false_values = ['None', None, '', 0]
             for key in newentry:
-                if key not in no_diff_check and key in backup and backup[key] != newentry[key] and str(backup[key]) != newentry[key] and (backup[key] not in false_values or newentry[key] not in false_values):
+                if key not in no_diff_check and key in backup and backup[key] != newentry[key] and unicode(backup[key]) != newentry[key] and (backup[key] not in false_values or newentry[key] not in false_values):
                     # ignore different line endings
-                    if isinstance(backup[key], str) and isinstance(newentry[key], str):
-                        backup[key] = "\r\n".join(backup[key].splitlines())
-                        newentry[key] = "\r\n".join(newentry[key].splitlines())
-                        if backup[key] == newentry[key]:
+                    if isinstance(backup[key], basestring) and isinstance(newentry[key], basestring):
+                        # convert str objects to unicode objects if needed
+                        if isinstance(backup[key], str):
+                            backup_value = unicode(backup[key], "utf8")
+                        else:
+                            backup_value = backup[key]
+                        if isinstance(newentry[key], str):
+                            newentry_value = unicode(newentry[key], "utf8")
+                        else:
+                            newentry_value = newentry[key]
+
+                        backup[key] = "\r\n".join(backup_value.splitlines())
+                        newentry[key] = "\r\n".join(newentry_value.splitlines())
+                        if backup_value == newentry_value:
                             continue
 
-                diff_before[key] = isinstance(backup[key], str) and backup[key].splitlines() or [str(backup[key])]
-                diff_after[key] = isinstance(newentry[key], str) and newentry[key].splitlines() or [str(newentry[key])]
+                    diff_before[key] = isinstance(backup[key], basestring) and backup[key].splitlines() or [unicode(backup[key])]
+                    diff_after[key] = isinstance(newentry[key], basestring) and newentry[key].splitlines() or [unicode(newentry[key])]
 
         # Writes a string in the log table.
         ddict = {TCN_ACTION: action}
         ddict[TCN_TABLE] = tabid
         ddict[TCN_ENTRYID] = entryid
         # ddict[TCN_BACKUP] = str(backup)
-        ddict['username'] = str(getSecurityManager().getUser())
-        ddict['entrydiff_before'] = pickle.dumps(diff_before).replace('\\', '\\\\')
-        ddict['entrydiff_after'] = pickle.dumps(diff_after).replace('\\', '\\\\')
-        ddict['change_datetime'] = datetime.utcnow().isoformat().split('.')[0].replace('T', ' ')
+        ddict['username'] = unicode(getSecurityManager().getUser())
+        ddict['entrydiff_before'] = unicode(pickle.dumps(diff_before).replace('\\', '\\\\'), 'iso-8859-15')
+        ddict['entrydiff_after'] = unicode(pickle.dumps(diff_after).replace('\\', '\\\\'), 'iso-8859-15')
+        ddict['change_datetime'] = unicode(datetime.utcnow().isoformat().split('.')[0].replace('T', ' '))
 
         self.simpleInsertInto( self.id + TN_LOG,
                                self._manager_table_dict[TN_LOG],
