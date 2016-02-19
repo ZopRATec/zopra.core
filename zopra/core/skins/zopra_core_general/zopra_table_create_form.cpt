@@ -20,7 +20,6 @@
       </metal:css_slot>
 
       <metal:javascriptslot fill-slot="javascript_head_slot">
-            <script type="text/javascript" tal:attributes="src string:${portal_url}/jquery-ui-1.8.16.custom.min.js"></script>
             <script type="text/javascript" tal:attributes="src string:${portal_url}/fancybox/jquery.fancybox-1.3.4.pack.js"></script>
             <script type="text/javascript" tal:attributes="src string:${portal_url}/multi-select/jquery.multi-select.1.6.js"></script>
             <script type="text/javascript" tal:attributes="src string:${portal_url}/fancybox-textarea/jquery.fancybox.textarea.js" charset="utf-8"></script>
