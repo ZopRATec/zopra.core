@@ -401,7 +401,7 @@ msgid "sins_intv_link"
 msgstr "Link zum Interview"
 
 msgid "sins_m_Ord"
-msgstr "Ordnungen"
+msgstr "Studiendokumente"
 
 msgid "sins_cstct_tip"
 msgstr "Zur Seite mit den Kontaktdetails"
