@@ -576,10 +576,10 @@ msgid "want_to_study"
 msgstr "Ich will ein Studium in ..."
 
 msgid "want_beginn"
-msgstr "...beginnen"
+msgstr "... beginnen"
 
 msgid "want_continue"
-msgstr "...fortsetzen"
+msgstr "... fortsetzen"
 
 msgid "reset_selection"
 msgstr "Auswahl zurücksetzen"
