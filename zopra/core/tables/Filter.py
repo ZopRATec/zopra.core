@@ -566,6 +566,13 @@ class Filter:
                     operator = 'NOT ' + operator
 
                 conname = '%s%s.%s' % (mgrId, tablename, cons)
+
+                # special handling for mysql <> x - handling of NULL-Values (for all fields)
+                if operator == '<>':
+                    wherepart.append('(%s %s %s OR %s IS NULL)' % (conname, operator, value, conname))
+                else:
+                    # the default statement
+                    wherepart.append('%s %s %s' % (conname, operator, value))
             else:
                 # multilist-constraints
 
@@ -578,7 +585,7 @@ class Filter:
                     conname = '%s.%s' % (_list.dbname, cons)
                 else:
                     conname = '%smulti%s.%s' % (mgrId, cons, cons)
-            wherepart.append('%s %s %s' % (conname, operator, value))
+                wherepart.append('%s %s %s' % (conname, operator, value))
         if self.children:
             for child in self.children:
                 count = child.getConsCount()
