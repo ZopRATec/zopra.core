@@ -111,16 +111,16 @@ msgid "sins_start_typ"
 msgstr "Style of study"
 
 msgid "sins_start_indiv"
-msgstr "Individual search"
+msgstr "Advanced search"
 
 msgid "sins_start_choose"
 msgstr "- choose -"
 
 msgid "sins_start_grundst"
-msgstr "undergraduate"
+msgstr "[undergraduate]"
 
 msgid "sins_start_weiterf"
-msgstr "postgraduate"
+msgstr "[postgraduate]"
 
 msgid "sins_studiengaenge_Grundst"
 msgstr "Undergraduate"
@@ -540,3 +540,17 @@ msgstr "Go to the top"
 msgid "erp_importHelp"
 msgstr "Here you may upload a .csv-file with your data. If no errors are encountered, the data will be transfered. You may find a template to use with this feature with the instructionschapter 'Instruction to use the CSV Import'."
 
+msgid "want_to_study"
+msgstr "I would like to study ..."
+
+msgid "want_beginn"
+msgstr "... as undergraduate"
+
+msgid "want_continue"
+msgstr "... as postgraduate"
+
+msgid "reset_selection"
+msgstr "Reset selection"
+
+msgid "continue_reading"
+msgstr "Read more"

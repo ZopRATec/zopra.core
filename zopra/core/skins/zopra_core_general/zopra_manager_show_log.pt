@@ -38,6 +38,10 @@
 
     </metal:javascriptslot>
 
+    <metal:topslot fill-slot="top_slot">
+        <tal:block tal:define="global isAnon context/@@plone_portal_state/anonymous;"></tal:block>
+    </metal:topslot>
+
     <metal:main fill-slot="main"
          tal:define="table string:log;
                      zpath python: hasattr(here, 'zopra_path') and here.zopra_path or 'app/pm';

@@ -10,9 +10,12 @@
 
     <metal:css_slot fill-slot="css_slot">
       <link rel="stylesheet" type="text/css" tal:attributes="href string:${portal_url}/zopra.css" />
-      <link rel="stylesheet" type="text/css" tal:attributes="href string:${portal_url}/smoothness/jquery-ui-1.8.16.custom.css" />
       <link rel="stylesheet" type="text/css" tal:attributes="href string:${portal_url}/zopra_diff.css" />
     </metal:css_slot>
+
+    <metal:topslot fill-slot="top_slot">
+        <tal:block tal:define="global isAnon context/@@plone_portal_state/anonymous;"></tal:block>
+    </metal:topslot>
 
     <metal:main fill-slot="main">
 

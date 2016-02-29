@@ -73,6 +73,9 @@ class MySqlConnector(SqlConnector):
                               Default is False.
         """
 
+        if(isinstance(query_text, unicode)):
+            query_text = query_text.encode("utf8")
+
         conDA = self._getConnection()
         conn = conDA()
         # TODO: correct the data style handling

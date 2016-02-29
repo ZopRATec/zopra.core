@@ -99,19 +99,19 @@ msgid "sins_start_typ"
 msgstr "Studientyp"
 
 msgid "sins_start_indiv"
-msgstr "Individuelle Suche"
+msgstr "Detailsuche"
 
 msgid "sins_start_choose"
 msgstr "- auswählen -"
 
 msgid "sins_start_grundst"
-msgstr "grundständig"
+msgstr "[grundständig]"
 
 msgid "sins_studiengaenge_Grundst"
 msgstr "Grundständiges"
 
 msgid "sins_start_weiterf"
-msgstr "weiterführend"
+msgstr "[weiterführend]"
 
 msgid "sins_studiengaenge_Weiterf"
 msgstr "Weiterführendes"
@@ -401,7 +401,7 @@ msgid "sins_intv_link"
 msgstr "Link zum Interview"
 
 msgid "sins_m_Ord"
-msgstr "Ordnungen"
+msgstr "Studiendokumente"
 
 msgid "sins_cstct_tip"
 msgstr "Zur Seite mit den Kontaktdetails"
@@ -571,3 +571,18 @@ msgstr "Studiengangs - FAQ"
 
 msgid "tobeginning"
 msgstr "Zum Anfang"
+
+msgid "want_to_study"
+msgstr "Ich will ein Studium in ..."
+
+msgid "want_beginn"
+msgstr "... beginnen"
+
+msgid "want_continue"
+msgstr "... fortsetzen"
+
+msgid "reset_selection"
+msgstr "Auswahl zurücksetzen"
+
+msgid "continue_reading"
+msgstr "Weiterlesen"

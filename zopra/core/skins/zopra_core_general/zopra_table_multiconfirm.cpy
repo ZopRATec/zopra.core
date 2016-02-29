@@ -16,14 +16,14 @@ for autoid in confirm_ids:
 
     if not copyentry.get('iscopyof'):
         label = context.getLabelString(table, None, copyentry)
-        msg = 'Nur Arbeitskopien können freigegeben werden. Der Eintrag %s ist aktuell, die Freigabe wird abgebrochen.' % label
+        msg = u'Nur Arbeitskopien können freigegeben werden. Der Eintrag %s ist aktuell, die Freigabe wird abgebrochen.' % label
         return state.set(status='failure', context=context, portal_status_message=msg)
 
     origentry = context.tableHandler[table].getEntry(copyentry.get('iscopyof'))
 
     if not origentry:
         label = context.getLabelString(table, None, copyentry)
-        msg = 'Originaleintrag zu %s nicht auffindbar, Freigabe abgebrochen.' % label
+        msg = u'Originaleintrag zu %s nicht auffindbar, Freigabe abgebrochen.' % label
         return state.set(status='failure', context=context, portal_status_message=msg)
 
     origautoid = origentry['autoid']
@@ -34,7 +34,7 @@ for autoid in confirm_ids:
         for key in copyentry.keys():
             if key not in ['hastranslation', 'language']:
                 origentry[key] = copyentry[key]
-            
+
     else:
         # english copy stays the same except for text and string values
         types = tobj.getColumnTypes()
@@ -53,22 +53,22 @@ for autoid in confirm_ids:
     tobj.updateEntry(origentry, origautoid)
 
     # update the nontext values of the english version if it exists
-    en_msg = ''
+    en_msg = u''
     # check for translations
     if origentry.get('language') == context.lang_default and origentry.get('hastranslation'):
         # updateTranslation also updates the working copy of the translation, if it exists
         translated = context.updateTranslation(table, origentry)
         if translated:
-            en_msg = ' Die Nicht-Text-Felder der englischen Version wurde ebenfalls gespeichert.'
+            en_msg = u' Die Nicht-Text-Felder der englischen Version wurde ebenfalls gespeichert.'
     # check if this is a translation (for msg only, action done already)
     elif origentry.get('language') in context.lang_additional:
-        en_msg = ' Lediglich die Textfelder wurden übernommen, da es sich um eine Sprachkopie handelt.'
+        en_msg = u' Lediglich die Textfelder wurden übernommen, da es sich um eine Sprachkopie handelt.'
 
     # delete copy without deleting anything else (except multilists)
     context.tableHandler[table].deleteEntry(int(autoid))
     # build and append message
     label = context.getLabelString(table, None, origentry)
-    msgs.append('Eintrag %s freigegeben.%s Interne Id: %s' % (label, en_msg, origautoid))
-    
-msg = '<br />'.join(msgs)
+    msgs.append(u'Eintrag %s freigegeben.%s Interne Id: %s' % (label, en_msg, origautoid))
+
+msg = u'<br />'.join(msgs)
 return state.set(status='success', context=context, portal_status_message=msg)

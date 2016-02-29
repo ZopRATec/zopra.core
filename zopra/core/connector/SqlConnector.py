@@ -207,7 +207,15 @@ class SqlConnector(SimpleItem):
 
         # value = None leads to problems with str(value)
         if not (value is None or isinstance(value, ListType)):
-            value   = str(value).strip()
+            if not isinstance(value, unicode):
+                if isinstance(value, str):
+                    try:
+                        value = unicode(value, 'utf8')
+                    except UnicodeDecodeError:
+                        pass
+                else:
+                    value = unicode(value)
+            value = value.strip()
             pos_to  = value.find( '_to_' )
             # inserts of __ in text should work -> operator indicates search
             if operator:
@@ -236,7 +244,7 @@ class SqlConnector(SimpleItem):
                                                            label ),
                                   value
                                   )
-                value = '(%s)' % ', '.join(entry_list)
+                value = u'(%s)' % u', '.join(entry_list)
                 oper = 'IN'
 
         # check for _not_ NULL
@@ -266,7 +274,7 @@ class SqlConnector(SimpleItem):
                                                            label ),
                               valuelist
                               )
-            value = '(%s)' % ', '.join(entry_list)
+            value = u'(%s)' % u', '.join(entry_list)
         elif pos_lt != -1:
             oper  = '<'
             value = self.checkType( value[pos_lt + 3:].strip(),
@@ -302,7 +310,6 @@ class SqlConnector(SimpleItem):
 
             if column_type == 'string' or column_type == 'memo':
                 oper = ''
-                value = str(value)
                 if do_replace:
                     # replace wildcards
                     value = value.replace( "*", "%" )
@@ -312,7 +319,7 @@ class SqlConnector(SimpleItem):
                 value = value.replace( "\\\\'", "\\\'")
 
                 # we allow not like searches with keyword _not_
-                if str(value).find('_not_') == 0:
+                if value.find('_not_') == 0:
                     value = value[5:].lstrip()
                     oper    = 'not '
                 oper += self.LIKEOPERATOR
@@ -323,7 +330,7 @@ class SqlConnector(SimpleItem):
 
             elif column_type == 'int' or column_type == 'singlelist':
                 # we allow != searches with keyword _not_
-                if str(value).find('_not_') == 0:
+                if value.find('_not_') == 0:
                     value = value[5:].lstrip()
                     oper  = '<>'
                 else:
@@ -337,7 +344,7 @@ class SqlConnector(SimpleItem):
 
             elif column_type == 'float' or column_type == 'currency':
                 # we allow != searches with keyword _not_
-                if str(value).find('_not_') == 0:
+                if value.find('_not_') == 0:
                     value = value[5:].lstrip()
                     oper  = '<>'
                 else:
@@ -366,14 +373,13 @@ class SqlConnector(SimpleItem):
                 raise ValueError('checkType called on multi- or hierarchylist')
 
             else:
-                value = str(value)
                 oper  = '='
 
         if operator:
-            return (str(value), oper)
+            return (unicode(value), unicode(oper))
 
         else:
-            return str(value)
+            return unicode(value)
 
 
     def checkDateValue(self, value, labelstr = ''):
@@ -391,7 +397,7 @@ class SqlConnector(SimpleItem):
             else:
                 value = newvalue
 
-        value = "'%s'" % value
+        value = u"'%s'" % value
         oper += self.LIKEOPERATOR
         return oper, value
 
