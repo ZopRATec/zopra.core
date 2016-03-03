@@ -89,7 +89,7 @@
         <option value="">-auswählen-</option>
         <tal:block tal:repeat="entry entries">
             <tal:block condition="entry/value">
-                <option tal:attributes="value python: str(entry['autoid']); selected python:str(entry['autoid']) == str(attr_value);"
+                <option tal:attributes="value python: unicode(entry['autoid']); selected python:unicode(entry['autoid']) == unicode(attr_value);"
                     tal:content="python:entry['value']">
                 value
                 </option>
@@ -119,8 +119,8 @@
                     <tal:block tal:repeat="entry entries">
                         <tal:block condition="entry/value">
                             <option tal:define="bla python: tmp_store.update([(entry['autoid'], entry['value'])])"
-                                    tal:attributes="value python: str(entry['autoid']);
-                                                selected python:str(entry['autoid']) in [str(val) for val in attr_value];
+                                    tal:attributes="value python: unicode(entry['autoid']);
+                                                selected python:unicode(entry['autoid']) in [unicode(val) for val in attr_value];
                                                 title python: entry['value']"
                                     tal:content="python: entry['value']">
                                 value
@@ -156,7 +156,7 @@
                         <tal:block tal:condition="python: isinstance(notes, bool)">
                             <input type="text" tal:attributes="name notesname;
                                                                id notesname;
-                                                               value python: val and str(val) or '';">
+                                                               value python: val and unicode(val) or '';">
                         </tal:block>
                         <tal:block tal:condition="python: isinstance(notes, (unicode, str))">
                             <select tal:define="lobj2 python:here.listHandler[notes];
@@ -165,7 +165,7 @@
                                 <option value="NULL">-ausw&auml;hlen-</option>
                                 <tal:block tal:repeat="entry2 entries2">
                                     <tal:block condition="entry2/value">
-                                        <option tal:attributes="value python: str(entry2['autoid']); selected python:str(entry2['autoid']) == str(val);"
+                                        <option tal:attributes="value python: unicode(entry2['autoid']); selected python:unicode(entry2['autoid']) == unicode(val);"
                                                 tal:content="python:entry2['value']">
                                             value
                                         </option>
