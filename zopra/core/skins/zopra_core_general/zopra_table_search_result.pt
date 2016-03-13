@@ -82,7 +82,7 @@
 
         <!-- ausgewaehlte Kriterien (anhand originaler Constraints)-->
         <div tal:condition="cons">
-            <h2 i18n:translate="sins_sr_criteria">Ausgewählte Kriterien:</h2>
+            <h2 i18n:translate="sins_sr_criteria">Chosen criteria:</h2>
             <table class="search_criteria">
                 <tal:block tal:define="con_list python: cons.keys();
                                         dummy python: con_list.sort();"
