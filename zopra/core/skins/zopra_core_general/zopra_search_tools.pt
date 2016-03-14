@@ -46,7 +46,7 @@
                        tal:define="thisurl python: url + str(0);"
                        tal:attributes="href thisurl;"
                        i18n:translate="zopra_sr_label_pages_first"
-                       >erste</a>
+                       >first</a>
             </tal:block>
             
             <tal:block tal:condition="python:cur_page > 0">
@@ -54,7 +54,7 @@
                    tal:define="thisurl python: url + str(offset-count);"
                    tal:attributes="href thisurl;"
                    i18n:translate="zopra_sr_label_pages_before"
-                   >zur&uuml;ck</a> 
+                   >back</a>
             </tal:block>
             
             <span 
@@ -76,14 +76,14 @@
                 <a class="pagelink" title="eines weiter"  
                       tal:define="thisurl python: url + str(offset+count);"
                       i18n:translate="zopra_sr_label_pages_next"
-                       tal:attributes="href thisurl;">weiter</a>
+                       tal:attributes="href thisurl;">next</a>
             </tal:block>
             
             <tal:block tal:condition="python: cur_page != pages-1">
                 <a class="pagelink" title="letzte"  
                       tal:define="thisurl python: url + str(count*(pages-1));"
                       i18n:translate="zopra_sr_label_pages_last"
-                       tal:attributes="href thisurl;">letzte</a>
+                       tal:attributes="href thisurl;">last</a>
             </tal:block>
         </div>
     </metal:block>
