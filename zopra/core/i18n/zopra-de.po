@@ -29,15 +29,6 @@ msgstr "Sachbearbeiter/-innen nach Studiengängen sortiert:"
 
 # SINS translations
 
-msgid "sins_editorial_mail_title"
-msgstr "Diese Mailadresse ist nur bei technischen Problemen zu verwenden. Für Fragen zu den Studiengängen wenden Sie sich bitte an die Studienfachberater und Studienberater, die als Kontakte bei den einzelnen Studiengängen angegeben sind."
-
-msgid "sins_editorial_mail_name"
-msgstr "Studierendenmarketing"
-
-msgid "sins_editorial_mail_label"
-msgstr "Redaktion:"
-
 msgid "sins_editorial_immamail_name"
 msgstr "Immatrikulationsamt"
 
@@ -59,29 +50,8 @@ msgstr "Aktuelle Informationen"
 msgid "sins_editStg"
 msgstr "Studiengang bearbeiten"
 
-msgid "sins_m_bekanntmachungen"
-msgstr "&raquo;Amtliche Bekanntmachungen"
-
-msgid "sins_sr_criteria"
-msgstr "Ausgewählte Kriterien:"
-
-msgid "sins_sr_label_entries"
-msgstr "Anzeige Einträge:"
-
-msgid "sins_sr_heading"
-msgstr "Suchergebnisse"
-
 msgid "sins_start_keysearch"
 msgstr "Stichwortsuche"
-
-msgid "sins_sort_alph"
-msgstr "alphabetisch sortiert"
-
-msgid "sins_sort"
-msgstr "sortiert nach"
-
-msgid "sins_start_title"
-msgstr "Studieren an der TU Dresden"
 
 msgid "sins_start_listingsHeading"
 msgstr "Auflistung aller Studiengänge"
@@ -97,27 +67,6 @@ msgstr "Zulassungsbeschränkung"
 
 msgid "sins_start_typ"
 msgstr "Studientyp"
-
-msgid "sins_start_indiv"
-msgstr "Detailsuche"
-
-msgid "sins_start_choose"
-msgstr "- auswählen -"
-
-msgid "sins_start_grundst"
-msgstr "[grundständig]"
-
-msgid "sins_studiengaenge_Grundst"
-msgstr "Grundständiges"
-
-msgid "sins_start_weiterf"
-msgstr "[weiterführend]"
-
-msgid "sins_studiengaenge_Weiterf"
-msgstr "Weiterführendes"
-
-msgid "sins_studiengaenge_angeb"
-msgstr "Studiengangs- und Fächerangebot"
 
 msgid "sins_start_alphabetical"
 msgstr "alphabetisch"
@@ -139,296 +88,17 @@ msgstr "Studiengänge mit Unterrichtssprache Englisch"
 
 # Sins Studiengang translations
 
-msgid "regtime"
-msgstr "Regelstudienzeit Vollzeitstudium"
-
-msgid "sins_stg_regtime_tip"
-msgstr "Das Studium ist so angelegt, dass der Studierende mind. 40 Std. wöchentlich dem Studium widmen muss, um die Regelstudienzeit einzuhalten."
-
-msgid "sins_stg_semesters"
-msgstr "Semester"
-
-msgid "disconDegree"
-msgstr "Auslaufender Studiengang"
-
-msgid "studyfees"
-msgstr "Studiengebühren pro Semester"
-
-msgid "sins_stg_studyart"
-msgstr "Studienart"
-
-msgid "sins_stg_studyart_tip"
-msgstr "Das Direktstudium erfordert die Anwesenheit des Studierenden am Studienort."
-
-msgid "sins_stg_studyart_tip2"
-msgstr "Der Besuch von Lehrveranstaltungen direkt an der Universität ist nicht vorgesehen. Das Studium erfolgt i.d.R online oder über zugesandtes Material im Selbststudium."
-
-msgid "sins_stg_toPostgrad"
-msgstr "Zu den weiterführenden Studiengängen"
-
-msgid "sins_stg_toDiscont"
-msgstr "Zu den auslaufenden Studiengängen"
-
-msgid "sins_stg_discontinued"
-msgstr "auslaufend"
-
 msgid "studyform"
 msgstr "Studienform"
 
-msgid "studytype"
-msgstr "Studientyp"
-
-msgid "sins_studyplace"
-msgstr "Studienort"
-
-msgid "sins_studiengang_letztanmeldung"
-msgstr "Immatrikulation zum ${semester} ${year} nur noch ins ${number}. Fachsemester "
-
-msgid "sins_stg_acc"
-msgstr "akkreditiert"
-
-msgid "sins_studiengang_hoeher"
-msgstr "und h&ouml;her"
-
-msgid "sins_firstsem"
-msgstr "1. Fachsemester"
-
-msgid "sins_adminrestr"
-msgstr "Zulassungsbeschränkung"
-
-msgid "sins_adminrestr_tip"
-msgstr "Erläuterung im Glossar"
-
-msgid "sins_studiengang_beginn"
-msgstr "Studienbeginn"
-
-msgid "sins_studiengang_anmdgeign"
-msgstr "Bewerbungszeitraum zum Eignungsfeststellungsverfahren"
-
-msgid "sins_studiengang_timerange"
-msgstr "im Zeitraum"
-
-msgid "sins_detail"
-msgstr "&raquo;Details siehe unten"
-
-msgid "sins_detail_eig"
-msgstr "&raquo;Details zum Eignungsfeststellungsverfahren (siehe unten)"
-
-msgid "sins_studiengang_frist"
-msgstr "Bewerbungszeitraum"
-
-msgid "sins_studiengang_friststud"
-msgstr "Bewerbungszeitraum zum Studium"
-
-msgid "sins_bwrbportal"
-msgstr "Bewerbungsportal"
-
-msgid "sins_bewerb"
-msgstr "So bewerben Sie sich"
-
-msgid "sins_nc"
-msgstr "Nc-Auswahlverfahren"
-
-msgid "sins_HigherSem"
-msgstr "H&ouml;here Fachsemester"
-
-msgid "sins_stg_bwbtime"
-msgstr "Bewerbungszeitraum"
-
-msgid "sins_stg_bwbtimeNotEU"
-msgstr "Bewerbungszeitraum Nicht-EU Bewerber"
-
-msgid "sins_stg_bwbtimeEU"
-msgstr "Bewerbungszeitraum EU Bewerber"
-
-msgid "sins_stg_bwbtimeStudy"
-msgstr "Bewerbungszeitraum für Studienvorbereitung"
-
-msgid "sins_stg_bwbtimeNoStudy"
-msgstr "Bewerbungszeitraum (ohne Studienvorbereitung)"
-
-msgid "sins_stg_tfv1"
-msgstr "Studiengänge, in denen"
-
-msgid "sins_stg_tfv2"
-msgstr "Studiengang, in dem"
-
-msgid "sins_stg_tfv3"
-msgstr "dieses Fach"
-
-msgid "sins_stg_tfv4"
-msgstr "dieser Ergänzungsbereich"
-
-msgid "sins_stg_tfv5"
-msgstr "gewählt werden kann"
-
-msgid "sins_stg_tfv6"
-msgstr "Bewerbungsmodalitäten und weitere Informationen entnehmen Sie"
-
-msgid "sins_stg_tfv7"
-msgstr "dem zugeh&ouml;rigen Studiengang:"
-
-msgid "sins_stg_tfv8"
-msgstr "den zugeh&ouml;rigen Studiengängen:"
-
-msgid "sins_stg_course"
-msgstr "Fächer"
-
-msgid "sins_stg_studyadmres_tip"
-msgstr "Dieses Fach ist zulassungsbeschränkt."
-
-msgid "sins_stg_disconDegree_tip"
-msgstr "Dieses Fach läuft aus und wird nicht mehr im 1. Fachsemester angeboten."
-
-msgid "sins_stg_studyprereq"
-msgstr "Studienvoraussetzungen"
-
-msgid "sins_stg_studyprereq_tip1"
-msgstr "Voraussetzung für die Aufnahme des Studiums ist die allgemeine Hochschulreife (Abitur) oder eine"
-
-msgid "sins_stg_studyprereq_tip2"
-msgstr "vergleichbare Hochschulzugangsberechtigung"
-
-msgid "sins_stg_foreignIHI_tip"
-msgstr "Für ausländische Bewerber gelten die Informationen auf den ${ihi}."
-
-msgid "sins_stg_foreignIHI_link"
-msgstr "Webseiten des IHI Zittau"
-
-msgid "sins_stg_foreign_tip"
-msgstr "Für ausländische Bewerber gelten die Informationen auf den ${foreign}."
-
-msgid "sins_stg_foreign_link"
-msgstr "Webseiten des Akademischen Auslandsamtes"
-
-msgid "sins_stg_AdmProcNC"
-msgstr "Eignungsfeststellungsverfahren und Nc-Auswahlverfahren"
-
-msgid "sins_stg_AdmProc"
-msgstr "Eignungsfeststellungsverfahren"
-
-msgid "sins_stg_verif"
-msgstr "Geeignete Nachweise zur Feststellung der Studienvoraussetzung"
-
-msgid "sins_stg_adress"
-msgstr "Bewerbungsanschrift"
-
-msgid "sins_stg_langDE"
-msgstr "Sprachniveau Deutsch"
-
-msgid "sins_stg_foreignAppl"
-msgstr "Für Studienbewerber mit ausländischer Hochschulzugangsberechtigung gilt:"
-
-msgid "sins_stg_detailsforeignAppl"
-msgstr "&raquo;Details Sprachvoraussetzungen"
-
-msgid "sins_stg_detailsforeignAppl_tip"
-msgstr "Eine detaillierte Aufstellung anerkannter Sprachzeugnisse finden Sie hier."
-
-msgid "sins_stg_europRef"
-msgstr "Europäischer Referenzrahmen"
-
-msgid "sins_stg_appltip"
-msgstr "Hinweise zur Bewerbung"
-
-msgid "sins_stg_combDgr"
-msgstr "Kombinationsausschlüsse"
-
-msgid "sins_stg_stdcontent"
-msgstr "Studieninhalt"
-
-msgid "sins_stg_modDescr"
-msgstr "&raquo;Zur Modulbeschreibung"
-
-msgid "sins_stg_struc"
-msgstr "Struktur"
-
-msgid "sins_stg_partic"
-msgstr "Besonderheiten"
-
-msgid "sins_stg_doubleDgr"
-msgstr "Doppelabschlüsse"
-
-msgid "sins_stg_doubleDgr_txt"
-msgstr "In Kooperation mit folgenden Universitäten werden Doppelabschlüsse angeboten:"
-
-msgid "sins_stg_reqPract"
-msgstr "Pflichtpraktikum während des Studiums"
-
-msgid "sins_stg_practBefore"
-msgstr "Praktikum vor dem Studium"
-
-msgid "sins_stg_profFld"
-msgstr "Berufsfelder"
-
-msgid "sins_stg_postStd"
-msgstr "Weiterführende Studiengänge"
-
-msgid "sins_stg_extRecom"
-msgstr "Externe Empfehlungen"
-
-msgid "sins_stg_plnndChngs"
-msgstr "Geplante Änderungen"
-
-msgid "sins_stg_stg"
-msgstr "Studiengang"
-
-msgid "sins_stg_allgInf"
-msgstr "Allgemeines zum Studiengang"
-
-msgid "sins_tfv_allgInf"
-msgstr "Allgemeines zum Studienfach"
-
-msgid "sins_stg_bewerb_tip1"
-msgstr "Bewerbungsportal für das 1. Fachsemester"
-
-msgid "sins_stg_bewerb_tipa"
-msgstr "Bewerbungsportal für ausländische Studienbewerber"
-
-msgid "sins_stg_bewerb_tiph"
-msgstr "Bewerbungsportal für höhere Fachsemester"
-
-msgid "sins_mtrl_find"
-msgstr "... finden Sie auf der entsprechenden "
-
-msgid "sins_mtrl_fac"
-msgstr "Fakultätsseite"
-
 msgid "sins_intv_ref"
 msgstr "Interview wurde folgenden Studiengängen zugeordnet:"
-
-msgid "sins_intv_link"
-msgstr "Link zum Interview"
-
-msgid "sins_m_Ord"
-msgstr "Studiendokumente"
 
 msgid "sins_cstct_tip"
 msgstr "Zur Seite mit den Kontaktdetails"
 
 msgid "sins_cstct_info"
 msgstr "Informationen zur Person"
-
-msgid "sins_cstct_agdist"
-msgstr "AG Fernstudium"
-
-msgid "sins_cstct_subj"
-msgstr "Fachrichtung"
-
-msgid "sins_ct_details"
-msgstr "Kontaktdetails"
-
-msgid "sins_miss_notfound"
-msgstr "Studiengang nicht gefunden"
-
-msgid "zopra_missing_label_missing"
-msgstr "Der Studiengang ${with_id} wurde nicht gefunden."
-
-msgid "zopra_missing_label_with_id"
-msgstr "mit der id ${autoid}"
-
-msgid "sins_miss_back"
-msgstr "Zur Startseite"
 
 ##################### original translations ################################
 
@@ -480,18 +150,9 @@ msgstr "weiter"
 msgid "zopra_sr_label_pages_last"
 msgstr "letzte"
 
-msgid "sins_sr_text_empty"
-msgstr "Es wurden keine Suchergebnisse gefunden. Wählen Sie weniger Kriterien aus, um mehr Ergebnisse zu erhalten."
-
-# SINS content translations
-msgid "Unterrichtssprache"
-msgstr "Unterrichtssprache"
-
 # SINS template translations
 
 #./skins/zopra_studieninfo/custom_kontakt.pt
-msgid "sins_heading_contact"
-msgstr "Kontakt"
 
 msgid "Zentrale Studienberatung"
 msgstr "Zentrale Studienberatung"
@@ -499,63 +160,24 @@ msgstr "Zentrale Studienberatung"
 msgid "Immatrikulationsamt"
 msgstr "Immatrikulationsamt"
 
-msgid "Examination office"
-msgstr "Prüfungsamt"
-
 msgid "International Office"
 msgstr "Akademisches Auslandsamt"
 
 msgid "sins_link_institution_title"
 msgstr "Link zur Einrichtung"
 
-msgid "sins_link_institution"
-msgstr "&raquo;zur Einrichtung"
-
-msgid "sins_link_information"
-msgstr "&raquo;Zur Information"
-
 msgid "sins_news"
 msgstr "Aktuelle Informationen"
 
 #./skins/zopra_studieninfo/sins_studiengang.pt
-msgid "sins_stg_bewerb_deutsch"
-msgstr "Bewerbungsmodalitäten für deutsche Studienbewerber und ${inlaender}"
-
-msgid "sins_stg_inlaender"
-msgstr "Bildungsinländer"
-
-msgid "sins_stg_tip_inlaender"
-msgstr "Bildungsinländer sind Bewerber mit einer ausländischen Staatsbürgerschaft und einer deutschen Hochschulzugangsberechtigung (Abitur)."
-
-msgid "sins_stg_regtimetzs"
-msgstr "Regelstudienzeit Teilzeitstudium"
-
-msgid "sins_stg_tzs_tip"
-msgstr "Der Studiengang kann auch in Teilzeit studiert werden. Das bedeutet. dass der Studierende mind. 20 Std wöchentlich dem Studium widmen muss, um die Regelstudienzeit einzuhalten."
-
 msgid "sins_stg_einblenden"
 msgstr "einblenden"
 
 msgid "sins_stg_ausblenden"
 msgstr "ausblenden"
 
-msgid "sins_stg_bewerb_auslaender"
-msgstr "Bewerbungsmodalitäten für ${auslaender}"
-
-msgid "sins_stg_auslaender"
-msgstr "ausländische Studienbewerber"
-
-msgid "sins_stg_tip_auslaender"
-msgstr "gilt für ausländische Studienbewerber (außer Bildungsinländer)"
-
 msgid "sins_stg_tip_selfassessment"
 msgstr "Selfassessments sind online-Beratungsinstrumente in Testform, die Studieninteressierte dabei unterstützen, ihre Eignung und Neigung für bestimmte Studienfächer zu überprüfen."
-
-msgid "Wissenschaftsgebiet"
-msgstr "Wissenschaftsgebiet"
-
-msgid "Abschluss"
-msgstr "Abschluss"
 
 msgid "Fakultät"
 msgstr "Fakultät"
@@ -569,20 +191,8 @@ msgstr "Weitere Informationen"
 msgid "sins_csnav_faq"
 msgstr "Studiengangs - FAQ"
 
-msgid "tobeginning"
-msgstr "Zum Anfang"
+msgid "zopra_edit_delete"
+msgstr "löschen"
 
-msgid "want_to_study"
-msgstr "Ich will ein Studium in ..."
-
-msgid "want_beginn"
-msgstr "... beginnen"
-
-msgid "want_continue"
-msgstr "... fortsetzen"
-
-msgid "reset_selection"
-msgstr "Auswahl zurücksetzen"
-
-msgid "continue_reading"
-msgstr "Weiterlesen"
+msgid "zopra_edit_edit"
+msgstr "edit"

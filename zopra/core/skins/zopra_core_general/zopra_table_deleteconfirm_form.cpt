@@ -48,7 +48,7 @@
         <span tal:condition="ak">Arbeitskopie</span>
         <span tal:condition="python: not ak and not sk">Original</span>
         <span tal:condition="python: not ak and sk">Sprachkopie</span>
-        <span i18n:translate="zopra_edit_delete">löschen</span>:
+        <span i18n:translate="zopra_edit_delete">delete</span>:
         <span i18n:translate="" tal:content="python: tobj.getLabel()"></span>
         <span tal:content="python: here.getLabelString(table, autoid, entry)"></span>
       </h1>
