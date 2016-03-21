@@ -95,7 +95,7 @@
                             $("textarea","#fancybox-textarea-disposable").focus();
                         },
                         "onClosed": function() {
-                            textarea.val($("textarea","#fancybox-textarea-disposable").val());
+                            textarea.val(largeTextarea.val());
 
                             $("#fancybox-textarea-disposable").remove();
                             textarea.focus();
