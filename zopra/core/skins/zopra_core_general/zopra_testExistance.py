@@ -8,5 +8,6 @@
 ##title=Existance Check
 ##
 # no entry -> forward to not_found template
+from zExceptions import NotFound
 if not entry:
-    raise 'EntryNotFound', str(context.REQUEST.get('autoid') or '')
+    raise NotFound(script, str(context.REQUEST.get('autoid') or ''), context.REQUEST)
