@@ -16,6 +16,10 @@ msgstr ""
 
 # general zopra template translations
 
+#: ./skins/zopra_core_general/zopra_testExistance.py
+msgid "zopra_entry_notfound"
+msgstr ""
+
 # SINS template translations
 #./skins/zopra_sins/zopra_table_show_form_nice_studiengang.pt
 msgid "sins_stg_bewerb_deutsch_ein"
