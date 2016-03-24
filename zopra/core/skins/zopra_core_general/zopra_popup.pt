@@ -7,7 +7,7 @@
 <head tal:define="portal_url here/portal_url">
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 
-    <script type="text/javascript" tal:attributes="src string:${portal_url}/jquery.js"></script>
+    <script type="text/javascript" tal:attributes="src string:${portal_url}/++resource++plone.app.jquery.js"></script>
     <link rel="stylesheet" type="text/css" tal:attributes="href string:${portal_url}/autoupdate-widget/jquery.autoupdate-widget.css" media="screen" />
     <title>Popup: TUD - ZopRA - Redaktion</title>
     <script language="javascript">
@@ -32,9 +32,11 @@
             '});\n'+
             '<'+'/script>');
             // Check now for new messages
+            /*
             var message = $("#iframe").contents().find(".portalMessage > span");
             if (message.length > 0)
                 message.append("<span style='color:red;'>Bitte schlie&szlig;en Sie dieses Fenster, wenn Sie mit der Aktion fertig sind. Sie k&ouml;nnen dann im Formular fortfahren. Bitte speichern Sie das Formular, falls noch weitere Felder bearbeitet werden.<"+"/span>");
+            */
             var form = $('#iframe').contents().find("form");
             if (form.length > 0) {
                 form.submit(function(event) {

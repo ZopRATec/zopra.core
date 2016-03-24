@@ -17,7 +17,9 @@
             <link rel="stylesheet" type="text/css" media="all"  tal:attributes="href string:${portal_url}/zopra_edit.css" />
       </metal:css_slot>
 
-      <metal:main fill-slot="main" tal:define="table request/table;">
+      <metal:main fill-slot="main"
+                  tal:define="table request/table;
+                              isAnon context/@@plone_portal_state/anonymous;">
             <tal:block tal:condition="isAnon">
                   <tal:block replace="context/raiseUnauthorized"></tal:block>
             </tal:block>
