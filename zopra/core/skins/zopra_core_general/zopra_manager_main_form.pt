@@ -63,7 +63,7 @@
                      tal:define="name python:'f_'+table+'_intern_create';"
                      tal:attributes="href python: link_url + '&' + name + '=create'">
                     <img class="action_image" width="92" height="50" alt="Anlegen"
-                       tal:attributes="src python:icon_url + '/ziCreate.png'" />
+                       tal:attributes="src python:icon_url + '/ZMOM_ziCreate.png'" />
                   </a>
                 </td><td>
                   <a class=""
@@ -71,7 +71,7 @@
                      tal:define="name python:'f_'+table+'_intern_search';"
                      tal:attributes="href python: link_url + '&' + name + '=search'">
                     <img class="action_image" width="50" height="50" alt="Suchen"
-                       tal:attributes="src python:icon_url + '/ziSearch.png'" />
+                       tal:attributes="src python:icon_url + '/ZMOM_ziSearch.png'" />
                   </a>
                 </td><td>
                   <a class=""
@@ -79,7 +79,7 @@
                      tal:define="name python:'f_'+table+'_intern_list';"
                      tal:attributes="href python: link_url + '&' + name + '=list'">
                     <img class="action_image" width="51" height="50" alt="Auflisten"
-                       tal:attributes="src python:icon_url + '/ziList.png'" />
+                       tal:attributes="src python:icon_url + '/ZMOM_ziList.png'" />
                   </a>
                 </td></tr>
                 <tr><td>
@@ -98,20 +98,36 @@
       <div tal:define="lists python:here.listHandler.keys();
                        permission python: here.getPermissionInfo('', 'list_edit')"
            tal:condition="permission">
-        <fieldset class="" title="" tal:define="global foundone python:False;">
+        <fieldset class="list_actions"
+                  tal:define="global foundone python:False;
+                              count python: len(lists)">
           <legend class="">Editierbare Auswahllisten</legend>
-
-          <tal:block tal:repeat="listname lists">
-            <div class="field"
-                 tal:define="lobj python:here.listHandler[listname]"
-                 tal:condition="python:lobj.noedit != True">
-              <a tal:define="global foundone python: foundone or not lobj.noedit;"
-                 href=""
-                 tal:attributes="href python:here.absolute_url()+'/zopra_list_edit_form?listname=' + listname;" tal:content="python: lobj.getLabel()">
-                Listname
-              </a>
-            </div>
-          </tal:block>
+          <div style="float: left; margin: 5px; width: 200px">
+              <tal:block tal:repeat="listname python: lists[:count/2]">
+                <div class="field"
+                     tal:define="lobj python:here.listHandler[listname]"
+                     tal:condition="python:lobj.noedit != True">
+                  <a tal:define="global foundone python: foundone or not lobj.noedit;"
+                     href=""
+                     tal:attributes="href python:here.absolute_url()+'/zopra_list_edit_form?listname=' + listname;" tal:content="python: lobj.getLabel()">
+                    Listname
+                  </a>
+                </div>
+              </tal:block>
+          </div>
+          <div style="float: left; margin: 5px; width: 200px">
+              <tal:block tal:repeat="listname python: lists[count/2:]">
+                <div class="field"
+                     tal:define="lobj python:here.listHandler[listname]"
+                     tal:condition="python:lobj.noedit != True">
+                  <a tal:define="global foundone python: foundone or not lobj.noedit;"
+                     href=""
+                     tal:attributes="href python:here.absolute_url()+'/zopra_list_edit_form?listname=' + listname;" tal:content="python: lobj.getLabel()">
+                    Listname
+                  </a>
+                </div>
+              </tal:block>
+          </div>
           <div tal:condition="python: not foundone">
             Keine editierbaren Listen gefunden.
           </div>
