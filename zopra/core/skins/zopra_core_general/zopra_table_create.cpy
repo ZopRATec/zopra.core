@@ -76,7 +76,7 @@ if request.get('origtable') and request.get('origid') and request.get('origattri
             # set the autoid in the entry
             orig['autoid'] = origid
             # create a fitting message
-            message = u'Neuer Eintrag (%s) wurde angelegt und verknüpft. Arbeitskopie für Haupteintrag (%s) wurde erzeugt. Original-Id: %s. ' % (tmainobj.getLabel(), tobj.getLabel(), orig.get('iscopyof'))
+            message = 'Neuer Eintrag (%s) wurde angelegt und verknuepft. Arbeitskopie fuer Haupteintrag (%s) wurde erzeugt. Original-Id: %s. ' % (tmainobj.getLabel(), tobj.getLabel(), orig.get('iscopyof'))
         else:
             # copy exists, we have it already (forceCopy was called above)
             # directly add the ref (this does not create any log)
@@ -85,7 +85,7 @@ if request.get('origtable') and request.get('origid') and request.get('origattri
             if tobj.do_cache:
                 tobj.cache.invalidate(orig['autoid'])
             # jump to referring entry
-            message = u'Neuer Eintrag (%s) wurde angelegt und verknüpft. Arbeitskopie für Haupteintrag (%s) wurde aktualisiert. Original-Id: %s.' % (tmainobj.getLabel(), tobj.getLabel(), orig.get('iscopyof'))
+            message = 'Neuer Eintrag (%s) wurde angelegt und verknuepft. Arbeitskopie fuer Haupteintrag (%s) wurde aktualisiert. Original-Id: %s.' % (tmainobj.getLabel(), tobj.getLabel(), orig.get('iscopyof'))
     else:
         # directly add the ref (this does not create any log)
         mlobj.addMLRef(orig['autoid'], autoid)
@@ -93,12 +93,13 @@ if request.get('origtable') and request.get('origid') and request.get('origattri
         if tobj.do_cache:
             tobj.cache.invalidate(orig['autoid'])
         # message creation and ref
-        message = u'Neuer Eintrag (%s) wurde angelegt und mit Haupteintrag (%s) verknüpft.' % (tmainobj.getLabel(), tobj.getLabel())
+        message = 'Neuer Eintrag (%s) wurde angelegt und mit Haupteintrag (%s) verknuepft.' % (tmainobj.getLabel(), tobj.getLabel())
     # set message
     if message:
-        context.plone_utils.addPortalMessage(_(message), 'info')
+        context.plone_utils.addPortalMessage(message, 'info')
     # jump to message window stating the creation
-    request.RESPONSE.redirect('zopra_table_created_dependency?table=%s&autoid=%s&portal_status_message=%s' % (table, autoid, message))
+    request.RESPONSE.redirect('zopra_table_created_dependency?table=%s&autoid=%s' % (table, autoid))
+    return
 
 # overwrite in request for formcontroller traversal
 request.form['autoid'] = autoid
@@ -108,10 +109,10 @@ if request.form.has_key('form.submitted'):
 
 if len(autoidlist) > 1:
     request.form['autoidlist'] = autoidlist
-    message = u'Neue Einträge angelegt. %sInterne Ids: %s' % (msg, ', '.join(autoidlist))
-    context.plone_utils.addPortalMessage(_(message), 'info')
+    message = 'Neue Eintraege angelegt. %sInterne Ids: %s' % (msg, ', '.join(autoidlist))
+    context.plone_utils.addPortalMessage(message, 'info')
     return state.set(status='success', context=context)
 else:
-    message = u'Neuer Eintrag angelegt. %sInterne Id: %s' % (msg, autoid)
-    context.plone_utils.addPortalMessage(_(message), 'info')
+    message = 'Neuer Eintrag angelegt. %sInterne Id: %s' % (msg, autoid)
+    context.plone_utils.addPortalMessage(message, 'info')
     return state.set(status='success', context=context)

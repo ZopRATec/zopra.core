@@ -47,7 +47,7 @@ if done and request.get('origtable') and request.get('origid') and request.get('
             # set the autoid in the entry
             orig['autoid'] = origid
             # create a fitting message
-            message = u'Verknüpfter Eintrag (%s) wurde entfernt. Arbeitskopie für Haupteintrag (%s) wurde erzeugt. Original-Id: %s. ' % (tmainobj.getLabel(), tobj.getLabel(), orig.get('iscopyof'))
+            message = 'Verknuepfter Eintrag (%s) wurde entfernt. Arbeitskopie fuer Haupteintrag (%s) wurde erzeugt. Original-Id: %s. ' % (tmainobj.getLabel(), tobj.getLabel(), orig.get('iscopyof'))
         else:
             # copy exists, we have it already (forceCopy was called above)
             # directly remove the ref (this does not create any log)
@@ -56,7 +56,7 @@ if done and request.get('origtable') and request.get('origid') and request.get('
             if tobj.do_cache:
                 tobj.cache.invalidate(orig['autoid'])
             # jump to referring entry
-            message = u'Verknüpfter Eintrag (%s) wurde entfernt. Arbeitskopie für Haupteintrag (%s) wurde aktualisiert. Original-Id: %s.' % (tmainobj.getLabel(), tobj.getLabel(), orig.get('iscopyof'))
+            message = 'Verknuepfter Eintrag (%s) wurde entfernt. Arbeitskopie fuer Haupteintrag (%s) wurde aktualisiert. Original-Id: %s.' % (tmainobj.getLabel(), tobj.getLabel(), orig.get('iscopyof'))
     else:
         # remove the deleted dependent entry from attr
         # directly remove the ref (this does not create any log)
@@ -65,18 +65,19 @@ if done and request.get('origtable') and request.get('origid') and request.get('
         if tobj.do_cache:
             tobj.cache.invalidate(orig['autoid'])
         # message deletion and deref
-        message = u'Verknüpfter Eintrag (%s) wurde gelöscht und Haupteintrag (%s) aktualisiert.' % (tmainobj.getLabel(), tobj.getLabel())
+        message = 'Verknuepfter Eintrag (%s) wurde geloescht und Haupteintrag (%s) aktualisiert.' % (tmainobj.getLabel(), tobj.getLabel())
     # set message
     if message:
-        context.plone_utils.addPortalMessage(_(message), 'info')
+        context.plone_utils.addPortalMessage(message, 'info')
     # jump to message window stating the creation
     request.RESPONSE.redirect('zopra_table_deleted_dependency?table=%s&autoid=%s' % (table, autoid))
+    return
 
 if done:
-    message = u'Eintrag gelöscht.'
-    context.plone_utils.addPortalMessage(_(message), 'info')
+    message = 'Eintrag geloescht.'
+    context.plone_utils.addPortalMessage(message, 'info')
     return state.set(status='success', context=context)
 else:
-    message = u'Fehler beim Löschen.'
-    context.plone_utils.addPortalMessage(_(message), 'info')
+    message = 'Fehler beim Loeschen.'
+    context.plone_utils.addPortalMessage(message, 'info')
     return state.set(status='failure', context=context)
