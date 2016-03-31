@@ -26,8 +26,8 @@ for key in cons_key:
         cons[key] = 0
     if cons[key] == 'True':
         cons[key] = 1
-    
-try:  
+
+try:
   autoList = manager.tableHandler[table].getEntryAutoidList(constraints = cons, order = order)
 
   # list of csv-like entries
@@ -35,7 +35,7 @@ try:
 
   # replace the header with the human-readable labels
   coltypes = manager.tableHandler[table].getColumnDefs()
-  exportList[0] = delim.join([ coltypes.get(a, {}).get('LABEL','') for a in exportList[0].split(delim) ])
+  exportList[0] = delim.join([ unicode(coltypes.get(a, {}).get('LABEL',''), 'utf8') for a in exportList[0].split(delim) ])
 
   # set proper encoding and replace null values
   # FIXME: None-Replacement should be done in exportCSV, not afterwards

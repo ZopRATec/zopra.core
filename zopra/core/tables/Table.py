@@ -961,18 +961,18 @@ class Table(SimpleItem, PropertyManager):
                     if isinstance(value, ListType):
                         value = ', '.join(value)
 
-                    one_res = str(value)
+                    one_res = unicode(value)
 
                 else:
                     value = entry.get(col, '')
 
                     if isinstance(value, ListType):
                         # flatten list (remove double, remove empty)
-                        value = dict([(str(c), None) for c in value if c]).keys()
+                        value = dict([(unicode(c), None) for c in value if c]).keys()
 
                         value = ', '.join(value)
 
-                    one_res = str(value)
+                    one_res = unicode(value)
                 # call an export preparation hook
                 one_res = mgr.prepareFieldForExport(self.tablename, col, one_res, entry)
 
