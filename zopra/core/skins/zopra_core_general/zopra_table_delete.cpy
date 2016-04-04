@@ -47,7 +47,7 @@ if done and request.get('origtable') and request.get('origid') and request.get('
             # set the autoid in the entry
             orig['autoid'] = origid
             # create a fitting message
-            message = 'Verknuepfter Eintrag (%s) wurde entfernt. Arbeitskopie fuer Haupteintrag (%s) wurde erzeugt. Original-Id: %s. ' % (tmainobj.getLabel(), tobj.getLabel(), orig.get('iscopyof'))
+            message = u'Verknuepfter Eintrag (%s) wurde entfernt. Arbeitskopie fuer Haupteintrag (%s) wurde erzeugt. Original-Id: %s. ' % (tmainobj.getLabel().decode("utf8"), tobj.getLabel().decode("utf8"), orig.get('iscopyof'))
         else:
             # copy exists, we have it already (forceCopy was called above)
             # directly remove the ref (this does not create any log)
@@ -56,7 +56,7 @@ if done and request.get('origtable') and request.get('origid') and request.get('
             if tobj.do_cache:
                 tobj.cache.invalidate(orig['autoid'])
             # jump to referring entry
-            message = 'Verknuepfter Eintrag (%s) wurde entfernt. Arbeitskopie fuer Haupteintrag (%s) wurde aktualisiert. Original-Id: %s.' % (tmainobj.getLabel(), tobj.getLabel(), orig.get('iscopyof'))
+            message = u'Verknuepfter Eintrag (%s) wurde entfernt. Arbeitskopie fuer Haupteintrag (%s) wurde aktualisiert. Original-Id: %s.' % (tmainobj.getLabel().decode("utf8"), tobj.getLabel().decode("utf8"), orig.get('iscopyof'))
     else:
         # remove the deleted dependent entry from attr
         # directly remove the ref (this does not create any log)
@@ -65,7 +65,7 @@ if done and request.get('origtable') and request.get('origid') and request.get('
         if tobj.do_cache:
             tobj.cache.invalidate(orig['autoid'])
         # message deletion and deref
-        message = 'Verknuepfter Eintrag (%s) wurde geloescht und Haupteintrag (%s) aktualisiert.' % (tmainobj.getLabel(), tobj.getLabel())
+        message = u'Verknuepfter Eintrag (%s) wurde geloescht und Haupteintrag (%s) aktualisiert.' % (tmainobj.getLabel().decode("utf8"), tobj.getLabel().decode("utf8"))
     # set message
     if message:
         context.plone_utils.addPortalMessage(message, 'info')
@@ -74,10 +74,10 @@ if done and request.get('origtable') and request.get('origid') and request.get('
     return
 
 if done:
-    message = 'Eintrag geloescht.'
+    message = u'Eintrag geloescht.'
     context.plone_utils.addPortalMessage(message, 'info')
     return state.set(status='success', context=context)
 else:
-    message = 'Fehler beim Loeschen.'
+    message = u'Fehler beim Loeschen.'
     context.plone_utils.addPortalMessage(message, 'info')
     return state.set(status='failure', context=context)
