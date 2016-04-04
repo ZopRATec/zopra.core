@@ -17,6 +17,10 @@ msgstr ""
 "Domain: zopra\n"
 "X-Is-Fallback-For: de-at de-li de-lu de-ch de-de\n"
 
+#: ./skins/zopra_core_general/zopra_testExistance.py
+msgid "zopra_entry_notfound"
+msgstr "Der angeforderte Eintrag wurde nicht gefunden oder es wurde keine ID übergeben."
+
 # SINS Fachberater translations
 msgid "sins_fachberater_desc"
 msgstr "Studienfachberater/-innen nach Studiengängen / -fächern sortiert:"

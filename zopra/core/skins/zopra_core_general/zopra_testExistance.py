@@ -7,7 +7,12 @@
 ##parameters=entry=None
 ##title=Existance Check
 ##
-# no entry -> forward to not_found template
-from zExceptions import NotFound
+from zExceptions import Redirect
+from zopra.core import zopraMessageFactory as _
+
 if not entry:
-    raise NotFound(script, str(context.REQUEST.get('autoid') or ''), context.REQUEST)
+    # set a message
+    msg = u"The requested entry was not found or no id was given."
+    context.plone_utils.addPortalMessage(_('zopra_entry_notfound', default=msg), 'info')
+    # forward to context (because not-found-display is a bit unfitting)
+    raise Redirect(context.absolute_url())

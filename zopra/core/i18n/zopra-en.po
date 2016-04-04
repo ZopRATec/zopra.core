@@ -17,6 +17,10 @@ msgstr ""
 "Domain: zopra\n"
 "X-Is-Fallback-For: en-au en-bz en-ca en-ie en-jm en-nz en-ph en-za en-tt en-gb en-us en-zw\n"
 
+#: ./skins/zopra_core_general/zopra_testExistance.py
+msgid "zopra_entry_notfound"
+msgstr ""
+
 # SINS Fachberater translations
 msgid "sins_fachberater_desc"
 msgstr "Special Course Guidance Counselors sorted by programmes and courses:"

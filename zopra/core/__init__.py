@@ -19,8 +19,10 @@ import types
 # Zope Imports
 #
 from AccessControl          import ClassSecurityInfo, getSecurityManager
+from AccessControl          import allow_module
 from Globals                import DTMLFile, InitializeClass, HTML
 from zExceptions            import BadRequest
+from zope.i18nmessageid     import MessageFactory
 
 from OFS.DTMLDocument       import DTMLDocument
 from OFS.Folder             import Folder
@@ -33,6 +35,13 @@ from PyHtmlGUI              import E_PARAM_TYPE
 
 from zopra.core.interfaces  import IZopRAProduct, IZopRAManager
 
+# allow redirects via raise
+allow_module('zExceptions.Redirect')
+
+# build message factory
+zopraMessageFactory = MessageFactory('zopra')
+# make import of MessageFactory possible from PythonScripts
+allow_module('zopra.core.zopraMessageFactory')
 #
 # Globally interesting Manager Name Constants
 #
