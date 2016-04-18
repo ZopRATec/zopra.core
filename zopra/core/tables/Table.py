@@ -821,13 +821,9 @@ class Table(SimpleItem, PropertyManager):
                             notes = descr_dict.get(multilist.listname + 'notes' + unicode(item), '')
                             multilist.addMLRef( autoid, item, notes )
                             res = True
-
             except Exception, all_:
-                # not sure whether this works, test and remove try/except
-                try:
-                    all_.args.append(descr_dict)
-                except:
-                    pass
+                # overwrite the args tuple with a new tuple containing the descr_dict
+                all_.args = all_.args + (descr_dict,)
                 raise
 
             # caching
