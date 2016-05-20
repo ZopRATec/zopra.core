@@ -41,7 +41,7 @@
                              pm python:here.path2ob(zpath);
                              check python: pm or here.migrate_raiser('Product not found, check the zopra_path property or name your Product Manager pm.');
                              all python:pm.getNaviManagerUrls(None, False);">
-        <h1 i18n:translate="">Module</h1>
+        <h1 i18n:translate="" class="documentFirstHeading">Module</h1>
         <ul>
           <li tal:repeat="onemgr python:all.keys()">
             <a tal:attributes="href python:all[onemgr] + '/zopra_manager_main_form';"

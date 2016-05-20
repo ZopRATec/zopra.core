@@ -6,20 +6,20 @@
     <tal:comment tal:replace="nothing">
 
     </tal:comment>
-    
+
 <metal:block define-macro="multiconfirm_listing">
     <!-- Multiconfirmation of Working Copies (Listing) -->
     <tal:block tal:define="reviewers rev_roles|string:ZopRAReviewer;"
                tal:condition="python: user.has_role(reviewers, here)">
-      <h1 i18n:translate="">Freigabe</h1>
+      <h2 i18n:translate="">Freigabe</h2>
       <div tal:repeat="table python:manager.tableHandler.keys()">
         <tal:block tal:define="tobj python: manager.tableHandler[table]"
                    tal:condition="python: manager.doesWorkingCopies(table)">
           <div tal:define="entries python: manager.getWorkingCopies(table)"
                tal:condition="entries">
-            
-            <h2 tal:content="python: tobj.getLabel()"></h2>
-			<a tal:attributes="href python: manager.absolute_url() + '/zopra_table_multiconfirm_form?table=' + table"><span style="color: red">*NEU*</span>Mehrfachfreigabe</a>
+            <br />
+            <h3 tal:content="python: tobj.getLabel()"></h3>
+            <a tal:attributes="href python: manager.absolute_url() + '/zopra_table_multiconfirm_form?table=' + table"><span style="color: red">*NEU*</span>Mehrfachfreigabe</a>
             <table id="result_tab">
               <tr>
                 <th>Name</th>

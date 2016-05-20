@@ -292,6 +292,12 @@ class Table(SimpleItem, PropertyManager):
         mgr = self.getManager()
         entry = None
 
+        try:
+            entry_id = int(entry_id)
+        except:
+            # the entry_id is not an int, so we just say there is no entry by returning None
+            return None
+
         # caching first:
         if self.do_cache and entry_id:
             entry = self.cache.getItem(self.cache.ITEM, int(entry_id))
@@ -311,8 +317,6 @@ class Table(SimpleItem, PropertyManager):
 
                 # get table definition
                 cols_list   = self.tabledict.keys()
-
-                entry_id = int(entry_id)
 
                 # build query text
                 query_text = ['SELECT ']
