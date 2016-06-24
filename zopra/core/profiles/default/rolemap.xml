@@ -6,5 +6,11 @@
         <role name="ZopRAAdmin"/>
     </roles>
     <permissions>
+      <permission name="Modify ZopRA Content" acquire="False">
+            <role name="Manager"/>
+            <role name="ZopRAAuthor"/>
+            <role name="ZopRAReviewer"/>
+            <role name="ZopRAAdmin"/>
+         </permission>
     </permissions>
 </rolemap>
