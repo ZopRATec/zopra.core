@@ -73,7 +73,7 @@ addPermission    = 'Add ZopRA Managers'
 viewPermission   = 'View'
 managePermission = 'Manage ZopRA'
 
-zopra_permissions = ( modifyPermission,
+zopra_permissions = ( (modifyPermission,  ('ZopRAAdmin', 'ZopRAAuthor', 'ZopRAReviewer')),
                       (addPermission,    ('Manager',)),
                       (managePermission, ('Manager',)),
                       )
