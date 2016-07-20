@@ -423,6 +423,7 @@ class ForeignList(GenericList):
                     completelist = []
                     for entry in tentries:
                         val = ''
+                        autoid = entry['autoid']
                         if not self.cols:
                             # empty, use getLabelString
                             if manager.doesTranslations(self.foreign):
@@ -431,6 +432,8 @@ class ForeignList(GenericList):
                                 val = manager.getLabelString(self.foreign, None, entry)
                         else:
                             vals = []
+                            if manager.doesTranslations(self.foreign):
+                                entry = manager.getEntry(self.foreign, entry['autoid'], lang)
                             for col in self.cols:
                                 col = col.strip()
                                 if entry.get(col):
@@ -439,7 +442,7 @@ class ForeignList(GenericList):
 
                         if value is None or \
                            value in val:
-                            newentry = { TCN_AUTOID: entry[TCN_AUTOID],
+                            newentry = { TCN_AUTOID: autoid,
                                          VALUE:      val,
                                          SHOW:       'yes' }
                             completelist.append( newentry )
