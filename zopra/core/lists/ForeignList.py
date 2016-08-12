@@ -405,7 +405,7 @@ class ForeignList(GenericList):
                     raise ValueError(manager.getErrorDialog(errstr))
 
                 selfunc = getattr( manager, funcstr )
-                reslist = selfunc()
+                reslist = selfunc(lang)
 
                 for result in reslist:
                     if value is None or \
@@ -1151,7 +1151,7 @@ class ForeignList(GenericList):
                     funcstr = self.function + F_VALUE
                     assert hasattr(manager, funcstr)
                     valfunc = getattr(manager, funcstr)
-                    value   = valfunc(aid)
+                    value   = valfunc(aid, lang)
                 else:
                     # collist given, table-standard-function used
                     if self.foreign in manager.tableHandler:
