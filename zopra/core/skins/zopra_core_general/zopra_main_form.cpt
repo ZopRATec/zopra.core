@@ -39,7 +39,7 @@
 
       <tal:block tal:define="zpath python: hasattr(here, 'zopra_path') and here.zopra_path or 'app/pm';
                              pm python:here.path2ob(zpath);
-                             check python: pm or here.migrate_raiser('Product not found, check the zopra_path property or name your Product Manager pm.');
+                             check python: pm or here.zopra_raiser('Product not found, check the zopra_path property or name your Product Manager pm.');
                              all python:pm.getNaviManagerUrls(None, False);">
         <h1 i18n:translate="" class="documentFirstHeading">Module</h1>
         <ul>
