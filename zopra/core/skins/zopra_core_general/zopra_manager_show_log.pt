@@ -46,7 +46,7 @@
          tal:define="table string:log;
                      zpath python: hasattr(here, 'zopra_path') and here.zopra_path or 'app/pm';
                      pm python:here.path2ob(zpath);
-                     heck python: pm or here.migrate_raiser('Product not found, check the zopra_path property or name your Product Manager pm.');
+                     heck python: pm or here.zopra_raiser('Product not found, check the zopra_path property or name your Product Manager pm.');
                      tobj python: pm.tableHandler[table];
                      actionlist python: [];
                      offset python:request.get('offset') and int(request.get('offset')) or 0;

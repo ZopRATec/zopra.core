@@ -115,7 +115,7 @@
             <tal:block tal:define="br br|nothing;
                                    global br python: br or attr_name == '<br>'"
                        tal:condition="python: attr_name != '<br>'">
-              <tal:check tal:define="dummy python: not coltypes.get(attr_name) and here.migrate_raiser('Field not found: ' + attr_name);"></tal:check>
+              <tal:check tal:define="dummy python: not coltypes.get(attr_name) and here.zopra_raiser('Field not found: ' + attr_name);"></tal:check>
              <tal:switch tal:condition="python: not coltypes.get(attr_name).get('INVIS') and not (here.doesTranslations(table) and entry.get('language') != here.lang_default and coltypes[attr_name]['TYPE'] not in ['string', 'memo'])">
 
                 <div class="field"

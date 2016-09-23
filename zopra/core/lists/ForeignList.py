@@ -164,7 +164,7 @@ class ForeignList(GenericList):
                 creating their label string and comparing it to the pattern.
                 Note: searchLabelStrings defaults to autoid search and must be overwritten in the
                         manager, if different behaviour is desired.
-                Note: Only a valid option if self.cols is not set since this changes the displayed 
+                Note: Only a valid option if self.cols is not set since this changes the displayed
                         value string and composed strings cannot be searched right now. -> needs to be solved
         """
 
@@ -187,7 +187,7 @@ class ForeignList(GenericList):
                 If set, list size is reduced to maxshown to increase speed for display.
                 The target widget only gets loaded with the needed entries and offers functions
                 to determine limit and offset. Used in getWidget and MultiList.getComplexWidget
-                to select the target widget (not set -> hgComboBox / hgComplexMultiList or 
+                to select the target widget (not set -> hgComboBox / hgComplexMultiList or
                 set and len(entries) > maxshown -> hgFilteredRangeList)
         """
 
@@ -405,7 +405,7 @@ class ForeignList(GenericList):
                     raise ValueError(manager.getErrorDialog(errstr))
 
                 selfunc = getattr( manager, funcstr )
-                reslist = selfunc()
+                reslist = selfunc(lang)
 
                 for result in reslist:
                     if value is None or \
@@ -423,14 +423,19 @@ class ForeignList(GenericList):
                     completelist = []
                     for entry in tentries:
                         val = ''
+                        autoid = entry['autoid']
                         if not self.cols:
                             # empty, use getLabelString
                             if manager.doesTranslations(self.foreign):
+                                # getLabelString does the translation (and switches to translated entry by itself)
                                 val = manager.getLabelString(self.foreign, None, entry, lang)
                             else:
                                 val = manager.getLabelString(self.foreign, None, entry)
                         else:
                             vals = []
+                            # switch to translated entry if necessary
+                            if manager.doesTranslations(self.foreign):
+                                entry = manager.getEntry(self.foreign, autoid, lang)
                             for col in self.cols:
                                 col = col.strip()
                                 if entry.get(col):
@@ -439,14 +444,14 @@ class ForeignList(GenericList):
 
                         if value is None or \
                            value in val:
-                            newentry = { TCN_AUTOID: entry[TCN_AUTOID],
+                            newentry = { TCN_AUTOID: autoid,
                                          VALUE:      val,
                                          SHOW:       'yes' }
                             completelist.append( newentry )
                 # get data from list
                 elif self.foreign in manager.listHandler:
                     lobj = manager.listHandler[self.foreign]
-                    # call getEntries of the ZMOMLIst object that is referenced
+                    # call getEntries of the ZMOMLIst object that is referenced (lang is not necessary, the entries are multilingual anyway)
                     completelist = lobj.getEntries(value, with_hidden)
                 else:
                     raise ValueError('Couldn\'t find foreign list %s:%s for %s' % (manager._className, self.foreign, self.listname))
@@ -486,11 +491,11 @@ class ForeignList(GenericList):
 
         # NOTE: do not handle lists recursivly:
         #      1) getting the manager is expensive
-        #      2) loading all entries of a list from the db for each searched value is wasteful 
+        #      2) loading all entries of a list from the db for each searched value is wasteful
         if isinstance( value, ListType):
             is_list = True
             values = value
-        else: 
+        else:
             is_list = False
             values = [ value ]
 
@@ -1148,7 +1153,7 @@ class ForeignList(GenericList):
                     funcstr = self.function + F_VALUE
                     assert hasattr(manager, funcstr)
                     valfunc = getattr(manager, funcstr)
-                    value   = valfunc(aid)
+                    value   = valfunc(aid, lang)
                 else:
                     # collist given, table-standard-function used
                     if self.foreign in manager.tableHandler:
