@@ -644,10 +644,10 @@ class ListHandler(Folder):
 
         r += 1
 
-        for listname in self:
+        for listname in self.keys():
             list_obj = self[listname]
 
-            assert(isinstance(list_obj, List))
+            assert isinstance(list_obj, List), 'Found obj is not of type List: %s (%s)' % (listname, type(list_obj))
 
             # provide a link to the list reference
             url = '%s/%s/manage_workspace' % (list_obj.absolute_url(), listname)
@@ -695,17 +695,17 @@ class ListHandler(Folder):
 
         for (table, column) in references:
             table = str(table)
-            list_ = self[table + '_' + column]
+            list_obj = self[table + '_' + column]
 
-            assert(isinstance(list_, ForeignList))
+            assert isinstance(list_obj, ForeignList), 'List object %s should be of type ForeignList, but got %s' % (table + '_' + column, type(list_obj))
 
             # provide a link to the list reference
-            url = '%s/%s/manage_workspace' % (list_.absolute_url(), table + '_' + column)
-            lab_list = hgLabel(list_.listname, url)
+            url = '%s/%s/manage_workspace' % (list_obj.absolute_url(), table + '_' + column)
+            lab_list = hgLabel(list_obj.listname, url)
 
             # provide a link to the manager
-            if hasattr(list_, 'manager'):
-                list_mgr = manager.getHierarchyUpManager(list.manager)
+            if hasattr(list_obj, 'manager'):
+                list_mgr = manager.getHierarchyUpManager(list_obj.manager)
 
                 if list_mgr:
                     lab = list_mgr.getId() + ' (' + list_mgr.getClassName() + ')'
@@ -714,7 +714,7 @@ class ListHandler(Folder):
                     lab_mgr = hgLabel(lab, url)
                 else:
                     # external mgr not present
-                    lab_mgr = hgLabel('<font color="red">%s</font>' % list_.manager)
+                    lab_mgr = hgLabel('<font color="red">%s</font>' % list_obj.manager)
             else:
                 list_mgr = manager
                 lab = manager.getId() + ' (' + manager.getClassName() + ')'
@@ -735,32 +735,32 @@ class ListHandler(Folder):
                 lab_table = hgLabel('<font color="red">%s</font>' % table)
 
             # provide info about referenced object and a link to it
-            if list.function:
+            if list_obj.function:
                 target_type = 'Function'
-                lab_target  = list_.function
+                lab_target  = list_obj.function
             else:
                 target_type = 'List or Table'
 
                 if list_mgr:
-                    if list_.foreign in list_mgr.tableHandler:
+                    if list_obj.foreign in list_mgr.tableHandler:
                         target_type = 'Table'
 
-                        url = '%s/%s/manage_workspace' % (list_mgr.tableHandler[list_.foreign].absolute_url(), list_.foreign)
-                        lab_target = hgLabel(list.foreign, url)
-                    elif list_.foreign in list_mgr.listHandler:
+                        url = '%s/%s/manage_workspace' % (list_mgr.tableHandler[list_obj.foreign].absolute_url(), list_obj.foreign)
+                        lab_target = hgLabel(list_obj.foreign, url)
+                    elif list_obj.foreign in list_mgr.listHandler:
                         target_type = 'List'
 
-                        url = '%s/%s/manage_workspace' % (list_mgr.listHandler[list_.foreign].absolute_url(), list_.foreign)
-                        lab_target = hgLabel(list_.foreign, url)
+                        url = '%s/%s/manage_workspace' % (list_mgr.listHandler[list_obj.foreign].absolute_url(), list_obj.foreign)
+                        lab_target = hgLabel(list_obj.foreign, url)
                     else:
                         target_type = 'Missing'
-                        lab_target = hgLabel('<font color="red">%s</font>' % list_.foreign)
+                        lab_target = hgLabel('<font color="red">%s</font>' % list_obj.foreign)
                 else:
-                    lab_target = hgLabel('<font color="red">%s</font>' % list_.foreign)
+                    lab_target = hgLabel('<font color="red">%s</font>' % list_obj.foreign)
 
             tab[r, 1] = lab_table
             tab[r, 2] = column
-            tab[r, 3] = list_.listtype
+            tab[r, 3] = list_obj.listtype
             tab[r, 4] = lab_mgr
             tab[r, 5] = target_type
             tab[r, 6] = lab_target
