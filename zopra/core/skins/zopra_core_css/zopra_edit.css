@@ -1,255 +1,194 @@
 @media all {
-/* editorial styles for sins */
+    /* editorial styles for sins */
+    .zopra_navigation {
+        line-height: 220%;
+        margin-bottom: 5px;
+    }
 
-.zopra_navigation {
-    line-height: 220%;
-    margin-bottom: 5px;}
+    .zopra_navigation a {
+        border: 1px solid #40779E !important;
+        background-color: #DDDDDD;
+        background-image: none;
+        padding: 1px 2px !important;
+        font-weight: 200;
+    }
 
-.zopra_navigation a {
-    border: 1px solid #40779E!important;
-    background-color: #DDDDDD;
-    background-image: none;
-    padding: 1px 2px!important;
-    font-weight: 200;
-}
-.zopra_navigation a.selected {
-    border: 2px dotted #0B2A51;
-}
+    .zopra_navigation a.selected {
+        border: 2px dotted #0B2A51;
+    }
 
-.zopra_navigation a:visited {
-    color: #40779E;
-}
+    .zopra_navigation a:visited {
+        color: #40779E;
+    }
 
-.invrejected {
-	background-color: #E93636!important;
-}
+    .invrejected {
+        background-color: #E93636 !important;
+    }
 
-.inverror {
-    background-color: #FFCE7B!important;
-}
+    .inverror {
+        background-color: #FFCE7B !important;
+    }
 
-.invstorno {
-	background-color: #eeff7b!important;
-}
+    .invstorno {
+        background-color: #eeff7b !important;
+    }
 
-.formHelpShort {
-	width: 290px;
-}
+    .formHelpShort {
+        width: 290px;
+    }
 
-.zopra_special_links {
-	background-color: #CCCCCC;
-	padding: 4px 2px;
-}
+    .zopra_listvalues {
+        border-collapse: collapse;
+    }
 
-.zopra_special_links a {
-    padding-right: 0px;
-    padding-left: 2px;
-    margin-right: 4px;
-    margin-left: 2px;
-    border-left: 1px solid #DDDDDD;
-}
+    .zopra_listvalues tr {
+        vertical-align: top;
+    }
 
-.zopra_listvalues {
-    border-collapse: collapse;
-}
+    .zopra_listvalues tr td {
+        padding: 2px;
+        margin: 2px;
+        text-align: left;
+    }
 
-.zopra_listvalues tr {
-    vertical-align: top;
-}
+    .zopra_listvalues tr.zopra_newvalue td {
+        padding-top: 7px;
+    }
 
-.zopra_listvalues tr td {
-    padding: 2px;
-    margin: 2px;
-    text-align: left;
-}
+    fieldset {
+        text-align: left;
+    }
 
-.zopra_listvalues tr.zopra_newvalue td {
-    padding-top: 7px;
-}
+    form fieldset legend {
+        background-color: #CCCCCC;
+        border: 1px solid;
+        font-size: 110%;
+        font-weight: bold;
+        margin: 0 0 5px -5px;
+        padding: 5px;
+        position: relative;
+    }
 
-fieldset {
-    text-align: left;
-}
+    fieldset.table_actions {
+        float: left;
+        margin: 0 5px;
+        padding: 0 5px;
+    }
 
-form fieldset legend {
-    background-color: #CCCCCC;
-    border: 1px solid;
-    font-size: 110%;
-    font-weight: bold;
-    margin: 0 0 5px -5px;
-    padding: 5px;
-    position: relative;
-}
+    fieldset.table_actions a img.action_image {
+        border: 1px solid #333333;
+        margin-left: 1px;
+    }
 
-fieldset.table_actions {
-    float: left;
-    margin: 0 5px;
-    padding: 0 5px;
-}
+    fieldset.list_actions {
+        width: 460px;
+        margin: 0 5px;
+        padding: 0 5px;
+    }
 
-fieldset.table_actions a img.action_image {
-    border: 1px solid #333333;
-    margin-left: 1px;
-}
+    .error {
+        width: 404px;
+        padding: 2px;
+    }
 
-fieldset.list_actions {
-    width: 460px;
-    margin: 0 5px;
-    padding: 0 5px;
-}
+    .result_options_field {
+        border: 1px solid #999999;
+        margin: 4px 1px 2px;
+        padding: 2px;
+    }
 
-.field {
-    text-align: left;
-    display: block;
-    border: 1px solid #999999;
-    margin: 2px;
-    padding: 2px;
-    float: left;
-    min-height: 40px;
-}
-.error {
-    width: 404px;
-    padding: 2px;
-}
-.result_options_field {
-    border: 1px solid #999999;
-    margin: 4px 1px 2px;
-    padding: 2px;
-}
-.result_options_subfield {
-    margin: 2px;
-    display: block;
-}
-.result_options_field select[multiple="multiple"] {
-    rows: 6;
-}
+    .result_options_subfield {
+        margin: 2px;
+        display: block;
+    }
 
-.diff {
-    background-color:#57fc46;
-    border:1px #A7CBFF solid;
-}
+    .diff {
+        background-color: #2dcb70;
+        border: 1px #A7CBFF solid;
+    }
 
-/* editorial buttons */
-.standalone {
-    margin-bottom: 2px;
-}
+    /* editorial buttons */
+    .standalone {
+        margin-bottom: 2px;
+    }
 
-.standalone[disabled="disabled"] {
-	background-color: #999999;
-	cursor: default;
-}
+    .standalone[disabled="disabled"] {
+        background-color: #999999;
+        cursor: default;
+    }
 
-.context {
-    margin-bottom: 2px;
-}
+    .context {
+        margin-bottom: 2px;
+    }
 
-/* input fields */
-textarea {
-    width: 400px;
-}
+    table.zopra_overview {
+        border: 1px solid #ccc;
+        border-bottom: 0;
+        padding: 0;
+        margin: 0;
+    }
 
-select.single {
-    width: 400px;
-    margin-bottom: .1em;
-}
+    table.zopra_overview tr {
+        margin: 0;
+        padding: 0;
+    }
 
-.multiselect {
-    /*width: 400px;*/
-}
+    table.zopra_overview tr td, table.zopra_overview tr th {
+        padding: 2px;
+        margin: 0;
+        border: 0;
+        border-right: 1px solid #ccc;
+        border-bottom: 1px solid #ccc;
+    }
 
-.multiselect select {
-    width: 400px;
-}
+    table.zopra_overview tr td:last-child {
+        border-right: 0;
+    }
 
-.multiselect .selected {
-    width: 200px;
-}
+    #result_tab {
+        border: 1px solid #ccc;
+        border-bottom: 0;
+        width: 100%;
+        padding: 0;
+        margin: 0;
+    }
 
-.multiselect li.filtered {
-    display: none !important;
-}
+    #result_tab tr {
+        margin: 0;
+        padding: 0;
+    }
 
-input.textinput {
-    width: 400px;
-    margin-bottom: 2px;
-}
+    #result_tab tr td, #result_tab tr th {
+        padding: 2px;
+        margin: 0;
+        border: 0;
+        border-right: 1px solid #ccc;
+        border-bottom: 1px solid #ccc;
+    }
 
-input.urlinput {
-    width: 310px;
-    margin-bottom: 2px;
-}
+    #result_tab tr th {
+        cursor: move;
+    }
 
-input.numberinput {
-    width: 100px;
-}
+    #result_tab tr td:last-child {
+        border-right: 0;
+    }
 
-input.checkbox {
-    width: 100px;
-}
-
-
-table.zopra_overview {
-    border: 1px solid #ccc;
-    border-bottom: 0;
-    padding: 0;
-    margin:  0;
-}
-
-table.zopra_overview tr {
-    margin:  0;
-    padding: 0;
-}
-
-table.zopra_overview tr td, table.zopra_overview tr th {
-    padding: 2px;
-    margin: 0;
-    border: 0;
-    border-right: 1px solid #ccc;
-    border-bottom: 1px solid #ccc;
-}
-
-table.zopra_overview tr td:last-child {
-    border-right: 0;
-}
-
-#result_tab {
-    border: 1px solid #ccc;
-    border-bottom: 0;
-    width:   100%;
-    padding: 0;
-    margin:  0;
-}
-
-#result_tab tr {
-    margin:  0;
-    padding: 0;
-}
-
-#result_tab tr td, #result_tab tr th {
-    padding: 2px;
-    margin: 0;
-    border: 0;
-    border-right: 1px solid #ccc;
-    border-bottom: 1px solid #ccc;
-}
-
-#result_tab tr th {
-    cursor: move;
-}
-
-#result_tab tr td:last-child {
-	border-right: 0;
-}
+    .select2-container .select2-selection--multiple .select2-selection__choice {
+        float: none;
+        white-space: normal;
+    }
 
 }
 
 @media print {
-/* Editorial Printing styles */
-#portal-column-content a[href]:after,
-#portal-column-two a[href]:after {
-    content:"";
-}
-input {
-	display:inline;
-}
+    /* Editorial Printing styles */
+    #portal-column-content a[href]:after,
+    #portal-column-two a[href]:after {
+        content: "";
+    }
+
+    input {
+        display: inline;
+    }
 }

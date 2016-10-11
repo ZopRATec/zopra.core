@@ -105,21 +105,21 @@
         </tbody>
       </table>
       <script>
-$(window).ready(function() {
-  var $colnum = ($("table.zopra_listvalues").find("tr:first th").length - 1).toString();
-  var $definition = {
-    // add empty headers object
-    headers: {},
-    // sort by column 1, sort ascending (second 0)
-    //sortList: [[0,0]],
-    widgets: ['zebra', 'staticRow']
-  };
-  $definition.headers[$colnum] = {
-    // disable the calculated last column by setting the property sorter to false
-    sorter: false};
-  // initialize tablesorter
-  $("table.zopra_listvalues").tablesorter($definition);
-});
+//$(window).ready(function() {
+//  var $colnum = ($("table.zopra_listvalues").find("tr:first th").length - 1).toString();
+//  var $definition = {
+//    // add empty headers object
+//    headers: {},
+//    // sort by column 1, sort ascending (second 0)
+//    //sortList: [[0,0]],
+//    widgets: ['zebra', 'staticRow']
+//  };
+//  $definition.headers[$colnum] = {
+//    // disable the calculated last column by setting the property sorter to false
+//    sorter: false};
+//  // initialize tablesorter
+//  $("table.zopra_listvalues").tablesorter($definition);
+//});
       </script>
 
 </tal:block>
