@@ -50,6 +50,7 @@
                      cons python: {};
                      dummy python: cons.update(constraints);
                      dummy python: context.doesWorkingCopies(table) and cons.update({'iscopyof': 'NULL'});
+                     dummy python: context.doesTranslations(table) and not cons.has_key('language') and cons.update({'language': context.lang_default});
                      listall python: here.getPermissionInfo(table, 'table_list');
                      listown python: here.getPermissionInfo(table, 'table_list_own');
                      dummy python: not listall and listown and cons.update(here.getListOwnUsers(table));
