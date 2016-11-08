@@ -82,6 +82,13 @@
 <metal:widget_bool define-macro="widget_bool">
     <input type="hidden" name="zopra_attr_present:list" tal:attributes="value attr_name" />
     <div class="checkboxes-group">
+        <input type="checkbox"
+               class="checkbox"
+               value="1"
+               tal:attributes="checked python:bool(attr_value) and attr_value != '0';
+                               name attr_name;
+                               id attr_name"
+        />
         <div tal:condition="python: here.doesTranslations(table) and entry.get('hastranslation') and (attr_type == 'string' or attr_type == 'memo')"
                 class='formHelp'>Bitte denken Sie daran, bei Veränderungen gegebenenfalls die
             englische
@@ -90,20 +97,8 @@
         <div tal:condition="error" tal:content="error" i18n:translate="">Validation error
             output
         </div>
-        <label tal:attributes="for attr_name" tal:content="python: field['LABEL']" i18n:translate="">Attribute Name
-            <input type="checkbox"
-                   class="checkbox"
-                   value="1"
-                 tal:attributes="checked python:bool(attr_value) and attr_value != '0'; name attr_name; id attr_name"
-            />
-            <span class="fieldRequired"
-                  title="Required"
-                     i18n:attributes="title"
-                     i18n:translate="label_required"
-                     tal:define="isreq python: attr_name in required;"
-                     tal:condition="isreq">
-                *
-            </span>
+        <label tal:attributes="for attr_name" tal:content="python: field['LABEL']" i18n:translate="">
+            Attribute Name
         </label>
         <div tal:attributes="class python: 'formHelp' + (attr_type == 'memo' and ' formHelpShort' or '')"
                  tal:content="helpTexts/?attr_name |nothing">
