@@ -1,5 +1,5 @@
 [default]
-title=Edit File
+title=Two Column Import
 
 [security]
 View=0:Authenticated
