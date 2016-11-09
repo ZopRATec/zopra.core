@@ -1,243 +1,235 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
-      i18n:domain="plone">
+         i18n:domain="plone">
 
 <body>
 <tal:comment tal:replace="nothing">
-  widgets for edit and create forms
+    widgets for edit and create forms
 </tal:comment>
 
 <metal:widget_selector define-macro="widget_selector">
-  <metal:block metal:use-macro="python:path('here/zopra_widget_edit_display/macros/widget_'+attr_type)" />
+    <metal:block metal:use-macro="python:path('here/zopra_widget_edit_display/macros/widget_'+attr_type)" />
 </metal:widget_selector>
 
+<metal:widget_label define-macro="widget_label">
+    <label tal:attributes="for attr_name"  i18n:translate="">
+        <span tal:replace="python: field['LABEL']"></span>
+        <span class="fieldRequired"
+              title="Required"
+                 i18n:attributes="title"
+                 i18n:translate="label_required"
+                 tal:define="isreq python: attr_name in required;"
+                 tal:condition="isreq">
+            *
+        </span>
+    </label>
+    <div tal:attributes="class python: 'formHelp' + (attr_type == 'memo' and ' formHelpShort' or '')"
+             tal:content="helpTexts/?attr_name |nothing">
+        Hinweistext
+    </div>
+    <div tal:condition="python: here.doesTranslations(table) and entry.get('hastranslation') and (attr_type == 'string' or attr_type == 'memo')"
+            class='formHelp'>Bitte denken Sie daran, bei Veränderungen gegebenenfalls die
+        englische
+        Übersetzung anzupassen.
+    </div>
+    <div tal:condition="error" tal:content="error" i18n:translate="">Validation error
+        output
+    </div>
+</metal:widget_label>
+
 <metal:widget_string define-macro="widget_string">
-  <tal:block tal:define="urllookup python:attr_name.startswith('url') or attr_name.startswith('image_')">
-    <input type="text"
-           size="50"
-           tal:attributes="value attr_value; name attr_name; id attr_name;
-                           class python: urllookup and 'urlinput' or 'textinput'"
-    />
-    <input tal:condition="urllookup"
-           class="standalone"
-           type="button"
-           id="choose_link"
-           name="choose_link"
-           tal:define="js string:javascript:window.open('../../epoz_toolbox?mode=link&field_a=forms[0].${attr_name}', 'URL Finder', 'toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=650,height=600');"
-           tal:attributes="onClick js"
-           value="Durchsuchen"
-    />
-  </tal:block>
+    <metal:block metal:use-macro="python:path('here/zopra_widget_edit_display/macros/widget_label')" />
+    <tal:block tal:define="urllookup python:attr_name.startswith('url') or attr_name.startswith('image_')">
+        <input type="text"
+                 tal:attributes="value attr_value; name attr_name; id attr_name"
+        />
+    </tal:block>
 </metal:widget_string>
 
 <metal:widget_int define-macro="widget_int">
-  <input type="text"
-         class="numberinput"
-         size="10"
-         tal:attributes="value attr_value; name attr_name; id attr_name"
+    <metal:block metal:use-macro="python:path('here/zopra_widget_edit_display/macros/widget_label')" />
+    <input type="text"
+           class="numberinput"
+             tal:attributes="value attr_value; name attr_name; id attr_name"
     />
 </metal:widget_int>
 
 <metal:widget_float define-macro="widget_float">
-  <input type="text"
-         class="numberinput"
-         size="10"
-         tal:attributes="value python: ('%s' % attr_value).replace('.', ',');
-                         name attr_name; id attr_name"
+    <metal:block metal:use-macro="python:path('here/zopra_widget_edit_display/macros/widget_label')" />
+    <input type="text"
+           class="numberinput"
+             tal:attributes="value python: ('%s' % attr_value).replace('.', ',');
+            name attr_name; id attr_name"
     />
 </metal:widget_float>
 
 <metal:widget_currency define-macro="widget_currency">
-  <input type="text"
-         class="numberinput"
-         size="10"
-         tal:attributes="value python: context.prepare_zopra_currency_value(attr_value);
-                         name attr_name; id attr_name"
+    <metal:block metal:use-macro="python:path('here/zopra_widget_edit_display/macros/widget_label')" />
+    <input type="text"
+           class="numberinput"
+             tal:attributes="value python: context.prepare_zopra_currency_value(attr_value);
+            name attr_name; id attr_name"
     />
 </metal:widget_currency>
 
 <metal:widget_date define-macro="widget_date">
-  <input type="text"
-         class="numberinput"
-         size="10"
-         tal:attributes="value attr_value; name attr_name; id attr_name"
+    <metal:block metal:use-macro="python:path('here/zopra_widget_edit_display/macros/widget_label')" />
+    <input type="text"
+           class="numberinput"
+             tal:attributes="value attr_value; name attr_name; id attr_name"
     />
 </metal:widget_date>
 
 <metal:widget_bool define-macro="widget_bool">
-  <!-- bool marker -->
-  <input type="hidden" name="zopra_attr_present:list" tal:attributes="value attr_name;" />
-  <input type="checkbox"
-         class="checkbox"
-         value="1"
-         tal:attributes="checked python:bool(attr_value) and attr_value != '0'; name attr_name; id attr_name"
-    />
+    <input type="hidden" name="zopra_attr_present:list" tal:attributes="value attr_name" />
+    <div class="checkboxes-group">
+        <div tal:condition="python: here.doesTranslations(table) and entry.get('hastranslation') and (attr_type == 'string' or attr_type == 'memo')"
+                class='formHelp'>Bitte denken Sie daran, bei Veränderungen gegebenenfalls die
+            englische
+            Übersetzung anzupassen.
+        </div>
+        <div tal:condition="error" tal:content="error" i18n:translate="">Validation error
+            output
+        </div>
+        <label tal:attributes="for attr_name" tal:content="python: field['LABEL']" i18n:translate="">Attribute Name
+            <input type="checkbox"
+                   class="checkbox"
+                   value="1"
+                 tal:attributes="checked python:bool(attr_value) and attr_value != '0'; name attr_name; id attr_name"
+            />
+            <span class="fieldRequired"
+                  title="Required"
+                     i18n:attributes="title"
+                     i18n:translate="label_required"
+                     tal:define="isreq python: attr_name in required;"
+                     tal:condition="isreq">
+                *
+            </span>
+        </label>
+        <div tal:attributes="class python: 'formHelp' + (attr_type == 'memo' and ' formHelpShort' or '')"
+                 tal:content="helpTexts/?attr_name |nothing">
+            Hinweistext
+        </div>
+    </div>
 </metal:widget_bool>
 
 <metal:widget_memo define-macro="widget_memo">
-    <textarea cols="50" rows="5"
-              tal:attributes="name attr_name; id attr_name;"
-              tal:content="structure attr_value">value</textarea>
+    <metal:block metal:use-macro="python:path('here/zopra_widget_edit_display/macros/widget_label')" />
+    <div data-sync data-has-reveal="true">
+        <a class="expand" tal:attributes="data-open string:reveal_${attr_name}"><span class="show-for-sr">Click me for a modal</span></a>
+        <textarea cols="50" rows="5"
+                 tal:attributes="name attr_name; id attr_name; data-sync-with string:#clone_${attr_name}"
+                 tal:content="structure attr_value">value</textarea>
+        <div class="reveal large" tal:attributes="id string:reveal_${attr_name}" data-reveal>
+            <textarea cols="50" rows="20"
+                     tal:attributes="id string:clone_${attr_name}; data-sync-with string:#${attr_name}"
+                     tal:content="structure attr_value">value</textarea>
+            <button class="close-button" data-close aria-label="Close modal" type="button">
+            </button>
+        </div>
+    </div>
 </metal:widget_memo>
 
 <metal:widget_singlelist define-macro="widget_singlelist">
+    <metal:block metal:use-macro="python:path('here/zopra_widget_edit_display/macros/widget_label')" />
     <select tal:define="lobj python:here.listHandler.getList(table, attr_name);
-                        entries python:lobj.getEntries();
-                        do_sort attr_sort|nothing;
-                        dummy python: do_sort and entries.sort(key=lambda item: item['value']);"
-            tal:attributes="name attr_name; id attr_name;"
-            class="single">
-        <option value="">-auswählen-</option>
-        <tal:block tal:repeat="entry entries">
-            <tal:block condition="entry/value">
-                <option tal:attributes="value python: unicode(entry['autoid']); selected python:unicode(entry['autoid']) == unicode(attr_value);"
-                    tal:content="python:entry['value']">
+            entries python:lobj.getEntries();
+            do_sort attr_sort|nothing;
+            dummy python: do_sort and entries.sort(key=lambda item: item['value']);"
+             tal:attributes="name attr_name; id attr_name;"
+                    class="single">
+                <option value="">-auswählen-</option>
+                    <tal:block tal:repeat="entry entries">
+        <tal:block condition="entry/value">
+            <option tal:attributes="value python: unicode(entry['autoid']); selected python:unicode(entry['autoid']) == unicode(attr_value);"
+                     tal:content="python:entry['value']">
                 value
-                </option>
-            </tal:block>
+            </option>
         </tal:block>
+    </tal:block>
     </select>
 </metal:widget_singlelist>
 
 <metal:widget_multilist define-macro="widget_multilist">
-<tal:block tal:define="lobj python:here.listHandler.getList(table, attr_name);
-                       entries python:lobj.getEntries();
-                       do_sort attr_sort|nothing;
-                       dummy python: do_sort and entries.sort(key=lambda item: item['value']);
-                       notes attr_notes_override|nocall: lobj/notes;
-                       tmp_store python: {};">
-    <!-- multilist marker -->
-    <input type="hidden" name="zopra_attr_present:list" tal:attributes="value attr_name;" />
-    <table class="multiselect">
-        <colgroup>
-            <col width="50%" />
-            <col width="50%" />
-        </colgroup>
-        <tr>
-            <td colspan="2">
-                <select size="5" multiple="multiple"
-                        tal:attributes="name python:attr_name+':list'; id attr_name;">
-                    <tal:block tal:repeat="entry entries">
-                        <tal:block condition="entry/value">
-                            <option tal:define="bla python: tmp_store.update([(entry['autoid'], entry['value'])])"
-                                    tal:attributes="value python: unicode(entry['autoid']);
-                                                selected python:unicode(entry['autoid']) in [unicode(val) for val in attr_value];
-                                                title python: entry['value']"
-                                    tal:content="python: entry['value']">
-                                value
-                            </option>
-                        </tal:block>
-                    </tal:block>
-                </select>
-            </td>
-        </tr>
-        <tr class="notes">
-            <th align="left">Ausgew&auml;hlt</th>
-            <th tal:condition="notes">
-                <span tal:condition="python: isinstance(notes, bool)"
-                      tal:content="python: lobj.getNoteslabel() or 'Erweiterung'">
-                </span>
-                <span tal:condition="python: isinstance(notes, (unicode, str))"
-                      tal:content="python: lobj.getNoteslabel() or here.listHandler[notes].getLabel()">
-                        Label
-                </span>
-            </th>
-        </tr>
-        <tal:block repeat="selected attr_value">
-            <tr tal:condition="python: selected and tmp_store.get(int(selected))">
-                <td tal:condition="python: selected and tmp_store.get(int(selected))">
-                    <a tal:define="href python: lobj.isTableReference() and lobj.getManager().absolute_url() + '/zopra_table_show_form?table=%s&autoid=%s' % (lobj.foreign, selected) or nothing"
-                       tal:attributes="href href; target python:href and '_blank' or nothing"
-                       tal:omit-tag="not: href"
-                       tal:content="python: tmp_store.get(int(selected), '')">Value</a>
-                </td>
-                <tal:block tal:condition="notes">
-                    <td tal:define="notesname python: attr_name + 'notes' + unicode(selected);
-                                    val python: attr_notes.get(notesname);">
-                        <tal:block tal:condition="python: isinstance(notes, bool)">
-                            <input type="text" tal:attributes="name notesname;
-                                                               id notesname;
-                                                               value python: val and unicode(val) or '';">
-                        </tal:block>
-                        <tal:block tal:condition="python: isinstance(notes, (unicode, str))">
-                            <select tal:define="lobj2 python:here.listHandler[notes];
-                                                entries2 python:lobj2.getEntries();"
-                                    tal:attributes="name notesname; id notesname">
-                                <option value="NULL">-ausw&auml;hlen-</option>
-                                <tal:block tal:repeat="entry2 entries2">
-                                    <tal:block condition="entry2/value">
-                                        <option tal:attributes="value python: unicode(entry2['autoid']); selected python:unicode(entry2['autoid']) == unicode(val);"
-                                                tal:content="python:entry2['value']">
-                                            value
-                                        </option>
-                                    </tal:block>
-                                </tal:block>
-                            </select>
-                        </tal:block>
-                    </td>
+    <metal:block metal:use-macro="python:path('here/zopra_widget_edit_display/macros/widget_label')" />
+    <tal:block tal:define="lobj python:here.listHandler.getList(table, attr_name);
+            entries python:lobj.getEntries();
+            do_sort attr_sort|nothing;
+            dummy python: do_sort and entries.sort(key=lambda item: item['value']);
+            notes attr_notes_override|nocall: lobj/notes;
+            tmp_store python: {};">
+        <input type="hidden" name="zopra_attr_present:list" tal:attributes="value attr_name" />
+        <select multiple="multiple"
+                 tal:attributes="name python:attr_name+':list'; id attr_name">
+            <tal:block tal:repeat="entry entries">
+                <tal:block condition="entry/value">
+                    <option tal:define="bla python: tmp_store.update([(entry['autoid'], entry['value'])])"
+                             tal:attributes="value python: unicode(entry['autoid']);
+                            selected python:unicode(entry['autoid']) in [unicode(val) for val in attr_value];
+                            title python: entry['value']"
+                             tal:content="python: entry['value']">
+                        value
+                    </option>
                 </tal:block>
-            </tr>
-        </tal:block>
-    </table>
-</tal:block>
+            </tal:block>
+        </select>
+    </tal:block>
 </metal:widget_multilist>
 
 <metal:widget_hierarchylist define-macro="widget_hierarchylist">
-
-<tal:block tal:define="lobj python:here.listHandler.getList(table, attr_name);
-                       entries python:lobj.getEntries();
-                       do_sort attr_sort|nothing;
-                       dummy python: do_sort and entries.sort(key=lambda item: item['value']);
-                       tmp_store python: {};
-                       global parent python:0;
-                       global level python:0;">
-    <script type="text/javascript" tal:attributes="src string:${portal_url}/hierarchylist.js"></script>
-	<div tal:attributes="id python: 'hierarchylist_' + attr_name">
-	    <div class="container">
-                <input type="hidden"  name="zopra_attr_present:list"
-                       tal:attributes="value attr_name" />
+    <metal:block metal:use-macro="python:path('here/zopra_widget_edit_display/macros/widget_label')" />
+    <tal:block tal:define="lobj python:here.listHandler.getList(table, attr_name);
+            entries python:lobj.getEntries();
+            do_sort attr_sort|nothing;
+            dummy python: do_sort and entries.sort(key=lambda item: item['value']);
+            tmp_store python: {};
+            global parent python:0;
+            global level python:0;">
+        <script type="text/javascript" tal:attributes="src string:${portal_url}/hierarchylist.js"></script>
+        <div tal:attributes="id python: 'hierarchylist_' + attr_name">
+            <div class="container">
+                <input type="hidden" name="zopra_attr_present:list"
+                         tal:attributes="value attr_name" />
                 <input type="hidden"
-                    tal:attributes="value python:attr_value and attr_value[0] or nothing;
-                                    name python:attr_name+':list:int';
-                                    id attr_name;" 
-                />
+                         tal:attributes="value python:attr_value and attr_value[0] or nothing; name python:attr_name+':list:int'; id attr_name" />
                 <div tal:define = "hierarchy_list python:lobj.getHierarchyListAncestors( attr_value and attr_value[0] or 0);"
-                     tal:repeat = "parent hierarchy_list">
-                    <metal:block metal:use-macro="here/zopra_widget_edit_display/macros/widget_hierarchylist_select" /><br/>
+                         tal:repeat = "parent hierarchy_list">
+                    <metal:block metal:use-macro="here/zopra_widget_edit_display/macros/widget_hierarchylist_select" />
+                    <br/>
                 </div>
             </div>
-	  <div class="loading" style="visibility:collapse;">
-		  <img tal:attributes="src string:${portal_url}/autoupdate-widget/loading.gif"  alt="Loading..."/>Bearbeite ihre Anfrage. Bitte warten...
-	  </div>
-	</div>
-</tal:block>
+            <div class="loading">
+                <img tal:attributes="src string:${portal_url}/autoupdate-widget/loading.gif"  alt="Loading..."/>Bearbeite
+                ihre Anfrage. Bitte warten...
+            </div>
+        </div>
+    </tal:block>
 </metal:widget_hierarchylist>
 
 <tal:comment tal:replace="nothing">
-  The next part is the macro building one block of the hierarchylist edit / search display.
-  It is used by zopra_widget_edit_display, zopra_widget_search_display and zopra_widget_hierarchylist_helper (to get further levels of the list via ajax)
+    The next part is the macro building one block of the hierarchylist edit / search display.
+    It is used by zopra_widget_edit_display, zopra_widget_search_display and zopra_widget_hierarchylist_helper (to get
+    further levels of the list via ajax)
 </tal:comment>
 
 <metal:block define-macro="widget_hierarchylist_select">
-	<tal:block tal:define="items python:lobj.getEntriesByParent(parent);
-				           hierarchy_list hierarchy_list|python:[];
-				           onclick_function string:hierarchylist_select_option(%s,'${attr_name}','${table}',this);"
-	           tal:condition="python:len(items)">
-
-	    <select class="single"
-	    	tal:define = "itemname python:'hierarchylist_selection';"
-			tal:attributes="name itemname;">
-               <option tal:attributes="onclick python: onclick_function % ('\'\'')" value="0">-auswählen-</option>
-	 		
-	        <tal:block tal:repeat="item items">
-     	            <option tal:content="item/value" 
-				        tal:attributes="onclick python: onclick_function % item['autoid'];
-				                        value item/autoid;
-               	    				    selected python: item['autoid'] in hierarchy_list and 'selected' or nothing"
-			    	/>
-		    </tal:block>
-	    </select>
-    </tal:block>	    
+    <metal:block metal:use-macro="python:path('here/zopra_widget_edit_display/macros/widget_label')" />
+    <tal:block tal:define="items python:lobj.getEntriesByParent(parent);
+            hierarchy_list hierarchy_list|python:[];
+            onclick_function string:hierarchylist_select_option(%s,'${attr_name}','${table}',this);"
+             tal:condition="python:len(items)">
+        <select class="single"
+                 tal:define = "itemname python:'hierarchylist_selection'"
+                 tal:attributes="name itemname">
+            <option tal:attributes="onclick python: onclick_function % ('\'\'')" value="0">-auswählen-</option>
+            <tal:block tal:repeat="item items">
+                <option tal:content="item/value"
+                         tal:attributes="onclick python: onclick_function % item['autoid'];
+                                value item/autoid;
+                                selected python: item['autoid'] in hierarchy_list and 'selected' or nothing"
+                ></option>
+            </tal:block>
+        </select>
+    </tal:block>
 </metal:block>
-
 </body>
 </html>
