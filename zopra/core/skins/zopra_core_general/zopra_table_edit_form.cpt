@@ -1,192 +1,150 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US"
       lang="en-US"
-      metal:use-macro="here/main_template/macros/master"
-      i18n:domain="zopra">
+         metal:use-macro="here/main_template/macros/master"
+         i18n:domain="zopra">
 
-  <body>
-    <tal:comment tal:replace="nothing">
+<body>
+<tal:comment tal:replace="nothing">
 
-    </tal:comment>
+</tal:comment>
 
-    <metal:css_slot fill-slot="css_slot">
-        <link rel="stylesheet" type="text/css" media="all"  tal:attributes="href string:${portal_url}/zopra.css" />
-        <link rel="stylesheet" type="text/css" media="all"  tal:attributes="href string:${portal_url}/zopra_edit.css" />
-        <link rel="stylesheet" type="text/css" media="print"  tal:attributes="href string:${portal_url}/sins_print.css" />
+<metal:css_slot fill-slot="css_slot">
+    <link rel="stylesheet" type="text/css" media="all"  tal:attributes="href string:${portal_url}/zopra.css" />
+    <link rel="stylesheet" type="text/css" media="all"  tal:attributes="href string:${portal_url}/zopra_edit.css" />
+    <link rel="stylesheet" type="text/css" media="print"  tal:attributes="href string:${portal_url}/sins_print.css" />
+</metal:css_slot>
 
-        <link rel="stylesheet" type="text/css" tal:attributes="href string:${portal_url}/fancybox/jquery.fancybox-1.3.4.css" media="screen" />
-        <link rel="stylesheet" type="text/css" tal:attributes="href string:${portal_url}/fancybox-textarea/jquery.fancybox.textarea.css" media="screen" />
-        <link rel="stylesheet" type="text/css" tal:attributes="href string:${portal_url}/multi-select/multi-select.css" media="screen" />
-        <link rel="stylesheet" type="text/css" tal:attributes="href string:${portal_url}/smoothness/jquery-ui-1.8.16.custom.css" media="screen" />
-    </metal:css_slot>
-
-    <metal:javascriptslot fill-slot="javascript_head_slot">
-        <script type="text/javascript" tal:attributes="src string:${portal_url}/fancybox/jquery.fancybox-1.3.4.pack.js"></script>
-        <script type="text/javascript" tal:attributes="src string:${portal_url}/multi-select/jquery.multi-select.1.6.js"></script>
-        <script type="text/javascript" tal:attributes="src string:${portal_url}/fancybox-textarea/jquery.fancybox.textarea.js" charset="utf-8"></script>
-        <script type="text/javascript" tal:attributes="src string:${portal_url}/autoupdate-widget/jquery.autoupdate-widget.js"></script>
-
+<metal:javascriptslot fill-slot="javascript_head_slot">
     <script language="javascript">
-    <!--
-        $(document).ready(function() {
-
-            $("textarea").textareaPopup();
-            $('select[multiple]').multiSelect({selectedHeader:"&nbsp;Gewählte Items", selectableHeader: "&nbsp;Auswählbare Items", });
-
-            $(".autoupdate").autoupdateWidget();
+        <!--
+        $(document).ready(function () {
             //workflow buttons get disabled on form field change
-            $(".field input, .field select, .field textarea").change(function() {
-                  $("input[name='form.button.ChangeWorkflowState1'], input[name='form.button.ChangeWorkflowState2'], input[name='form.button.ChangeWorkflowState3']")
+            $(".field input, .field select, .field textarea").change(function () {
+                $("input[name='form.button.ChangeWorkflowState1'], input[name='form.button.ChangeWorkflowState2'], input[name='form.button.ChangeWorkflowState3']")
                         .attr("disabled", "disabled");
             });
         });
 
-
-    -->
+        -->
     </script>
     <script type="text/javascript" tal:attributes="src string:${portal_url}/multi-select_filter.js"></script>
-    </metal:javascriptslot>
+</metal:javascriptslot>
 
-      <metal:topslot fill-slot="top_slot">
-          <tal:block tal:define="global isAnon context/@@plone_portal_state/anonymous;"></tal:block>
-      </metal:topslot>
+<metal:topslot fill-slot="top_slot">
+    <tal:block tal:define="global isAnon context/@@plone_portal_state/anonymous;"></tal:block>
+</metal:topslot>
 
-    <metal:main fill-slot="main">
-
-      <tal:block tal:condition="isAnon">
+<metal:main fill-slot="main">
+    <tal:block tal:condition="isAnon">
         <tal:block replace="context/raiseUnauthorized"></tal:block>
-      </tal:block>
-
-      <form name="edit_form"
-            action="."
-            method="post"
-            enctype="multipart/form-data"
-            tal:define="errors options/state/getErrors;
-                     table request/table;
-                     tobj python: here.tableHandler[table];
-                     coltypes python:tobj.getColumnDefs();
-                     fieldsets python:here.getLayoutInfo(table, 'edit');
-                     autoid request/autoid;
-                     origentry python:tobj.getEntry(autoid);
-                     entry python: here.zopra_forceCopy(table, origentry, request);
-                     origentry python: here.zopra_forceOriginal(table, origentry);
-                     diff python: origentry['autoid'] != entry['autoid'] and here.getDiff(origentry, entry) or [];
-                     autoid python: entry.get('autoid')#again to get copy;
-                     helpTexts python: here.getHelpTexts(table);
-                     required python: here.getGenericConfig(table).get('required',[]);
-                     edit_lang python: here.doesTranslations(table) and entry.get('language');
-                     entry_perm python: here.getPermissionEntryInfo(table, entry);
-                     edit_permitted python: here.getPermissionInfo(table, 'table_edit') or here.getPermissionInfo(table, 'table_edit_own') and 'edit' in entry_perm;
-                     "
-            tal:attributes="action string:${here/getId}/${template/getId}" >
-
-      <tal:block tal:condition="python: not edit_permitted or not 'edit' in entry_perm">
-        <div tal:define="dummy python: request.RESPONSE.redirect('require_login?came_from=' + here.absolute_url_path() +'/zopra_main_form')" />
-      </tal:block>
-
-      <h1>
-        <span i18n:translate="" tal:content="python: tobj.getLabel()"></span>
-        <span tal:content="python: here.getLabelString(table, autoid, entry)"></span>
-        <span i18n:translate="zopra_edit_edit">edit</span>
-        <span tal:condition="edit_lang">
-          (<span i18n:translate="zopra_edit_language">Language:</span>
-          <span tal:content="edit_lang"></span>)
-        </span>
-      </h1>
-
-      <div style="background-color: light-grey">
+    </tal:block>
+    <tal:block
+             tal:define="errors options/state/getErrors;
+                    table request/table;
+                            tobj python: here.tableHandler[table];
+                                    coltypes python:tobj.getColumnDefs();
+                                            fieldsets python:here.getLayoutInfo(table, 'edit');
+                                                    autoid request/autoid;
+                                                            origentry python:tobj.getEntry(autoid);
+                                                                    entry python: here.zopra_forceCopy(table, origentry, request);
+                                                                            origentry python: here.zopra_forceOriginal(table, origentry);
+                                                                                    diff python: origentry['autoid'] != entry['autoid'] and here.getDiff(origentry, entry) or [];
+                                                                                            autoid python: entry.get('autoid')#again to get copy;
+            helpTexts python: here.getHelpTexts(table);
+            required python: here.getGenericConfig(table).get('required',[]);
+            edit_lang python: here.doesTranslations(table) and entry.get('language');
+            entry_perm python: here.getPermissionEntryInfo(table, entry);
+            edit_permitted python: here.getPermissionInfo(table, 'table_edit') or here.getPermissionInfo(table, 'table_edit_own') and 'edit' in entry_perm;">
+        <h1 class="documentFirstHeading">
+            <span i18n:translate="" tal:content="python: tobj.getLabel()"></span>
+            <span tal:content="python: here.getLabelString(table, autoid, entry)"></span>
+            <span i18n:translate="zopra_edit_edit">edit</span>
+            <span tal:condition="edit_lang">
+                (<span i18n:translate="zopra_edit_language">Language:</span>
+                <span tal:content="edit_lang"></span>)
+            </span>
+        </h1>
         <metal:block metal:use-macro="here/zopra_button_link_bar/macros/links_edit" />
-        <metal:block metal:use-macro="here/zopra_button_link_bar/macros/buttons_edit" />
-      </div>
-
-      <span class="fieldRequired">&nbsp;</span>
-      <span i18n:domain="plone" i18n:translate="required_field_edit_form">Required Fields</span>
-
-      <tal:block tal:define="show_additional python: not here.doesTranslations(table) or entry.get('language') == 'de'"
-                 tal:repeat="fieldset fieldsets">
-      <fieldset tal:define="add_macro python: 'additional_%s_%s' % (table, fieldset.get('id') or fieldset.get('label'));
-                            add_path python: 'zopra_table_edit_additional_%s' % here.meta_type;
-                            add_check python: 'zopra_table_edit_has_additional_%s' % here.meta_type;
-                            add_hascontent python: not hasattr(here, add_check) or getattr(here, add_check)(fieldset.get('label'), table, entry, request);"
-                tal:condition="python: fieldset.get('fields') or (exists('here/?add_path/macros/?add_macro') and add_hascontent)">
-
-          <legend i18n:translate="" tal:attributes="id python:fieldset.get('id') or fieldset.get('label')" tal:content="fieldset/label">Datenfelder</legend>
-          <tal:block tal:define="sortables python: fieldset.get('sortables', [])"
-                     tal:repeat="attr_name fieldset/fields">
-            <tal:block tal:define="br br|nothing;
-                                   global br python: br or attr_name == '<br>'"
-                       tal:condition="python: attr_name != '<br>'">
-              <tal:check tal:define="dummy python: not coltypes.get(attr_name) and here.zopra_raiser('Field not found: ' + attr_name);"></tal:check>
-             <tal:switch tal:condition="python: not coltypes.get(attr_name).get('INVIS') and not (here.doesTranslations(table) and entry.get('language') != here.lang_default and coltypes[attr_name]['TYPE'] not in ['string', 'memo'])">
-
-                <div class="field"
-                   tal:define="error python: errors.get(attr_name);
-                               attr_value python:request.get(attr_name, '') or entry.get(attr_name, '');
-                               field python:coltypes[attr_name];
-                               attr_type python:field['TYPE'];
-                               attr_sort python:attr_name in sortables;
-                               attr_notes python: attr_type == 'multilist' and dict([[a,entry[a]] for a in entry.keys() if a.startswith(attr_name + 'notes') and entry[a]]) or {};
-                               fielddiff python: attr_name in diff or attr_notes and here.dictIntersect(attr_notes, diff);"
-                   tal:attributes="class python: 'field' + (error and ' error' or '') + (br and ' floatclearer' or '') + (fielddiff and ' diff' or '')">
-
-                  <label tal:attributes="for attr_name" tal:content="python: field['LABEL']" i18n:translate="">Attribute Name</label>
-
-                  <span class="fieldRequired"
-                        title="Required"
-                        i18n:attributes="title"
-                        i18n:translate="label_required"
-                        tal:define="isreq python: attr_name in required;"
-                        tal:condition="isreq">
-                    (Required)
-                  </span>
-
-                  <div tal:attributes="class python: 'formHelp' + (attr_type == 'memo' and ' formHelpShort' or '')"
-                       tal:content="helpTexts/?attr_name |nothing">
-                    Hinweistext
-                  </div>
-                  <div tal:condition="python: here.doesTranslations(table) and entry.get('hastranslation') and (attr_type == 'string' or attr_type == 'memo')"
-                       class='formHelp'>Bitte denken Sie daran, bei Veränderungen gegebenenfalls die englische Übersetzung anzupassen.
-                  </div>
-
-                  <div tal:condition="error" tal:content="error" i18n:translate="">Validation error output</div>
-                  <metal:block metal:use-macro="here/zopra_widget_edit_display/macros/widget_selector" />
-
-                </div>
-              </tal:switch>
-              <tal:switch tal:condition="python: coltypes.get(attr_name).get('INVIS')">
-                <input type="hidden"
-                       tal:attributes="name attr_name; value python: entry.get(attr_name, '')" />
-              </tal:switch>
-              <tal:check tal:define="global br python:False"></tal:check>
+        <form name="edit_form"
+              action="."
+              method="post"
+              enctype="multipart/form-data"
+              class="enableFormTabbing zopra-form"
+                 tal:attributes="action string:${here/getId}/${template/getId}" >
+            <tal:block tal:condition="python: not edit_permitted or not 'edit' in entry_perm">
+                <div tal:define="dummy python: request.RESPONSE.redirect('require_login?came_from=' + here.absolute_url_path() +'/zopra_main_form')" />
             </tal:block>
-          </tal:block>
-          <tal:condition tal:condition="show_additional">
-            <tal:additional tal:condition="exists: here/?add_path/macros/?add_macro">
-              <metal:use metal:use-macro="here/?add_path/macros/?add_macro">
-                Additional Fields
-              </metal:use>
-            </tal:additional>
-          </tal:condition>
-        </fieldset>
-        </tal:block>
-        <metal:block metal:use-macro="here/zopra_button_link_bar/macros/links_edit" />
-        <metal:block metal:use-macro="here/zopra_button_link_bar/macros/buttons_edit" />
+            <tal:block tal:define="show_additional python: not here.doesTranslations(table) or entry.get('language') == 'de'"
+                     tal:repeat="fieldset fieldsets">
+                <fieldset tal:define="add_macro python: 'additional_%s_%s' % (table, fieldset.get('id') or fieldset.get('label'));
+                        add_path python: 'zopra_table_edit_additional_%s' % here.meta_type;
+                                add_check python: 'zopra_table_edit_has_additional_%s' % here.meta_type;
+                                        add_hascontent python: not hasattr(here, add_check) or getattr(here, add_check)(fieldset.get('label'), table, entry, request);"
+                         tal:condition="python: fieldset.get('fields') or (exists('here/?add_path/macros/?add_macro') and add_hascontent)">
+                    <legend i18n:translate="" tal:attributes="id python:fieldset.get('id') or fieldset.get('label')" tal:content="fieldset/label">
+                        Datenfelder
+                    </legend>
+                    <tal:block tal:define="sortables python: fieldset.get('sortables', [])"
+                             tal:repeat="attr_name fieldset/fields">
+                        <tal:block tal:define="br br|nothing;
+                                global br python: br or attr_name == '<br>'"
+                                 tal:condition="python: attr_name != '<br>'">
+                            <tal:check tal:define="dummy python: not coltypes.get(attr_name) and here.zopra_raiser('Field not found: ' + attr_name);"></tal:check>
+                            <tal:switch tal:condition="python: not coltypes.get(attr_name).get('INVIS') and not (here.doesTranslations(table) and entry.get('language') != here.lang_default and coltypes[attr_name]['TYPE'] not in ['string', 'memo'])">
+                                <div class="row">
+                                    <div class="contentSlot">
+                                        <div class="field"
+                                                 tal:define="error python: errors.get(attr_name); attr_value python:request.get(attr_name, '') or entry.get(attr_name, ''); field python:coltypes[attr_name]; attr_type python:field['TYPE']; attr_sort python:attr_name in sortables; attr_notes python: attr_type == 'multilist' and dict([[a,entry[a]] for a in entry.keys() if a.startswith(attr_name + 'notes') and entry[a]]) or {}; fielddiff python: attr_name in diff or attr_notes and here.dictIntersect(attr_notes, diff)"
+                                                 tal:attributes="class python: 'field' + (error and ' error' or '') + (br and ' floatclearer' or '') + (fielddiff and ' diff' or '')">
+                                            <metal:block metal:use-macro="here/zopra_widget_edit_display/macros/widget_selector" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </tal:switch>
+                            <tal:switch tal:condition="python: coltypes.get(attr_name).get('INVIS')">
+                                <input type="hidden"
+                                         tal:attributes="name attr_name; value python: entry.get(attr_name, '')" />
+                            </tal:switch>
+                            <tal:check tal:define="global br python:False"></tal:check>
+                        </tal:block>
+                    </tal:block>
+                    <tal:condition tal:condition="show_additional">
+                        <tal:additional tal:condition="exists: here/?add_path/macros/?add_macro">
+                            <div class="row">
+                                <div class="contentSlot">
+                                    <div class="field">
+                                        <metal:use metal:use-macro="here/?add_path/macros/?add_macro">
+                                            Additional Fields
+                                        </metal:use>
+                                    </div>
+                                </div>
+                            </div>
+                        </tal:additional>
+                    </tal:condition>
+                </fieldset>
+            </tal:block>
+            <div class="formControls">
+                <div class="formPanel">
+                    <div class="row">
+                        <div class="contentSlot">
+                            <metal:block metal:use-macro="here/zopra_button_link_bar/macros/buttons_edit" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <input type="hidden" name="form.submitted" value="1"/>
+            <input type="hidden" name="table" tal:attributes="value table" />
+            <input type="hidden" name="autoid" tal:attributes="value autoid" />
+            <input type="hidden" name="origid" tal:attributes="value request/autoid" />
+        </form>
+    </tal:block>
+</metal:main>
 
-        <input type="hidden" name="form.submitted" value="1" />
-        <input type="hidden" name="table" tal:attributes="value table" />
-        <input type="hidden" name="autoid" tal:attributes="value autoid" />
-        <input type="hidden" name="origid" tal:attributes="value request/autoid" />
-
-      </form>
-    </metal:main>
-
-    <!--<metal:column_two_slot fill-slot="column_two_slot">
+<!--<metal:column_two_slot fill-slot="column_two_slot">
       <metal:block metal:use-macro="here/zopra_context_menu/macros/context_menu" />
     </metal:column_two_slot>-->
-
-    <metal:bottom fill-slot="bottom">
-      <metal:block metal:use-macro="here/zopra_bottom/macros/bottom" />
-    </metal:bottom>
-
-  </body>
-
+<metal:bottom fill-slot="bottom">
+    <metal:block metal:use-macro="here/zopra_bottom/macros/bottom" />
+</metal:bottom>
+</body>
 </html>

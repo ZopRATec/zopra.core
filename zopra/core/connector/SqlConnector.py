@@ -73,6 +73,8 @@ connectors = { 'Psycopg':  'PostgresConnector',
                'PoPy':     'PostgresConnector',
                'MySQL':    'MySqlConnector',  }
 
+# why is string converted to COL_TEXT (text)? shouldn't this be VARCHAR(255)? does this harm database speed?
+
 type_map = { 'string':      COL_TEXT,
              'memo':        COL_TEXT,
              'int':         COL_INT4,

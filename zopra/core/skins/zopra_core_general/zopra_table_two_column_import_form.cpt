@@ -33,6 +33,10 @@
 
     </metal:javascriptslot>
 
+      <metal:topslot fill-slot="top_slot">
+          <tal:block tal:define="global isAnon context/@@plone_portal_state/anonymous;"></tal:block>
+      </metal:topslot>
+
     <metal:main fill-slot="main" tal:define="global importresult nothing;">
 
       <tal:block tal:condition="isAnon">

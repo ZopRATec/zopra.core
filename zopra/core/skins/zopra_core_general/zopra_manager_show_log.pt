@@ -11,23 +11,18 @@
     <metal:css_slot fill-slot="css_slot">
        <link rel="stylesheet" type="text/css" media="all" tal:attributes="href string:${portal_url}/zopra.css" />
        <link rel="stylesheet" type="text/css" media="all" tal:attributes="href string:${portal_url}/zopra_edit.css" />
-       <link rel="stylesheet" type="text/css" tal:attributes="href string:${portal_url}/multi-select/multi-select.css" media="screen" />
     </metal:css_slot>
 
     <metal:javascriptslot fill-slot="javascript_head_slot">
-        <script type="text/javascript" tal:attributes="src string:${portal_url}/jquery.js"></script>
-        <script type="text/javascript" tal:attributes="src string:${portal_url}/multi-select/jquery.multi-select.min.js"></script>
         <script type="text/javascript" tal:attributes="src string:${portal_url}/dragtable.js"></script>
         <script language="javascript">
         <!--
             $(document).ready(function() {
-                $("select.multi").multiSelect({selectedHeader:"&nbsp;Gewählte Items", selectableHeader: "&nbsp;Auswählbare Items", });
-
                 updateColumns = function updateColumnList() {
                     var container = $('#columnListContainer');
                     container.html('');
                     $('.copy2exportForm').clone().removeClass('copy2exportForm').appendTo(container);
-                }
+                };
 
                 $('#export_as_csv').submit(updateColumns);
                 updateColumns();
@@ -35,7 +30,6 @@
             });
         -->
         </script>
-
     </metal:javascriptslot>
 
     <metal:topslot fill-slot="top_slot">

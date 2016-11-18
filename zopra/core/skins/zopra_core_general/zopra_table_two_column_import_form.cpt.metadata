@@ -1,5 +1,5 @@
 [default]
-title=Import Form
+title=Two Column Import Form
 
 [security]
 View=0:Authenticated
