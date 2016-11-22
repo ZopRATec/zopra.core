@@ -373,7 +373,10 @@ class GenericManager(ManagerPart):
                 with this dictionary.
                 Otherwise, the normal showList handling is done, using getTableEntryListHtml,
                 unless some of the standard searchForm-Buttons are evaluated.
-            \param firstSearch is False when this call is done by showList, 
+                NEW-STYLE: hook is called from zopra_table_search_result Template for postprocessing of constraints.
+                Be aware that there might be constraints from the search form (or not, if the Listing was invoked directly)
+                and constraints added by the constraints preparation machinery.
+            \param firstSearch is False when this call is done by showList,
                 meaning that the searchForm was submitted.
             \param prefix is given for multi-table search requests
                 If your searchForms only apply to one table each, you can ignore it,
