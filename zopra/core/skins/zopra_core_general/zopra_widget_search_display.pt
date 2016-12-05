@@ -90,17 +90,20 @@
     </tal:block>
     <tal:block tal:condition="python:style=='force_single'">
         <select size="5"
-                 tal:define="lobj python:here.listHandler.getList(table, attr_name);
-                entries python:lobj.getEntries();
-                do_sort attr_sort|nothing;
-                dummy python: do_sort and entries.sort(key=lambda item: item['value']);"
-                 tal:attributes="name python: attr_prefix + attr_name + ':list'; id python: attr_prefix + attr_name;">
-                        <tal:block tal:repeat="entry entries">
-            <option tal:attributes="value python: str(entry['autoid']); selected python: len(attr_value) > 0 and str(entry['autoid']) == str(attr_value[0]);"
-                     tal:content="python:entry['value']">
-                value
-            </option>
-        </tal:block>
+                tal:define="lobj python:here.listHandler.getList(table, attr_name);
+                            entries python:lobj.getEntries();
+                            do_sort attr_sort|nothing;
+                            dummy python: do_sort and entries.sort(key=lambda item: item['value']);"
+                tal:attributes="name python: attr_prefix + attr_name + ':list'; id python: attr_prefix + attr_name;"
+                multiple="multiple">
+            <tal:block tal:repeat="entry entries">
+                <option tal:attributes="value python: str(entry['autoid']);
+                                        selected python: len(attr_value) > 0 and str(entry['autoid']) == str(attr_value[0]);
+                                        title python:entry['value']"
+                        tal:content="python:entry['value']">
+                    value
+                </option>
+            </tal:block>
         </select>
     </tal:block>
 </metal:widget_singlelist>
@@ -110,20 +113,31 @@
         entries python:lobj.getEntries();
         do_sort attr_sort|nothing;
         dummy python: do_sort and entries.sort(key=lambda item: item['value']);
-        notes python: lobj.notes;
-        tmp_store python: {};
         fromSinglelist fromSinglelist|nothing;">
-<tal:block tal:condition="not: fromSinglelist">
-    UND verknüpft:
+    <tal:block tal:condition="not: fromSinglelist">
+        UND verknüpft:
         <input type="checkbox"
                value="1"
-         tal:attributes="name python: attr_prefix + attr_name + '_AND';"/>
+               tal:attributes="name python: attr_prefix + attr_name + '_AND';"/>
+    </tal:block>
+    <select multiple="multiple"
+             tal:attributes="name python:attr_name+':list'; id attr_name">
+        <tal:block tal:repeat="entry entries">
+            <tal:block condition="entry/value">
+                <option tal:attributes="value python: unicode(entry['autoid']);
+                                        selected python:unicode(entry['autoid']) in [unicode(val) for val in attr_value];
+                                        title python: entry['value']"
+                        tal:content="python: entry['value']">
+                    value
+                </option>
+            </tal:block>
         </tal:block>
-        </tal:block>
-        </metal:widget_multilist>
+    </select>
+</tal:block>
+</metal:widget_multilist>
 
-        <metal:widget_hierarchylist define-macro="widget_hierarchylist">
-                <tal:comment tal:replace="nothing">
+<metal:widget_hierarchylist define-macro="widget_hierarchylist">
+<tal:comment tal:replace="nothing">
     hierarchy list selection for one single value. This is not multivalued yet!
 
     Original goal: user should be able to select a node (in form of a combobox-item) for each hierarchy to enable the
@@ -139,7 +153,7 @@
     Double-Selection needs to be detected (and then nothing done). -> not done
     The node-structure could be delivered by the hierarchy-list-object (look into HierarchyList) -> done
 </tal:comment>
-    <tal:block tal:define="lobj python:here.listHandler.getList(table, attr_name);
+<tal:block tal:define="lobj python:here.listHandler.getList(table, attr_name);
             entries python:lobj.getEntries();
             global parent python:0;
             global level python:0;
@@ -151,7 +165,7 @@
                 <input type="hidden" name="zopra_attr_present:list"
                          tal:attributes="value attr_name" />
                     <input type="hidden"
-                    	tal:attributes="value python:attr_value and attr_value[0] or nothing;
+                        tal:attributes="value python:attr_value and attr_value[0] or nothing;
                             name python:attr_name+':list';
                             id attr_name;"
                     />
