@@ -11,29 +11,32 @@
 </metal:widget_selector>
 
 <metal:widget_label define-macro="widget_label">
-    <label tal:attributes="for attr_name"  i18n:translate="">
-        <span tal:replace="python: field['LABEL']"></span>
-        <span class="fieldRequired"
-              title="Required"
-                 i18n:attributes="title"
-                 i18n:translate="label_required"
-                 tal:define="isreq python: attr_name in required;"
-                 tal:condition="isreq">
-            *
-        </span>
-    </label>
-    <div tal:attributes="class python: 'formHelp' + (attr_type == 'memo' and ' formHelpShort' or '')"
-             tal:content="helpTexts/?attr_name |nothing">
-        Hinweistext
-    </div>
-    <div tal:condition="python: here.doesTranslations(table) and entry.get('hastranslation') and (attr_type == 'string' or attr_type == 'memo')"
-            class='formHelp'>Bitte denken Sie daran, bei Veränderungen gegebenenfalls die
-        englische
-        Übersetzung anzupassen.
-    </div>
-    <div tal:condition="error" tal:content="error" i18n:translate="">Validation error
-        output
-    </div>
+    <tal:block tal:define="cur_field field|nothing"
+               tal:condition="python: cur_field">
+        <label tal:attributes="for attr_name"  i18n:translate="">
+            <span tal:replace="python: cur_field['LABEL']"></span>
+            <span class="fieldRequired"
+                  title="Required"
+                     i18n:attributes="title"
+                     i18n:translate="label_required"
+                     tal:define="isreq python: attr_name in required;"
+                     tal:condition="isreq">
+                *
+            </span>
+        </label>
+        <div tal:attributes="class python: 'formHelp' + (attr_type == 'memo' and ' formHelpShort' or '')"
+                 tal:content="helpTexts/?attr_name |nothing">
+            Hinweistext
+        </div>
+        <div tal:condition="python: here.doesTranslations(table) and entry.get('hastranslation') and (attr_type == 'string' or attr_type == 'memo')"
+                class='formHelp'>Bitte denken Sie daran, bei Veränderungen gegebenenfalls die
+            englische
+            Übersetzung anzupassen.
+        </div>
+        <div tal:condition="error" tal:content="error" i18n:translate="">Validation error
+            output
+        </div>
+    </tal:block>
 </metal:widget_label>
 
 <metal:widget_string define-macro="widget_string">
