@@ -173,12 +173,6 @@
     #result_tab tr td:last-child {
         border-right: 0;
     }
-
-    .select2-container .select2-selection--multiple .select2-selection__choice {
-        float: none;
-        white-space: normal;
-    }
-
 }
 
 @media print {
