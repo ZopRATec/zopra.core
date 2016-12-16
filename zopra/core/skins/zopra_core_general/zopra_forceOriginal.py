@@ -8,7 +8,7 @@
 ##title=Existance Check
 ##
 # if the entry is a working copy and force_showcopy is not set in the request, use the original entry instead
-if context.doesWorkingCopies(table):
+if context.doesWorkingCopies(table) and entry:
     orig = entry.get('iscopyof')
     if orig and not request.get('force_showcopy'):
         entry = context.tableHandler[table].getEntry(orig)

@@ -8,12 +8,6 @@
 
 </tal:comment>
 
-<metal:css_slot fill-slot="css_slot">
-    <link rel="stylesheet" type="text/css" media="all"  tal:attributes="href string:${portal_url}/zopra.css" />
-    <link rel="stylesheet" type="text/css" media="all"  tal:attributes="href string:${portal_url}/zopra_edit.css" />
-    <link rel="stylesheet" type="text/css" media="print"  tal:attributes="href string:${portal_url}/sins_print.css" />
-</metal:css_slot>
-
 <metal:javascriptslot fill-slot="javascript_head_slot">
     <script language="javascript">
         <!--
@@ -24,10 +18,8 @@
                         .attr("disabled", "disabled");
             });
         });
-
         -->
     </script>
-    <script type="text/javascript" tal:attributes="src string:${portal_url}/multi-select_filter.js"></script>
 </metal:javascriptslot>
 
 <metal:topslot fill-slot="top_slot">
@@ -36,25 +28,27 @@
 
 <metal:main fill-slot="main">
     <tal:block tal:condition="isAnon">
-        <tal:block replace="context/raiseUnauthorized"></tal:block>
+        <div tal:define="std modules/Products.PythonScripts.standard;
+                         url_quote_plus nocall: std/url_quote_plus;
+                         dummy python: request.RESPONSE.redirect('require_login?came_from=' + url_quote_plus(here.absolute_url() + 'zopra_table_edit_form?' +request['QUERY_STRING']))" />
     </tal:block>
-    <tal:block
-             tal:define="errors options/state/getErrors;
-                    table request/table;
-                            tobj python: here.tableHandler[table];
-                                    coltypes python:tobj.getColumnDefs();
-                                            fieldsets python:here.getLayoutInfo(table, 'edit');
-                                                    autoid request/autoid;
-                                                            origentry python:tobj.getEntry(autoid);
-                                                                    entry python: here.zopra_forceCopy(table, origentry, request);
-                                                                            origentry python: here.zopra_forceOriginal(table, origentry);
-                                                                                    diff python: origentry['autoid'] != entry['autoid'] and here.getDiff(origentry, entry) or [];
-                                                                                            autoid python: entry.get('autoid')#again to get copy;
-            helpTexts python: here.getHelpTexts(table);
-            required python: here.getGenericConfig(table).get('required',[]);
-            edit_lang python: here.doesTranslations(table) and entry.get('language');
-            entry_perm python: here.getPermissionEntryInfo(table, entry);
-            edit_permitted python: here.getPermissionInfo(table, 'table_edit') or here.getPermissionInfo(table, 'table_edit_own') and 'edit' in entry_perm;">
+    <tal:block tal:define="errors options/state/getErrors;
+                           table request/table;
+                           tobj python: here.tableHandler[table];
+                           coltypes python:tobj.getColumnDefs();
+                           fieldsets python:here.getLayoutInfo(table, 'edit');
+                           autoid request/autoid;
+                           origentry python:tobj.getEntry(autoid);
+                           entry python: here.zopra_forceCopy(table, origentry, request);
+                           origentry python: here.zopra_forceOriginal(table, origentry);
+                           diff python: origentry['autoid'] != entry['autoid'] and here.getDiff(origentry, entry) or [];
+                           autoid python: entry.get('autoid')#again to get copy;
+                           helpTexts python: here.getHelpTexts(table);
+                           required python: here.getGenericConfig(table).get('required',[]);
+                           edit_lang python: here.doesTranslations(table) and entry.get('language');
+                           entry_perm python: here.getPermissionEntryInfo(table, entry);
+                           edit_permitted python: here.getPermissionInfo(table, 'table_edit') or here.getPermissionInfo(table, 'table_edit_own') and 'edit' in entry_perm;">
+<div tal:content="python: errors or 'No Errors'"></div>
         <h1 class="documentFirstHeading">
             <span i18n:translate="" tal:content="python: tobj.getLabel()"></span>
             <span tal:content="python: here.getLabelString(table, autoid, entry)"></span>

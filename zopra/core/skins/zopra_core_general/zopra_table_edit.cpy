@@ -42,7 +42,7 @@ for attr in types.keys():
 # merge new values into the copy, oldentry is retained for checks below
 for key in copyentry.keys():
     entry[key] = copyentry[key]
-    
+
 # call prepare_hook
 context.prepareDict(table, entry, request)
 
@@ -60,13 +60,13 @@ elif entry.get('iscopyof'):
     done = tobj.updateEntry(entry, autoid, orig_entry = oldentry)
     message='Arbeitskopie gespeichert. %sOriginal-Id: %s' % (msg, entry.get('iscopyof'))
 
-else:    
+else:
     # create a working copy from oldentry (first creating a working copy with no changes for logging
     oldentry['iscopyof'] = entry['autoid']
     oldentry['autoid'] = None
     autoid = tobj.addEntry(oldentry)
     oldentry['autoid'] = autoid
-    
+
     # now update the new entry (which was prechecked and prepared above)
     # first change it to look like the working copy
     entry['iscopyof'] = entry['autoid']
@@ -74,8 +74,10 @@ else:
     # update it, pass oldentry for diff-log
     done = tobj.updateEntry(entry, int(autoid), orig_entry = oldentry)
     message = 'Arbeitskopie erzeugt. Original-Id: %s' % entry.get('iscopyof')
-    
+
 if done == True:
-    return state.set(status='success', context=context , portal_status_message = message)
+    context.plone_utils.addPortalMessage(message, 'info')
+    return state.set(status='success', context=context)
 else:
-    return state.set(status='failure', context=context, portal_status_message=done)
+    context.plone_utils.addPortalMessage(done, 'info')
+    return state.set(status='failure', context=context)
