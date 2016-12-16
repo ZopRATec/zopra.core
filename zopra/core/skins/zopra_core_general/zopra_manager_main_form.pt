@@ -45,20 +45,22 @@
       </tal:block>
 
       <h1 i18n:translate="">Manager Overview</h1>
-      <div tal:define="tables python:here.tableHandler.keys();">
-          <div tal:repeat="table tables" tal:omit-tag="">
+      <div class="zopra_overview_panel"
+           tal:define="tables python:here.tableHandler.keys();">
+          <tal:block tal:repeat="table tables">
             <tal:block tal:condition="python: here.getGenericConfig(table).get('visible', True)" tal:define="tobj python:here.tableHandler[table];">
 
-              <fieldset class="" title=""
-                        tal:define="icon_url here/iconHandler/absolute_url;
-                                    link_url python:here.absolute_url()+'/zopra_table_action_selector?table=%s' % table;">
-                <legend class="" tal:content="python: tobj.getLabel()">Tablename</legend>
-                  <form class="" method="post" action=""
+              <fieldset tal:define="icon_url here/iconHandler/absolute_url;
+                                    link_url python:here.absolute_url()+'/zopra_table_action_selector?table=%s' % table;
+                                    index repeat/table/index;"
+                        tal:attributes="class python:'zopra_table_actions' + ((index % 2) and ' floatclearer' or '')">
+                <legend tal:content="python: tobj.getLabel()">Tablename</legend>
+                  <form method="post"
                         tal:attributes="action python:here.absolute_url()+'/zopra_table_action_selector'">
 
                 <table border="0">
                 <tr><td>
-                  <a class=""
+                  <a class="no-icon"
                      title="Neuen Eintrag anlegen"
                      tal:define="name python:'f_'+table+'_intern_create';"
                      tal:attributes="href python: link_url + '&' + name + '=create'">
@@ -66,7 +68,7 @@
                        tal:attributes="src python:icon_url + '/ZMOM_ziCreate.png'" />
                   </a>
                 </td><td>
-                  <a class=""
+                  <a class="no-icon"
                      title="Einträge suchen"
                      tal:define="name python:'f_'+table+'_intern_search';"
                      tal:attributes="href python: link_url + '&' + name + '=search'">
@@ -74,7 +76,7 @@
                        tal:attributes="src python:icon_url + '/ZMOM_ziSearch.png'" />
                   </a>
                 </td><td>
-                  <a class=""
+                  <a class="no-icon"
                      title="Alle Einträge anzeigen"
                      tal:define="name python:'f_'+table+'_intern_list';"
                      tal:attributes="href python: link_url + '&' + name + '=list'">
@@ -93,15 +95,17 @@
               </form>
             </fieldset>
           </tal:block>
-        </div>
+        </tal:block>
       </div>
-      <div tal:define="lists python:here.listHandler.keys();
+      <br class="floatclearer" />
+      <div class="zopra_overview_panel"
+           tal:define="lists python:here.listHandler.keys();
                        permission python: here.getPermissionInfo('', 'list_edit')"
            tal:condition="permission">
-        <fieldset class="list_actions"
+        <fieldset class="zopra_list_actions"
                   tal:define="global foundone python:False;
                               count python: len(lists)">
-          <legend class="">Editierbare Auswahllisten</legend>
+          <legend>Editierbare Auswahllisten</legend>
           <div style="float: left; margin: 5px; width: 200px">
               <tal:block tal:repeat="listname python: lists[:count/2]">
                 <div class="field"
@@ -142,7 +146,9 @@
     </metal:column_two_slot>
 
     <metal:bottom fill-slot="bottom">
-      <metal:block metal:use-macro="here/zopra_bottom/macros/bottom" />
+      <tal:block tal:condition="context/isOldPlone">
+        <metal:block metal:use-macro="here/zopra_bottom/macros/bottom" />
+      </tal:block>
     </metal:bottom>
 
   </body>
