@@ -22,10 +22,13 @@ ak = (entry.get('autoid') != origentry.get('autoid'))
 sk = entry.get('istranslationof')
 
 targetid = None
+special_message = ''
 if ak:
     targetid = origentry.get('autoid')
+    special_message = u'Arbeitskopie geloescht.'
 elif sk:
     targetid = sk
+    special_message = u'Sprachkopie geloescht.'
 
 done = context.deleteEntries(table, [int(autoid)])
 
@@ -84,7 +87,7 @@ if done and request.get('origtable') and request.get('origid') and request.get('
     return
 
 if done:
-    message = u'Eintrag geloescht.'
+    message = special_message or u'Eintrag geloescht.'
     context.plone_utils.addPortalMessage(message, 'info')
     if targetid:
         # jump to edit form of original

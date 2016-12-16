@@ -5,18 +5,30 @@
 ##bind script=script
 ##bind state=state
 ##bind subpath=traverse_subpath
-##parameters=table, REQUEST, searching=False
+##parameters=table=None, REQUEST=None, searching=False
 ##title=Validates the input fields
 ##
+# recheck the parameters
+if not REQUEST:
+    REQUEST = context.REQUEST
+if not table:
+    table = REQUEST['table']
+searching = REQUEST.get('searching', False)
+
+import logging
 # istranslationof and hastranslation need to be present in the field definition for edit-form when table is translatable
 tobj = context.tableHandler[table]
 entry = context.getTableEntryFromRequest(table, REQUEST)
 
 # strange validation error fix:
-if not entry:
+if True:
+    #not entry or (table == 'studiengang' and entry and not entry.get('name')):
+    logger = logging.getLogger("Plone")
+    logger.info('VALIDATION-ERROR on edit_form: entry: %s' % entry)
     request = context.REQUEST
     entry = context.getTableEntryFromRequest(table, REQUEST)
-    # TODO: log this problem?
+    if entry:
+        logger.info('FOUND the real entry: %s' % entry)
 
 required = []
 # translations can not be validated for required inputs (or could, but needed to be merged onto the real entry before validation)
