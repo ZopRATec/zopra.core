@@ -17,6 +17,16 @@ entry = context.tableHandler[table].getEntry(autoid)
 if not 'delete' in context.getPermissionEntryInfo(table, entry):
     return state.set(status='failure', context=context, portal_status_message="Nur berechtigte Redakteure dürfen Einträge löschen. Abgebrochen.")
 
+origentry = context.zopra_forceOriginal(table, entry)
+ak = (entry.get('autoid') != origentry.get('autoid'))
+sk = entry.get('istranslationof')
+
+targetid = None
+if ak:
+    targetid = origentry.get('autoid')
+elif sk:
+    targetid = sk
+
 done = context.deleteEntries(table, [int(autoid)])
 
 # dependent-entries handling (tell the main-entry that a dependent multilist entry was removed)
@@ -76,6 +86,9 @@ if done and request.get('origtable') and request.get('origid') and request.get('
 if done:
     message = u'Eintrag geloescht.'
     context.plone_utils.addPortalMessage(message, 'info')
+    if targetid:
+        # jump to edit form of original
+        request.RESPONSE.redirect('zopra_table_edit_form?table=%s&autoid=%s' % (table, targetid))
     return state.set(status='success', context=context)
 else:
     message = u'Fehler beim Loeschen.'

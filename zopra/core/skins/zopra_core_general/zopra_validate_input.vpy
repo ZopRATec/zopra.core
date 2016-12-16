@@ -12,6 +12,12 @@
 tobj = context.tableHandler[table]
 entry = context.getTableEntryFromRequest(table, REQUEST)
 
+# strange validation error fix:
+if not entry:
+    request = context.REQUEST
+    entry = context.getTableEntryFromRequest(table, REQUEST)
+    # TODO: log this problem?
+
 required = []
 # translations can not be validated for required inputs (or could, but needed to be merged onto the real entry before validation)
 istranslationof = REQUEST.form.get('istranslationof')
@@ -39,6 +45,7 @@ for key in errors:
     state.setError(key, error[0], error[1])
 
 if state.getErrors():
-    return state.set(status='failure', portal_status_message='Please correct the indicated errors.')
+    context.plone_utils.addPortalMessage('Please correct the indicated errors.', 'info')
+    return state.set(status='failure')
 else:
     return state.set(status='success')
