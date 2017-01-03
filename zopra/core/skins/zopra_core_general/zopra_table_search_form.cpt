@@ -8,12 +8,6 @@
 
   <body>
 
-      <metal:css_slot fill-slot="css_slot">
-            <link rel="stylesheet" type="text/css" media="all"  tal:attributes="href string:${portal_url}/zopra.css" />
-            <link rel="stylesheet" type="text/css" media="all"  tal:attributes="href string:${portal_url}/zopra_edit.css" />
-            <link rel="stylesheet" type="text/css" media="print"  tal:attributes="href string:${portal_url}/sins_print.css" />
-      </metal:css_slot>
-
       <metal:javascriptslot fill-slot="javascript_head_slot">
             <script language="javascript">
                   <!--
@@ -43,7 +37,6 @@
                   });
                   -->
             </script>
-            <script type="text/javascript" tal:attributes="src string:${portal_url}/multi-select_filter.js"></script>
       </metal:javascriptslot>
 
       <metal:topslot fill-slot="top_slot">
