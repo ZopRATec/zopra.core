@@ -170,6 +170,51 @@
                 </tal:block>
             </tal:block>
         </select>
+        <div class="zopra-notes" tal:condition="notes">
+            <div tal:define="labelstr python: lobj.getNoteslabel() or isinstance(notes, bool) and 'Detailangabe' or here.listHandler[notes].getLabel()"
+                 tal:condition="attr_value"
+                 class="zopra-notesheader">
+                <span tal:content="labelstr">Label</span>
+                <span i18n:translate="zopra_for">for</span><span>:</span>
+            </div>
+            <tal:block tal:repeat="selected attr_value">
+                <div class="row" tal:condition="python: selected and tmp_store.get(int(selected))" class="zopra_notesbody">
+                    <div class="column small-12 medium-4">
+                        <label tal:attributes="for python: attr_name + 'notes' + unicode(selected)">
+                            <a tal:define="href python: lobj.isTableReference() and lobj.getManager().absolute_url() + '/zopra_table_show_form?table=%s&autoid=%s' % (lobj.foreign, selected) or nothing"
+                               tal:attributes="href href; target python:href and '_blank' or nothing"
+                               tal:omit-tag="not: href"
+                               tal:content="python: tmp_store.get(int(selected), '')"
+                               class="auto-link link-icon">Value</a>
+                        </label>
+                    </div>
+                    <div tal:define="notesname python: attr_name + 'notes' + unicode(selected);
+                                     val python: attr_notes.get(notesname);"
+                         class="column small-12 medium-8">
+                        <tal:block tal:condition="python: isinstance(notes, bool)">
+                            <input type="text" tal:attributes="name notesname;
+                                                               id notesname;
+                                                               value python: val and unicode(val) or '';">
+                        </tal:block>
+                        <tal:block tal:condition="python: isinstance(notes, (unicode, str))">
+                            <select tal:define="lobj2 python:here.listHandler[notes];
+                                                entries2 python:lobj2.getEntries();"
+                                    tal:attributes="name notesname; id notesname">
+                                <option value="NULL">-ausw&auml;hlen-</option>
+                                <tal:block tal:repeat="entry2 entries2">
+                                    <tal:block condition="entry2/value">
+                                        <option tal:attributes="value python: unicode(entry2['autoid']); selected python:unicode(entry2['autoid']) == unicode(val);"
+                                                tal:content="python:entry2['value']">
+                                            value
+                                        </option>
+                                    </tal:block>
+                                </tal:block>
+                            </select>
+                        </tal:block>
+                    </div>
+                </div>
+            </tal:block>
+        </div>
     </tal:block>
 </metal:widget_multilist>
 

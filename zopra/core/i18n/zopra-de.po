@@ -17,6 +17,10 @@ msgstr ""
 "Domain: zopra\n"
 "X-Is-Fallback-For: de-at de-li de-lu de-ch de-de\n"
 
+#: ./skins/zopra_core_general/zopra_widget_edit_display.pt
+msgid "zopra_for"
+msgstr "für"
+
 #: ./skins/zopra_core_general/zopra_testExistance.py
 msgid "zopra_entry_notfound"
 msgstr "Der angeforderte Eintrag wurde nicht gefunden oder es wurde keine ID übergeben."
