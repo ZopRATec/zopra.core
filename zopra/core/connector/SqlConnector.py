@@ -129,6 +129,11 @@ class SqlConnector(SimpleItem):
         raise NotImplementedError(ZC.E_CALL_ABSTRACT)
 
 
+    def escape_sql_name(self, name):
+        """ Escape SQL names (cols and tables), default: do nothing"""
+        return name
+
+
 #
 # table handling
 #
@@ -375,15 +380,13 @@ class SqlConnector(SimpleItem):
         @param  coltype - ZopRA column type
         @result string  - database dependent column type
         """
-        assert isinstance(col_type, StringType), \
-               ZC.E_PARAM_TYPE % ('col_type', 'StringType', col_type)
+        assert ZC.checkType('col_type', col_type, StringType)
 
         return self.type_map.get(col_type, ZC.COL_TEXT)
 
 
     def getColumnDefinition(self, cols_dict):
-        assert isinstance(cols_dict, DictType), \
-               ZC.E_PARAM_TYPE % ('cols_dict', 'DictType', cols_dict)
+        assert ZC.checkType('cols_dict', cols_dict, DictType)
 
         cols_str = []
         for col in cols_dict:
@@ -400,7 +403,7 @@ class SqlConnector(SimpleItem):
             reference   = ' REFERENCES %s' % col_ref if col_ref else ''
 
             # join the column statement
-            cols_str.append('%s%s%s%s' % (col, dbtype, default, reference) )
+            cols_str.append('%s%s%s%s' % (self.escape_sql_name(col), dbtype, default, reference) )
 
         return ', '.join(cols_str)
 
@@ -449,8 +452,7 @@ class SqlConnector(SimpleItem):
 
         @param table_name - string with the name of the table
         """
-        assert isinstance(table_name, StringType), \
-               ZC.E_PARAM_TYPE % ('table_name', 'StringType', table_name )
+        assert ZC.checkType('table_name', table_name, StringType)
 
         self.query('DROP TABLE %s' % table_name)
 
@@ -466,10 +468,8 @@ class SqlConnector(SimpleItem):
         @param name   - string containing the table name
         @param column - string containing the column name
         """
-        assert isinstance(name, StringType), \
-               ZC.E_PARAM_TYPE % ('name', 'StringType', name)
-        assert isinstance(column, StringType), \
-               ZC.E_PARAM_TYPE % ('column', 'StringType', column)
+        assert ZC.checkType('name', name, StringType)
+        assert ZC.checkType('column', column, StringType)
 
         self.query("CREATE INDEX %s_index_%s ON %s (%s)" % ( name,
                                                              column,
@@ -483,8 +483,7 @@ class SqlConnector(SimpleItem):
     ############################################################################
     def simpleIns(self, name, origcols_dict, entry_dict):
         """ insert into table """
-        assert isinstance(name, StringType), \
-               ZC.E_PARAM_TYPE % ('name', 'StringType', name)
+        assert ZC.checkType('name', name, StringType)
 
         insert_text = ['INSERT INTO %s ( ' % name]
         cols_list   = []
@@ -565,10 +564,8 @@ class SqlConnector(SimpleItem):
         if isinstance(autoid, StringType):
             autoid = int(autoid)
 
-        assert isinstance(name, StringType), \
-               ZC.E_PARAM_TYPE % ('name', 'StringType', name)
-        assert isinstance(autoid, IntType), \
-               ZC.E_PARAM_TYPE % ('autoid', 'IntType', autoid)
+        assert ZC.checkType(ZC.TCN_AUTOID, autoid, IntType)
+        assert ZC.checkType('name', name, StringType)
 
         # build update query text
         query_text = []
@@ -605,6 +602,55 @@ class SqlConnector(SimpleItem):
         return True
 
 
+    def simpleSel( self,
+                   name,
+                   col_list,
+                   origcols_dict,
+                   where_dict):
+        """\brief select requested columns of entries specified by entry_dict"""
+        assert ZC.checkType('name', name, StringType)
+
+        # build select query text
+        query = []
+        where = []
+
+        query.append('SELECT %s FROM %s' % (', '.join(self.escape_sql_name(col) for col in col_list), name) )
+        for colname in where_dict:
+            if colname in origcols_dict:
+                field = origcols_dict[colname]
+            elif colname in ZC._edit_tracking_cols:
+                field = ZC._edit_tracking_cols[colname]
+            elif colname == ZC.TCN_AUTOID:
+                field = { ZC.COL_TYPE:  'int',
+                          ZC.COL_LABEL: 'Automatic No.' }
+            else:
+                # rest is ignored
+                field = None
+            if field:
+                where.append('%s = %s' % ( colname,
+                                                 self.checkType(
+                                                                where_dict.get(colname),
+                                                                field.get(ZC.COL_TYPE),
+                                                                False,
+                                                                field.get(ZC.COL_LABEL)
+                                                                )
+                                                )
+                                  )
+        if where:
+            query.append('WHERE ' + ' AND '.join(where) )
+        results = self.query( ' '.join(query) )
+        res = []
+        for result in results:
+            entry = {}
+            if col_list == ['*']:
+                entry[ZC.TCN_AUTOID] = result[0]
+            else:
+                for index, col in enumerate(col_list):
+                    entry[col] = result[index]
+            res.append(entry)
+        return res
+
+
     def simpleVal(self, col_dict, entry_dict):
         """\brief validate the entry against the column definition"""
         errors = {}
@@ -637,8 +683,8 @@ class SqlConnector(SimpleItem):
         @param name   - string containing the name of the table
         @param autoid - integer containing the entries autoid
         """
-        assert ZC.checkType('table_name', table_name, 'StringType')
-        assert ZC.checkType('autoid',     autoid,     'IntType')
+        assert ZC.checkType('table_name', table_name, StringType)
+        assert ZC.checkType('autoid',     autoid,     IntType)
         self.query( "DELETE FROM %s where autoid = %s" % (table_name, autoid) )
         return True
 
@@ -647,13 +693,11 @@ class SqlConnector(SimpleItem):
         """ This method returns the number of rows matching the where clause.
 
         @param name  - string containing the table name
-        @param where - string containing the where clause 
+        @param where - string containing the where clause
         @result row count
         """
-        assert isinstance(name, StringType), \
-               ZC.E_PARAM_TYPE % ('name', 'StringType', name)
-        assert isinstance(where, StringType), \
-               ZC.E_PARAM_TYPE % ('where', 'StringType', where)
+        assert ZC.checkType('name', name, StringType)
+        assert ZC.checkType('where', where, StringType)
 
         # handling of the case that the keyword WHERE is not already included
         if where and where.upper().find('WHERE') == -1:

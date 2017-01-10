@@ -20,8 +20,7 @@ from PyHtmlGUI.widgets.hgLabel              import hgLabel, hgProperty
 #
 # ZopRA Imports
 #
-from zopra.core                             import HTML, ZM_PM
-from zopra.core.constants                   import VALUE, SHOW, WIDGET_CONFIG, TCN_AUTOID
+from zopra.core                             import HTML, ZC
 from zopra.core.dialogs                     import getStdDialog
 from zopra.core.elements.Buttons            import DLG_CUSTOM
 from zopra.core.lists.GenericList           import GenericList
@@ -410,9 +409,9 @@ class ForeignList(GenericList):
                 for result in reslist:
                     if value is None or \
                        value in result[1]:
-                        newentry = { TCN_AUTOID: result[0],
-                                     VALUE:      result[1],
-                                     SHOW:       'yes' }
+                        newentry = { ZC.TCN_AUTOID: result[0],
+                                     ZC.VALUE:      result[1],
+                                     ZC.SHOW:       'yes' }
                         completelist.append(newentry)
             else:
                 # table-standard-function used
@@ -444,9 +443,9 @@ class ForeignList(GenericList):
 
                         if value is None or \
                            value in val:
-                            newentry = { TCN_AUTOID: autoid,
-                                         VALUE:      val,
-                                         SHOW:       'yes' }
+                            newentry = { ZC.TCN_AUTOID: autoid,
+                                         ZC.VALUE:      val,
+                                         ZC.SHOW:       'yes' }
                             completelist.append( newentry )
                 # get data from list
                 elif self.foreign in manager.listHandler:
@@ -527,7 +526,7 @@ class ForeignList(GenericList):
             val2autoid = {}
 
             for entry in entrylist:
-                val2autoid[ entry[VALUE] ] = entry[TCN_AUTOID]
+                val2autoid[ entry[ZC.VALUE] ] = entry[ZC.TCN_AUTOID]
 
             # get the autoid for each value
             for val in values:
@@ -554,7 +553,7 @@ class ForeignList(GenericList):
                 val2autoid = {}
 
                 for entry in entrylist:
-                    val2autoid[ entry[VALUE] ] = entry[TCN_AUTOID]
+                    val2autoid[ entry[ZC.VALUE] ] = entry[ZC.TCN_AUTOID]
 
                 # get the autoid for each value
                 for val in values:
@@ -653,7 +652,7 @@ class ForeignList(GenericList):
         if not isinstance(filtertext, StringType):
             filtertext = str(filtertext)
         # prepare the config
-        confname = WIDGET_CONFIG + self.listname
+        confname = ZC.WIDGET_CONFIG + self.listname
         if confname not in descr_dict:
             descr_dict[confname] = {}
         # set new filtertext into config, set offset back to 0
@@ -670,7 +669,7 @@ class ForeignList(GenericList):
         # -> would need to check store_ + FILTER_EDIT against FILTER_EDIT
         # self.handleFilterApply(REQUEST, descr_dict, prefix)
 
-        confname = WIDGET_CONFIG + self.listname
+        confname = ZC.WIDGET_CONFIG + self.listname
         config = descr_dict.get(confname, {})
         # get actual number for this list from config (put there by getTableEntryFromRequest)
         actualnumber = config.get('offset')
@@ -703,7 +702,7 @@ class ForeignList(GenericList):
             descr_dict = {}
 
         # check widget configuration
-        confname = WIDGET_CONFIG + self.listname
+        confname = ZC.WIDGET_CONFIG + self.listname
         if confname in descr_dict:
             config = descr_dict[confname]
 
@@ -903,7 +902,7 @@ class ForeignList(GenericList):
 
         # fill it
         for entry in completelist:
-            widget.insertItem(entry[VALUE], entry[TCN_AUTOID])
+            widget.insertItem(entry[ZC.VALUE], entry[ZC.TCN_AUTOID])
 
         # sort
         widget.sort()
@@ -998,7 +997,7 @@ class ForeignList(GenericList):
             # get value list
             query = 'Select autoid, %s from %s' % ( ','.join(columns),
                                                     mgr.getId() + name )
-            reslist = mgr.getManager(ZM_PM).executeDBQuery(query)
+            reslist = mgr.getManager(ZC.ZM_PM).executeDBQuery(query)
 
         # create widget
         cbox = self.createWidget(name,

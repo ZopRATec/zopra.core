@@ -478,6 +478,12 @@ class ZopRAProduct(ManagerPart):
         return lastid
 
 
+    def simpleSelectFrom(self, name, col_list, origcols_dict, where_dict):
+        # simple select is done in the connector, no preparation necessary
+        # no logging for selects
+        return self.connector.simpleSel( name, col_list, origcols_dict, where_dict)
+
+
     def writeLog(self, action, tabid = None, entryid = None, backup = None, newentry = None):
 
         # create diff entrys
@@ -486,6 +492,7 @@ class ZopRAProduct(ManagerPart):
 
         print 'backup',   backup
         print 'newentry', newentry
+        print action, tabid, entryid, backup, newentry
 
         if backup and newentry:
             ignore        = ['permission']

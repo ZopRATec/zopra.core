@@ -29,8 +29,7 @@ from PyHtmlGUI.widgets.hgCheckBox   import hgCheckBox
 #
 # ZopRA Imports
 #
-from zopra.core                     import HTML, ZM_PM, ZM_SCM, ZC
-from zopra.core.constants           import VALUE, NOTES, RANK, SHOW
+from zopra.core                     import HTML, ZC
 from zopra.core.elements.Buttons    import mpfAddButton,     \
                                            mpfDeleteButton,  \
                                            mpfUpdateButton,  \
@@ -41,8 +40,7 @@ from zopra.core.elements.Buttons    import mpfAddButton,     \
                                            BTN_L_UPDATE,     \
                                            BTN_L_RESET2,     \
                                            getPressedButton
-from zopra.core.CorePart            import getStdDialog,     \
-                                           COL_TYPE
+from zopra.core.CorePart            import getStdDialog
 from zopra.core.lists.GenericList   import GenericList, \
                                            _list_definition
 from zopra.core.widgets             import dlgLabel
@@ -83,7 +81,7 @@ class List(GenericList):
         # store local copy of list def
         ldef = deepcopy(_list_definition)
         for translation in self.translations:
-            ldef[VALUE + '_' + translation] = {COL_TYPE: 'string'}
+            ldef[ZC.VALUE + '_' + translation] = {ZC.COL_TYPE: 'string'}
         self._list_definition = ldef
 
 
@@ -92,7 +90,7 @@ class List(GenericList):
 
         # try to create the list
         mgr = self.getManager()
-        m_product = mgr.getManager(ZM_PM)
+        m_product = mgr.getManager(ZC.ZM_PM)
         # only create table if it is a local list
 
         # create all
@@ -105,7 +103,7 @@ class List(GenericList):
         """\brief Create the database table."""
 
         mgr       = self.getManager()
-        m_product = mgr.getManager(ZM_PM)
+        m_product = mgr.getManager(ZC.ZM_PM)
         my_id     = mgr.getId()
         log = True
 
@@ -190,16 +188,16 @@ class List(GenericList):
         # if not then add it to the list
         if result is None:
             entry_dict = {
-                          VALUE:    value,
-                          NOTES:    notes,
-                          RANK:     rank,
-                          SHOW:     show
+                          ZC.VALUE:    value,
+                          ZC.NOTES:    notes,
+                          ZC.RANK:     rank,
+                          ZC.SHOW:     show
                          }
             for trans in self.translations:
-                key = VALUE + '_' + trans
+                key = ZC.VALUE + '_' + trans
                 if kwargs.get(key):
                     entry_dict[key] = kwargs[key]
-            m_product = mgr.getManager(ZM_PM)
+            m_product = mgr.getManager(ZC.ZM_PM)
             my_id     = mgr.getId()
             m_product.simpleInsertInto( my_id + self.listname,
                                         self._list_definition,
@@ -222,7 +220,7 @@ class List(GenericList):
         mgr = self.getManager()
 
         # now delete
-        mgr.getManager(ZM_PM).simpleDelete( mgr.id + self.listname,
+        mgr.getManager(ZC.ZM_PM).simpleDelete( mgr.id + self.listname,
                                             autoid )
         self.clearCache()
 
@@ -246,32 +244,34 @@ class List(GenericList):
 
         # caching turned off, fetch by hand
         mgr    = self.getManager()
-        entry_dict = {}
-        trans = ''
+        cols = [ZC.TCN_AUTOID, ZC.VALUE, ZC.NOTES, ZC.RANK, ZC.SHOW]
+        # copy list definition (for language enhancement)
+        list_definition = {}
+        for item in _list_definition:
+            list_definition[item] = _list_definition[item]
 
         # language handling
         for translation in self.translations:
-            trans += ', %s_%s' % (VALUE, translation)
-        query_text = 'SELECT autoid, value, notes, rank, show%s '\
-                     + 'FROM %s%s WHERE autoid = %d;'
-        query_text = query_text % ( trans, mgr.getId(),
-                         self.listname,
-                         autoid )
-        result = mgr.getManager(ZM_PM).executeDBQuery(query_text)
-        if result:
-            entry_dict['autoid'] = result[0][0]
-            entry_dict[VALUE]  = result[0][1]
-            entry_dict[NOTES]  = result[0][2]
-            entry_dict[RANK]   = result[0][3]
-            if entry_dict.get(RANK):
-                entry_dict[RANK] = int(entry_dict.get(RANK))
-            entry_dict[SHOW]   = result[0][4]
-            # language handling
-            for index, translation in enumerate(self.translations):
-                entry_dict[VALUE + '_' + translation] = result[0][5 + index]
+            name = '%s_%s' % (ZC.VALUE, translation)
+            # add to columns and into list_definition
+            cols.append(name)
+            list_definition[name] = list_definition[ZC.VALUE]
+        where_dict = {ZC.TCN_AUTOID: autoid}
 
-            # do not put in cache. cache is either complete or empty, regulated by getEntries
-
+        m_product = mgr.getManager(ZC.ZM_PM)
+        my_id     = mgr.getId()
+        results = m_product.simpleSelectFrom( my_id + self.listname,
+                                    cols,
+                                    list_definition,
+                                    where_dict)
+        entry_dict = {}
+        if results:
+            # language values are in already
+            entry_dict = results[0]
+            # just convert the rank type (not entirely sure why, this should be int already)
+            if entry_dict.get(ZC.RANK):
+                entry_dict[ZC.RANK] = int(entry_dict[ZC.RANK])
+        # do not put in cache. cache is either complete or empty, regulated by getEntries
         return entry_dict
 
 
@@ -299,7 +299,7 @@ class List(GenericList):
 
             sql = 'SELECT %s FROM %s%s%s;'
             sql = sql % (ZC.TCN_AUTOID, mgr.id, self.listname, where)
-            results = mgr.getManager(ZM_PM).executeDBQuery(sql)
+            results = mgr.getManager(ZC.ZM_PM).executeDBQuery(sql)
             for result in results:
                 # tell getEntry to fetch from DB instead cache if do_cache is True
                 # because then the cache was empty
@@ -313,7 +313,7 @@ class List(GenericList):
                 self.cache[entry[ZC.TCN_AUTOID]] = entry
 
         if not with_hidden:
-            completelist = [entry for entry in completelist if entry.get(SHOW) != 'no']
+            completelist = [entry for entry in completelist if entry.get(ZC.SHOW) != 'no']
 
         return completelist
 
@@ -335,7 +335,7 @@ class List(GenericList):
             sort = " ORDER BY value ASC "
         sql = 'SELECT %s FROM %s%s%s%s;'
         sql = sql % (ZC.TCN_AUTOID, mgr.id, self.listname, where, sort)
-        results = mgr.getManager(ZM_PM).executeDBQuery(sql)
+        results = mgr.getManager(ZC.ZM_PM).executeDBQuery(sql)
         for result in results:
             # tell getEntry to fetch from DB instead cache if do_cache is True
             # because then the cache was empty
@@ -357,7 +357,7 @@ class List(GenericList):
            descr_dict:
 
             # get ProductManager
-            m_product = mgr.getManager(ZM_PM)
+            m_product = mgr.getManager(ZC.ZM_PM)
 
             # update Entry
             res = m_product.simpleUpdate( mgr.id + self.listname,
@@ -402,7 +402,7 @@ class List(GenericList):
             # build lookup table
             for entryid in self.cache:
                 entry = self.cache[entryid]
-                val2entry[entry.get(VALUE)] = entry
+                val2entry[entry.get(ZC.VALUE)] = entry
 
             # get the autoid for each value
             for val in values:
@@ -411,7 +411,7 @@ class List(GenericList):
 
                 if entry:
                     # added rank == '' test to avoid empty rank which doesn't mach
-                    if rank is None or rank == '' or entry.get(RANK) == rank:
+                    if rank is None or rank == '' or entry.get(ZC.RANK) == rank:
                         autoid = entry.get(ZC.TCN_AUTOID)
 
                 retlist.append( autoid )
@@ -426,7 +426,7 @@ class List(GenericList):
             for val in values:
                 autoid = None
                 if val is not None:
-                    result = mgr.getManager(ZM_PM).executeDBQuery(query_text % val)
+                    result = mgr.getManager(ZC.ZM_PM).executeDBQuery(query_text % val)
 
                     if result:
                         autoid = result[0][0]
@@ -454,7 +454,7 @@ class List(GenericList):
                           operator,
                           upval)
 
-        results = mgr.getManager(ZM_PM).executeDBQuery( query_text )
+        results = mgr.getManager(ZC.ZM_PM).executeDBQuery( query_text )
         if results:
             reslist = [result[0] for result in results]
 
@@ -476,7 +476,7 @@ class List(GenericList):
         """
         mgr = self.getManager()
 
-        return mgr.getManager(ZM_PM).getRowCount(mgr.id + self.listname)
+        return mgr.getManager(ZC.ZM_PM).getRowCount(mgr.id + self.listname)
 
 
     def getValueByAutoid(self, autoid, lang=None):
@@ -526,12 +526,12 @@ class List(GenericList):
                         self.getEntries(with_hidden = True)
                     if aid in self.cache:
                         entry = self.cache[aid]
-                        value = lang and entry.get(VALUE + '_' + lang) or entry.get(VALUE)
+                        value = lang and entry.get(ZC.VALUE + '_' + lang) or entry.get(ZC.VALUE)
                 else:
-                    sel = lang and VALUE + '_' + lang + ', ' or ''
+                    sel = lang and ZC.VALUE + '_' + lang + ', ' or ''
                     query_text = "SELECT %svalue FROM %s%s WHERE autoid = %s;" \
                                  % (sel, mgr.getId(), self.listname, aid)
-                    result = mgr.getManager(ZM_PM).executeDBQuery(query_text)
+                    result = mgr.getManager(ZC.ZM_PM).executeDBQuery(query_text)
 
                     if result:
                         value = result[0][0]
@@ -545,9 +545,9 @@ class List(GenericList):
 
     def getEntryFromRequest(self, autoid, REQUEST):
         """\brief get value and translations from REQUEST"""
-        entry = { VALUE: REQUEST.get(self.listname + str(autoid))}
+        entry = { ZC.VALUE: REQUEST.get(self.listname + str(autoid))}
         for trans in self.translations:
-            key = VALUE + '_' + trans
+            key = ZC.VALUE + '_' + trans
             keyReq = self.listname + '_' + trans + str(autoid)
             if REQUEST.get(keyReq):
                 entry[key] = REQUEST[keyReq]
@@ -573,7 +573,7 @@ class List(GenericList):
             REQUEST.RESPONSE.redirect(fwd)
 
         # security manager
-        m_sec = mgr.getHierarchyUpManager(ZM_SCM)
+        m_sec = mgr.getHierarchyUpManager(ZC.ZM_SCM)
 
         button     = mgr.getPressedButton(REQUEST)
         if button:
@@ -593,13 +593,13 @@ class List(GenericList):
             # switch hide -> show
             elif button == 'Show':
                 for changed_id in changedIds:
-                    self.updateEntry( {SHOW: 'yes'},
+                    self.updateEntry( {ZC.SHOW: 'yes'},
                                       changed_id )
 
             # switch show -> hide
             elif button == 'Hide':
                 for changed_id in changedIds:
-                    self.updateEntry( {SHOW: 'no'},
+                    self.updateEntry( {ZC.SHOW: 'no'},
                                       changed_id )
             # update function
             elif button == BTN_L_UPDATE:
@@ -608,7 +608,7 @@ class List(GenericList):
         # interface building
         entry_list = self.getEntries(with_hidden = True)
         # sort by value
-        own_cmp = lambda x, y: (x[VALUE] < y[VALUE]) and -1 or (x[VALUE] > y[VALUE]) and 1 or 0
+        own_cmp = lambda x, y: (x[ZC.VALUE] < y[ZC.VALUE]) and -1 or (x[ZC.VALUE] > y[ZC.VALUE]) and 1 or 0
         entry_list.sort(own_cmp)
 
         offset = len(self.translations)
@@ -623,16 +623,16 @@ class List(GenericList):
 
         # all existing list entries
         for entry in entry_list:
-            tab[row, 1] = hgCheckBox('', entry.get('autoid'), name = 'entry')
-            tab[row, 4] = hgTextEdit( entry.get(VALUE),
+            tab[row, 1] = hgCheckBox('', entry.get(ZC.TCN_AUTOID), name = 'entry')
+            tab[row, 4] = hgTextEdit( entry.get(ZC.VALUE),
                                       name = self.listname +
-                                      str(entry.get('autoid')) )
+                                      str(entry.get(ZC.TCN_AUTOID)) )
             for index, trans in enumerate(self.translations):
-                formkey = self.listname + '_' + trans + str(entry.get('autoid'))
-                key = VALUE + '_' + trans
+                formkey = self.listname + '_' + trans + str(entry.get(ZC.TCN_AUTOID))
+                key = ZC.VALUE + '_' + trans
                 tab[row, index + 5] = hgTextEdit( entry.get(key),
                                                   name = formkey )
-            tab[row, 5 + offset] = entry.get(SHOW)
+            tab[row, 5 + offset] = entry.get(ZC.SHOW)
             row += 1
 
         #
@@ -753,22 +753,22 @@ class List(GenericList):
             # switch hide -> show
             elif button == 'Show':
                 for changed_id in changedIds:
-                    self.updateEntry( {SHOW: 'yes'}, changed_id )
+                    self.updateEntry( {ZC.SHOW: 'yes'}, changed_id )
 
             # switch show -> hide
             elif button == 'Hide':
                 for changed_id in changedIds:
-                    self.updateEntry( {SHOW: 'no'}, changed_id )
+                    self.updateEntry( {ZC.SHOW: 'no'}, changed_id )
             # update function
             elif button == BTN_L_UPDATE:
                 map( lambda changed_id:
-                            self.updateEntry( { VALUE:
+                            self.updateEntry( { ZC.VALUE:
                                                 REQUEST.get(self.listname +
                                                             changed_id),
-                                                RANK:
-                                                REQUEST.get('rank' + changed_id),
-                                                NOTES:
-                                                REQUEST.get('notes' + changed_id)
+                                                ZC.RANK:
+                                                REQUEST.get(ZC.RANK + changed_id),
+                                                ZC.NOTES:
+                                                REQUEST.get(ZC.NOTES + changed_id)
                                                 },
                                               changed_id ),
                     changedIds )
@@ -791,17 +791,17 @@ class List(GenericList):
         # all existing list entries
         for entry in entry_list:
             tab[row, 1] = entry.get(ZC.TCN_AUTOID)
-            tab[row, 4] = entry.get(SHOW)
+            tab[row, 4] = entry.get(ZC.SHOW)
 
             tab[row, 0] = hgCheckBox('', entry.get(ZC.TCN_AUTOID), name = 'entry')
 
-            tab[row, 2] = hgTextEdit( entry.get(VALUE),
+            tab[row, 2] = hgTextEdit( entry.get(ZC.VALUE),
                                       name = self.listname +
                                       str(entry.get(ZC.TCN_AUTOID)))
-            tab[row, 3] = hgTextEdit( entry.get(RANK),
-                                      name = 'rank' + str(entry.get(ZC.TCN_AUTOID)))
-            tab[row, 5] = hgTextEdit( entry.get(NOTES),
-                                      name = 'notes' + str(entry.get(ZC.TCN_AUTOID)))
+            tab[row, 3] = hgTextEdit( entry.get(ZC.RANK),
+                                      name = ZC.RANK + str(entry.get(ZC.TCN_AUTOID)))
+            tab[row, 5] = hgTextEdit( entry.get(ZC.NOTES),
+                                      name = ZC.NOTES + str(entry.get(ZC.TCN_AUTOID)))
             row += 1
 
         #

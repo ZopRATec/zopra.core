@@ -27,8 +27,7 @@ from PyHtmlGUI.widgets.hgCheckBox   import hgCheckBox
 #
 # ZopRA Imports
 #
-from zopra.core                     import HTML, ZM_PM
-from zopra.core.constants           import VALUE, RANK, SHOW, TCN_AUTOID
+from zopra.core                     import HTML, ZC
 from zopra.core.dialogs             import getStdDialog
 from zopra.core.elements.Buttons    import mpfAddButton,     \
                                                      mpfDeleteButton,  \
@@ -108,7 +107,7 @@ class HierarchyList(MultiList):
 
         all_dict = {}
         for entry in entry_list:
-            par1 = int(entry.get(RANK, 0))
+            par1 = int(entry.get(ZC.RANK, 0))
             if not all_dict.get(par1):
                 cbox = hgComboBox(name = 'level_' + pre + self.listname)
                 all_dict[par1]  = cbox
@@ -116,9 +115,9 @@ class HierarchyList(MultiList):
                 if search:
                     cbox.insertItem( '-no selection-', '')
                     cbox.insertItem( '-any subitem-', 0)
-            if with_hidden or entry.get(SHOW) != 'no':
-                all_dict[par1].insertItem( entry[VALUE],
-                                           entry[TCN_AUTOID])
+            if with_hidden or entry.get(ZC.SHOW) != 'no':
+                all_dict[par1].insertItem( entry[ZC.VALUE],
+                                           entry[ZC.TCN_AUTOID])
 
         # insert -top level- : 0 in top widget
         top = all_dict.get(0)
@@ -195,7 +194,7 @@ class HierarchyList(MultiList):
         if autoid == 0:
             return None
         entry = self.getEntry( autoid )
-        return int( entry.get(RANK, 0) )
+        return int( entry.get(ZC.RANK, 0) )
 
 
     def getHierarchyListAncestors(self, autoid):
@@ -281,7 +280,7 @@ class HierarchyList(MultiList):
             # if the autoid is not == the rank of any element
             found   = False
             for entry in entries:
-                if entry.get(RANK) and int(entry[RANK]) == int(autoid):
+                if entry.get(ZC.RANK) and int(entry[ZC.RANK]) == int(autoid):
                     found = True
             if not found and int(autoid) != 0:
                 # autoid is a leaf element, we move it to the selected-list
@@ -298,9 +297,9 @@ class HierarchyList(MultiList):
         # search entries
         for entry in entries:
             # test for parent = autoid
-            if (entry.get(RANK) or entry.get(RANK) == 0) and int(entry[RANK]) == int(autoid):
+            if (entry.get(ZC.RANK) or entry.get(ZC.RANK) == 0) and int(entry[ZC.RANK]) == int(autoid):
                 # found a child
-                childid = entry.get(TCN_AUTOID)
+                childid = entry.get(ZC.TCN_AUTOID)
                 # test it for own children
                 newChildren = self.getAllSubLeafs(childid, entries)
                 if not newChildren:
@@ -421,22 +420,22 @@ class HierarchyList(MultiList):
             # switch hide -> show
             elif button == 'Show':
                 for changed_id in changedIds:
-                    self.updateEntry( {SHOW: 'yes'},
+                    self.updateEntry( {ZC.SHOW: 'yes'},
                                       changed_id )
 
             # switch show -> hide
             elif button == 'Hide':
                 for changed_id in changedIds:
-                    self.updateEntry( {SHOW: 'no'},
+                    self.updateEntry( {ZC.SHOW: 'no'},
                                       changed_id )
 
             # update function
             elif button == BTN_L_UPDATE:
                 for changed_id in changedIds:
                     self.updateEntry(
-                                { VALUE: REQUEST.get( self.listname +
+                                { ZC.VALUE: REQUEST.get( self.listname +
                                                       changed_id),
-                                  RANK:  REQUEST.get( 'parent' + changed_id, 0)
+                                  ZC.RANK:  REQUEST.get( 'parent' + changed_id, 0)
                                   },
                                 changed_id)
 
@@ -450,18 +449,18 @@ class HierarchyList(MultiList):
         row = 1
         entries = self.getEntries(with_hidden = True)
         for entry in entries:
-            if int(entry.get(RANK)) == level:
+            if int(entry.get(ZC.RANK)) == level:
                 tab[row, 0] = hgCheckBox( name  = 'entry',
-                                          value = entry.get(TCN_AUTOID) )
-                tab[row, 1] = hgTextEdit( entry.get(VALUE),
+                                          value = entry.get(ZC.TCN_AUTOID) )
+                tab[row, 1] = hgTextEdit( entry.get(ZC.VALUE),
                                           name = self.listname +
-                                                 str( entry.get(TCN_AUTOID) )
+                                                 str( entry.get(ZC.TCN_AUTOID) )
                                           )
-                tab[row, 2] = entry.get( SHOW )
-                tab[row, 3] = entry.get( TCN_AUTOID )
-                tab[row, 4] = hgTextEdit( entry.get(RANK),
+                tab[row, 2] = entry.get( ZC.SHOW )
+                tab[row, 3] = entry.get( ZC.TCN_AUTOID )
+                tab[row, 4] = hgTextEdit( entry.get(ZC.RANK),
                                           name = 'parent' +
-                                                 str( entry.get( TCN_AUTOID ) )
+                                                 str( entry.get( ZC.TCN_AUTOID ) )
                                           )
                 row += 1
 
@@ -508,8 +507,8 @@ class HierarchyList(MultiList):
             if not entry:
                 # something wrong, abort
                 return resultstr
-            resultstr = hgSPACE + '&gt;' + hgSPACE + entry.get(VALUE) + resultstr
-            parent    = entry.get(RANK)
+            resultstr = hgSPACE + '&gt;' + hgSPACE + entry.get(ZC.VALUE) + resultstr
+            parent    = entry.get(ZC.RANK)
         return resultstr
 
 
@@ -553,8 +552,8 @@ class HierarchyList(MultiList):
             where = " WHERE rank like '%s'" % parentid
             sort = " ORDER BY value ASC "
         sql = 'SELECT %s FROM %s%s%s%s;'
-        sql = sql % (TCN_AUTOID, mgr.id, self.listname, where, sort)
-        results = mgr.getManager(ZM_PM).executeDBQuery(sql)
+        sql = sql % (ZC.TCN_AUTOID, mgr.id, self.listname, where, sort)
+        results = mgr.getManager(ZC.ZM_PM).executeDBQuery(sql)
         for result in results:
             # tell getEntry to fetch from DB instead cache if do_cache is True
             # because then the cache was empty

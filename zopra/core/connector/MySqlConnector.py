@@ -8,7 +8,7 @@
 #    (at your option) any later version.                                   #
 ############################################################################
 from copy         import deepcopy
-from types        import StringType, IntType, DictType
+from types        import StringType, IntType, DictType, BooleanType
 from time         import ctime
 
 #
@@ -76,6 +76,10 @@ class MySqlConnector(SqlConnector):
         # self.conn.connection().close()
         # raise ValueError(dir(self.conn.connection._v_database_connection))
 
+    def escape_sql_name(self, name):
+        """ Escape SQL names (cols and tables), default: do nothing"""
+        return "`%s`" % name
+
 
 #
 # table handling
@@ -84,12 +88,9 @@ class MySqlConnector(SqlConnector):
         """\brief Adds a SQL table to an existing database."""
         # Tests moved to manage_afterAdd to avoid system specific testForTable
 
-        assert isinstance(name, StringType), \
-               ZC.E_PARAM_TYPE % ('name', 'StringType', name)
-        assert isinstance(cols_dict, DictType), \
-               ZC.E_PARAM_TYPE % ('cols_dict', 'DictType', cols_dict)
-        assert edit_tracking == True or edit_tracking == False, \
-               ZC.E_PARAM_TYPE % ('edit_tracking',  'BooleanType', edit_tracking)
+        assert ZC.checkType('name', name, StringType)
+        assert ZC.checkType('cols_dict', cols_dict, DictType)
+        assert ZC.checkType('edit_tracking', edit_tracking, BooleanType)
 
         create_text = ['CREATE TABLE %s (' % name]
         create_text.append( "autoid INT auto_increment" )
@@ -118,7 +119,7 @@ class MySqlConnector(SqlConnector):
 
         if primary_keys:
             create_text.append( ', PRIMARY KEY (%s)' %
-                                ', '.join(primary_keys) )
+                                ', '.join([self.escape_sql_name(key) for key in primary_keys]) )
         else:
             create_text.append(', PRIMARY KEY (autoid)')
         create_text.append(') ENGINE = InnoDB')
@@ -132,8 +133,7 @@ class MySqlConnector(SqlConnector):
 #
     def simpleIns(self, name, origcols_dict, entry_dict):
         """ insert into table """
-        assert isinstance(name, StringType), \
-               ZC.E_PARAM_TYPE % ('name', 'StringType', name)
+        assert ZC.checkType('name', name, StringType)
 
         insert_text = ['INSERT INTO %s ( ' % name]
         cols_list   = []
@@ -157,7 +157,7 @@ class MySqlConnector(SqlConnector):
                 val = ctime()
 
             # build col_list
-            cols_list.append(col)
+            cols_list.append(self.escape_sql_name(col))
 
             # build data_list
             # get type of col
@@ -197,8 +197,8 @@ class MySqlConnector(SqlConnector):
     def getLastInsertedId(self, name):
         """\brief get id of last entry"""
         result = self.query( 'SELECT LAST_INSERT_ID() FROM %s' % (name) )
-        res    = result[0][0] if result and result[0][0] else 0
-        return res if res else self.getLastId(ZC.TCN_AUTOID, name)
+        res    = result and result[0][0] or 0
+        return res or self.getLastId(ZC.TCN_AUTOID, name)
 
 
     def simpleUpd( self,
@@ -206,14 +206,12 @@ class MySqlConnector(SqlConnector):
                    origcols_dict,
                    entry_dict,
                    autoid ):
-        """\brief insert changed values into the database"""
+        """\brief insert changed values into the database (overwritten for edit-timestamp handling)"""
         if isinstance(autoid, StringType):
             autoid = int(autoid)
 
-        assert isinstance(name, StringType), \
-               ZC.E_PARAM_TYPE % ('name', 'StringType', name)
-        assert isinstance(autoid, IntType), \
-               ZC.E_PARAM_TYPE % ('autoid', 'IntType', autoid)
+        assert ZC.checkType(ZC.TCN_AUTOID, autoid, IntType)
+        assert ZC.checkType('name', name, StringType)
 
         # build update query text
         query_text = []
@@ -235,7 +233,7 @@ class MySqlConnector(SqlConnector):
                 val = ctime()
 
             if field:
-                value_text.append(' %s = %s' % ( colname,
+                value_text.append(' %s = %s' % ( self.escape_sql_name(colname),
                                                  self.checkType( val,
                                                                  field.get(ZC.COL_TYPE),
                                                                  False,

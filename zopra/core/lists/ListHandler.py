@@ -93,7 +93,7 @@ class ListHandler(Folder):
                                   nocreate,
                                   translist)
 
-            # noedit affects the appearance of the column in the 
+            # noedit affects the appearance of the column in the
             # listedit-section of _index_html
             if list_.getNoedit():
                 lobj.noedit    = True
@@ -764,6 +764,20 @@ class ListHandler(Folder):
             r += 1
 
         return HTML( dlg.getHtml() )(self, REQUEST)
+
+
+    def correctMySQLDB(self, do = False):
+        """\brief mysql list tables have the show-column renamed to show1, which is not necessary anymore due to escaping. Rename the column."""
+        mgr = self.getManager()
+        pm = mgr.getManager(ZM_PM)
+        done = 0
+        for key in self.getListIDs():
+            lobj = self[key]
+            sql = 'ALTER TABLE %s%s CHANGE COLUMN `show1` `show` varchar(255)' % (self.getManager().getId(), lobj.listname)
+            if do:
+                pm.executeDBQuery(sql)
+            done += 1
+        return '%s Tabellen angepasst.' % done
 
 
     # TODO: FIXIT - adapt to new list objects / move to dialog!

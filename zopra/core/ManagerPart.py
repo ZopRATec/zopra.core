@@ -52,7 +52,6 @@ from zopra.core                      import viewPermission, \
                                             ClassSecurityInfo, \
                                             getSecurityManager,  ZC
 
-from zopra.core.constants            import WIDGET_CONFIG
 from zopra.core.dialogs              import getStdDialog, \
                                             getStdZMOMDialog, \
                                             getEmbeddedDialog
@@ -961,7 +960,7 @@ class ManagerPart(CorePart, ManagerFinderMixin):
                 if filtertext and filtertext != FCB_DEFAULT_FILTER_TEXT:
                     if not isinstance(filtertext, StringType):
                         filtertext = str(filtertext)
-                    wcname = WIDGET_CONFIG + name
+                    wcname = ZC.WIDGET_CONFIG + name
                     if wcname not in descr_dict:
                         descr_dict[wcname] = {}
                     descr_dict[wcname]['pattern'] = filtertext
@@ -972,7 +971,7 @@ class ManagerPart(CorePart, ManagerFinderMixin):
                 startitem = REQUEST['frl_startitem' + pre_name]
                 startitem = int(startitem)
 
-                wcname = WIDGET_CONFIG + name
+                wcname = ZC.WIDGET_CONFIG + name
                 if wcname not in descr_dict:
                     descr_dict[wcname] = {}
                 descr_dict[wcname]['offset'] = startitem

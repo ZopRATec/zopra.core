@@ -1,16 +1,5 @@
 import PyHtmlGUI
 
-
-# list widget constants for handling
-
-VALUE = 'value'
-RANK  = 'rank'
-SHOW  = 'show'  # MySQL reserved "show"
-NOTES = 'notes'
-
-WIDGET_CONFIG = 'widget_config'
-
-
 # edit_tracking
 TCN_AUTOID    = 'autoid'
 TCN_CREATOR   = 'creator'
