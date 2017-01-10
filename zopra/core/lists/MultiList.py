@@ -232,6 +232,9 @@ class MultiList(ForeignList):
         # replace None or empty list with empty string
         if not notes:
             notes = ''
+        if notes is None:
+            notes = ''
+
         # escape notes
         notes = notes.replace( "\'", "\\\'" ).replace( "\\\\'", "\\\'")
         query = "Update %s set notes = '%s' where tableid = %s and %s = %s"\

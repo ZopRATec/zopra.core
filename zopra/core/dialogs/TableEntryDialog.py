@@ -13,7 +13,7 @@ from types                           import StringTypes, \
                                             ListType
 
 #
-# PyHtmlGUI Importa
+# PyHtmlGUI Imports
 #
 from PyHtmlGUI                       import E_PARAM_TYPE
 
@@ -37,11 +37,12 @@ from PyHtmlGUI.widgets.hgTimeChooser import hgTimeChooser
 #
 from zopra.core.dialogs.Dialog       import Dialog
 
+
 class TableEntryPrivate:
-    """\class ZMOMTableEntryPrivate"""
+    """\class TableEntryPrivate"""
 
     def __init__(self):
-        """\brief Constructs a ZMOMTableEntryPrivate object."""
+        """\brief Constructs a TableEntryPrivate object."""
         # static information
         self.tableName   = None
         self.columnNames = None
@@ -54,9 +55,9 @@ class TableEntryPrivate:
 
 
 class TableEntryDialog(Dialog):
-    """\class ZMOMTableEntryDialog
+    """\class TableEntryDialog
 
-    \brief ZMOMTableEntryDialog is a dialog for generic table entry handling.
+    \brief TableEntryDialog is a dialog for generic table entry handling.
     """
     _className = 'ZMOMTableEntryDialog'
     _classType = Dialog._classType + [_className]
@@ -211,6 +212,8 @@ class TableEntryDialog(Dialog):
         return self.content.count
 
     lastRow = property(getLastRow, setLastRow)
+
+
     ##########################################################################
     #
     # Instance Methods
@@ -265,20 +268,20 @@ class TableEntryDialog(Dialog):
 
 
     def init(self, manager):
-        """\brief Initialise the dialogs design."""
+        """\brief Initialize the dialogs design."""
         form = self.getForm()
 
         # build buttons
         form.add( hgLabel('Dataset: ')                         )
-        form.add( hgProperty   ('_table', self.content.tableName) )
+        form.add( hgProperty('_table', self.content.tableName) )
 
-        btn = hgPushButton (self.BACK_ALL)
+        btn = hgPushButton(self.BACK_ALL)
         btn.setToolTip('Go to first entry.')
         btn.connect(btn.clicked, self.goToFirst)
         btn.connect(btn.clicked, self.setUpdateMode)
         form.add( btn )
 
-        btn = hgPushButton (self.BACK_ONE)
+        btn = hgPushButton(self.BACK_ONE)
         btn.setToolTip('Go to previous entry.')
         btn.connect(btn.clicked, self.goOneBack)
         btn.connect(btn.clicked, self.setUpdateMode)
@@ -288,19 +291,19 @@ class TableEntryDialog(Dialog):
         test.setToolTip('Your current entry.')
         form.add( test )
 
-        btn = hgPushButton (self.FOR_ONE, name = self.FOR_ONE)
+        btn = hgPushButton(self.FOR_ONE, name = self.FOR_ONE)
         btn.setToolTip('Go to next entry.')
         btn.connect(btn.clicked, self.goOneFor)
         btn.connect(btn.clicked, self.setUpdateMode)
         form.add( btn )
 
-        btn = hgPushButton (self.FOR_ALL)
+        btn = hgPushButton(self.FOR_ALL)
         btn.setToolTip('Go to last entry.')
         btn.connect(btn.clicked, self.goToLast)
         btn.connect(btn.clicked, self.setUpdateMode)
         form.add( btn )
 
-        btn = hgPushButton (self.NEW, name = self.NEW)
+        btn = hgPushButton(self.NEW, name = self.NEW)
         btn.setToolTip('Create new entry.')
         btn.connect(btn.clicked, self.goNew)
         btn.connect(btn.clicked, self.setNewMode)
@@ -311,7 +314,7 @@ class TableEntryDialog(Dialog):
                              'You have to press the Go Button.')
         goToEdit.connect( goToEdit.textChanged, self.goTo )
 
-        goBtn = hgPushButton ( self.GO )
+        goBtn = hgPushButton( self.GO )
         goBtn.setToolTip('Go to specified entry.')
 
         form.add( hgSPACE                          )
@@ -418,7 +421,7 @@ class TableEntryDialog(Dialog):
             if widget and hasattr(widget, '_classType'):
 
                 content = self.content.entry.get(item)
-                if content == None:
+                if content is None:
                     continue
 
                 if widget._className == 'hgLineEdit' or \
@@ -465,7 +468,7 @@ class TableEntryDialog(Dialog):
         """\brief Executes the dialog functions."""
 
         # update row count
-        self.setLastRow ( self.getTable(manager).getRowCount() )
+        self.setLastRow( self.getTable(manager).getRowCount() )
 
         # process events
         Dialog.execDlg(self, manager, REQUEST)
@@ -478,8 +481,8 @@ class TableEntryDialog(Dialog):
             # new entry accepted
             if self.newEntry:
                 table.addEntry( self.currentEntry )
-                self.setLastRow    ( self.getTable(manager).getRowCount() )
-                self.setCurrentRow ( self.content.count )
+                self.setLastRow( self.getTable(manager).getRowCount() )
+                self.setCurrentRow( self.content.count )
                 self.setUpdateMode()
 
             # old entry updated
@@ -488,7 +491,7 @@ class TableEntryDialog(Dialog):
 
         # jumps with go
         elif self._go:
-            self.setCurrentRow ( self._go )
+            self.setCurrentRow( self._go )
             self._go        = None
 
         # cleanup settings
@@ -523,7 +526,7 @@ class TableEntryDialog(Dialog):
 
     def goToFirst(self):
         """\brief Jumps to the first entry."""
-        self.setCurrentRow ( self.first_row )
+        self.setCurrentRow( self.first_row )
 
 
     def goToLast(self):
@@ -533,32 +536,32 @@ class TableEntryDialog(Dialog):
 
     def goOneBack(self):
         """\brief Goes one entry back."""
-        self.setCurrentRow ( self.content.row - 1 )
+        self.setCurrentRow( self.content.row - 1 )
 
 
     def goOneFor(self):
         """\brief Goes one entry for."""
         if self.content.row < self.content.count:
-            self.setCurrentRow ( self.content.row + 1 )
+            self.setCurrentRow( self.content.row + 1 )
 
 
     def goNew(self):
         """\brief Goes for a new entry."""
-        self.setCurrentRow ( self.content.count + 1 )
+        self.setCurrentRow( self.content.count + 1 )
 
 
     def setUpdateMode(self):
         """\brief Set the dialog mode to change for the actual widget."""
         self.newEntry   = False
         self.child( self.ADD     ).setDisabled()
-        self.child( self.UPDATE  ).setEnabled ()
-        self.child( self.FOR_ONE ).setEnabled ()
+        self.child( self.UPDATE  ).setEnabled()
+        self.child( self.FOR_ONE ).setEnabled()
 
 
     def setNewMode(self):
         """\brief Sets the mode to add entry."""
         self.newEntry   = True
-        self.child( self.ADD      ).setEnabled ()
+        self.child( self.ADD      ).setEnabled()
         self.child( self.UPDATE   ).setDisabled()
         self.child( self.FOR_ONE  ).setDisabled()
 

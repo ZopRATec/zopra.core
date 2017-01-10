@@ -564,10 +564,7 @@ class ForeignList(GenericList):
         else:
             raise ValueError('Couldn\'t find foreign list.')
 
-        if is_list:
-            return retlist
-        else:
-            return retlist[0]
+        return retlist if is_list else retlist[0]
 
 
     # freetextsearch
@@ -625,10 +622,7 @@ class ForeignList(GenericList):
     def handleSelectionAdd(self, REQUEST, descr_dict, prefix = None):
         """\brief Handles the Set-Request for the filterRangeList
         """
-        if not prefix:
-            pre = ''
-        else:
-            pre = DLG_CUSTOM + prefix
+        pre = DLG_CUSTOM + prefix if prefix else ''
         new = REQUEST.get('new' + pre + self.listname, None)
         if new:
             if new != 'NULL':
@@ -647,10 +641,8 @@ class ForeignList(GenericList):
     def handleFilterApply(self, REQUEST, descr_dict, prefix = None):
         """\brief Handles the Apply-Request for the filter-able list widgets
         """
-        if not prefix:
-            pre = ''
-        else:
-            pre = DLG_CUSTOM + prefix
+        pre = DLG_CUSTOM + prefix if prefix else ''
+
         # the pattern in REQUEST overwrites the one that might by in the config
         filtertext = REQUEST.get(FILTER_EDIT + pre + self.listname)
         # button was pressed -> something should be in the request, but make sure
@@ -672,10 +664,7 @@ class ForeignList(GenericList):
 
     def handleRangeSwitch(self, REQUEST, descr_dict, prefix, next = True):
         """\brief Handles the prev/next switch for range lists with filter option"""
-        if not prefix:
-            pre = ''
-        else:
-            pre = DLG_CUSTOM + prefix
+        pre = DLG_CUSTOM + prefix if prefix else ''
 
         # allow actualisation of filtertext
         # -> would need to check store_ + FILTER_EDIT against FILTER_EDIT
@@ -781,15 +770,12 @@ class ForeignList(GenericList):
         #           }
 
         # prefix is only for REQUEST-handling
-        if prefix:
-            pre = DLG_CUSTOM + prefix
-        else:
-            pre = ''
+        pre = DLG_CUSTOM + prefix if prefix else ''
 
         if not config:
             config = {}
 
-        widget = None
+        widget  = None
 
         manager = self.getForeignManager()
 
@@ -815,7 +801,7 @@ class ForeignList(GenericList):
 #            # function found, handled by getEntries
 #            elif self.function:
 
-        if self.foreign in manager.listHandler or self.function:
+        if self.function or self.foreign in manager.listHandler:
             widget = self.createStandardSingleWidget(parent, pre, manager, with_novalue, with_null, with_hidden, selected, config)
 
         elif self.foreign in manager.tableHandler:

@@ -7,27 +7,14 @@
 #    the Free Software Foundation; either version 2 of the License, or     #
 #    (at your option) any later version.                                   #
 ############################################################################
-
 from copy         import deepcopy
 from types        import StringType, IntType, DictType
 
 #
 # ZopRA Imports
 #
-from zopra.core           import E_PARAM_TYPE
-from zopra.core.constants import TCN_AUTOID
-from zopra.core.CorePart  import COL_FLOAT,           \
-                                 COL_TYPE,            \
-                                 COL_TEXT,            \
-                                 COL_LABEL,           \
-                                 COL_DATE,            \
-                                 COL_DEFAULT,         \
-                                 COL_REFERENCE,       \
-                                 COL_PRIMARY_KEY,     \
-                                 COL_INT4,            \
-                                 COL_INT8
-
-from zopra.core.connector.SqlConnector import SqlConnector, _edit_tracking_cols
+from zopra.core                        import ZC
+from zopra.core.connector.SqlConnector import SqlConnector
 
 
 class PostgresConnector(SqlConnector):
@@ -52,9 +39,9 @@ class PostgresConnector(SqlConnector):
         """
         ##\bug This function is Postgres dependent
         assert isinstance(table_name, StringType), \
-               E_PARAM_TYPE % ('table_name', 'StringType', table_name)
+               ZC.E_PARAM_TYPE % ('table_name', 'StringType', table_name)
         assert isinstance(col_name, StringType), \
-               E_PARAM_TYPE % ('col_name', 'StringType', col_name)
+               ZC.E_PARAM_TYPE % ('col_name', 'StringType', col_name)
 
         self.query('CREATE SEQUENCE c_%s_%s;' % (table_name, col_name) )
         return 'c_%s_%s' % (table_name, col_name)
@@ -74,9 +61,9 @@ class PostgresConnector(SqlConnector):
         \return Boolean       Returns True if nothing happened
         """
         assert isinstance(table_name, StringType), \
-               E_PARAM_TYPE % ('table_name', 'StringType', table_name)
+               ZC.E_PARAM_TYPE % ('table_name', 'StringType', table_name)
         assert isinstance(col_name, StringType), \
-               E_PARAM_TYPE % ('col_name', 'StringType', col_name)
+               ZC.E_PARAM_TYPE % ('col_name', 'StringType', col_name)
 
         self.query('DROP SEQUENCE c_%s_%s;' % (table_name, col_name) )
         return True
@@ -92,79 +79,33 @@ class PostgresConnector(SqlConnector):
                               query string.
 
         """
-
-        conDA = self._getConnection()
-        connection = conDA()
+        connection = self._getConnection()
         connection.query("set datestyle = 'german, european';")
 
         # fetch info and result but return the result only
-        return connection.query( query_text )[1]
+        if not query_text.endswith(';'):
+            query_text += ';'
 
+        # this is required to handle pickle strings in text fields
+        # but I did had not time to check if it breaks some other stuff
+        query_text = query_text.replace("\\'", "''")
+
+        try:
+            return connection.query(query_text)[1]
+        except Exception as e:
+            print query_text
+            raise e
 
 #
 # table handling
 #
-
-    def convertType(self, coltype):
-        """\brief Converts ZopRA-intern types to db-types."""
-        if coltype == 'string' or coltype == 'memo':
-            return COL_TEXT
-        elif coltype == 'int' or coltype == 'singlelist':
-            return COL_INT4
-        elif coltype == 'date':
-            return COL_DATE
-        elif coltype == 'float':
-            return COL_FLOAT
-        elif coltype == 'bool':
-            return COL_INT4
-        elif coltype == 'int8':
-            return COL_INT8
-        else:
-            return COL_TEXT
-
-
-    def getColumnDefinition(self, cols_dict):
-        assert isinstance(cols_dict, DictType), \
-               E_PARAM_TYPE % ('cols_dict', 'DictType', cols_dict)
-
-        cols_str = []
-        for col in cols_dict:
-            name = col
-            try:
-                #type conversion
-                dbtype  = self.convertType(cols_dict[col][COL_TYPE])
-                kind    = ' %s' % dbtype
-            except:
-                raise ValueError(str(cols_dict)+str(col))
-            if cols_dict[col].get(COL_DEFAULT):
-                default =  ' DEFAULT %s' % cols_dict[col][COL_DEFAULT]
-            else:
-                default =  ''
-            if cols_dict[col].get(COL_REFERENCE):
-                reference =  ' REFERENCES %s' % cols_dict[col][COL_REFERENCE]
-            else:
-                reference =  ''
-            cols_str.append('%s%s%s%s' % (name, kind, default, reference) )
-        return ', '.join(cols_str)
-
-
     def testForTable(self, name):
-        """\brief Test if the table already exists.
-
-        \param name           The argument \a name is a string with the
-                              fullname of a table.
-
-        \return Boolean       Returns True if the table exists, otherwise False
-        """
+        """ \see SqlConnector.testForTable """
         assert isinstance(name, StringType), \
-               E_PARAM_TYPE % ('name', 'StringType', name)
+               ZC.E_PARAM_TYPE % ('name', 'StringType', name)
 
         query_text = "SELECT * FROM pg_class WHERE relname LIKE '%s'" % name
-        result     = self.query(query_text)
-        if not result:
-            return False
-        else:
-            return True
+        return bool( self.query(query_text) )
 
 
     def testForColumn(self, mgrid, table, column):
@@ -182,52 +123,43 @@ class PostgresConnector(SqlConnector):
         \return Boolean       Returns True if the column exists in table, otherwise False
         """
         assert isinstance(mgrid, StringType), \
-               E_PARAM_TYPE % ('mgrid', 'StringType', mgrid)
+               ZC.E_PARAM_TYPE % ('mgrid', 'StringType', mgrid)
 
         assert isinstance(table, StringType), \
-               E_PARAM_TYPE % ('table', 'StringType', table)
+               ZC.E_PARAM_TYPE % ('table', 'StringType', table)
 
         assert isinstance(table, StringType), \
-               E_PARAM_TYPE % ('column', 'StringType', column)
+               ZC.E_PARAM_TYPE % ('column', 'StringType', column)
 
         query_text  = "SELECT count(a.attname) AS tot FROM pg_catalog.pg_stat_user_tables AS t, pg_catalog.pg_attribute a "
         query_text += "WHERE t.relid = a.attrelid AND t.schemaname = 'public' "
         query_text += "AND t.relname = '%s%s'  AND a.attname = '%s';" % (mgrid.lower(), table, column)
 
         result = self.query(query_text)
-
-        count  = 0
-
-        if result:
-            count = result[0][0]
-
-        if count:
-            return True
-        else:
-            return False
+        return bool(result[0][0] if result else False)
 
 
     def createTable(self, name, cols_dict, edit_tracking = True):
         """\brief Adds a SQL table to an existing database."""
         assert isinstance(name, StringType), \
-               E_PARAM_TYPE % ('name', 'StringType', name)
+               ZC.E_PARAM_TYPE % ('name', 'StringType', name)
         assert isinstance(cols_dict, DictType), \
-               E_PARAM_TYPE % ('cols_dict', 'DictType', cols_dict)
+               ZC.E_PARAM_TYPE % ('cols_dict', 'DictType', cols_dict)
         assert edit_tracking == True or edit_tracking == False, \
-               E_PARAM_TYPE % ('edit_tracking',  'BooleanType', edit_tracking)
+               ZC.E_PARAM_TYPE % ('edit_tracking',  'BooleanType', edit_tracking)
 
         create_text = ['CREATE TABLE %s (' % name]
         create_text.append( "autoid INT4 DEFAULT nextval('%s')," % \
                             self._createSequence(name) )
 
         if edit_tracking:
-            create_text.append( self.getColumnDefinition(_edit_tracking_cols) )
+            create_text.append( self.getColumnDefinition(ZC._edit_tracking_cols) )
             create_text.append(', ')
 
         # we have to take care of columns with the same name as edit_tracking_cols
         cols_copy = {}
         for key in cols_dict:
-            if key not in _edit_tracking_cols:
+            if key not in ZC._edit_tracking_cols:
                 cols_copy[key] = cols_dict[key]
 
         add_cols = self.getColumnDefinition(cols_copy)
@@ -238,7 +170,7 @@ class PostgresConnector(SqlConnector):
         # add the primary key
         primary_keys = []
         for col in cols_copy:
-            if cols_copy[col].get(COL_PRIMARY_KEY):
+            if cols_copy[col].get(ZC.COL_PRIMARY_KEY):
                 primary_keys.append(col)
 
         if primary_keys:
@@ -252,32 +184,13 @@ class PostgresConnector(SqlConnector):
         self.query(' '.join(create_text))
 
 
-    def dropTable(self, name):
-        """\brief Drops table from a database.
-        """
-        assert isinstance(name, StringType), \
-               E_PARAM_TYPE % ('name', 'StringType', name)
+    def dropTable(self, table_name):
+        """ \see SqlConnector.dropTable """
+        SqlConnector.dropTable(self, table_name)
 
-        self.query('DROP TABLE %s;' % name)
+        # also drop sequences for table
+        self._dropSequence(table_name)
 
-        self._dropSequence(name)
-
-
-#
-# index handling
-#
-    def createIndex(self, table, column):
-        """\brief Creates an index for table ith specified column."""
-        assert isinstance(table, StringType), \
-               E_PARAM_TYPE % ('table', 'StringType', table)
-        assert isinstance(column, StringType), \
-               E_PARAM_TYPE % ('column', 'StringType', column)
-
-        index_text = "CREATE INDEX %s_index_%s ON %s (%s); " % ( table,
-                                                                 column,
-                                                                 table,
-                                                                 column )
-        self.query(index_text)
 
 #
 # select handling
@@ -285,24 +198,23 @@ class PostgresConnector(SqlConnector):
     def simpleIns(self, name, origcols_dict, entry_dict):
         """ insert into table """
         assert isinstance(name, StringType), \
-               E_PARAM_TYPE % ('name', 'StringType', name)
+               ZC.E_PARAM_TYPE % ('name', 'StringType', name)
 
-        insert_text = ['INSERT INTO %s ( ' %  name]
+        insert_text = ['INSERT INTO %s ( ' % name]
         cols_list   = []
         data_list   = []
         cols_dict   = deepcopy(origcols_dict)
 
-        for col in _edit_tracking_cols:
+        for col in ZC._edit_tracking_cols:
             if col not in cols_dict:
-                cols_dict[col] = _edit_tracking_cols[col]
+                cols_dict[col] = ZC._edit_tracking_cols[col]
         cols = entry_dict.keys()
 
         for col in cols:
             # don't save NULL values, saves a little bit string length
             # but store 0-values
-            if entry_dict[col] is None         or  \
-               entry_dict[col] == 'NULL'       or  \
-               entry_dict[col] == 'None':
+            val = entry_dict.get(col, None)
+            if val is None or val == 'NULL' or val == 'None':
                 continue
 
             # build col_list
@@ -311,10 +223,10 @@ class PostgresConnector(SqlConnector):
             # build data_list
             # get type of col
             if cols_dict.get(col):
-                col_type = cols_dict[col][COL_TYPE]
+                col_type = cols_dict[col][ZC.COL_TYPE]
 
-            elif _edit_tracking_cols.get(col):
-                col_type = _edit_tracking_cols[col][COL_TYPE]
+            elif ZC._edit_tracking_cols.get(col):
+                col_type = ZC._edit_tracking_cols[col][ZC.COL_TYPE]
 
             # this needs to be here to allow autoid overwriting
             elif col == 'autoid':
@@ -323,12 +235,12 @@ class PostgresConnector(SqlConnector):
                 raise ValueError('No ColType found')
 
             # build proper data entries
-            data_list.append( self.checkType( entry_dict[col],
-                                         col_type,
-                                         False,
-                                         cols_dict.get(col, {}).get(COL_LABEL, ''),
-                                         False  # no char replacement
-                                         )
+            data_list.append( self.checkType( val,
+                                              col_type,
+                                              False,
+                                              cols_dict.get(col, {}).get(ZC.COL_LABEL, ''),
+                                              False  # no char replacement
+                                              )
                               )
 
         insert_text.append( ', '.join(cols_list) )
@@ -339,20 +251,7 @@ class PostgresConnector(SqlConnector):
         self.query(''.join(insert_text))
 
         # get last id
-        return self.getLastId(TCN_AUTOID, name)
-
-
-    def getLastId(self, idfield, name, wherestr = ''):
-        """\brief get max entry of idfield"""
-        query_text = 'SELECT max(%s) FROM %s%s;' % ( idfield,
-                                                     name,
-                                                     wherestr )
-        result = self.query( query_text )
-        res = 0
-        if result:
-            if result[0][0]:
-                res = result[0][0]
-        return res
+        return self.getLastId(ZC.TCN_AUTOID, name)
 
 
     def simpleUpd( self,
@@ -365,9 +264,9 @@ class PostgresConnector(SqlConnector):
             autoid = int(autoid)
 
         assert isinstance(name, StringType), \
-               E_PARAM_TYPE % ('name', 'StringType', name)
+               ZC.E_PARAM_TYPE % ('name', 'StringType', name)
         assert isinstance(autoid, IntType), \
-               E_PARAM_TYPE % ('autoid', 'IntType', autoid)
+               ZC.E_PARAM_TYPE % ('autoid', 'IntType', autoid)
 
         # build update query text
         query_text = []
@@ -377,8 +276,8 @@ class PostgresConnector(SqlConnector):
         for colname in entry_dict:
             if colname in origcols_dict:
                 field = origcols_dict[colname]
-            elif colname in _edit_tracking_cols:
-                field = _edit_tracking_cols[colname]
+            elif colname in ZC._edit_tracking_cols:
+                field = ZC._edit_tracking_cols[colname]
             else:
                 # rest is ignored
                 field = None
@@ -386,9 +285,9 @@ class PostgresConnector(SqlConnector):
                 value_text.append(' %s = %s' % ( colname,
                                                  self.checkType(
                                                     entry_dict.get(colname),
-                                                    field.get(COL_TYPE),
+                                                    field.get(ZC.COL_TYPE),
                                                     False,
-                                                    field.get(COL_LABEL)
+                                                    field.get(ZC.COL_LABEL)
                                                            )
                                                   )
                                  )
@@ -405,41 +304,15 @@ class PostgresConnector(SqlConnector):
         return True
 
 
-    def simpleDel(self, name, autoid):
-        """\brief delete the entry with given autoid."""
-        assert isinstance(name, StringType), \
-               E_PARAM_TYPE % ('name', 'StringType', name)
-        assert isinstance(autoid, IntType), \
-               E_PARAM_TYPE % ('autoid', 'IntType', autoid)
-
-        query_text = "DELETE FROM %s where autoid = %s;" % (name, autoid)
-        self.query( query_text )
-
-        return True
-
-
-    def getRowCount(self, name, wherestring = ''):
-        """\brief Returns the number of rows matching wherestring."""
-        assert isinstance(name, StringType), \
-               E_PARAM_TYPE % ('name', 'StringType', name)
-        assert isinstance(wherestring, StringType), \
-               E_PARAM_TYPE % ('wherestring', 'StringType', wherestring)
-
-        if wherestring and wherestring.upper().find('WHERE') == -1:
-            wherestring = "WHERE " + wherestring
-        query_text = 'SELECT count(*) FROM %s %s;' % (name, wherestring)
-        result     = self.query( query_text )
-        if result:
-            return result[0][0]
-
-
-#
-# Function handling
-#
+    ############################################################################
+    #
+    # SQL function handling
+    #
+    ############################################################################
     def addFunctionSql(self, name, param, output, sql):
-        """\brief Creates a SQL function in the database."""
+        """ \see SqlConnector.addFunctionSql """
         assert isinstance(name, StringType), \
-               E_PARAM_TYPE % ('name', 'StringType', name)
+               ZC.E_PARAM_TYPE % ('name', 'StringType', name)
 
         # TODO: shared test for existence if shared
         query_text = []
@@ -449,14 +322,16 @@ class PostgresConnector(SqlConnector):
         query_text.append("LANGUAGE 'sql';")
         self.query( '\n'.join(query_text) )
 
+
     def addFunction(self, function):
-        """\brief create a function"""
+        """ \see SqlConnector.addFunction """
         self.query(function)
+
 
     def delFunctionSql(self, name, param):
         """\brief Deletes a SQL function from the database."""
         assert isinstance(name, StringType), \
-               E_PARAM_TYPE % ('name', 'StringType', name)
+               ZC.E_PARAM_TYPE % ('name', 'StringType', name)
 
         # TODO: shared test for other sharing managers
         self.query( 'DROP FUNCTION %s(%s);' % (name, param) )

@@ -20,13 +20,9 @@ from PyHtmlGUI.widgets.hgLabel           import hgLabel
 from PyHtmlGUI.widgets.hgHBox            import hgHBox
 from PyHtmlGUI.widgets.hgPushButton      import hgPushButton
 
+from zopra.core.constants                import ZC
 from zopra.core.dialogs.guiHandler       import guiHandler
-
-from zopra.core.security                 import SC_DEL
-
 from zopra.core.security.GUIPermission   import GUIPermission
-
-from zopra.core.tools.GenericManager     import DLG_SHOW
 
 
 
@@ -78,15 +74,15 @@ class dlgDelete( hgDialog, guiHandler ):
         except:
             id = None
 
-        
+
         # check request
         if not table or not id:
             manager.displayError('Incomplete request.', 'Error')
 
         # check table
-        if not manager.tableHandler.has_key(table):
+        if table not in manager.tableHandler:
             manager.displayError('Table %s doesn\'t exist in %s.' % (table, manager.getTitle()), 'Database Error')
-        
+
         # check table access rights
         if not manager or \
            not manager.hasGUIPermission(table, GUIPermission.SC_DELETE):
@@ -98,17 +94,17 @@ class dlgDelete( hgDialog, guiHandler ):
         if not entry_dict:
             manager.displayError('Entry with id %s doesn\'t exist in table %s in %s.' % (table, manager.getTitle()), 'Database Error')
 
-        if not manager.hasEntryPermission(table, descr_dict = entry_dict, permission_request = SC_DEL):
+        if not manager.hasEntryPermission(table, descr_dict = entry_dict, permission_request = ZC.SC_DEL):
             manager.displayError('Insufficient access rights.', 'Access Error')
 
         self.data.table     = table
         self.data.id        = id
         self.data.data_dict = entry_dict
 
-        self.data.retmode  = param_dict.get('retmode',  DLG_SHOW)
+        self.data.retmode  = param_dict.get('retmode',  ZC.DLG_SHOW)
         self.data.rettable = param_dict.get('rettable', None)
         self.data.retid    = param_dict.get('retid',    None)
-        
+
         # create in nice tab order
         self.data.okButton      = hgPushButton( parent = self, name = 'ok'     )
         self.data.cancelButton  = hgPushButton( parent = self, name = 'cancel' )
@@ -129,7 +125,7 @@ class dlgDelete( hgDialog, guiHandler ):
         # create layout
         page  = hgTable(parent = self.getForm())
         self.getForm().add(page)
-        
+
         self.data.databox = self.layoutData(manager, parent = page)
         page[0, 0] = self.data.databox
 
@@ -144,24 +140,24 @@ class dlgDelete( hgDialog, guiHandler ):
         # get the data
         tobj = manager.tableHandler[self.data.table]
 
-        # general information  
+        # general information
         widget = hgWidget(parent=parent)
         wlay = hgGridLayout( widget, 12, 4 )
 
         # spacing
-        dict   = self.getDataDict()
+        _dict  = self.getDataDict()
         entity = tobj.getLabel()
-        link   = manager.getLink(self.data.table, None, dict) 
+        link   = manager.getLink(self.data.table, None, _dict)
         wlay.addWidget( hgLabel('<br>Do you really want to delete %s %s?<br><br>' % (entity, link.getHtml()), parent = widget), 0, 0)
 
-        return widget    
+        return widget
 
-    #   
+    #
     def layoutButtons(self, parent = None):
         """\brief Get the button layout."""
         widget = hgHBox(parent=parent)
         widget.layout().data.expanding = hgSizePolicy.NoDirection
-        
+
         widget.add( self.data.okButton     )
         widget.add( hgLabel('&nbsp;', parent = widget)     )
         widget.add( self.data.cancelButton )
@@ -180,7 +176,7 @@ class dlgDelete( hgDialog, guiHandler ):
         """"""
         # delete entry
         manager.deleteEntries(self.data.table, self.data.id)
-        #manager.tableHandler[self.data.table].deleteEntry(self.data.id)
+        # manager.tableHandler[self.data.table].deleteEntry(self.data.id)
         # fall back to managers standard page
         url = manager.absolute_url()
         if self.data.rettable and self.data.retid:
@@ -189,13 +185,13 @@ class dlgDelete( hgDialog, guiHandler ):
                 url = '%s/dlgHandler/%s/show?id=%s' % (url, dname, self.data.retid)
         self.setTarget(url)
         self.target_url = url
-    
+
 
     def performRejected(self, manager):
         """\reimp"""
         # fall back to show entry page
         url   = manager.absolute_url()
-        dname = manager.getDialogName(self.data.table, DLG_SHOW)
+        dname = manager.getDialogName(self.data.table, ZC.DLG_SHOW)
         if dname:
             url = '%s/dlgHandler/%s/show?id=%s' % (url, dname, self.data.id)
         self.setTarget(url)

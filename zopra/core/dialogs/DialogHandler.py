@@ -44,8 +44,7 @@ class DialogHandler(Folder):
 
     _properties    = Folder._properties
     manage_options = Folder.manage_options + \
-                     ( {'label':'Overview', 'action':'manageOverview' },
-                     )
+                     ( {'label':'Overview', 'action':'manageOverview' }, )
 
     App         = 'hgApplication'
     security = ClassSecurityInfo()
@@ -93,7 +92,7 @@ class DialogHandler(Folder):
         assert checkType( 'dlg_name', dlg_name, StringType       )
         assert checkType( 'name',     name,     StringType, True )
 
-        # initialise if application not already there and fetch dialog
+        # initialize if application not already there and fetch dialog
         app = self.getApplication( session )
 
         # TODO: application usage was taken out again to allow multibrowser work
@@ -175,14 +174,14 @@ class DialogHandler(Folder):
             del session[name]
 
 
-    def installDialog(self, name, package = ''):
+    def installDialog(self, dlg_cls):
         """\brief Install new dialog in the handler."""
-        assert checkType( 'name',     name,    StringType )
-        assert checkType( 'npackage', package, StringType )
+#        assert checkType( 'name',    name,    StringType )
+#        assert checkType( 'package', package, StringType )
 
-        dialog       = DialogContainer(name, package)
+        dialog       = DialogContainer(dlg_cls)
         dialog.title = self.getManager().title
-        self._setObject( name, dialog )
+        self._setObject( dlg_cls.__name__, dialog )
 
 
     def getManager(self):
@@ -272,14 +271,16 @@ class DialogHandler(Folder):
             uid = str(dlg.getUid())
             # make sure the dlg is from the manager
             # this check is still here just to be sure
-            mgr = self.getManager()
+            mgr   = self.getManager()
             found = False
-            for row in mgr._dlgs:
-                if row[0] == dlg._className:
+            
+            for x in mgr._dlgs:
+                if dlg.__class__.__name__ == x.__name__:
                     found = True
-
+                    break
+ 
             if not found:
-                msg = 'Dialog was not found in the manager. Please only operate with one Browserwindow when using dialogs. '
+                msg = 'Dialog was not found in the manager. Please only operate with one Browser window when using dialogs. '
                 msg += 'Until further notice, the dialog handling mechanism will not be able to deal with different dialogs '
                 msg += 'executed by the same user in different browser windows at the same time.'
                 mgr.displayError(msg, 'Dialog handling error')

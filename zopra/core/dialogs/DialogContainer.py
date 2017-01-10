@@ -29,7 +29,7 @@ from zopra.core                                     import HTML, \
 from zopra.core.dialogs                             import getStdDialog, \
                                                            getStdZMOMDialog
 from zopra.core.dialogs.Dialog                      import Dialog
-from zopra.core.utils                               import getZopRAPath
+from zopra.core.utils                               import getModulePath
 
 
 class DialogContainer(PropertyManager, SimpleItem):
@@ -46,23 +46,23 @@ class DialogContainer(PropertyManager, SimpleItem):
                     {'id': 'defaultCss',     'type': 'boolean', 'mode': 'r'},
                     {'id': 'defaultXml',     'type': 'boolean', 'mode': 'r'},
                     {'id': 'demo',           'type': 'boolean', 'mode': 'r'},
-                  )
+                    )
 
 
-    manage_options = ( {'label':'Class',    'action':'manageClass'      },
-                       {'label':'CSS',      'action':'manageCSS'        },
-                       {'label':'XML',      'action':'manageXML'        },
-                       {'label':'Data',     'action':'manageDataSource' },
-                     )                              + \
+    manage_options = ( {'label': 'Class',    'action': 'manageClass'      },
+                       {'label': 'CSS',      'action': 'manageCSS'        },
+                       {'label': 'XML',      'action': 'manageXML'        },
+                       {'label': 'Data',     'action': 'manageDataSource' },
+                       )                            + \
                      PropertyManager.manage_options + \
                      SimpleItem.manage_options
 
     security = ClassSecurityInfo()
 
 
-    def __init__(self, dlg_id, package = ''):
+    def __init__(self, dlg_cls, package = ''):
         """\brief Constructs a DialogContainer."""
-        self.id         = dlg_id
+        self.id         = dlg_cls.__name__
         self.css        = ''
         self.xml        = ''
         self.py         = ''
@@ -74,6 +74,7 @@ class DialogContainer(PropertyManager, SimpleItem):
         self.changed    = False
         self.compiled   = None
         self.classname  = self.id + self.package
+        self.cls        = dlg_cls
 
         self.loadDefaultClass()
         self.loadDefaultCss()
@@ -82,15 +83,13 @@ class DialogContainer(PropertyManager, SimpleItem):
 
     def loadDefaultClass(self):
         """\brief Loads the default class from file."""
-        filename = '%s/%s/dialogs/%s.py' % ( getZopRAPath(),
-                                             self.package,
-                                             self.id )
-
+        filename = getModulePath(self.cls)
         if os.path.exists(filename):
             fHandle        = open(filename, 'r')
             self.py        = fHandle.read()
         else:
             self.py        = ''
+
         self.defaultPy = True
         self.changed   = True
 
@@ -98,14 +97,13 @@ class DialogContainer(PropertyManager, SimpleItem):
     def loadDefaultCss(self):
         """\brief Loads the default css from file."""
 
-        filename = '%s/%s/dialogs/%s.css' % ( getZopRAPath(),
-                                              self.package,
-                                              self.id )
+        filename = os.path.splitext(getModulePath(self.cls))[0] + '.css'
         if os.path.exists(filename):
             fHandle         = open(filename, 'r')
             self.css        = fHandle.read()
         else:
             self.css        = ''
+
         self.defaultCss = True
         self.changed    = True
 
@@ -113,9 +111,7 @@ class DialogContainer(PropertyManager, SimpleItem):
     def loadDefaultXml(self):
         """\brief Loads the default xml from file."""
 
-        filename = '%s/%s/dialogs/%s.xml' % ( getZopRAPath(),
-                                              self.package,
-                                              self.id )
+        filename = os.path.splitext(getModulePath(self.cls))[0] + '.xml'
         if os.path.exists(filename):
             fHandle  = open(filename, 'r')
             self.xml        = fHandle.read()
@@ -130,7 +126,7 @@ class DialogContainer(PropertyManager, SimpleItem):
 
         # check self.py
         if not self.py:
-            err = 'Internal Error: Code for instant compilation missing.'
+            err = 'Internal Error: Code for instant compilation of %s missing.' % self.id
             raise ValueError(err)
 
         # prepare globals
@@ -246,6 +242,7 @@ class DialogContainer(PropertyManager, SimpleItem):
 
 
     security.declareProtected('View', 'show')
+
     def show(self, REQUEST):
         """\brief Handles the showing of a dialog."""
 

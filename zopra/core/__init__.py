@@ -33,6 +33,7 @@ from OFS.interfaces         import IObjectManager
 
 from PyHtmlGUI              import E_PARAM_TYPE
 
+from zopra.core.constants   import ZC
 from zopra.core.interfaces  import IZopRAProduct, IZopRAManager
 
 # allow redirects via raise
@@ -54,7 +55,6 @@ ZM_SCM      = 'SecurityManager'
 ZM_IM       = 'FileManager'
 ZM_PNM      = 'PrintManager'
 ZM_MM       = 'MessagingManager'
-ZM_P_PUB    = 'Publication'
 ZM_L_SEQADM = 'SequencingAdministration'
 ZM_S_SM     = 'StorageManager'
 ZM_MBM      = 'MessageBoard'
@@ -62,7 +62,6 @@ ZM_T_PGM    = 'PrimerGenManager'
 ZM_T_GLM    = 'GelManager'
 ZM_S_SGM    = 'SequencingManager'
 ZM_S_SNM    = 'SnpManager'
-ZM_GGM      = 'GeneralGene'
 ZM_CTM      = 'ContentManager'
 ZM_TEST     = 'TestManager'
 ZM_DEBUG    = 'DebugInfoManager'
@@ -116,7 +115,7 @@ def manage_addGeneric( dispatcher,
     obj.installConfig(REQUEST)
 
     # if database gets created (first setup), call startupConfig Hook
-    # for initial db entries
+    # for initial database entries
     if not nocreate:
         obj.setContainer(target)
         obj.startupConfig(REQUEST)
@@ -187,15 +186,8 @@ def registerManager(context, managerClass):
         print 'ZopRA Hint: Generic dtml used for %s' % managerClass
 
         # try to get name suggestions
-        if hasattr(managerClass, 'suggest_id'):
-            sid = managerClass.suggest_id
-        else:
-            sid = '<insert id>'
-
-        if hasattr(managerClass, 'suggest_name'):
-            sname = managerClass.suggest_name
-        else:
-            sname = manager
+        sid   = managerClass.suggest_id   if hasattr(managerClass, 'suggest_id')  else '<insert id>'
+        sname = managerClass.suggest_name if hasattr(managerClass, 'suggest_name') else manager
 
         # read from generic file, construct DTML document
         # workaround, because manage_edit of DTMLFile doesn't work
@@ -203,12 +195,8 @@ def registerManager(context, managerClass):
         # determine the corresponding DTML File
         # differentiate between normal managers and products
         # this is done here to allow manual Form with generic function
-        if is_product:
-            addFormDTML = GENERIC_PRODUCT_ADD_FORM
-        else:
-            addFormDTML = GENERIC_ADD_FORM
-
-        content = addFormDTML.read() % (sid, sname, manager, module)
+        addFormDTML = GENERIC_PRODUCT_ADD_FORM if is_product else GENERIC_ADD_FORM
+        content     = addFormDTML.read() % (sid, sname, manager, module)
 
         # now build DTMLDocument
 
@@ -230,10 +218,7 @@ def registerManager(context, managerClass):
 
     else:
         # generic functions
-        if is_product:
-            func = manage_addProductGeneric
-        else:
-            func = manage_addGeneric
+        func = manage_addProductGeneric if is_product else manage_addGeneric
 
     context.registerClass( managerClass,
                            permission    = addPermission,
@@ -289,7 +274,4 @@ def getProductManager(context):
                     return obj.getId()
 
         # move one step up once current level is finished
-        if hasattr(context, 'aq_parent'):
-            context = context.aq_parent
-        else:
-            context = None
+        context = context.aq_parent if hasattr(context, 'aq_parent') else None

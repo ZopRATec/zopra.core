@@ -29,8 +29,8 @@ from PyHtmlGUI.widgets.hgCheckBox   import hgCheckBox
 #
 # ZopRA Imports
 #
-from zopra.core                     import HTML, ZM_PM, ZM_SCM
-from zopra.core.constants           import VALUE, NOTES, RANK, SHOW, TCN_AUTOID
+from zopra.core                     import HTML, ZM_PM, ZM_SCM, ZC
+from zopra.core.constants           import VALUE, NOTES, RANK, SHOW
 from zopra.core.elements.Buttons    import mpfAddButton,     \
                                            mpfDeleteButton,  \
                                            mpfUpdateButton,  \
@@ -206,7 +206,7 @@ class List(GenericList):
                                         entry_dict)
 
             # we better get the id by this function than getTableLastId.
-            entry_id = m_product.getLastId(TCN_AUTOID, my_id + self.listname)
+            entry_id = m_product.getLastId(ZC.TCN_AUTOID, my_id + self.listname)
             message  = 'add entry %s to %s' % ( entry_id,
                                                 my_id + self.listname )
             m_product.writeLog( message )
@@ -252,7 +252,7 @@ class List(GenericList):
         # language handling
         for translation in self.translations:
             trans += ', %s_%s' % (VALUE, translation)
-        query_text = 'SELECT autoid, value, notes, rank, show1%s '\
+        query_text = 'SELECT autoid, value, notes, rank, show%s '\
                      + 'FROM %s%s WHERE autoid = %d;'
         query_text = query_text % ( trans, mgr.getId(),
                          self.listname,
@@ -298,7 +298,7 @@ class List(GenericList):
                 where = " WHERE value like '%s'" % value
 
             sql = 'SELECT %s FROM %s%s%s;'
-            sql = sql % (TCN_AUTOID, mgr.id, self.listname, where)
+            sql = sql % (ZC.TCN_AUTOID, mgr.id, self.listname, where)
             results = mgr.getManager(ZM_PM).executeDBQuery(sql)
             for result in results:
                 # tell getEntry to fetch from DB instead cache if do_cache is True
@@ -310,7 +310,7 @@ class List(GenericList):
             # put into cache
             self.cache = {}
             for entry in completelist:
-                self.cache[entry[TCN_AUTOID]] = entry
+                self.cache[entry[ZC.TCN_AUTOID]] = entry
 
         if not with_hidden:
             completelist = [entry for entry in completelist if entry.get(SHOW) != 'no']
@@ -334,7 +334,7 @@ class List(GenericList):
             where = " WHERE rank like '%s'" % parentid
             sort = " ORDER BY value ASC "
         sql = 'SELECT %s FROM %s%s%s%s;'
-        sql = sql % (TCN_AUTOID, mgr.id, self.listname, where, sort)
+        sql = sql % (ZC.TCN_AUTOID, mgr.id, self.listname, where, sort)
         results = mgr.getManager(ZM_PM).executeDBQuery(sql)
         for result in results:
             # tell getEntry to fetch from DB instead cache if do_cache is True
@@ -412,7 +412,7 @@ class List(GenericList):
                 if entry:
                     # added rank == '' test to avoid empty rank which doesn't mach
                     if rank is None or rank == '' or entry.get(RANK) == rank:
-                        autoid = entry.get(TCN_AUTOID)
+                        autoid = entry.get(ZC.TCN_AUTOID)
 
                 retlist.append( autoid )
         # get from db if caching not activated
@@ -540,10 +540,7 @@ class List(GenericList):
 
             retlist.append(value)
 
-        if is_list:
-            return retlist
-        else:
-            return retlist[0]
+        return retlist if is_list else retlist[0]
 
 
     def getEntryFromRequest(self, autoid, REQUEST):
@@ -779,7 +776,7 @@ class List(GenericList):
         # interface building
         entry_list = self.getEntries()
         # sort by value
-        own_cmp = lambda x, y: (x[TCN_AUTOID] < y[TCN_AUTOID]) and -1 or (x[TCN_AUTOID] > y[TCN_AUTOID]) and 1 or 0
+        own_cmp = lambda x, y: (x[ZC.TCN_AUTOID] < y[ZC.TCN_AUTOID]) and -1 or (x[ZC.TCN_AUTOID] > y[ZC.TCN_AUTOID]) and 1 or 0
         entry_list.sort(own_cmp)
 
         # build mask
@@ -793,18 +790,18 @@ class List(GenericList):
 
         # all existing list entries
         for entry in entry_list:
-            tab[row, 1] = entry.get(TCN_AUTOID)
+            tab[row, 1] = entry.get(ZC.TCN_AUTOID)
             tab[row, 4] = entry.get(SHOW)
 
-            tab[row, 0] = hgCheckBox('', entry.get(TCN_AUTOID), name = 'entry')
+            tab[row, 0] = hgCheckBox('', entry.get(ZC.TCN_AUTOID), name = 'entry')
 
             tab[row, 2] = hgTextEdit( entry.get(VALUE),
                                       name = self.listname +
-                                      str(entry.get(TCN_AUTOID)))
+                                      str(entry.get(ZC.TCN_AUTOID)))
             tab[row, 3] = hgTextEdit( entry.get(RANK),
-                                      name = 'rank' + str(entry.get(TCN_AUTOID)))
+                                      name = 'rank' + str(entry.get(ZC.TCN_AUTOID)))
             tab[row, 5] = hgTextEdit( entry.get(NOTES),
-                                      name = 'notes' + str(entry.get(TCN_AUTOID)))
+                                      name = 'notes' + str(entry.get(ZC.TCN_AUTOID)))
             row += 1
 
         #

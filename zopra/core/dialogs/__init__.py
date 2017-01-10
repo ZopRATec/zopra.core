@@ -11,6 +11,20 @@ from zopra.core.elements.Styles.Default         import ssiA,         \
                                                        ssiA_VISITED, \
                                                        ssiDLG_NOBORDER
 from zopra.core.widgets                         import getBackButtonStr
+from PyHtmlGUI.kernel.hgGridLayout              import hgGridLayout
+
+#
+# some dialog handling constants
+#
+DLG_NEW    = 1
+DLG_SHOW   = 2
+DLG_EDIT   = 3
+DLG_SEARCH = 4
+DLG_DELETE = 5
+DLG_IMPORT = 6
+DLG_LIST   = 7
+
+DLG_TYPES = [DLG_SHOW, DLG_EDIT, DLG_NEW, DLG_DELETE, DLG_IMPORT, DLG_LIST]
 
 
 dlgHeader = '<dtml-var standard_html_header>'
@@ -41,7 +55,7 @@ def getStdDialog(title = '', action = None, name = None, formless = False):
 
 
 def getPlainDialog(action, parent, border = True):
-    """ This method returns a captionless formcontaining dialog with one
+    """ This method returns a caption-less form-containing dialog with one
         widget with grid layout inside without header/footer
 
     @param action
@@ -61,6 +75,7 @@ def getPlainDialog(action, parent, border = True):
 
     # mask
     mask   = hgWidget(parent = dlg)
+    mask.setLayout(hgGridLayout(mask))
     dlg.add(mask)
     return dlg, mask
 

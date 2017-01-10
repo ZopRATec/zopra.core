@@ -22,18 +22,22 @@ from PyHtmlGUI.widgets.hgLabel               import hgLabel
 from PyHtmlGUI.widgets.hgLineEdit            import hgLineEdit
 from PyHtmlGUI.widgets.hgVBox                import hgVBox
 
+from zope.interface.declarations             import implements
+
 #
 # ZopRA Imports
 #
 from zopra.core                              import HTML, ZM_CM, ZM_SCM, ZM_MM
 from zopra.core.constants                    import TCN_AUTOID
 from zopra.core.dialogs                      import getStdZMOMDialog
+from zopra.core.interfaces                   import IContactManager
 from zopra.core.widgets                      import dlgLabel
 from zopra.core.CorePart                     import MASK_ADD,    \
                                                     MASK_EDIT,   \
                                                     MASK_SHOW
 
 from zopra.core.dialogs.Dialog               import Dialog
+from zopra.core.dialogs.dlgSendMail          import dlgSendMail
 
 from zopra.core.tools.GenericManager         import GenericManager,  \
                                                     GEN_LABEL
@@ -75,8 +79,7 @@ class ContactManager(GenericManager):
 
     _properties     = GenericManager._properties
     _generic_config = GenericManager._generic_config
-    _dlgs           = GenericManager._dlgs + ( ( 'dlgSendMail',
-                                                 'AuditAndSecurity' ), )
+    _dlgs           = GenericManager._dlgs + ( dlgSendMail, ) 
 
     # generic config
     _generic_config = {}
@@ -93,6 +96,9 @@ class ContactManager(GenericManager):
                                                      TCN_PHONE ),
                                    'labelsearchfields': [TCN_LASTNAME, TCN_FIRSTNAME] }
 
+    implements(IContactManager)
+
+    
     # adjust cache
     def manage_afterAdd(self, item, container):
         """\brief Call super function, then resize cache"""
@@ -427,14 +433,11 @@ class ContactManager(GenericManager):
 
     def getMaskPerson(self, flag = MASK_SHOW, descr_dict = None):
         """\brief Returns the mask for the person table"""
-        if descr_dict is None:
-            person = {}
-        else:
-            person = descr_dict
 
-        m_security = self.getHierarchyUpManager(ZM_SCM)
+        person      = {} if descr_dict is None else descr_dict
+        m_security  = self.getHierarchyUpManager(ZM_SCM)
+        G           = GEN_LABEL
 
-        G = GEN_LABEL
         tem = [[G + TCN_FIRSTNAME, TCN_FIRSTNAME],
                [G + TCN_INITIALS,  TCN_INITIALS],
                [G + TCN_LASTNAME,  TCN_LASTNAME],
@@ -446,10 +449,8 @@ class ContactManager(GenericManager):
                [G + TCN_URI,       TCN_URI]]
 
         # link to message center
-        if flag & MASK_SHOW:
-            m_msgm = self.getHierarchyUpManager(ZM_MM)
-        else:
-            m_msgm = None
+
+        m_msgm = self.getHierarchyUpManager(ZM_MM) if flag & MASK_SHOW else None
 
         if m_msgm:
             suser = m_security.getUserByCMId(person[TCN_AUTOID])

@@ -22,11 +22,11 @@ from PyHtmlGUI.widgets.hgLabel          import hgLabel
 from PyHtmlGUI.widgets.hgHBox           import hgHBox
 from PyHtmlGUI.widgets.hgPushButton     import hgPushButton
 
-from Products.ZMOM.ZMOMCorePart         import TCN_AUTOID
+from zopra.core.constants               import TCN_AUTOID
                                                
-from Products.ZMOM.dialogs.guiHandler   import guiHandler
+from zopra.core.dialogs.guiHandler      import guiHandler
 
-from Products.ZMOM.AuditAndSecurity.managers import TN_MUSER,       \
+from zopra.core.tools.managers          import TN_MUSER,       \
                                                     TN_GLOBAL,      \
                                                     TN_SENT,        \
                                                     TCN_DRAFT,      \

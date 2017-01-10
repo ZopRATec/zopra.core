@@ -10,29 +10,23 @@ from types                                      import ListType
 
 from PyHtmlGUI.widgets.hgComboBox               import hgComboBox
 
-from zopra.core                                 import SimpleItem
-from zopra.core.CorePart                        import COL_TYPE
+from zopra.core                                 import SimpleItem, ZC
 from zopra.core.elements.Buttons                import DLG_CUSTOM
 from zopra.core.widgets.hgShortenedComboBox     import hgShortenedComboBox
 from zopra.core.widgets.hgFilteredComboBox      import hgFilteredComboBox
 from zopra.core.utils                           import getParentManager
 
-# not used but imported by other lists
-# FIX: Avoid this kind of imports
-from zopra.core.constants                       import VALUE, RANK, SHOW, NOTES
-
-
 _list_definition = {  # value of the list entry
-                      VALUE: { COL_TYPE: 'string' },
+                      ZC.VALUE: { ZC.COL_TYPE: 'string' },
 
                       # used for sorting the shown list
-                      RANK:  { COL_TYPE: 'string' },
+                      ZC.RANK:  { ZC.COL_TYPE: 'string' },
 
                       # if false the entry will only be used for lookup
-                      SHOW:  { COL_TYPE: 'string' },
+                      ZC.SHOW:  { ZC.COL_TYPE: 'string' },
 
                       # comments to these entries
-                      NOTES: { COL_TYPE: 'string' } }
+                      ZC.NOTES: { ZC.COL_TYPE: 'string' } }
 
 
 class GenericList(SimpleItem):
@@ -51,21 +45,17 @@ class GenericList(SimpleItem):
         """\brief Constructs a GenericList.
         """
         self.listname = listname
-
-        if label is None:
-            self.label   = ''
-        else:
-            self.label   = str(label)
+        self.label    = str(label) if label else ''
 
 
     def createTable(self):
         """\brief Create the database table."""
-        pass
+        raise NotImplementedError(ZC.E_CALL_ABSTRACT)
 
 
     def deleteTable(self, omit_log = None):
         """\brief Create the database table."""
-        pass
+        raise NotImplementedError(ZC.E_CALL_ABSTRACT)
 
 
     def getManager(self):
@@ -95,7 +85,7 @@ class GenericList(SimpleItem):
 
     def delValue(self, autoid):
         """\brief Deletes a value from a list lookup table."""
-        pass
+        raise NotImplementedError(ZC.E_CALL_ABSTRACT)
 
 
     def getEntry(self, autoid):
@@ -117,7 +107,7 @@ class GenericList(SimpleItem):
 
     def getAutoidByValue(self, value, rank = None):
         """\brief Returns the autoid from an specified list entry."""
-        return None
+        raise NotImplementedError(ZC.E_CALL_ABSTRACT)
 
 
     def getAutoidsByFreeText(self, value):
@@ -170,14 +160,11 @@ class GenericList(SimpleItem):
 
         value1 = self.getValueByAutoid(entry1)
         value2 = self.getValueByAutoid(entry2)
-
-        value = self.crossValue(value1, value2, crossString)
+        value  = self.crossValue(value1, value2, crossString)
 
         # the addListValueFunction only adds,
         # if not present and returns the id
-        list_id = self.addValue(value)
-
-        return list_id
+        return self.addValue(value)
 
 
     def createWidget( self,
@@ -198,7 +185,10 @@ class GenericList(SimpleItem):
                 vertical = True
             pattern = config['pattern']
             if config['maxlen'] > 0:
-                cbox = hgShortenedComboBox(name = name, parent = parent, pattern = pattern, vertical = vertical)
+                cbox = hgShortenedComboBox( name     = name, 
+                                            parent   = parent, 
+                                            pattern  = pattern, 
+                                            vertical = vertical )
 
                 cbox.setListLength(config['maxlen'])
 
@@ -207,7 +197,10 @@ class GenericList(SimpleItem):
                 else:
                     cbox.setListTolerance(10)
             else:
-                cbox = hgFilteredComboBox(name = name, parent = parent, pattern = pattern, vertical = vertical)
+                cbox = hgFilteredComboBox( name     = name, 
+                                           parent   = parent, 
+                                           pattern  = pattern, 
+                                           vertical = vertical )
         else:
             cbox = hgComboBox(name = name, parent = parent)
 
@@ -236,11 +229,7 @@ class GenericList(SimpleItem):
         # check how to remove it from here
 
         # prefix is only for REQUEST-handling
-        if prefix:
-            pre = DLG_CUSTOM + prefix
-        else:
-            pre = ''
-
+        pre  = DLG_CUSTOM + prefix if prefix else ''
         cbox = self.createWidget(pre + self.listname,
                                  with_novalue,
                                  with_null,
@@ -279,11 +268,4 @@ class GenericList(SimpleItem):
 
     def getValueByAutoid(self, autoid):
         """\brief Returns the value from an specified list entry/entries."""
-        if isinstance( autoid, ListType):
-            retlist = []
-            for aid in autoid:
-                retlist.append('')
-
-            return retlist
-        else:
-            return ''
+        return [ '' for aid in autoid ] if isinstance( autoid, ListType) else ''

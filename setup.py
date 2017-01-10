@@ -27,7 +27,8 @@ setup( name                 = 'zopra.core',
            'setuptools',
            # -*- Extra requirements: -*-
            'importlib',
-           'PyHtmlGUI'
+           'PyHtmlGUI',
+           'simplejson'
        ],
        entry_points         = """
        # -*- Entry points: -*-

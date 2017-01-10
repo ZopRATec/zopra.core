@@ -29,7 +29,7 @@ from zope.interface                   import implements
 #
 # ZopRA Imports
 #
-from zopra.core import HTML, ClassSecurityInfo, getSecurityManager, modifyPermission, managePermission, ZM_PM, ZM_CM
+from zopra.core import HTML, ClassSecurityInfo, getSecurityManager, modifyPermission, managePermission, ZM_PM, ZM_CM, ZC
 
 from zopra.core.elements.Buttons import DLG_CUSTOM,      \
                                                    BTN_L_ADD,       \
@@ -51,8 +51,7 @@ from zopra.core.CorePart                     import COL_TYPE,        \
                                                     COL_LABEL
 
 from zopra.core.ManagerPart                  import ManagerPart
-from zopra.core.connector.SqlConnector       import _edit_tracking_cols, \
-                                                    getConnector
+from zopra.core.connector.SqlConnector       import getConnector
 from zopra.core.dialogs                      import getStdDialog
 from zopra.core.lists.ListHandler            import ListHandler
 from zopra.core.tables.TableHandler          import TableHandler
@@ -82,7 +81,7 @@ class ZopRAProduct(ManagerPart):
     implements(IZopRAProduct)
 
     # make edit_tracking_cols a class variable for access by other managers
-    _edit_tracking_cols = _edit_tracking_cols
+    _edit_tracking_cols = ZC._edit_tracking_cols
 
     _manager_table_dict = { 'log': {
                                 'tabid':   { COL_TYPE: 'int8',
@@ -152,9 +151,11 @@ class ZopRAProduct(ManagerPart):
     def manage_afterAdd(self, item, container):
         """\brief Manage the normal manage_afterAdd method of a SimpleItem.
         """
-        # create a sql connector
-        connector = getConnector(self, 'connector', self.connection_id_temp)
-        self._setObject('connector', connector)
+
+        if not self.connector:
+            # create a sql connector
+            connector = getConnector(self, 'connector', self.connection_id_temp)
+            self._setObject('connector', connector)
 
         # on copy, the handlers are already present
         if not self.tableHandler:
@@ -444,6 +445,7 @@ class ZopRAProduct(ManagerPart):
 
 
     def simpleDelete(self, name, autoid, tabid = None, entry = None):
+        """ Deletes an entry in the database. """
         # prepare delete and write log
         done = self.connector.simpleDel( name, autoid )
         if done:
@@ -477,12 +479,19 @@ class ZopRAProduct(ManagerPart):
 
 
     def writeLog(self, action, tabid = None, entryid = None, backup = None, newentry = None):
+
         # create diff entrys
         diff_before = {}
-        diff_after = {}
+        diff_after  = {}
+
+        print 'backup',   backup
+        print 'newentry', newentry
+
         if backup and newentry:
+            ignore        = ['permission']
             no_diff_check = ['autoid', 'owner', 'entrydate', 'editor', 'changedate', 'creator', 'permission']
-            false_values = ['None', None, '', 0]
+            false_values  = ['None', None, '', 0]
+
             for key in newentry:
                 if key not in no_diff_check and key in backup and backup[key] != newentry[key] and unicode(backup[key]) != newentry[key] and (backup[key] not in false_values or newentry[key] not in false_values):
                     # ignore different line endings
@@ -506,9 +515,14 @@ class ZopRAProduct(ManagerPart):
                     diff_after[key] = isinstance(newentry[key], basestring) and newentry[key].splitlines() or [unicode(newentry[key])]
 
         # Writes a string in the log table.
-        ddict = {TCN_ACTION: action}
-        ddict[TCN_TABLE] = tabid
-        ddict[TCN_ENTRYID] = entryid
+        ddict = { TCN_ACTION:  action,
+                  TCN_TABLE:   tabid,
+                  TCN_ENTRYID: entryid }
+
+        ddict['username']         = str(getSecurityManager().getUser())
+        ddict['entrydiff_before'] = pickle.dumps(diff_before).replace('\\', '\\\\')
+        ddict['entrydiff_after']  = pickle.dumps(diff_after).replace('\\', '\\\\')
+        ddict['change_datetime']  = datetime.utcnow().isoformat().split('.')[0].replace('T', ' ')
         # ddict[TCN_BACKUP] = str(backup)
         ddict['username'] = unicode(getSecurityManager().getUser())
         ddict['entrydiff_before'] = unicode(pickle.dumps(diff_before).replace('\\', '\\\\'), 'iso-8859-15')

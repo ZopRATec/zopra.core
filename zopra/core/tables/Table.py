@@ -24,7 +24,7 @@ from PyHtmlGUI.stylesheet.hgStyleSheetItem  import hgStyleSheetItem
 #
 # ZopRA Imports
 #
-from zopra.core import HTML, ZM_PM, ZM_SCM, SimpleItem, PropertyManager
+from zopra.core                             import HTML, ZC, SimpleItem, PropertyManager
 from zopra.core.constants                   import TCN_AUTOID,     \
                                                    TCN_OWNER,      \
                                                    TCN_DATE,       \
@@ -35,19 +35,12 @@ from zopra.core.elements.Buttons            import mpfReset2Button, \
 
 from zopra.core.elements.Styles.Default     import ssiDLG_LABEL
 
-from zopra.core.CorePart                    import COL_TYPE,       \
-                                                   COL_LABEL,      \
-                                                   COL_INVIS,      \
-                                                   ZCOL_DATE,      \
-                                                   ZCOL_SLIST,     \
-                                                   ZCOL_INT
 from zopra.core.tables.Filter               import Filter
 from zopra.core.tables.TableCache           import TableCache
 from zopra.core.tables.TableNode            import TableNode, TablePrivate
 
 from zopra.core.dialogs                     import getStdDialog
 from zopra.core.dialogs.TableEntryDialog    import TableEntryDialog
-from zopra.core.security                    import SC_READ, SC_LREAD, SC_WRITE
 from zopra.core.security.EntryPermission    import EntryPermission
 from zopra.core.interfaces                  import IZopRATable, IGenericManager
 from zopra.core.utils import getParentManager
@@ -94,7 +87,7 @@ class Table(SimpleItem, PropertyManager):
                         {'label': 'Table Cache', 'action': 'cacheTab' },
                         {'label': 'Search Tree', 'action': 'searchTreeTab' },
                         # {'label': 'Management',  'action': 'managementTab' },
-                     ) + PropertyManager.manage_options + SimpleItem.manage_options
+                        ) + PropertyManager.manage_options + SimpleItem.manage_options
 
     _properties = ({'id': 'do_cache',    'type': 'boolean',     'mode': 'w'},)
 
@@ -128,8 +121,7 @@ class Table(SimpleItem, PropertyManager):
 
     def setName(self, name):
         """\brief Sets the table name to \a name."""
-        assert isinstance(name, StringType), \
-               E_PARAM_TYPE % ('name', 'StringType', name)
+        assert ZC.checkType('name', name, StringType)
         self.tablename = name
 
     name = property(getName, setName)
@@ -152,19 +144,10 @@ class Table(SimpleItem, PropertyManager):
     # Instance Methods
     #
     ##########################################################################
-    def __init__(self, name, tabledict = None, ebase = False, label = None, uid = None):
+    def __init__(self, name, tabledict, ebase = False, label = '', uid = None):
         """\brief Constructs a Table."""
-        assert isinstance(name, StringType), \
-               E_PARAM_TYPE % ('name', 'StringType', name)
-        assert tabledict == None or isinstance(tabledict, DictType), \
-               E_PARAM_TYPE % ('tabledict', 'DictType or None', tabledict)
-
-        # FIXME: What is this? shouldn't the tabledict be an empty dict if none is given?
-        # the dict contains dicts like that one, but with key columnname
-        if not tabledict:
-            tabledict = { COL_TYPE: 'string',
-                          COL_LABEL: '',
-                          COL_INVIS: False }
+        assert ZC.checkType('name',      name,      StringType)
+        assert ZC.checkType('tabledict', tabledict, DictType)
 
         self._uid         = uid
         self.tablename    = name
@@ -173,10 +156,7 @@ class Table(SimpleItem, PropertyManager):
         self.treeTemplate = None
         self.ebase        = ebase
         self.do_cache     = True
-        if label is not None:
-            self.label = label
-        else:
-            self.label = ''
+        self.label        = str(label)
 
 
     def getManager(self):
@@ -193,65 +173,66 @@ class Table(SimpleItem, PropertyManager):
 
 
     def processWhereString(self, idvalue, idfield):
-        """\brief Build where-string from given id-value list pairs."""
+        """ Build where-string from given id-value list pairs.
 
-        if not idvalue:
+        If idvalue and idfield are lists they have to have the same length.
+
+        @param idvalue - either a single ID or a list of IDs
+        @param idfield - either a column name or a list of column names
+        @result string - string containing a SQL WHERE clause
+        """
+        if idvalue is None:
             return ''
 
+        # we have only one idfield
         if not isinstance(idfield, ListType):
-            # we have only one idfield
             idvalue = [idvalue]
             idfield = [idfield]
 
         mgr = self.getManager()
 
-        if not len(idvalue) == len(idfield):
+        if len(idvalue) != len(idfield):
             raise ValueError(
                 mgr.getErrorDialog('Internal Error. Lists do not match.') )
 
         wherepart = []
 
-        for i in xrange(len(idvalue)):
-            field       = self.getField(idfield[i])
+        for field, value in zip(idfield, idvalue):
+            f_info          = self.getField(field)
+            value, operator = mgr.forwardCheckType( value,
+                                                    f_info[ZC.COL_TYPE],
+                                                    True,
+                                                    f_info[ZC.COL_LABEL] )
 
-            if not field:
-                raise ValueError('Unknown field %s' % idfield[i])
-
-            value, operator = mgr.forwardCheckType( idvalue[i],
-                                         field[COL_TYPE],
-                                         True,
-                                         field.get(COL_LABEL) )
-            wherepart.append('%s %s %s' % (idfield[i], operator, value))
+            wherepart.append('%s %s %s' % (field, operator, value))
 
         return ' WHERE %s' % (' and '.join(wherepart) )
 
 
     def getEmptyEntry(self):
-        """\brief Returns an empty table entry
-                  containing all keys but no values.
+        """ Returns an empty table entry containing all keys but no values.
+
+        @return { <column_name> : <value> }
         """
-        mgr   = self.getManager()
         entry = {}
 
         # normal cols
-
         cols_dict = self.getColumnTypes()
 
         # edit tracking
-
-        m_product = mgr.getManager(ZM_PM)
-        edit = m_product._edit_tracking_cols
-        for field in edit:
-            cols_dict[field] = self.getField(field)[COL_TYPE]
+        for field in ZC._edit_tracking_cols:
+            cols_dict[field] = self.getField(field)[ZC.COL_TYPE]
 
         # fill dict
-
         for field in cols_dict:
             ctype = cols_dict[field]
-            if ctype == 'string' or ctype == 'memo':
+
+            if ctype in ['string', 'memo']:
                 entry[field] = ''
+
             elif ctype == 'multilist':
                 entry[field] = []
+
             else:
                 entry[field] = None
 
@@ -259,38 +240,39 @@ class Table(SimpleItem, PropertyManager):
 
 
     def getEntry( self,
-                  entry_id   = None,
-                  data_tuple = None,
-                  col_list   = None,
+                  entry_id           = None,
+                  data_tuple         = None,
+                  col_list           = None,
                   ignore_permissions = False ):
-        """\brief Returns a table entry.
+        """ Returns a table entry.
 
         If no entry was found the function will return \em None. For more than
         one entry it will throw an exception because only one entry for a
         primary key is expected.
 
-        \param entry_id The argument \a entry_id contains the unique key for
+        @param entry_id The argument \a entry_id contains the unique key for
                         the table.
 
-        \param data_tuple
-        \param col_list
-        \param ignore_permissions The entry will not have a permission object and
-        thus be useless for the generic GUI and entry functions, this option should
-        be used by statistics and the security handling itself only!
+        @param data_tuple
+        @param col_list
+        @param ignore_permissions The entry will not have a permission object
+               and thus be useless for the generic GUI and entry functions, this
+               option should be used by statistics and the security handling
+               itself only!
 
-        \return a description dictionary for the entry where the column names
-        are the keys, otherwise None.
+        @return {<column> : <value>} - a description dictionary for the entry
+                where the column names are the keys, otherwise None.
 
-        \throw RuntimeError if the table or list wasn't found.
-        \throw ValueError   if more than one entry was returned. Could be
+        @throw RuntimeError if the table or list wasn't found.
+        @throw ValueError   if more than one entry was returned. Could be
                             something wrong with the index.
         """
         assert ( entry_id is not None or
                  (data_tuple is not None and col_list is not None)
                  )
 
-        mgr = self.getManager()
-        entry = None
+        mgr     = self.getManager()
+        entry   = None
 
         try:
             entry_id = int(entry_id)
@@ -312,18 +294,15 @@ class Table(SimpleItem, PropertyManager):
 
             if not data_tuple or not col_list:
 
-                # normal behaviour
-                m_product  = mgr.getManager(ZM_PM)
 
                 # get table definition
                 cols_list   = self.tabledict.keys()
 
                 # build query text
-                query_text = ['SELECT ']
+                query_text  = ['SELECT ']
 
                 # add edit tracking cols
-                tracking = m_product._edit_tracking_cols
-                for tfield in tracking.keys():
+                for tfield in ZC._edit_tracking_cols:
                     if tfield not in self.tabledict:
                         cols_list.append(tfield)
 
@@ -340,7 +319,7 @@ class Table(SimpleItem, PropertyManager):
                 query_text = ''.join(query_text)
 
                 # execute query
-                results = m_product.executeDBQuery(query_text)
+                results = mgr.getManager(ZC.ZM_PM).executeDBQuery(query_text)
 
                 # result handling
 
@@ -361,7 +340,7 @@ class Table(SimpleItem, PropertyManager):
             else:
                 # data_tuple and col_list given to use directly
                 cols_list = col_list
-                result = data_tuple
+                result    = data_tuple
 
             count = 0
             for field in cols_list:
@@ -374,11 +353,8 @@ class Table(SimpleItem, PropertyManager):
 
                 else:
                     # empty entry
-                    ftype = self.getField(field)[COL_TYPE]
-                    if ftype == 'singlelist':
-                        entry[field] = None
-                    else:
-                        entry[field] = ''
+                    ftype        = self.getField(field)[ZC.COL_TYPE]
+                    entry[field] = None if ftype == 'singlelist' else ''
 
                 count += 1
 
@@ -409,19 +385,17 @@ class Table(SimpleItem, PropertyManager):
         # because security settings can change without inducing cache reload,
         # we decided to not have security objects cached
         # they have to be reloaded each time, but they use caching too
-
         if ignore_permissions:
             return entry
 
-        # get the entrypermissions based on ebase and SBAR security settings
+        # get the entry permissions based on ebase and SBAR security settings
         perms = mgr.getEntryPermissions(entry.get('acl'), self.tablename)
 
+        owner = self.isOwner(entry)
+
         # add permissions if the owner is requesting the entry
-        if self.isOwner(entry):
-            perms.extend([SC_READ, SC_LREAD, SC_WRITE])
-            owner = True
-        else:
-            owner = False
+        if owner:
+            perms.extend([ZC.SC_READ, ZC.SC_LREAD, ZC.SC_WRITE])
 
         # create entry permission object
         pobj = EntryPermission(entry, perms, owner)
@@ -434,43 +408,46 @@ class Table(SimpleItem, PropertyManager):
 
         # set entry permission
         entry['permission'] = pobj
-
         return entry
 
 
     def isOwner(self, entry):
-        """\brief Checks for creator permissions on the entry
+        """ Checks for creator permissions on the entry.
+
+        @param entry - { <column> : <value> }
+        @result boolean - True if current user is owner or no Security Manager
+                present; otherwise False.
         """
         # security handling with security manager
-        m_sec = self.getManager().getHierarchyUpManager(ZM_SCM)
-
-        # check ownerid of the entry
-        if m_sec:
-            ownerid      = entry.get(TCN_OWNER)
-            owner        = m_sec.getUserByCMId(ownerid).get('login')
-
-            return m_sec.getCurrentLogin() == owner
+        m_sec = self.getManager().getHierarchyUpManager(ZC.ZM_SCM)
 
         # no security management, can't distinguish users -> everybody is owner
-        return True
+        if not m_sec:
+            return True
+
+        # check ownerid of the entry
+        ownerid      = entry.get(TCN_OWNER)
+        owner        = m_sec.getUserByCMId(ownerid).get('login')
+        return m_sec.getCurrentLogin() == owner
+
 
 
     def getField(self, name):
-        """\brief Returns the definition dict for a single column.
+        """ Returns the definition dictionary for a single column.
 
-        \param name   The argument \a name contains the name of the specified
+        @param name - The argument \a name contains the name of the specified
                       column.
 
-        \return The definition dictionary; otherwise a emtpy dictionary
+        @return The definition dictionary; otherwise None
         """
         mgr       = self.getManager()
-        m_product = mgr.getManager(ZM_PM)
+        m_product = mgr.getManager(ZC.ZM_PM)
 
         # shortcut for ordinary autoid field
         if name == TCN_AUTOID:
-            return { COL_TYPE:  'int',
-                     COL_LABEL: 'Automatic No.',
-                     COL_INVIS: True }
+            return { ZC.COL_TYPE:  'int',
+                     ZC.COL_LABEL: 'Automatic No.',
+                     ZC.COL_INVIS: True }
 
         # get field description from manager tables
         elif self.tabledict.get(name):
@@ -481,56 +458,55 @@ class Table(SimpleItem, PropertyManager):
             # seperately but this function is used to test for existence,
             # so we return something!
             lobj = mgr.listHandler.getList(self.tablename, name)
-            return { COL_TYPE:  lobj.listtype,
-                     COL_LABEL: lobj.getLabel(),
-                     COL_INVIS: lobj.invisible }
+            return { ZC.COL_TYPE:  lobj.listtype,
+                     ZC.COL_LABEL: lobj.getLabel(),
+                     ZC.COL_INVIS: lobj.invisible }
 
         # get field description from edit tracking fields
         # no elif here (else same-name cols will be ignored)
         if m_product._edit_tracking_cols.get(name):
             return m_product._edit_tracking_cols[name]
 
-        # nothing really found
-        return {}
+        return None
 
 
     def getEntryBy(self, entry_id, idfield):
-        """\brief get one entry by other field than autoid"""
+        """ Get one entry by other field than autoid.
+        """
         autoid = self.getEntryAutoid(entry_id, idfield)
-        if autoid:
-            return self.getEntry(autoid)
-        return {}
+        return self.getEntry(autoid) if autoid is not None else {}
 
 
     def getEntryAutoid(self, entry_id, idfield):
-        """\brief Shortcut to get the autoid for a field that uses selfmade ids.
+        """ Shortcut to get the autoid for a field that uses self-made IDs.
 
-        \return The autoid of the field, otherwise None.
+        @param  entry_id - string containing the ID
+        @param  idfield  - column that contains the ID
+        @return The autoid of the entry; otherwise None.
         """
         # TODO: convert to tableNode usage!
         # faster with direct implementation
         mgr       = self.getManager()
-        m_product = mgr.getManager(ZM_PM)
+        m_product = mgr.getManager(ZC.ZM_PM)
 
         # caching first (not entirely sure where this is needed, why ask for the
         # autoid if the autoid is given?)
         if self.do_cache and idfield == TCN_AUTOID and entry_id:
-            item = self.cache.getItem(self.cache.ITEM, int(entry_id))
+            item = self.cache.getItem(self.cache.ITEM, entry_id)
             if item:
                 return item.get(TCN_AUTOID)
 
         where = self.processWhereString(entry_id, idfield)
-        query = 'select %s from %s%s%s'
-        query = query % ( TCN_AUTOID,
-                          mgr.id,
-                          self.tablename,
-                          where )
+        query = 'select %s from %s%s%s' % ( TCN_AUTOID,
+                                            mgr.id,
+                                            self.tablename,
+                                            where )
         results = m_product.executeDBQuery(query)
         if results:
             if len(results) > 1:
                 errstr = 'getEntryAutoid got id which is not unique: %s %s'
                 errstr = errstr % (idfield, entry_id)
-                err = mgr.getErrorDialog(errstr)
+                err    = mgr.getErrorDialog(errstr)
                 raise ValueError(err)
             else:
                 return results[0][0]
@@ -587,7 +563,7 @@ class Table(SimpleItem, PropertyManager):
             required = []
 
         mgr       = self.getManager()
-        m_product = mgr.getManager(ZM_PM)
+        m_product = mgr.getManager(ZC.ZM_PM)
 
         # build the table entry
         entry_dict = {}
@@ -630,7 +606,7 @@ class Table(SimpleItem, PropertyManager):
 
         # check ebase, get acl
         if mgr.checkEBaSe(self.tablename):
-            m_sec = mgr.getHierarchyUpManager(ZM_SCM)
+            m_sec = mgr.getHierarchyUpManager(ZC.ZM_SCM)
             acl = m_sec.getCreationAcl(self.getUId(), mgr.getZopraType())
             if acl:
                 entry_dict['acl'] = acl
@@ -663,24 +639,25 @@ class Table(SimpleItem, PropertyManager):
 
 
     def deleteEntry( self, entry_id, idfield = TCN_AUTOID ):
-        """\brief delete one entry with given id from table.
-                  Does no cascation. For that, overwrite the manager's
-                  prepareDelete hook.
+        """ Delete one entry with given id from table.
+
+        Does no cascading. For that, overwrite the manager's prepareDelete hook.
         """
         mgr    = self.getManager()
-        m_prod = mgr.getManager(ZM_PM)
+        m_prod = mgr.getManager(ZC.ZM_PM)
 
         if not entry_id:
             return False
 
         if idfield != TCN_AUTOID:
+
             # this works for lists of idfield/entry_id as well
-            entries = self.getEntries( entry_id,
-                                       idfield )
+            entries = self.getEntries( entry_id, idfield )
             if entries:
                 autoid = entries[0][TCN_AUTOID]
             else:
                 return False
+
         else:
             autoid = entry_id
 
@@ -701,7 +678,7 @@ class Table(SimpleItem, PropertyManager):
         if self.do_cache:
             self.cache.invalidate(autoid)
 
-        # deletion in db, logging and return
+        # deletion in database, logging and return
         return m_prod.simpleDelete(name, autoid, self._uid, entry)
 
 
@@ -764,7 +741,7 @@ class Table(SimpleItem, PropertyManager):
                 autoid = entry_id
 
             # get ProductManager
-            m_product = mgr.getManager(ZM_PM)
+            m_product = mgr.getManager(ZC.ZM_PM)
 
             # old entry (for now without permissions to be faster)
             # using the orig_entry param to speed up this part
@@ -844,7 +821,7 @@ class Table(SimpleItem, PropertyManager):
             required = []
 
         # get ProductManager
-        m_product = mgr.getManager(ZM_PM)
+        m_product = mgr.getManager(ZC.ZM_PM)
 
         errors = m_product.simpleValidate( self.tabledict,
                                            descr_dict)
@@ -882,7 +859,7 @@ class Table(SimpleItem, PropertyManager):
         if not autoidList:
             autoidList = []
 
-        m_product   = mgr.getManager(ZM_PM)
+        m_product   = mgr.getManager(ZC.ZM_PM)
         export_list = []
 
         # check columnList
@@ -1021,7 +998,7 @@ class Table(SimpleItem, PropertyManager):
         if not autoidList:
             autoidList = []
 
-        m_product   = mgr.getManager(ZM_PM)
+        m_product   = mgr.getManager(ZC.ZM_PM)
         export_list = []
 
         # check columnList
@@ -1139,7 +1116,7 @@ class Table(SimpleItem, PropertyManager):
             # check entry permissions
             pobj = entry['permission']
 
-            if pobj and not pobj.hasPermission(SC_READ):
+            if pobj and not pobj.hasPermission(ZC.SC_READ):
                 continue
 
 
@@ -1204,19 +1181,22 @@ class Table(SimpleItem, PropertyManager):
 
 
     def getFieldSelectionList(self):
-        """\brief Builds a multilist of all columnlabels in table for search.
+        """ Builds a MultiList-Widget of all column labels in table for search.
+
+        @return hgMultiList widget
         """
         mgr       = self.getManager()
         multiList = hgMultiList(name = 'show_fields')
-        # no extra invis-check necessary
+
+        # no extra invisibility-checks necessary
         collist = self.getColumnTypes(vis_only = True)
 
         # show_fields
         sfields = []
 
-        if hasattr(mgr, '_generic_config') and \
-             mgr._generic_config.get(self.tablename) and \
-             mgr._generic_config[self.tablename].get('show_fields'):
+        if ( hasattr(mgr, '_generic_config')            and
+             mgr._generic_config.get(self.tablename)    and
+             mgr._generic_config[self.tablename].get('show_fields') ):
 
             # get fields, select them
             sfields = mgr._generic_config[self.tablename]['show_fields']
@@ -1226,17 +1206,13 @@ class Table(SimpleItem, PropertyManager):
             mgr.actionBeforeShowList(self.tablename, param, {})
             sfields = param.get('show_fields', [])
 
-        if TCN_AUTOID in sfields:
-            collist[TCN_AUTOID] = ''
-        if TCN_DATE in sfields:
-            collist[TCN_DATE] = ''
-        if TCN_CREATOR in sfields:
-            collist[TCN_CREATOR] = ''
-        if TCN_OWNER in sfields:
-            collist[TCN_OWNER] = ''
-        for column in collist.keys():
+        for column in [TCN_AUTOID, TCN_DATE, TCN_CREATOR, TCN_OWNER]:
+            if column in sfields:
+                collist[column] = ''
+
+        for column in collist:
             field = self.getField(column)
-            label = field[COL_LABEL]
+            label = field[ZC.COL_LABEL]
             if label and label != ' ':
                 multiList.insertItem(label, column)
 
@@ -1247,22 +1223,21 @@ class Table(SimpleItem, PropertyManager):
 
 
     def deleteEntries( self, idlist ):
-        """\brief Deletes the entries with the autoids in idlist and
-                    their multilist-references, including files / images.
-                    Calls genericFileDelete for generic managers and
-                    forwards to self.deleteEntry.
+        """ Deletes the entries with the autoids in idlist and their
+            multilist-references, including files / images.
+
+        Calls genericFileDelete for generic managers and forwards to
+        self.deleteEntry.
         """
         mgr = self.getManager()
 
         # file deletion for generic managers
         # has to be done here, because entry is needed for that
         if IGenericManager.providedBy(mgr):
-            mgr.genericFileDelete( self.tablename, idlist )
+            mgr.genericFileDelete(self.tablename, idlist)
 
         for autoid in idlist:
-            autoid = int( autoid )
-
-            self.deleteEntry(autoid)
+            self.deleteEntry( int(autoid) )
 
 #
 # Entry handling
@@ -1320,7 +1295,7 @@ class Table(SimpleItem, PropertyManager):
                 # added deepcopy call 03/2009 (had some changes to cached-items hanging in the cache)
                 return deepcopy(cached)
 
-        results = mgr.getManager(ZM_PM).executeDBQuery( sql )
+        results = mgr.getManager(ZC.ZM_PM).executeDBQuery( sql )
 
         # for result in results:
         #     if oneCol:
@@ -1366,7 +1341,7 @@ class Table(SimpleItem, PropertyManager):
         sql = treeRoot.getSQL( function='count(distinct %sautoid)',
                                checker = mgr )
         # no caching for count requests
-        results = mgr.getManager(ZM_PM).executeDBQuery( sql )
+        results = mgr.getManager(ZC.ZM_PM).executeDBQuery( sql )
         if results:
             return int(results[0][0])
         else:
@@ -1401,25 +1376,31 @@ class Table(SimpleItem, PropertyManager):
 
 
     def buildGetEntriesFilter(self, filter, idvalue, idfield):
-        """\brief populate the given FilterNode with the values.
-                  idvalue and idfield can be lists of same length."""
+        """ Populate the given FilterNode with the values.
+
+        If idvalue and idfield are list they have to be of same length.
+
+        @param idvalue - either a value or a list of values
+        @param idfield - either a field name or a list of field names
+        @return filter
+        """
 
         # check idvalue / idfield
         if not isinstance(idfield, ListType):
+
             if idfield == TCN_AUTOID and idvalue is None:
                 idfield = []
                 idvalue = []
+
             else:
                 idvalue = [idvalue]
                 idfield = [idfield]
 
         # build dicts out of the given field / value lists
-        defdict = {}
+        defdict      = {}
         multidefdict = {}
 
-        for index, field in enumerate(idfield):
-
-            value = idvalue[index]
+        for field, value in zip(idfield, idvalue):
 
             # list values are handled by checktype, not here
             # they will always be evaluated via IN-operator
@@ -1446,26 +1427,27 @@ class Table(SimpleItem, PropertyManager):
         filter.setUncheckedConstraints(defdict)
 
         # set multi constraints
-        for key in multidefdict.keys():
-            value = multidefdict[key]
+        for key, value in multidefdict.items():
             filter.setMultiConstraint(key, value)
 
 
     def getEntryCount( self,
                        idvalue   = None,
                        idfield   = TCN_AUTOID):
-        """\brief Returns the count for getEntries - old value-handling (simple attrs only)"""
+        """ Returns the count for getEntries - old value-handling
+            (simple attrs only)
+        """
         assert idfield, E_PARAM_FAIL % 'idfield'
 
         # get TreeRoot
         root = self.getTableNode()
 
         # create filter
-        fil = Filter(Filter.AND)
+        _filter = Filter(Filter.AND)
 
         # populate filter
-        self.buildGetEntriesFilter(fil, idvalue, idfield)
-        root.setFilter(fil)
+        self.buildGetEntriesFilter(_filter, idvalue, idfield)
+        root.setFilter(_filter)
 
         # evaluate the tableNode
         return self.requestEntryCount(root)
@@ -1538,23 +1520,21 @@ class Table(SimpleItem, PropertyManager):
 
 
     def getLabel(self, column_name = None):
-        """\brief Returns a label string for the specified column or
-                  the table if no column is specified.
+        """ Returns a label string for the specified column or the table if no
+            column is specified.
 
-        \return Returns a string with the label, otherwise an empty string
+        @return Returns a string with the label, otherwise an empty string
         """
-        if column_name:
-            return self.getField(column_name).get(COL_LABEL, '')
-        else:
-            return self.label
+        field = self.getField(column_name)
+        return field.get(ZC.COL_LABEL, '') if field else self.label
 
 
     def getLabelWidget( self,
                         column_name = None,
-                        style  = ssiDLG_LABEL,
-                        prefix = None,
-                        suffix = None,
-                        parent = None):
+                        style       = ssiDLG_LABEL,
+                        prefix      = None,
+                        suffix      = None,
+                        parent      = None):
         """\brief Returns a label widget for the specified column.
 
         \return Returns a hgLabel widget if a label exists for the column, otherwise None
@@ -1591,8 +1571,8 @@ class Table(SimpleItem, PropertyManager):
 
         \return The last id of the table, otherwise None.
         """
-        mgr = self.getManager()
-        product = mgr.getManager(ZM_PM)
+        mgr      = self.getManager()
+        product  = mgr.getManager(ZC.ZM_PM)
         wherestr = self.processWhereString( wherevalue, wherefield )
 
         return product.getLastId( idfield, mgr.id + self.tablename, wherestr )
@@ -1719,46 +1699,52 @@ class Table(SimpleItem, PropertyManager):
         for column in self.tabledict:
             if column not in resdict:
                 field = self.tabledict[column]
-                if not vis_only or field.get(COL_INVIS) is not True:
-                    resdict[column] = field.get(COL_TYPE)
+                if not vis_only or field.get(ZC.COL_INVIS) is not True:
+                    resdict[column] = field.get(ZC.COL_TYPE)
 
-        # edit tracking cols TCN_DATE and TCN_CREATOR are visible too but not in the dict
+        # edit tracking cols TCN_DATE and TCN_CREATOR are visible too but not
+        # in the dict
         if TCN_CREATOR not in resdict:
-            resdict[TCN_CREATOR] = ZCOL_SLIST
+            resdict[TCN_CREATOR] = ZC.ZCOL_SLIST
+
         if TCN_CREATOR not in resdict:
-            resdict[TCN_DATE] = ZCOL_DATE
+            resdict[TCN_DATE] = ZC.ZCOL_DATE
+
         # edit tracking col TCN_AUTOID is invis (most of the time)
         if not vis_only:
-            resdict[TCN_AUTOID] = ZCOL_INT
+            resdict[TCN_AUTOID] = ZC.ZCOL_INT
 
         return resdict
 
 
     def getColumnDefs(self, vis_only = False, edit_tracking = False):
-        """\brief Returns a dict containing all columns as keys
-                    and their column definitions as values.
-        """
-        mgr     = self.getManager()
-        resdict = {}
+        """ Returns a dictionary containing all columns as keys and their column
+            definitions as values.
 
-        tablelists = mgr.listHandler.getLists(self.tablename)
+        @return { <column_name> : <column_definition> }
+        """
+        resdict    = {}
+        tablelists = self.getManager().listHandler.getLists(self.tablename)
         for listobj in tablelists:
             if not vis_only or listobj.invisible is not True:
                 resdict[listobj.listname] = self.getField(listobj.listname)
 
         # copy normal attr info
-        for key in self.tabledict.keys():
+        for key in self.tabledict:
             if key not in resdict:
                 field = self.tabledict[key]
-                if not vis_only or field.get(COL_INVIS) is not True:
+                if not vis_only or field.get(ZC.COL_INVIS) is not True:
                     resdict[key] = field
 
         # add edit_tracking fields creator, creationdate and autoid if requested
         if edit_tracking:
+
             if TCN_CREATOR not in resdict:
                 resdict[TCN_CREATOR] = self.getField(TCN_CREATOR)
+
             if TCN_DATE not in resdict:
                 resdict[TCN_DATE] = self.getField(TCN_DATE)
+
             if TCN_AUTOID not in resdict:
                 resdict[TCN_AUTOID] = self.getField(TCN_AUTOID)
 
@@ -1766,23 +1752,14 @@ class Table(SimpleItem, PropertyManager):
 
 
     def getMainColumnNames(self):
-        """\brief Returns a list containing all columnnames
-                    for the main table
+        """ Returns a list containing all column names for the main table.
+
+        @return [ <column_names> ]
         """
-        mgr     = self.getManager()
-        m_product = mgr.getManager(ZM_PM)
-        reslist = []
         # autoid has to be first column!
-        reslist.append(TCN_AUTOID)
-
-        for column in self.tabledict:
-            if column != TCN_AUTOID:
-                reslist.append(column)
-
-        for column in m_product._edit_tracking_cols:
-            if column not in reslist:
-                reslist.append(column)
-
+        reslist  = [TCN_AUTOID]
+        reslist += [c for c in self.tabledict         if c != TCN_AUTOID]
+        reslist += [c for c in ZC._edit_tracking_cols if c not in reslist]
         return reslist
 
     ##########################################################################
@@ -1792,27 +1769,33 @@ class Table(SimpleItem, PropertyManager):
     ##########################################################################
 
     def getSearchTreeTemplate(self):
-        """\brief template function for join selection with join-tree caching, is not used by the standard entry functions"""
-        # TODO: use this function in all entry requesting functions instead of getTableNode() -> needs testing
+        """ Template method for join selection with join-tree caching, is not
+            used by the standard entry functions
+        """
+        # TODO: use this function in all entry requesting functions instead of
+        #       getTableNode() -> needs testing
         mgr = self.getManager()
 
         if not self.treeTemplate:
-            self.treeTemplate = mgr.\
-                     generateTableSearchTreeTemplate(self.tablename)
+            self.treeTemplate = mgr.generateTableSearchTreeTemplate(self.tablename)
 
         return self.treeTemplate.copy(mgr, mgr.getZopraType())
 
 
     def resetSearchTreeTemplate(self):
-        """\brief reset the template"""
+        """ Reset the template """
         self.treeTemplate = None
 
 
     def getTableNode(self):
-        """\brief Builds a new table Node for this Table"""
+        """ Returns a new table Node for this table.
+
+        @return TableNode object
+        """
         mgr = self.getManager()
 
-        # FIXME: having the listHandler set in the TableNode is odd, but acquisition didn't work
+        # FIXME: having the listHandler set in the TableNode is odd, but
+        #        acquisition didn't work
         data             = TablePrivate()
         data.tablename   = self.tablename
         data.tabledict   = self.tabledict
@@ -1824,45 +1807,44 @@ class Table(SimpleItem, PropertyManager):
     # Statistics
     #
     ##########################################################################
+    QT_COUNT     = """SELECT count(*) FROM %s"""
+    QT_COUNT_DMY = """SELECT count(*) AS count,
+                             date_part('year',  entrydate) AS year,
+                             date_part('month', entrydate) AS month,
+                             date_part('day',   entrydate) AS day
+                      FROM %s
+                      GROUP BY year, month, day
+                      ORDER BY year, month, day"""
+    QT_COUNT_MY  = """SELECT count(*) AS count,
+                             date_part('year',  entrydate) AS year,
+                             date_part('month', entrydate) AS month
+                      FROM %s
+                      GROUP BY year, month
+                      ORDER BY year, month"""
+    QT_COUNT_Y   = """SELECT count(*) AS count,
+                             date_part('year', entrydate)  AS year
+                      FROM %s
+                      GROUP BY year
+                      ORDER BY year"""
 
     def getStatistic(self):
-        """\brief Returns a dictionary that contains some statistic
-                  about the usage of this particular table.
+        """ Returns a dictionary that contains some statistic about the usage of
+            this particular table.
+
+        Available statistic <key>:
+        rowCount       - Number of table entries
+        entriesInDay   - Number of entries / day
+        entriesInMonth - Number of entries / month
+        entriesInYear  - Number of entries / year
+        @return { <key> : <value> }
         """
         manager    = self.getManager()
-        mproduct   = manager.getManager( ZM_PM )
-        fromPhrase = ' FROM %s ' % ( manager.id + self.tablename )
-        stats_dict = {}
-
-        # entry count
-        query = 'SELECT count(*)' + fromPhrase
-        stats_dict['rowCount'] = mproduct.executeDBQuery( query )
-
-        # new entries in day
-        day   = ' date_part(\'day\',   entrydate) AS day   '
-        month = ' date_part(\'month\', entrydate) AS month '
-        year  = ' date_part(\'year\',  entrydate) AS year  '
-
-        query = 'SELECT count(*) AS count, '     + \
-                day + ', ' + month + ', ' + year + \
-                fromPhrase                       + \
-                ' GROUP BY year, month, day;'
-        stats_dict['entriesInDay'] = mproduct.executeDBQuery( query )
-
-        # new entries in month
-        query = 'SELECT count(*) AS count, '     + \
-                month + ', ' + year              + \
-                fromPhrase                       + \
-                ' GROUP BY year, month;'
-        stats_dict['entriesInMonth'] = mproduct.executeDBQuery( query )
-
-        # new entries in year
-        query = 'SELECT count(*) AS count, ' + year + fromPhrase + \
-                ' GROUP BY year;'
-        stats_dict['entriesInYear'] = mproduct.executeDBQuery( query )
-
-        # active users
-        return stats_dict
+        execQuery  = manager.getManager(ZC.ZM_PM).executeDBQuery
+        table      = manager.id + self.tablename
+        return { 'rowCount':       execQuery( self.QT_COUNT     % table ),
+                 'entriesInDay':   execQuery( self.QT_COUNT_DMY % table ),
+                 'entriesInMonth': execQuery( self.QT_COUNT_MY  % table ),
+                 'entriesInYear':  execQuery( self.QT_COUNT_Y   % table ) }
 
 
     ##########################################################################
@@ -1875,16 +1857,16 @@ class Table(SimpleItem, PropertyManager):
         message = ''
         # test Request for creation button
         if REQUEST.get('create'):
+
             # try to create the table
-            mgr = self.getManager()
-            m_product = mgr.getManager(ZM_PM)
+            mgr       = self.getManager()
+            m_product = mgr.getManager(ZC.ZM_PM)
+
             # no logging for scm due to loops
-            if ZM_SCM in mgr.getClassType():
-                log = False
-            else:
-                log = True
+            log = ZC.ZM_SCM not in mgr.getClassType()
             m_product.addTable( mgr.id + self.tablename, self.tabledict, log = log)
             message = 'Table created.'
+
         dlg = getStdDialog('', 'viewTab')
         dlg.setHeader( "<dtml-var manage_page_header><dtml-var manage_tabs>" )
         dlg.setFooter( "<dtml-var manage_page_footer>"                       )
@@ -1904,8 +1886,8 @@ class Table(SimpleItem, PropertyManager):
         offset  = 1
         for col in self.getColumnTypes().keys():
             tab[row + offset, 0] = col
-            tab[row + offset, 1] = self.getField(col).get(COL_TYPE)
-            tab[row + offset, 2] = self.getField(col).get(COL_LABEL, col)
+            tab[row + offset, 1] = self.getField(col).get(ZC.COL_TYPE)
+            tab[row + offset, 2] = self.getField(col).get(ZC.COL_LABEL, col)
             offset += 1
 
         row = row + offset + 1
@@ -2028,7 +2010,6 @@ class Table(SimpleItem, PropertyManager):
         dlg.setFooter( "<dtml-var manage_page_footer>"                       )
 
         # table cache
-
         button = getPressedButton(REQUEST)
         if len(button) > 0 and button[0] == BTN_L_RESET2:
             self.cache.clearCache()
@@ -2047,9 +2028,8 @@ class Table(SimpleItem, PropertyManager):
         dlg.setHeader( "<dtml-var manage_page_header><dtml-var manage_tabs>" )
         dlg.setFooter( "<dtml-var manage_page_footer>"                       )
 
-        if REQUEST.get('f_' + BTN_L_RESET2):
-            if hasattr(self, 'treeTemplate'):
-                self.treeTemplate = None
+        if REQUEST.get('f_' + BTN_L_RESET2) and hasattr(self, 'treeTemplate'):
+            self.treeTemplate = None
 
         tmp = self.getSearchTreeTemplate()
         if tmp:

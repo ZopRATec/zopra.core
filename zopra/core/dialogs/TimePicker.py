@@ -38,11 +38,11 @@ ssiCell = hgStyleSheetItem()
 ssiCell.border().setRight( '#000000', 'solid', '1px' )
 
 ssiCellOdd = hgStyleSheetItem()
-ssiCellOdd.border().setTop ( '#000000', 'dashed', '1px' )
+ssiCellOdd.border().setTop(  '#000000', 'dashed', '1px' )
 ssiCellOdd.border().setLeft( '#000000', 'solid',  '1px' )
 
 ssiCellEven = hgStyleSheetItem()
-ssiCellEven.border().setTop ( '#000000', 'solid', '1px' )
+ssiCellEven.border().setTop(  '#000000', 'solid', '1px' )
 ssiCellEven.border().setLeft( '#000000', 'solid', '1px' )
 
 
@@ -100,10 +100,10 @@ class ZMOMTimePicker(Dialog):
 
     def setDate(self, date = None):
         """\brief Sets the date property."""
-        assert date == None or isinstance(date, hgDate), \
+        assert date is None or isinstance(date, hgDate), \
                self.E_PARAM_TYPE % ('date', 'hgDate or None', date)
 
-        if date == None:
+        if date is None:
             date = hgDate.today()
         self._data.date.setDate( date )
 
@@ -123,7 +123,7 @@ class ZMOMTimePicker(Dialog):
 
     def setTimeRowEnabled(self, enabled):
         """\brief Sets the timeRowEnabled property to \a enabled."""
-        assert enabled == True or enabled == False, \
+        assert enabled is True or enabled is False, \
                self.E_PARAM_TYPE % ('enabled', 'BooleanType', enabled)
 
         if self.__timeRowEnabled != enabled:
@@ -131,6 +131,8 @@ class ZMOMTimePicker(Dialog):
             self._initTable()
 
     timeRowEnabled = property(isTimeRowEnabled, setTimeRowEnabled)
+
+
     ##########################################################################
     #
     # Instance Methods
@@ -197,19 +199,19 @@ class ZMOMTimePicker(Dialog):
             # even row
             for row in xrange(0, 48, 2):
                 self._day_table[row, 0] = '%02.i:00' % (row / 2)
-                self._day_table.setCellBackgroundColor (row, 0, '#EEEEE6')
+                self._day_table.setCellBackgroundColor(row, 0, '#EEEEE6')
                 self._day_table.setCellStyle(row, 0, style_even)
 
             # odd row
             for row in xrange(1, 48, 2):
                 self._day_table[row, 0] = hgSPACE
-                self._day_table.setCellBackgroundColor (row, 0, '#EEEEE6')
+                self._day_table.setCellBackgroundColor(row, 0, '#EEEEE6')
                 self._day_table.setCellStyle(row, 0, style_odd)
 
         # init slots
         for row in xrange(48):
             self._day_table[row, 1] = hgSPACE
-            self._day_table.setCellBackgroundColor (row, 1, '#FFFFFF')
+            self._day_table.setCellBackgroundColor(row, 1, '#FFFFFF')
             self._day_table.setCellStyle(row, 1, style_cell)
 
 
@@ -228,15 +230,15 @@ class ZMOMTimePicker(Dialog):
 
     def _addEventToSlot(self, event, slot_start = None, slot_end = None):
         """\brief """
-        assert isinstance (slot_start, IntType) or slot_start == None, \
+        assert isinstance (slot_start, IntType) or slot_start is None, \
               self.E_PARAM_TYPE % ('slot_start', 'IntType or None', slot_start)
-        assert isinstance (slot_end, IntType) or slot_end == None, \
+        assert isinstance (slot_end, IntType) or slot_end is None, \
               self.E_PARAM_TYPE % ('slot_end', 'IntType or None', slot_end)
 
         if slot_end > 48:
             slot_end = 48
 
-        if slot_start != None and slot_start < 0:
+        if slot_start is not None and slot_start < 0:
             slot_start = 0
 
         # information
@@ -246,7 +248,7 @@ class ZMOMTimePicker(Dialog):
             text = 'Booked Event'
 
         # slot by number time
-        if slot_start != None:
+        if slot_start is not None:
 
             # more than one slot
             if slot_end:
@@ -315,7 +317,7 @@ class ZMOMTimePicker(Dialog):
 
         # sort for no time
         for event in event_list:
-            if event.no_time == True:
+            if event.no_time is True:
                 self._data.date_events.append(event)
             else:
                 self._data.time_events.append(event)

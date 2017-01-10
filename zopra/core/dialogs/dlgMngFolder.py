@@ -28,15 +28,15 @@ from PyHtmlGUI.widgets.hgHBox           import hgHBox
 from PyHtmlGUI.widgets.hgLineEdit       import hgLineEdit
 from PyHtmlGUI.widgets.hgPushButton     import hgPushButton
 
-from Products.ZMOM.ZMOMElements.Styles.Default   import ssiDLG_LABEL
+from zopra.core.elements.Styles.Default   import ssiDLG_LABEL
 
-from Products.ZMOM.ZMOMCorePart         import TCN_AUTOID
+from zopra.core.constants         import TCN_AUTOID
                                                
-from Products.ZMOM.dialogs.guiHandler   import guiHandler
+from zopra.core.dialogs.guiHandler   import guiHandler
 
-from Products.ZMOM.secGUIPermission     import secGUIPermission
+from zopra.core.secGUIPermission     import secGUIPermission
 
-from Products.ZMOM.AuditAndSecurity.managers import TN_FOLDER,      \
+from zopra.core.tools.managers import TN_FOLDER,      \
                                                     TN_LOCAL,       \
                                                     TCN_OWNER,      \
                                                     TCN_FOLDERNAME, \

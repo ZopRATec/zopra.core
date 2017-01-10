@@ -7,8 +7,6 @@
 #    the Free Software Foundation; either version 2 of the License, or     #
 #    (at your option) any later version.                                   #
 ############################################################################
-# \file dlgMultiEdit.py
-__revision__ = '0.1'
 
 #
 # PyHtmlGUI Imports
@@ -18,16 +16,17 @@ from PyHtmlGUI.widgets.hgLabel              import hgLabel
 from PyHtmlGUI.widgets.hgLineEdit           import hgLineEdit
 from PyHtmlGUI.widgets.hgTextEdit           import hgTextEdit
 
-from Products.ZMOM.dialogs.dlgOCBase     import dlgOCBase
 
-from Products.ZMOM.ZMOMCorePart          import TCN_AUTOID
+from zopra.core.dialogs.dlgOCBase           import dlgOCBase
 
-from Products.ZMOM.ZMOMCorePart import ZM_CM
+from zopra.core.constants                   import TCN_AUTOID
+from zopra.core.interfaces                  import IContactManager
 
-from Products.ZMOM.AuditAndSecurity.managers import TN_PERSON, \
-                                                    TCN_EMAIL
+from zopra.core.tools.managers              import TN_PERSON, \
+                                                   TCN_EMAIL
 
-from Products.ZMOM.widgets.hgComplexMultiList import hgComplexMultiList
+from zopra.core.widgets.hgComplexMultiList  import hgComplexMultiList
+
 
 class dlgSendMail(dlgOCBase):
     """\brief Event View Dialog"""
@@ -45,7 +44,8 @@ class dlgSendMail(dlgOCBase):
         # buildLayout and buildFinalLayout
 
         # test manager
-        if not ZM_CM in manager.getClassType():
+        
+        if not IContactManager.providedBy(manager):
             raise ValueError('Wrong Manager')
 
         self.mail_to   = {}
@@ -65,13 +65,17 @@ class dlgSendMail(dlgOCBase):
         self.enable_undo = False
         self.message     = ''
 
+
     def initPersons(self, manager, autoids):
         """\brief Init entries and their widgets."""
+
         # Person Select List
         persons = manager.tableHandler[TN_PERSON].getEntries('_not_NULL', TCN_EMAIL)
         reslist = []
+
         # multilist
         mul = hgComplexMultiList('send_to')
+
         # get mailadresses, remove others from list
         for person in persons:
             self.mail_to[person[TCN_AUTOID]] = person[TCN_EMAIL]

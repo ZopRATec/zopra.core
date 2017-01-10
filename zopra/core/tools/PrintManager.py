@@ -227,10 +227,11 @@ class PrintManager(GenericManager):
         #get Entries for table (list of autoids)
         entries = getSpecialField(REQUEST, DLG_CUSTOM + 'stored')
         manager  = self.getHierarchyDownManager(mgr_name, mgr_id)
+        print mgr_name, mgr_id
         if not manager:
-            raise ValueError(self.getErrorDialog('Internal printing Error: No manager found: %s %s' % (mgr_name, mgr_id)))
+            return self.getErrorDialog('Internal printing Error: No manager found: %s %s' % (mgr_name, mgr_id))
         if not hasattr(manager, 'formatPrintLabel'):
-            raise ValueError(self.getErrorDialog('Internal printing Error: No print formatting function found.'))
+            return self.getErrorDialog('Internal printing Error: No print formatting function found.')
 
         col_count = label_dict.get(TCN_COL_COUNT)
         row_count = label_dict.get(TCN_ROW_COUNT)

@@ -42,25 +42,10 @@ from PyHtmlGUI.widgets.hgRadioButton import hgRadioButton
 #
 # ZopRA Imports
 #
-from zopra.core                      import HTML, ClassSecurityInfo, viewPermission, modifyPermission, ZM_SCM, ZM_CM, ZM_PM, ZM_IM
+from zopra.core                      import HTML, ZC, ClassSecurityInfo, viewPermission, modifyPermission
 from zopra.core.ImportHandler        import ImportHandler
 
-from zopra.core.constants            import TCN_DATE, \
-                                            TCN_EDATE,      \
-                                            TCN_EDITOR,     \
-                                            TCN_OWNER
-
 from zopra.core.CorePart             import MASK_REDIT,     \
-                                            ZCOL_DATE,      \
-                                            ZCOL_MEMO,      \
-                                            ZCOL_SLIST,     \
-                                            ZCOL_MLIST,     \
-                                            ZCOL_HLIST,     \
-                                            ZCOL_BOOL,      \
-                                            ZCOL_INT,       \
-                                            ZCOL_FLOAT,     \
-                                            ZCOL_CURR,      \
-                                            COL_TYPE,       \
                                             MASK_ADD,       \
                                             MASK_EDIT,      \
                                             MASK_SEARCH,    \
@@ -90,7 +75,6 @@ from zopra.core.elements.Buttons                    import BTN_L_UPDATE,  \
                                                            mpfAddButton,  \
                                                            getPressedButton
 from zopra.core.elements.Styles.Default             import ssiDLG_LABEL
-from zopra.core.security                            import SC_READ
 from zopra.core.security.GUIPermission              import GUIPermission
 from zopra.core.tools.managers                      import TCN_CREATOR,     \
                                                            TCN_AUTOID,      \
@@ -102,25 +86,11 @@ from zopra.core.interfaces                          import IGenericManager
 
 
 
-ZLISTS = [ZCOL_SLIST, ZCOL_MLIST, ZCOL_HLIST]
+ZLISTS = [ZC.ZCOL_SLIST, ZC.ZCOL_MLIST, ZC.ZCOL_HLIST]
 GEN_LABEL = '$_l_'
 
 # pattern for simple detection of internal links
 INTERNAL_LINK_PATTERN = re.compile(r'&lt;a class=\"s[0-9]*\" href=\"http:\/\/.*?&lt;\/a&gt;')
-
-#
-# some dlg handling constants
-#
-DLG_NEW    = 1
-DLG_SHOW   = 2
-DLG_EDIT   = 3
-DLG_SEARCH = 4
-DLG_DELETE = 5
-DLG_IMPORT = 6
-DLG_LIST   = 7
-
-DLG_TYPES = [DLG_SHOW, DLG_EDIT, DLG_NEW, DLG_DELETE, DLG_IMPORT, DLG_LIST]
-
 # names of core dialogs
 DLG_ALLIMPORT   = 'dlgImport'
 DLG_ALLDELETE   = 'dlgDelete'
@@ -144,16 +114,15 @@ ACTION_DBADD     = 'dbadd'
 ACTION_SHOW      = 'show'
 ACTION_EDIT      = 'edit'
 
+E_AUTOID         = 'Generic Manager Autoid Problem: %s'
+
 
 class GenericManager(ManagerPart):
     """ Generic Manager """
-#
-# Class Properties
-#
+
     _className = 'GenericManager'
     _classType = ManagerPart._classType + [_className]
     meta_type  = _className
-
     implements(IGenericManager)
 
     basket_active = False
@@ -169,39 +138,23 @@ class GenericManager(ManagerPart):
         access via getGenericConfig(table)
     """
     _generic_config = {}
-
-    # lookup map for dlg handling for basic operations through dialogs
-    # _dlg_map = { table: { DLG_NEW:    'dlgNewTable',
-    #                      DLG_SHOW:   'dlgShowTable',
-    #                      DLG_EDIT:   'dlgEditTable',
-    #                      DLG_SEARCH: 'dlgSearchTable',
-    #                      DLG_DELETE: 'dlgDeleteTable',
-    #                      DLG_IMPORT: None }
-    #           }
-    #
-
-    _dlg_map = { }
-
-    ACTION_DICT = { ACTION_SEARCH:      ManagerPart.IMG_SEARCH,
-                    ACTION_LIST:        ManagerPart.IMG_LIST,
-                    ACTION_CREATE:      ManagerPart.IMG_CREATE,
-                    ACTION_IMPORT:      ManagerPart.IMG_IMPORT,
-                    ACTION_EXPORT:      ManagerPart.IMG_EXPORT,
-                    ACTION_DBADD:       ManagerPart.IMG_DBADD,
-                    ACTION_INFO:        ManagerPart.IMG_INFO,
-                    ACTION_SHOW_NEXT:   ManagerPart.IMG_SHOW_NEXT,
-                    ACTION_SHOW_PREV:   ManagerPart.IMG_SHOW_PREV,
-                    ACTION_EDIT:        ManagerPart.IMG_EDIT,
-                    ACTION_SHOW:        ManagerPart.IMG_SHOW,
-                    DLG_NEW:            ManagerPart.IMG_CREATE,
-                    DLG_SEARCH:         ManagerPart.IMG_SEARCH,
-                    DLG_IMPORT:         ManagerPart.IMG_IMPORT,
-                    DLG_LIST:           ManagerPart.IMG_LIST,
-                    DLG_SHOW:           ManagerPart.IMG_INFO }
-
-    # for now, multiedit dialog is added in each manager that uses it
-    # adding it generally could lead to security holes
-    # _dlgs      = ManagerPart._dlgs + (('dlgMultiEdit',  ''),)
+    _dlg_map        = {}
+    ACTION_DICT     = { ACTION_SEARCH:      ManagerPart.IMG_SEARCH,
+                        ACTION_LIST:        ManagerPart.IMG_LIST,
+                        ACTION_CREATE:      ManagerPart.IMG_CREATE,
+                        ACTION_IMPORT:      ManagerPart.IMG_IMPORT,
+                        ACTION_EXPORT:      ManagerPart.IMG_EXPORT,
+                        ACTION_DBADD:       ManagerPart.IMG_DBADD,
+                        ACTION_INFO:        ManagerPart.IMG_INFO,
+                        ACTION_SHOW_NEXT:   ManagerPart.IMG_SHOW_NEXT,
+                        ACTION_SHOW_PREV:   ManagerPart.IMG_SHOW_PREV,
+                        ACTION_EDIT:        ManagerPart.IMG_EDIT,
+                        ACTION_SHOW:        ManagerPart.IMG_SHOW,
+                        ZC.DLG_NEW:         ManagerPart.IMG_CREATE,
+                        ZC.DLG_SEARCH:      ManagerPart.IMG_SEARCH,
+                        ZC.DLG_IMPORT:      ManagerPart.IMG_IMPORT,
+                        ZC.DLG_LIST:        ManagerPart.IMG_LIST,
+                        ZC.DLG_SHOW:        ManagerPart.IMG_INFO }
 
 #
 # Security
@@ -214,8 +167,7 @@ class GenericManager(ManagerPart):
                   id        = None,
                   nocreate  = 0,
                   zopratype = ''):
-        ManagerPart.__init__( self,     title,     id,
-                                  nocreate, zopratype )
+        ManagerPart.__init__(self, title, id, nocreate, zopratype)
 
         # overwritable attributes to control generic behavior
 
@@ -225,14 +177,16 @@ class GenericManager(ManagerPart):
 
 
     def getGenericConfig(self, table):
-        """\brief Retrieve the generic config for the table"""
+        """ Retrieve the generic config for the table """
         return self._generic_config.get(table, {})
 
 
     def getConfigShowFields(self, table):
-        """\brief Retrieve the show_fields option from the generic config for the table
-                  if it exists, otherwise return a list of the names of all visible columns"""
-        conf = self.getGenericConfig(table)
+        """ Retrieve the show_fields option from the generic config for the
+            table if it exists; otherwise return a list of the names of all
+            visible columns
+        """
+        conf   = self.getGenericConfig(table)
         fields = conf.get('show_fields')
         if not fields:
             fields = self.tableHandler[table].getColumnDefs().keys()
@@ -240,15 +194,22 @@ class GenericManager(ManagerPart):
 
 
     def doesTranslations(self, table):
-        """\brief Translation indicator, should be overwritten to return True for tables that handle translations.
-            The translation handling is still not incorporated in the ZopRA Core."""
+        """ Translation indicator, should be overwritten to return True for
+            tables that handle translations.
+
+        The translation handling is still not incorporated in the ZopRA Core.
+        """
         return False
 
 
     def doesWorkingCopies(self, table):
-        """\brief working copy indicator, should be overwritten to return True for tables that handle working copies.
-            The working copy handling is still not incorporated in the ZopRA Core."""
+        """ Working copy indicator, should be overwritten to return True for
+            tables that handle working copies.
+
+        The working copy handling is still not incorporated in the ZopRA Core.
+        """
         return False
+
 
 ##########################################################
 # Manager Part Virtual functions                         #
@@ -257,51 +218,61 @@ class GenericManager(ManagerPart):
 ##########################################################
 
     def _addTable(self):
-        """\brief Virtual function for extra table magic on add."""
+        """ Virtual function for extra table magic on add. """
         pass
 
 
     def _delTable(self):
-        """\brief Virtual function for extra table magic on delete."""
+        """ Virtual function for extra table magic on delete. """
         pass
 
 
     def _index_html(self, REQUEST, parent = None, border = True):
-        """\brief Virtual function for manager main entrance html view.
-                Returns a widget to be dislpayed on the main screen.
-                Not overwriting it results in a generic overview (that
-                might be enough for small standard managers)."""
+        """ Virtual function for manager main entrance HTML view.
+
+        Returns a widget to be displayed on the main screen. Not overwriting it
+        results in a generic overview (that might be enough for small standard
+        managers).
+        """
         return self._index_html_generic(REQUEST, parent, border)
 
 
     def setDebugOutput(self):
-        """\brief Virtual function for manager specific debug output.
-                    Overwrite this function to return additional info for the
-                    view manage-tab as html text"""
+        """ Virtual function for manager specific debug output.
+
+        Overwrite this function to return additional info for the view
+        manage-tab as HTML text
+        """
         return ''
 
 
     def contextMenuCustom(self, REQUEST, parent):
-        """\brief Virtual function for manager specific context menu.
-                    Overwrite this function to create a widget with context menu info
-                    using parent as the widget-parent. Return the widget."""
+        """ Virtual function for manager specific context menu.
+
+        Overwrite this function to create a widget with context menu info
+        using parent as the widget-parent. Return the widget.
+        """
         return None
 
 
     def navigationMenuCustom(self, menubar, REQUEST):
-        """\brief Function for customizable part of navigation.
-                    Overwrite this function to add navigation items to the menubar.
-                    Return True to indicate that something was added."""
+        """ Function for customizable part of navigation.
+
+        Overwrite this function to add navigation items to the menubar.
+        Return True to indicate that something was added.
+        """
         return None
 
 
     def prepareEntryBeforeShowList(self, table, dict, REQUEST):
-        """\brief Hook function called by getTableEntryListHtml to preprocess each entry.
-                    Overwrite this function to process each single entry before it is
-                    displayed row-wise by getTableEntryListHtml. This can be useful to
-                    substitute id's with labels / links in cases where singlelists are
-                    not possible and the 'static' way using param[links] in
-                    actionBeforeShowList is not wanted."""
+        """ Hook function called by getTableEntryListHtml to preprocess each
+            entry.
+
+        Overwrite this function to process each single entry before it is
+        displayed row-wise by getTableEntryListHtml. This can be useful to
+        substitute id's with labels / links in cases where singlelists are
+        not possible and the 'static' way using param[links] in
+        actionBeforeShowList is not wanted."""
         pass
 
 
@@ -312,76 +283,96 @@ class GenericManager(ManagerPart):
 #############################################
 
     def prepareDict(self, table, descr_dict, REQUEST = None):
-        """\brief Hook Function called before edit and add
-                    In contrary to actionBeforeAdd and actionBeforeEdit,
-                    this hook gets called everytime that a button was pressed on the
-                    edit and add forms. It can be used for verification and preview.
-                    When the real edit or add happens, prepareDict gets called first.
-                    Overwriting the hook: return values will be ignored.
-                    The REQUEST can be used to obtain non-standard form
-                    values (the standard table attribute values are already in descr_dict)."""
+        """ Hook Function called before edit and add
+
+        In contrary to actionBeforeAdd and actionBeforeEdit,
+        this hook gets called every time that a button was pressed on the
+        edit and add forms. It can be used for verification and preview.
+
+        When the real edit or add happens, prepareDict gets called first.
+        Overwriting the hook: return values will be ignored.
+
+        The REQUEST can be used to obtain non-standard form values (the standard
+        table attribute values are already in descr_dict).
+        """
         pass
 
 
     def actionBeforeAdd(self, table, descr_dict, REQUEST):
-        """\brief Hook Function called before add
-                    This function can be used to adjust the to-be-saved entry
-                    before it gets added to the database. It does not have an autoid yet.
-                    For custom handling that needs an autoid, use actionAfterAdd.
-                    Overwriting the hook: make sure to return nothing or a message to be displayed.
-                    The REQUEST can be used to obtain non-standard form
-                    values (the standard table attribute values are already in descr_dict)."""
+        """ Hook Function called before add
+
+        This function can be used to adjust the to-be-saved entry
+        before it gets added to the database. It does not have an autoid yet.
+        For custom handling that needs an autoid, use actionAfterAdd.
+
+        Overwriting the hook: make sure to return nothing or a message to be
+        displayed.
+
+        The REQUEST can be used to obtain non-standard form values (the standard
+        table attribute values are already in descr_dict).
+        """
         # expected to return None or message string about operations
         # performed (usually only in case of errors)
         return None
 
 
     def actionBeforeEdit(self, table, descr_dict, REQUEST):
-        """\brief Hook Function called before edit
-                    This function can be used to adjust the entry before it gets saved
-                    or to adjust dependent entries. Since the entry already exists, you find
-                    it's autoid in the descr_dict. 
-                    Overwriting the hook: make sure to return nothing or a message to be displayed.
-                    The REQUEST can be used to obtain non-standard form
-                    values (the standard table attribute values are already in descr_dict)."""
+        """ Hook Function called before edit
+        This function can be used to adjust the entry before it gets saved
+        or to adjust dependent entries. Since the entry already exists, you find
+        it's autoid in the descr_dict.
+
+        Overwriting the hook: make sure to return nothing or a message to be
+        displayed.
+
+        The REQUEST can be used to obtain non-standard form values (the standard
+        table attribute values are already in descr_dict).
+        """
         # expected to return None or message string about operations
         # performed (usually only in case of errors)
         return None
 
 
     def actionAfterAdd(self, table, descr_dict, REQUEST):
-        """\brief Hook Function called after adding an entry to the database
-                    This function can be used to create dependent entries or adjust the new entry.
-                    For custom changes that do not need an autoid, use actionBeforeAdd. 
-                    The descr_dict contains the newly assigned autoid of the new entry.
-                    Overwriting the hook: make sure to return nothing or a message to be displayed.
-                    The REQUEST can be used to obtain non-standard form
-                    values (the standard table attribute values are already in descr_dict)."""
+        """ Hook Function called after adding an entry to the database
+
+        This function can be used to create dependent entries or adjust the new
+        entry.
+        For custom changes that do not need an autoid, use actionBeforeAdd.
+        The descr_dict contains the newly assigned autoid of the new entry.
+
+        Overwriting the hook: make sure to return nothing or a message to be
+        displayed.
+
+        The REQUEST can be used to obtain non-standard form
+        values (the standard table attribute values are already in descr_dict).
+        """
         # expected to return None or message string about operations
         # performed (usually only in case of errors)
         return None
 
 
     def actionBeforeSearch(self, table, REQUEST, descr_dict, firstSearch = True, prefix = ''):
-        """\brief Hook Function called by searchForm and showList.
-                This hook is invoked on first search by searchForm and later on 
-                by showList after its searchForm handling.
-                Use it to determine if a custom searchForm button was pressed and
-                perform custom search - related handling, that needs
-                to be done before displaying the search Form.
-                Return a dictionary to indicate that showList should call searchForm
-                with this dictionary.
-                Otherwise, the normal showList handling is done, using getTableEntryListHtml,
-                unless some of the standard searchForm-Buttons are evaluated.
-                NEW-STYLE: hook is called from zopra_table_search_result Template for postprocessing of constraints.
-                Be aware that there might be constraints from the search form (or not, if the Listing was invoked directly)
-                and constraints added by the constraints preparation machinery.
-            \param firstSearch is False when this call is done by showList,
-                meaning that the searchForm was submitted.
-            \param prefix is given for multi-table search requests
-                If your searchForms only apply to one table each, you can ignore it,
-                otherwise it indicates which values of the REQUEST are relevant on each call
-                (since they should be prefixed accordingly)
+        """ Hook Function called by searchForm and showList.
+
+        This hook is invoked on first search by searchForm and later on by
+        showList after its searchForm handling.
+        Use it to determine if a custom searchForm button was pressed and
+        perform custom search - related handling, that needs to be done before
+        displaying the search Form.
+
+        Return a dictionary to indicate that showList should call searchForm
+        with this dictionary.
+        Otherwise, the normal showList handling is done, using
+        getTableEntryListHtml, unless some of the standard searchForm-Buttons
+        are evaluated.
+
+        @param firstSearch is False when this call is done by showList,
+               meaning that the searchForm was submitted.
+        @param prefix is given for multi-table search requests
+               If your searchForms only apply to one table each, you can ignore
+               it, otherwise it indicates which values of the REQUEST are
+               relevant on each call (since they should be prefixed accordingly)
         """
         return None
 
@@ -413,7 +404,7 @@ class GenericManager(ManagerPart):
 
     def startupConfig(self, REQUEST):
         """\brief Hook Function called after first creation by manageAddGeneric
-                    This function can be used to create standard entries for noneditable lists, 
+                    This function can be used to create standard entries for noneditable lists,
                     it is only called if the database tables were created, not on reinstallation.
                     So it should not be used to configure the manager, just the database."""
         pass
@@ -437,12 +428,14 @@ class GenericManager(ManagerPart):
 
 
     def hook_buttonForwardForm(self, table, action, REQUEST):
-        """\brief Function Stub for manual button handling for forwards to
-            achieve link-like function"""
+        """ Function Stub for manual button handling for forwards to achieve
+            link-like function
+        """
+
         # we got forwarded here but didn't find anything
-        msg = 'hook_buttonForwardForm (Table: %s, Action: %s) was '
-        msg += 'used without being overwritten in %s'
-        msg = msg % (table, action, self._className)
+        msg   = 'hook_buttonForwardForm (Table: %s, Action: %s) was '
+        msg  += 'used without being overwritten in %s'
+        msg   = msg % (table, action, self._className)
         error = self.renderError(msg, 'Button Error')
         raise ValueError(self.getErrorDialog(error))
 
@@ -454,12 +447,10 @@ class GenericManager(ManagerPart):
 ############################################
 
     security.declareProtected(modifyPermission, 'deleteEntries')
-    def deleteEntries( self,
-                       table,
-                       idlist,
-                       REQUEST = None ):
+
+    def deleteEntries( self, table, idlist, REQUEST = None ):
         # Entry deletion, make sure to call superclass if overwritten.
-        #            Does the calling of the prepareDelete hook and forwards 
+        #            Does the calling of the prepareDelete hook and forwards
         #            to Table.deleteEntries.
         if table not in self.tableHandler:
             return
@@ -481,26 +472,39 @@ class GenericManager(ManagerPart):
 
 
     def getEntry(self, table, autoid, lang = None):
-        """\brief calls tableHandlers getEntry, overwrite for special functionality."""
-        if autoid and table and table in self.tableHandler:
-            try:
-                autoid = int(autoid)
-            except:
-                errstr = 'Generic Manager Autoid Problem: %s' % autoid
-                err    = self.getErrorDialog(errstr)
-                raise ValueError(err)
-            tobj = self.tableHandler[table]
-            entry = tobj.getEntry(autoid)
-            if entry:
-                if self.doesTranslations(table) and lang:
-                    if entry['language'] != lang:
-                        cons = {'istranslationof': autoid,
-                                'language': lang}
-                        entries = tobj.getEntryList(constraints = cons)
-                        if entries:
-                            entry = entries[0]
-                return entry
-        return {}
+        """ Calls tableHandlers getEntry, overwrite for special functionality.
+        """
+
+        # check input
+        if ( autoid is None or
+             table  is None or
+             table  not in self.tableHandler ):
+            raise RuntimeError('Missing parameter')
+
+        # check autoid
+        try:
+            autoid = int(autoid)
+        except:
+            raise ValueError( self.getErrorDialog(E_AUTOID % autoid) )
+
+        # get entry
+        tobj  = self.tableHandler[table]
+        entry = tobj.getEntry(autoid)
+
+        # return empty dictionary if no entry was found
+        if entry is None:
+            return {}
+
+        # do translation if we have a translation for the table
+        if lang and self.doesTranslations(table) and entry['language'] != lang:
+            result = tobj.getEntryList(constraints = {'istranslationof': autoid,
+                                                      'language':        lang} )
+            if result:
+                entry = result[0]
+
+        # return result
+        return entry
+
 
 
     def getSearchPattern(self, table):
@@ -624,7 +628,7 @@ class GenericManager(ManagerPart):
         # get row count right away to provide value for BTN_L_LAST
         func = 'count(distinct %sautoid)'
 
-        total = self.getManager(ZM_PM).\
+        total = self.getManager(ZC.ZM_PM).\
                          executeDBQuery( root.getSQL(function = func, checker = self)
                                             )[0][0]
 
@@ -649,7 +653,7 @@ class GenericManager(ManagerPart):
 
         if not autoidlist:
             autoidlist = []
-            results = self.getManager(ZM_PM).\
+            results = self.getManager(ZC.ZM_PM).\
                             executeDBQuery( sql )
 
             # this is done to have distinct values but intact order
@@ -703,23 +707,28 @@ class GenericManager(ManagerPart):
                     Overwrite to specify which permission is needed to edit which attributes.
                     The dlgMultiEdit uses this function to determine which attributes to
                     display in edit-mode and which not."""
+
         # get current userlevel
-        m_security = self.getHierarchyUpManager(ZM_SCM)
-        tobj = self.tableHandler[table]
+        m_security  = self.getHierarchyUpManager(ZC.ZM_SCM)
+        tobj        = self.tableHandler[table]
         if not m_security:
             return tobj.getColumnTypes(True).keys()
+
         # get level
         level = m_security.getCurrentLevel()
+
         # < 6 don't edit
         if level < 6:
             return []
+
         # normal attributes available for everybody
         elif level < 20:
             return tobj.getColumnTypes(True).keys()
+
         # admins edit all
         else:
             attrs = tobj.getColumnTypes().keys()
-            m_product = self.getManager(ZM_PM)
+            m_product = self.getManager(ZC.ZM_PM)
             for column in m_product._edit_tracking_cols:
                 if column not in attrs:
                     attrs.append(column)
@@ -807,11 +816,10 @@ class GenericManager(ManagerPart):
         """\brief Returns dlg identifier for requested table and dlg type
             Specify table and operation to get the dialog name. Checks
             _dlg_map for the table and type.
-            Returns None if no dialogname was found.
+            Returns None if no dialog name was found.
         """
-        if table in self._dlg_map:
-            if dlg_type in self._dlg_map[table]:
-                return self._dlg_map[table][dlg_type]
+        if table in self._dlg_map and dlg_type in self._dlg_map[table]:
+            return self._dlg_map[table][dlg_type]
 
         return None
 
@@ -827,17 +835,15 @@ class GenericManager(ManagerPart):
         """\brief Returns the generic part for the index_html."""
         perm = self.getGUIPermission()
 
-        # use groupboxes in a widget
-
+        # use group boxes in a widget
         table_names = self.tableHandler
-        table_names.sort()
 
         # we need a form but without dlg-caption and other stuff
         dlg, mask = getPlainDialog(self.absolute_url() + '/buttonForwardForm', parent, border)
-        lay = mask.layout()
+        lay       = mask.layout()
+        anysuper  = False
+        anyperm   = False
 
-        anysuper = False
-        anyperm = False
         row = 0
         col = 0
         for table in table_names:
@@ -845,7 +851,7 @@ class GenericManager(ManagerPart):
             tabmask, super, hasperm = self.createOverviewBox(table, perm, mask)
 
             # store superuser / permission info
-            anysuper = super or anysuper
+            anysuper = super   or anysuper
             anyperm  = hasperm or anyperm
 
             # add table mask to layout
@@ -886,11 +892,12 @@ class GenericManager(ManagerPart):
     security.declareProtected(viewPermission, 'createOverviewBox')
     def createOverviewBox(self, table, perm, parent):
         """\brief Creates the generic index_html-buttonbox for a table"""
-        ztype = self.getZopraType()
+
+        ztype   = self.getZopraType()
         tobj    = self.tableHandler[table]
         tabid   = tobj.getUId()
-        super = perm.hasMinimumRole(perm.SC_SUPER, tabid, ztype)
-        super = super or perm.hasSpecialRole(ztype + 'Superuser')
+        super   = perm.hasMinimumRole(perm.SC_SUPER, tabid, ztype)
+        super   = super or perm.hasSpecialRole(ztype + 'Superuser')
         hasperm = False
         label   = tobj.getLabel()
         if not label:
@@ -1030,16 +1037,19 @@ class GenericManager(ManagerPart):
 
 
     security.declareProtected(modifyPermission, 'genericFileDelete')
+
     def genericFileDelete(self, table, idlist):
+
         # Generic File Deletion (called on entry deletion).
-        m_image = self.getHierarchyUpManager(ZM_IM)
+        m_image = self.getHierarchyUpManager(ZC.ZM_IM)
+
         if m_image:
             attrs = []
 
             # get all lists of table that reference ZM_IM
             tablelists = self.listHandler.getLists(table, types = [], include = False)
             for lobj in tablelists:
-                if lobj.manager == ZM_IM:
+                if lobj.manager == ZC.ZM_IM:
                     attrs.append(lobj.listname)
 
             if attrs:
@@ -1069,7 +1079,7 @@ class GenericManager(ManagerPart):
 
         if not prefix:
             prefix = ''
-        m_image = self.getHierarchyUpManager(ZM_IM)
+        m_image = self.getHierarchyUpManager(ZC.ZM_IM)
         if m_image:
             filelist = self.listHandler.getList(table, name)
 
@@ -1149,7 +1159,7 @@ class GenericManager(ManagerPart):
         if not descr_dict:
             descr_dict = {}
         image = descr_dict.get(name)
-        m_image = self.getHierarchyUpManager(ZM_IM)
+        m_image = self.getHierarchyUpManager(ZC.ZM_IM)
         done = False
         if m_image:
             #autoids = []
@@ -1198,7 +1208,7 @@ class GenericManager(ManagerPart):
         if not descr_dict:
             descr_dict = {}
         image = descr_dict.get(name)
-        m_image = self.getHierarchyUpManager(ZM_IM)
+        m_image = self.getHierarchyUpManager(ZC.ZM_IM)
         file = REQUEST.get(addname + pre + name)
         done = False
         if m_image and file:
@@ -1211,7 +1221,7 @@ class GenericManager(ManagerPart):
                                          filetype )
             if isinstance(image, ListType):
                 # TODO: why this test???
-                if not imgid in image:
+                if imgid not in image:
                     image.append(imgid)
             else:
                 image = imgid
@@ -1237,8 +1247,8 @@ class GenericManager(ManagerPart):
         # get entry
         entry = self.getEntry(table, id)
         # test entry permission
-        if not entry['permission'].hasPermission(SC_READ):
-            return self.nopermissionHtml(SC_READ)
+        if not entry['permission'].hasPermission(ZC.SC_READ):
+            return self.nopermissionHtml(ZC.SC_READ)
         # test owner
         isowner = entry['permission'].isOwner()
         if not isowner:
@@ -1262,17 +1272,17 @@ class GenericManager(ManagerPart):
         #       ()
         # TODO: fix it
         tmp = [ [GEN_LABEL + TCN_CREATOR, TCN_CREATOR],
-                [GEN_LABEL + TCN_DATE,    TCN_DATE   ],
-                [GEN_LABEL + TCN_EDITOR,  TCN_EDITOR ],
-                [GEN_LABEL + TCN_EDATE,   TCN_EDATE  ],
-                [GEN_LABEL + TCN_OWNER,   TCN_OWNER  ]]
+                [GEN_LABEL + ZC.TCN_DATE,    ZC.TCN_DATE   ],
+                [GEN_LABEL + ZC.TCN_EDITOR,  ZC.TCN_EDITOR ],
+                [GEN_LABEL + ZC.TCN_EDATE,   ZC.TCN_EDATE  ],
+                [GEN_LABEL + ZC.TCN_OWNER,   ZC.TCN_OWNER  ]]
 
         mask = self.buildSemiGenericMask( table,
                                           tmp,
                                           MASK_SHOW,
                                           entry,
                                           parent = dlg )
-                
+
         layout = mask.layout()
 
         # owner is true for owner and superusers
@@ -1280,13 +1290,13 @@ class GenericManager(ManagerPart):
             # TODO: owner change for superusers
             # add owner change selection and button for owner/superuser
             pass
-        
+
         if perm.hasRole(perm.SC_USER, tabid, ztype):
             # add a "takeownership" button for users
             # only if the owner is no user anymore or a visitor
             # get owner info, get group
-            ownerid = entry.get(TCN_OWNER)
-            m_sec = self.getHierarchyUpManager(ZM_SCM)
+            ownerid = entry.get(ZC.TCN_OWNER)
+            m_sec = self.getHierarchyUpManager(ZC.ZM_SCM)
             if m_sec:
                 lettake = False
                 if not ownerid:
@@ -1302,7 +1312,7 @@ class GenericManager(ManagerPart):
             label = dlgLabel('Permissions', mask)
             layout.addMultiCellWidget(label, row, row, 0, 2)
             row += 1
-            m_sec = self.getHierarchyUpManager(ZM_SCM)
+            m_sec = self.getHierarchyUpManager(ZC.ZM_SCM)
             acl = entry['acl']
             groups, users = m_sec.unfoldEBaSe(acl)
             # build permission mask
@@ -1326,7 +1336,7 @@ class GenericManager(ManagerPart):
         layout.addWidget(label, row, 0)
         row += 1
         # entry log
-        m_prod = self.getManager(ZM_PM)
+        m_prod = self.getManager(ZC.ZM_PM)
         txt = m_prod.getEntryLogBlock(tobj.getUId(), id)
         #txt = txt.replace('\n', '<br>')
         field = hgTextEdit(txt, parent = mask, flags = hgTextEdit.MULTILINE)
@@ -1368,7 +1378,7 @@ class GenericManager(ManagerPart):
 
         # test owner
         owner = False
-        m_sec = self.getHierarchyUpManager(ZM_SCM)
+        m_sec = self.getHierarchyUpManager(ZC.ZM_SCM)
         if m_sec:
             login = m_sec.getCurrentLogin()
             owner = entry['permission'].isOwner()
@@ -1378,7 +1388,7 @@ class GenericManager(ManagerPart):
 
         # only owner / superuser can edit permissions
         if not owner:
-            return self.nopermissionHtml(SC_READ)
+            return self.nopermissionHtml(ZC.SC_READ)
 
         # check ebase
         if not self.checkEBaSe(table):
@@ -1458,7 +1468,7 @@ class GenericManager(ManagerPart):
         else:
             # first call
             acl = entry['acl']
-            m_sec = self.getHierarchyUpManager(ZM_SCM)
+            m_sec = self.getHierarchyUpManager(ZC.ZM_SCM)
             groups, users = m_sec.unfoldEBaSe(acl)
 
         # header labels
@@ -1498,7 +1508,7 @@ class GenericManager(ManagerPart):
         """\brief Returns the html source of the generic new form."""
         # first check for create dialogs, if found, return the 
         # dialog-container's show function
-        dlgname = self.getDialogName(table, DLG_NEW)
+        dlgname = self.getDialogName(table, ZC.DLG_NEW)
         if dlgname:
             # get the container
             cont = getattr(self.dlgHandler, dlgname)
@@ -1508,7 +1518,7 @@ class GenericManager(ManagerPart):
             attr = {'REQUEST': REQUEST}
             # return the function call
             return func(**attr)
-        
+
         perm  = self.getGUIPermission()
         ztype = self.getZopraType()
         tobj  = self.tableHandler[table]
@@ -1523,7 +1533,7 @@ class GenericManager(ManagerPart):
         # form functions
         button = self.getPressedButton(REQUEST)
         if button:
-            if  button == BTN_L_ADD:
+            if button == BTN_L_ADD:
                 self.prepareDict(table, descr_dict, REQUEST)
                 message1 = self.actionBeforeAdd(table, descr_dict, REQUEST)
 
@@ -1531,12 +1541,12 @@ class GenericManager(ManagerPart):
                 tablelists = self.listHandler.getLists(table, types = [], include = False)
                 for lobj in tablelists:
                     lname = lobj.listname
-                    if lobj.manager == ZM_IM:
+                    if lobj.manager == ZC.ZM_IM:
 
                         # this is an image attribute
 
                         if REQUEST.get('add' + lname):
-                            #file handling
+                            # file handling
                             if lobj.function == 'getImage':
                                 ftype = 'image'
                             else:
@@ -1630,7 +1640,7 @@ class GenericManager(ManagerPart):
         """\brief Returns the html source of the generic edit form."""
         # first check for edit dialogs, if found, return the 
         # dialog-container's show function
-        dlgname = self.getDialogName(table, DLG_EDIT)
+        dlgname = self.getDialogName(table, ZC.DLG_EDIT)
         if dlgname:
             # get the container
             cont = getattr(self.dlgHandler, dlgname)
@@ -1720,7 +1730,7 @@ class GenericManager(ManagerPart):
                 tablelists = self.listHandler.getLists(table, types = [], include = False)
                 for lobj in tablelists:
                     lname = lobj.listname
-                    if lobj.manager == ZM_IM:
+                    if lobj.manager == ZC.ZM_IM:
 
                         # this is an image attribute
 
@@ -1806,6 +1816,7 @@ class GenericManager(ManagerPart):
 
 
     security.declareProtected(viewPermission, 'searchForm')
+
     def searchForm(self, table, descr_dict = None, REQUEST = None):
         """\brief Returns the html source of the generic search form.
            \param descr_dict is one dict or a list of tuples of dicts and
@@ -1813,9 +1824,9 @@ class GenericManager(ManagerPart):
                   specified in getSearchPattern.
                   Standard behaviour is one dict.
         """
-        # first check for search dialogs, if found, return the 
+        # first check for search dialogs, if found, return the
         # dialog-container's show function
-        dlgname = self.getDialogName(table, DLG_SEARCH)
+        dlgname = self.getDialogName(table, ZC.DLG_SEARCH)
         if dlgname:
             # get the container
             cont = getattr(self.dlgHandler, dlgname)
@@ -1825,7 +1836,7 @@ class GenericManager(ManagerPart):
             attr = {'REQUEST': REQUEST}
             # return the function call
             return func(**attr)
-        
+
         perm  = self.getGUIPermission()
         ztype = self.getZopraType()
         tobj  = self.tableHandler[table]
@@ -1835,11 +1846,11 @@ class GenericManager(ManagerPart):
             return self.unauthorizedHtml(perm.SC_VIEW)
 
         # determine first call
-        if descr_dict == None:
+        if descr_dict is None:
             # first call
             descr_dict = {}
             descr_dict = self.actionBeforeSearch(table, REQUEST, descr_dict, firstSearch = True)
-            # if there is a descr_dict, searchForm was submitted to showList, 
+            # if there is a descr_dict, searchForm was submitted to showList,
             # which evaluated a standard searchForm button or a custom button etc. via actionBeforeSearch
             # and forwarded to searchForm again. No need to call actionBeforeSearch twice on one call.
 
@@ -1858,7 +1869,7 @@ class GenericManager(ManagerPart):
         """\brief Returns the html source of the generic show form."""
         # first check for show dialogs, if found, return the 
         # dialog-container's show function
-        dlgname = self.getDialogName(table, DLG_SHOW)
+        dlgname = self.getDialogName(table, ZC.DLG_SHOW)
         if dlgname:
             # get the container
             cont = getattr(self.dlgHandler, dlgname)
@@ -1870,7 +1881,7 @@ class GenericManager(ManagerPart):
             attr = {'REQUEST': REQUEST}
             # return the function call
             return func(**attr)
-        
+
         # no dialog found, normal handling
         perm  = self.getGUIPermission()
         ztype = self.getZopraType()
@@ -1899,7 +1910,7 @@ class GenericManager(ManagerPart):
         #    if button == BTN_L_CLOSE:
         #        # close form
         #        return self.closeForm(table, REQUEST)
-            
+
         descr_dict = self.getEntry(table, id)
 
         if not descr_dict:
@@ -1909,7 +1920,7 @@ class GenericManager(ManagerPart):
             raise ValueError(err)
 
         # check entry read permission
-        if not descr_dict['permission'].hasPermission(SC_READ):
+        if not descr_dict['permission'].hasPermission(ZC.SC_READ):
             # exception for user viewing himself
             # FIXME: sequencing does not have groups -> users have no permissions -> editing themself forbidden
             # same goes for visitors
@@ -1919,7 +1930,7 @@ class GenericManager(ManagerPart):
                 # person is allowed to edit himself.
                 pass
             else:
-                return self.nopermissionHtml(SC_READ)
+                return self.nopermissionHtml(ZC.SC_READ)
 
         # activate basket
         REQUEST.form['repeataction'] = 'showForm?table=%s&id=%s' % (table, id)
@@ -2098,10 +2109,8 @@ class GenericManager(ManagerPart):
                             d_some[key] = tmp[key]
                     dicts.append(d_some)
 
-                if len(pattern) == 1:
-                    return self.searchForm(table, dicts[0])
-                else:
-                    return self.searchForm(table, dicts)
+                return self.searchForm(table, dicts[0] if len(pattern) == 1 else dicts)
+
             # we add the checked entries
             elif button == BTN_BASKET_ADD:
                 root.setConstraints(REQUEST.form)
@@ -2192,11 +2201,8 @@ class GenericManager(ManagerPart):
                     param['with_basket'] = False
             # old manager attribute
             else:
-                # old handling, baskebutton shown if active
-                if self.basket_active:
-                    param['with_basket']  = True
-                else:
-                    param['with_basket']  = False
+                # old handling, basket button shown if active
+                param['with_basket']  = bool(self.basket_active)
 
         # we want autoidlists for navigation
         if 'with_autoid_navig' not in param:
@@ -2215,9 +2221,9 @@ class GenericManager(ManagerPart):
 
 
 ################################################
-# Mask preparation functions for entry display #
-#   - normally only overwrite getSingleMask / getRowMask #
-     
+# Mask preparation functions for entry display 
+#   - normally only overwrite getSingleMask / getRowMask
+#
 ################################################
     security.declareProtected(viewPermission, 'getSingleMask')
     def getSingleMask(self, table, flag = MASK_SHOW, descr_dict = None, prefix = None):
@@ -2264,7 +2270,7 @@ class GenericManager(ManagerPart):
                                           prefix,
                                           fixTracking = True )
 
-    
+
     def prepareRowMask(self, table, ddict, mask, row, offset, label, flag):
         """\brief hook function for row mask adjustments.
                     This function gets called if you use buildSubMask to get row-wise entry display.
@@ -2371,9 +2377,10 @@ class GenericManager(ManagerPart):
                 box.add(autoprop)
             mask = box
         return mask
-    
+
 
     security.declareProtected(viewPermission, 'buildSemiGenericMask')
+
     def buildSemiGenericMask( self,
                               table,
                               template,
@@ -2383,16 +2390,17 @@ class GenericManager(ManagerPart):
                               widget      = None,
                               parent      = None,
                               fixTracking = False ):
-        """\brief Builds a widget with a grid layout representing the template."""
+        """ Builds a widget with a grid layout representing the template. """
         # template has to be a grid (list of lists (rows))
         # there are two possible entries in the template:
         # GEN_LABEL+<attribute> and <attribute> for labels and widgets
 
-        assert isinstance(template, ListType)
+        assert isinstance(template,    ListType)
         assert isinstance(template[0], ListType)
 
         if not descr_dict:
             descr_dict = {}
+
         lablen = len(GEN_LABEL)
         tobj   = self.tableHandler[table]
 
@@ -2404,19 +2412,23 @@ class GenericManager(ManagerPart):
                 layout = mask.layout()
         else:
             mask   = hgGroupBox(parent = parent)
+
         if not layout:
             layout = hgGridLayout( mask, len(template), len(template[0]), 0, 2)
 
         row = col = 0
         for onerow in template:
             for entry in onerow:
+
                 if entry:
+
                     if isinstance(entry, ListType):
                         multix = entry[2]
                         multiy = entry[1]
                         entry  = entry[0]
                     else:
                         multix = multiy = False
+
                     if entry[:lablen] == GEN_LABEL:
                         # build label
                         attr   = entry[lablen:]
@@ -2425,24 +2437,23 @@ class GenericManager(ManagerPart):
                         pos = attr.find(' _ ')
                         if pos != -1:
                             # found prefix / suffix
-                            fix = attr[pos + 3:]
+                            fix  = attr[pos + 3:]
                             attr = attr[:pos]
-                            pos = fix.find(' _ ')
+                            pos  = fix.find(' _ ')
                             if pos != -1:
                                 # found both
                                 pre = fix[:pos]
                                 suf = fix[pos + 3:]
                             else:
                                 pre = fix
-                        if attr == TCN_AUTOID:
-                            if not (flag & MASK_SEARCH):
-                                widget = dlgLabel('View', mask)
+                        if attr == TCN_AUTOID and not (flag & MASK_SEARCH):
+                            widget = dlgLabel('View', mask)
                         else:
                             widget = tobj.getLabelWidget( attr,
-                                                      ssiDLG_LABEL,
-                                                      pre,
-                                                      suf,
-                                                      mask )
+                                                          ssiDLG_LABEL,
+                                                          pre,
+                                                          suf,
+                                                          mask )
                         if not widget:
                             widget = hgLabel('', None, mask)
                     else:
@@ -2453,16 +2464,16 @@ class GenericManager(ManagerPart):
                                 if not flag & MASK_SEARCH:
                                     new_flag = MASK_SHOW
                                 if flag & MASK_ADD and not descr_dict.get(TCN_CREATOR):
-                                    m_contact = self.getHierarchyUpManager(ZM_CM)
+                                    m_contact = self.getHierarchyUpManager(ZC.ZM_CM)
                                     if m_contact:
                                         descr_dict[TCN_CREATOR] = m_contact.getCurrentUserId()
-                                    
-                            elif entry == TCN_DATE:
+
+                            elif entry == ZC.TCN_DATE:
                                 if not flag & MASK_SEARCH:
                                     new_flag = MASK_SHOW
-                                if flag & MASK_ADD and not descr_dict.get(TCN_DATE):
-                                    descr_dict[TCN_DATE] = strftime('%d.%m.%Y')
-                        
+                                if flag & MASK_ADD and not descr_dict.get(ZC.TCN_DATE):
+                                    descr_dict[ZC.TCN_DATE] = strftime('%d.%m.%Y')
+
                         # build widget
                         widget = self.getFunctionWidget( table,
                                                          entry,
@@ -2470,7 +2481,6 @@ class GenericManager(ManagerPart):
                                                          new_flag,
                                                          descr_dict,
                                                          prefix )
-
                     # add widget
 
                     if multix or multiy:
@@ -2484,7 +2494,7 @@ class GenericManager(ManagerPart):
                 col += 1
             row += 1
             col  = 0
-            
+
         return mask
 
 
@@ -2566,7 +2576,7 @@ class GenericManager(ManagerPart):
 
         tmp = [ [] for i in xrange(row)]
 
-        if mainTable and mainAttr and not mainAttr in display:
+        if mainTable and mainAttr and mainAttr not in display:
             display.insert(0, mainAttr)
             offset = 1
         else:
@@ -2596,51 +2606,53 @@ class GenericManager(ManagerPart):
 
 
     security.declareProtected(viewPermission, 'getFunctionWidget')
+
     def getFunctionWidget( self,
                            table,
                            attribute,
                            parent,
-                           flag = MASK_SHOW,
+                           flag       = MASK_SHOW,
                            descr_dict = None,
                            prefix     = None ):
         """\brief Returns the widget for the functional part."""
-        if descr_dict == None:
-            descr_dict = {}
+        descr_dict = descr_dict if descr_dict is not None else {}
+        wname      = DLG_CUSTOM + prefix + attribute if prefix else attribute
 
-        if prefix:
-            wname = DLG_CUSTOM + prefix + attribute
-
-        else:
-            wname = attribute
-
-        field = self.tableHandler[table].getField(attribute)
+        field      = self.tableHandler[table].getField(attribute)
         if not field:
             raise ValueError('ERROR in getFunctionWidget: %s not found in %s' % (attribute, table))
-        coltype = field.get(COL_TYPE)
 
-        value  = descr_dict.get(attribute)
-        if coltype == ZCOL_INT or coltype == ZCOL_FLOAT:
-                if value == 0:
-                    value = '0'
+        coltype = field.get(ZC.COL_TYPE)
+        value   = descr_dict.get(attribute)
+
+        if coltype == ZC.ZCOL_INT or coltype == ZC.ZCOL_FLOAT:
+            if value == 0:
+                value = '0'
+
         if not value:
             value = ''
 
         # for autoid, return Link or nothing
         if attribute == TCN_AUTOID:
             if value:
+
                 # container
                 inter = hgWidget(parent = parent)
+
                 # view link
                 link    = self.getLink(table, None, descr_dict, inter)
+
                 # line break
                 breaker = hgLabel('<br />', parent = inter)
+
                 # link to info form
-                url = '%s/infoForm?table=%s&id=%s'
-                url = url % (self.absolute_url(), table, value)
+                url   = '%s/infoForm?table=%s&id=%s'
+                url   = url % (self.absolute_url(), table, value)
                 label = hgLabel('&rarr; Ownership Info Page', url, inter)
                 inter.showChildren(True)
 
                 return inter
+
             else:
                 return hgLabel('', parent = parent)
 
@@ -2651,45 +2663,42 @@ class GenericManager(ManagerPart):
                                            False,
                                            parent )
 
-            elif coltype == ZCOL_DATE:
+            elif coltype == ZC.ZCOL_DATE:
                 widget = hgLabel(value, None, parent, wname)
 
-            elif coltype == ZCOL_MEMO:
+            elif coltype == ZC.ZCOL_MEMO:
                 value  = value.replace('<', '&lt;')
                 value  = value.replace('>', '&gt;')
                 value  = value.replace('\n', '<br>')
-                
+
                 # TODO: where is this used? what is an internal link? help?
                 # restore internal links
                 if value:
                     memo_parts     = INTERNAL_LINK_PATTERN.split(value)
                     internal_links = INTERNAL_LINK_PATTERN.findall(value)
-                    
+
                     for i, link in enumerate(internal_links):
                         newlink = '<' + link[4:-10] + '</a>'
                         newlink = newlink.replace('&gt;', '>', 1)
                         internal_links[i] = newlink
-                        
+
                     if len(internal_links) < len(memo_parts):
                         internal_links.append('')
-                        
+
                     value = ''
                     for i, part in enumerate(memo_parts):
                         value += part + internal_links[i]
-                
+
                 widget = hgLabel(value, None, parent, wname)
 
-            elif coltype == ZCOL_BOOL:
+            elif coltype == ZC.ZCOL_BOOL:
                 widget = hgCheckBox(name = wname, value = '1', parent = parent)
                 if value:
                     widget.setChecked(True)
                 widget.setDisabled()
-                
-            elif coltype == ZCOL_CURR:
-                if value:
-                    valstr = '%.2f' % value
-                else:
-                    valstr = ''
+
+            elif coltype == ZC.ZCOL_CURR:
+                valstr = '%.2f' % value if value is not None else ''
                 widget = hgLabel(valstr, None, parent, wname)
 
             else:
@@ -2698,10 +2707,9 @@ class GenericManager(ManagerPart):
         elif flag & MASK_SEARCH:
             if coltype in ZLISTS:
                 lobj = self.listHandler.getList(table, attribute)
-                if lobj.manager == ZM_IM:
+                if lobj.manager == ZC.ZM_IM:
                     # Checkbox, value = _not_NULL
                     widget = hgCheckBox(name = wname, value = '_not_NULL', text = 'existing', parent = parent)
-                    #widget = hgLabel('', parent = parent)
                 else:
                     widget = lobj.getComplexWidget( True,
                                                     descr_dict,
@@ -2709,14 +2717,14 @@ class GenericManager(ManagerPart):
                                                     prefix,
                                                     parent )
 
-            elif coltype == ZCOL_DATE:
+            elif coltype == ZC.ZCOL_DATE:
                 widget = hgDateEdit( value,
                                      '<font size="-1">(DD.MM.YYYY)</font>',
                                      parent,
                                      wname,
                                      hgTextEdit.LABEL_RIGHT )
                 widget.setMaxLength(25)
-            elif coltype == ZCOL_MEMO:
+            elif coltype == ZC.ZCOL_MEMO:
                 widget = hgTextEdit( value,
                                      '',
                                      parent,
@@ -2724,18 +2732,19 @@ class GenericManager(ManagerPart):
                                      hgTextEdit.MULTILINE )
                 widget.setSize(25, 5)
 
-            elif coltype == ZCOL_BOOL:
-                #widget = hgGroupBox(1, hg.Vertical, parent = parent)
+            elif coltype == ZC.ZCOL_BOOL:
                 widget1 = hgCheckBox(name = wname, value = '1', text = 'checked')
                 if value and value != 'NULL':
                     widget1.setChecked(True)
+
                 widget2 = hgCheckBox(name = wname, value = 'NULL', text = 'not checked')
+
                 if value == 'NULL':
                     widget2.setChecked(True)
+
                 widget = widget1 + widget2
                 widget.reparent(parent)
-                #widget.show()
-                
+
             else:
                 widget = hgLineEdit(str(value), name = wname, parent = parent)
 
@@ -2743,7 +2752,7 @@ class GenericManager(ManagerPart):
             if coltype in ZLISTS:
                 lobj = self.listHandler.getList(table, attribute)
 
-                if lobj.manager == ZM_IM:
+                if lobj.manager == ZC.ZM_IM:
                     widget = self.getGenericFileMask( flag,
                                                       descr_dict,
                                                       table,
@@ -2759,14 +2768,14 @@ class GenericManager(ManagerPart):
                                                     prefix,
                                                     parent )
 
-            elif coltype == ZCOL_DATE:
+            elif coltype == ZC.ZCOL_DATE:
                 widget = hgDateEdit( value,
                                      '<font size="-1">(DD.MM.YYYY)</font>',
                                      parent,
                                      wname,
                                      hgTextEdit.LABEL_RIGHT )
 
-            elif coltype == ZCOL_MEMO:
+            elif coltype == ZC.ZCOL_MEMO:
                 widget = hgTextEdit( value,
                                      '',
                                      parent,
@@ -2774,12 +2783,12 @@ class GenericManager(ManagerPart):
                                      hgTextEdit.MULTILINE )
                 widget.setSize(25, 5)
 
-            elif coltype == ZCOL_BOOL:
+            elif coltype == ZC.ZCOL_BOOL:
                 widget = hgCheckBox(name = wname, value = '1', parent = parent)
                 if value:
                     widget.setChecked(True)
-            
-            elif coltype == ZCOL_CURR:
+
+            elif coltype == ZC.ZCOL_CURR:
                 if value:
                     valstr = '%.2f' % value
                 else:
@@ -2792,7 +2801,7 @@ class GenericManager(ManagerPart):
         elif flag & MASK_EDIT:
             if coltype in ZLISTS:
                 lobj   = self.listHandler.getList(table, attribute)
-                if lobj.manager == ZM_IM:
+                if lobj.manager == ZC.ZM_IM:
                     widget = self.getGenericFileMask( flag,
                                                       descr_dict,
                                                       table,
@@ -2802,21 +2811,21 @@ class GenericManager(ManagerPart):
                     if not widget:
                         widget = hgLabel('', parent = parent)
                 else:
-                    
+
                     widget = lobj.getComplexWidget( False,
                                                     descr_dict,
                                                     False,
                                                     prefix,
                                                     parent )
 
-            elif coltype == ZCOL_DATE:
+            elif coltype == ZC.ZCOL_DATE:
                 widget = hgDateEdit( value,
                                      '<font size="-1">(DD.MM.YYYY)</font>',
                                      parent,
                                      wname,
                                      hgTextEdit.LABEL_RIGHT )
 
-            elif coltype == ZCOL_MEMO:
+            elif coltype == ZC.ZCOL_MEMO:
                 widget = hgTextEdit( value,
                                      '',
                                      parent,
@@ -2824,24 +2833,20 @@ class GenericManager(ManagerPart):
                                      hgTextEdit.MULTILINE )
                 widget.setSize(25, 5)
 
-            elif coltype == ZCOL_BOOL:
+            elif coltype == ZC.ZCOL_BOOL:
                 widget = hgCheckBox(name = wname, value = '1', parent = parent)
                 if value:
                     widget.setChecked(True)
 
-            elif coltype == ZCOL_FLOAT:
+            elif coltype == ZC.ZCOL_FLOAT:
                 # TODO: throw out? seems unwise.
                 if not value:
                     value = 0
                 widget = hgLineEdit(str(value), name = wname, parent = parent)
-            
-            elif coltype == ZCOL_CURR:
-                if value:
-                    valstr = '%.2f' % value
-                else:
-                    valstr = ''
-                widget = hgLineEdit(valstr, name = wname, parent = parent)
-            
+
+            elif coltype == ZC.ZCOL_CURR:
+                widget = hgLineEdit('%.2f' % value if value else '', name = wname, parent = parent)
+
             else:
                 widget = hgLineEdit(str(value), name = wname, parent = parent)
 
@@ -2854,10 +2859,10 @@ class GenericManager(ManagerPart):
                                            True,
                                            parent )
 
-            elif coltype == ZCOL_DATE:
+            elif coltype == ZC.ZCOL_DATE:
                 widget = hgLabel(value, None, parent, wname)
 
-            elif coltype == ZCOL_MEMO:
+            elif coltype == ZC.ZCOL_MEMO:
                 widget = hgTextEdit( value,
                                      '',
                                      parent,
@@ -2866,17 +2871,14 @@ class GenericManager(ManagerPart):
                 widget.setSize(25, 5)
                 widget.setReadOnly()
 
-            elif coltype == ZCOL_BOOL:
+            elif coltype == ZC.ZCOL_BOOL:
                 widget = hgCheckBox(name = wname, value = '1', parent = parent)
                 if value:
                     widget.setChecked(True)
                 widget.setReadOnly()
 
-            elif coltype == ZCOL_CURR:
-                if value:
-                    valstr = '%.2f' % value
-                else:
-                    valstr = ''
+            elif coltype == ZC.ZCOL_CURR:
+                valstr = '%.2f' % value if value is not None else ''
                 widget = hgLabel(valstr, None, parent, wname)
 
             else:
@@ -2941,7 +2943,7 @@ class GenericManager(ManagerPart):
                 row += 1
 
         if not any:
-            self.displayError('Your authorization level doesn\'t allow any data import into %s.' % self.getTitle(), 
+            self.displayError('Your authorization level doesn\'t allow any data import into %s.' % self.getTitle(),
                               'Insufficient privileges')
         #
         # dialog
@@ -2965,18 +2967,18 @@ class GenericManager(ManagerPart):
 
 
     def importCanModifyLists(self, table):
-        """\brief Property function, returns the modifyable lists 
+        """\brief Property function, returns the modifyable lists
                 for each table or True for all or False for none."""
         return False
 
-    
+
     def importKeepsValueForLists(self, table):
         """\brief Property function.
                 Importer expects list values and translates them to autoids.
                 This function returns names of lists which shouldnt be translated.
         """
         return []
-    
+
 
     def importAdditionalFields(self, table):
         """\brief Property function.
@@ -2984,14 +2986,14 @@ class GenericManager(ManagerPart):
                 This function returns list of field names which should be accepted as well.
         """
         return []
-    
+
 
     def importExcludeFields(self, table):
         """\brief Property function.
                 This function returns list of field names which should be ignored by import.
         """
         return []
-    
+
 
     def importUniqueTuples(self, table):
         """\brief Property function.
@@ -3020,13 +3022,14 @@ class GenericManager(ManagerPart):
 
 
     security.declareProtected(modifyPermission, 'importTable')
+
     def importTable(self, tablename, fHandle, REQUEST = None):
         """\brief Imports tab separated data into the database."""
 
         if not self._generic_config.get(tablename, {}).get('importable', False):
             return None
 
-        m_security = self.getHierarchyUpManager(ZM_SCM)
+        m_security = self.getHierarchyUpManager(ZC.ZM_SCM)
 
         tobj     = self.tableHandler[tablename]
         importer = ImportHandler(self)
@@ -3169,7 +3172,7 @@ class GenericManager(ManagerPart):
         col_types = self.tableHandler[table].getColumnTypes()
         col_fct   = {}
         for col in col_types:
-            if col_types[col] in [ZCOL_SLIST, ZCOL_MLIST, ZCOL_HLIST] and \
+            if col_types[col] in [ZC.ZCOL_SLIST, ZC.ZCOL_MLIST, ZC.ZCOL_HLIST] and \
                self.listHandler.getList(table, col).function:
                 col_fct[col] = True
             else:
@@ -3182,7 +3185,7 @@ class GenericManager(ManagerPart):
         for utuple in unique_fields:
             unique_values[utuple] = []
 
-        m_security = self.getHierarchyUpManager(ZM_SCM)
+        m_security = self.getHierarchyUpManager(ZC.ZM_SCM)
 
         for entry in importer.iterateEntries(fHandle):
             line = importer.getLineNumber()
@@ -3191,7 +3194,7 @@ class GenericManager(ManagerPart):
             for field in entry:
                 if col_fct.get(field, True):
                     continue
-                if col_types[field] in [ZCOL_SLIST, ZCOL_MLIST, ZCOL_HLIST] and \
+                if col_types[field] in [ZC.ZCOL_SLIST, ZC.ZCOL_MLIST, ZC.ZCOL_HLIST] and \
                    field in self.importKeepsValueForLists(table):
                     continue
                 if col_types[field] == 'multilist':
@@ -3212,7 +3215,7 @@ class GenericManager(ManagerPart):
                 if not entry.get(req_field):
                     missing_reqs.append( (line, req_field) )
                 else:
-                    if col_types[req_field] in [ZCOL_SLIST, ZCOL_MLIST, ZCOL_HLIST] and \
+                    if col_types[req_field] in [ZC.ZCOL_SLIST, ZC.ZCOL_MLIST, ZC.ZCOL_HLIST] and \
                        entry.get(req_field) == 'NULL':
                         missing_reqs.append( (line, req_field) )
 

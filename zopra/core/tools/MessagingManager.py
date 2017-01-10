@@ -26,17 +26,29 @@ from PyHtmlGUI.stylesheet.hgStyleSheet       import hgStyleSheetItem
 #
 # ZopRA Imports
 #
-from zopra.core                 import HTML, ZM_SCM, ZM_CM, ZM_MM
+from zopra.core                             import HTML, ZC, ZM_SCM, ZM_CM, ZM_MM
 
-from zopra.core.constants       import TCN_AUTOID
-from zopra.core.dialogs         import getStdDialog
-from zopra.core.CorePart        import MASK_REDIT
+from zopra.core.constants                   import TCN_AUTOID
+from zopra.core.dialogs                     import getStdDialog
+from zopra.core.dialogs.dlgMessageCenter    import dlgMessageCenter
+from zopra.core.dialogs.dlgGMessageCenter   import dlgGMessageCenter
+from zopra.core.dialogs.dlgSMessageCenter   import dlgSMessageCenter
+from zopra.core.dialogs.dlgReadMsg          import dlgReadMsg
+from zopra.core.dialogs.dlgReadGMsg         import dlgReadGMsg
+from zopra.core.dialogs.dlgReadSMsg         import dlgReadSMsg
+from zopra.core.dialogs.dlgSendMsg          import dlgSendMsg
+from zopra.core.dialogs.dlgSendGMsg         import dlgSendGMsg
+from zopra.core.dialogs.dlgMngFolder        import dlgMngFolder
+from zopra.core.dialogs.dlgSignature        import dlgSignature
+from zopra.core.dialogs.dlgOptions          import dlgOptions
+from zopra.core.dialogs.dlgThreadView       import dlgThreadView
+from zopra.core.dialogs.dlgConfirm          import dlgConfirm
+from zopra.core.dialogs.dlgConfigFilter     import dlgConfigFilter
+from zopra.core.dialogs.dlgMngFilters       import dlgMngFilters
 
+from zopra.core.CorePart                    import MASK_REDIT
 
-from zopra.core.tools.GenericManager  import GenericManager, \
-                                             DLG_SHOW,   \
-                                             DLG_EDIT
-
+from zopra.core.tools.GenericManager        import GenericManager
 
 from zopra.core.tools.managers import TN_PERSON,          \
                                                     TN_GLOBAL,          \
@@ -178,33 +190,32 @@ class MessagingManager(GenericManager):
                                                      TCN_NOT,
                                                      TCN_PREDICATE ] }
 
-    _dlgs = GenericManager._dlgs + (('dlgMessageCenter',  'AuditAndSecurity'),
-                                        ('dlgGMessageCenter', 'AuditAndSecurity'),
-                                        ('dlgSMessageCenter', 'AuditAndSecurity'),
-                                        ('dlgReadMsg',        'AuditAndSecurity'),
-                                        ('dlgReadGMsg',       'AuditAndSecurity'),
-                                        ('dlgReadSMsg',       'AuditAndSecurity'),
-                                        ('dlgSendMsg',        'AuditAndSecurity'),
-                                        ('dlgSendGMsg',       'AuditAndSecurity'),
-                                        ('dlgMngFolder',      'AuditAndSecurity'),
-                                        ('dlgSignature',      'AuditAndSecurity'),
-                                        ('dlgOptions',        'AuditAndSecurity'),
-                                        ('dlgThreadView',     'AuditAndSecurity'),
-                                        ('dlgConfirm',        'AuditAndSecurity'),
-                                        ('dlgConfigFilter',   'AuditAndSecurity'),
-                                        ('dlgMngFilters',     'AuditAndSecurity'),
-                                       )
+    _dlgs = GenericManager._dlgs + ( dlgMessageCenter, 
+                                     dlgGMessageCenter, 
+                                     dlgSMessageCenter,
+                                     dlgReadMsg,
+                                     dlgReadGMsg,
+                                     dlgReadSMsg,
+                                     dlgSendMsg,
+                                     dlgSendGMsg,
+                                     dlgMngFolder,
+                                     dlgSignature,
+                                     dlgOptions,
+                                     dlgThreadView,
+                                     dlgConfirm,
+                                     dlgConfigFilter,
+                                     dlgMngFilters )
 
-    _dlg_map = { TN_GLOBAL:         { DLG_SHOW:   'dlgReadGMsg' },
-                 TN_SENT:           { DLG_SHOW:   'dlgReadSMsg' },
-                 TN_LOCAL:          { DLG_SHOW:   'dlgReadMsg' },
-                 TN_MUSER:          { DLG_SHOW:   'dlgSendMsg' },
-                 TN_FOLDER:         { DLG_SHOW:   'dlgMessageCenter',
-                                      DLG_EDIT:   'dlgMngFolder' },
-                 TN_THREAD:         { DLG_SHOW:   'dlgThreadView' },
-                 TN_FILTER:         { DLG_SHOW:   'dlgConfigFilter',
-                                      DLG_EDIT:   'dlgConfigFilter' },
-                 TN_THREAD:         { DLG_SHOW:   'dlgThreadView' }
+    _dlg_map = { TN_GLOBAL:         { ZC.DLG_SHOW:   'dlgReadGMsg' },
+                 TN_SENT:           { ZC.DLG_SHOW:   'dlgReadSMsg' },
+                 TN_LOCAL:          { ZC.DLG_SHOW:   'dlgReadMsg' },
+                 TN_MUSER:          { ZC.DLG_SHOW:   'dlgSendMsg' },
+                 TN_FOLDER:         { ZC.DLG_SHOW:   'dlgMessageCenter',
+                                      ZC.DLG_EDIT:   'dlgMngFolder' },
+                 TN_THREAD:         { ZC.DLG_SHOW:   'dlgThreadView' },
+                 TN_FILTER:         { ZC.DLG_SHOW:   'dlgConfigFilter',
+                                      ZC.DLG_EDIT:   'dlgConfigFilter' },
+                 TN_THREAD:         { ZC.DLG_SHOW:   'dlgThreadView' }
 
                }
     
