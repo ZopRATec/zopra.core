@@ -35,14 +35,16 @@ for attr in types.keys():
                 copyentry[attr].replace(',', '.')
 
 if not copyentry.get('iscopyof'):
-    message = 'Nur Arbeitskopien können freigegeben werden. Dieser Eintrag ist aktuell, die Freigabe wird abgebrochen.'
-    return state.set(status='failure', context=context, portal_status_message=message)
+    message = u'Nur Arbeitskopien können freigegeben werden. Dieser Eintrag ist aktuell, die Freigabe wird abgebrochen.'
+    context.plone_utils.addPortalMessage(message, 'info')
+    return state.set(status='failure', context=context)
 
 origentry = context.tableHandler[table].getEntry(copyentry.get('iscopyof'))
 
 if not origentry:
-    message = 'Originaleintrag nicht auffindbar, Freigabe abgebrochen.'
-    return state.set(status='failure', context=context, portal_status_message=message)
+    message = u'Originaleintrag nicht auffindbar, Freigabe abgebrochen.'
+    context.plone_utils.addPortalMessage(message, 'info')
+    return state.set(status='failure', context=context)
 
 origautoid = origentry['autoid']
 
@@ -52,7 +54,7 @@ if not context.doesTranslations(table) or copyentry.get('language') == context.l
     for key in copyentry.keys():
         if key not in ['hastranslation', 'language']:
             origentry[key] = copyentry[key]
-        
+
 else:
     # english copy stays the same except for text and string values
     for key in copyentry.keys():
@@ -81,16 +83,22 @@ if done == True:
         # updateTranslation also updates the working copy of the translation, if it exists
         translated = context.updateTranslation(table, origentry)
         if translated:
-            en_msg = ' Die Nicht-Text-Felder der englischen Version wurde ebenfalls gespeichert.'
+            en_msg = u' Die Nicht-Text-Felder der englischen Version wurde ebenfalls gespeichert.'
     # check if this is a translation (for msg only, action done already)
     elif origentry.get('language') in context.lang_additional:
-        en_msg = ' Lediglich die Textfelder wurden übernommen, da es sich um eine Sprachkopie handelt.'
+        en_msg = u' Lediglich die Textfelder wurden übernommen, da es sich um eine Sprachkopie handelt.'
 
     # delete copy without deleting anything else (except multilists)
     done = context.tableHandler[table].deleteEntry(int(autoid))
     if done == True:
-        return state.set(status='success', context=context, portal_status_message='Eintrag freigegeben.%s Interne Id: %s' % (en_msg, origautoid))
+        message = u'Eintrag freigegeben.%s Interne Id: %s' % (en_msg, origautoid)
+        context.plone_utils.addPortalMessage(message, 'info')
+        return state.set(status='success', context=context)
     else:
-        return state.set(status='failure', context=context, portal_status_message='Eintrag freigegeben.%s Fehler beim Löschen der Arbeitskopie. Interne Id: %s' % (en_msg, origautoid))
+        message = u'Eintrag freigegeben.%s Fehler beim Löschen der Arbeitskopie. Interne Id: %s' % (en_msg, origautoid)
+        context.plone_utils.addPortalMessage(message, 'info')
+        return state.set(status='failure', context=context)
 else:
-    return state.set(status='failure', context=context, portal_status_message='Fehler bei der Freigabe: ' + str(done))
+    message = u'Fehler bei der Freigabe: ' + str(done)
+    context.plone_utils.addPortalMessage(message, 'info')
+    return state.set(status='failure', context=context)

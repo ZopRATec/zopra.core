@@ -10,21 +10,22 @@
 ##
 request = REQUEST
 tobj = context.tableHandler[table]
-msgs = []
 for autoid in confirm_ids:
     copyentry = tobj.getEntry(autoid)
 
     if not copyentry.get('iscopyof'):
         label = context.getLabelString(table, None, copyentry)
-        msg = u'Nur Arbeitskopien können freigegeben werden. Der Eintrag %s ist aktuell, die Freigabe wird abgebrochen.' % label
-        return state.set(status='failure', context=context, portal_status_message=msg)
+        message = u'Nur Arbeitskopien können freigegeben werden. Der Eintrag %s ist aktuell, die Freigabe wird abgebrochen.' % label
+        context.plone_utils.addPortalMessage(message, 'info')
+        return state.set(status='failure', context=context)
 
     origentry = context.tableHandler[table].getEntry(copyentry.get('iscopyof'))
 
     if not origentry:
         label = context.getLabelString(table, None, copyentry)
-        msg = u'Originaleintrag zu %s nicht auffindbar, Freigabe abgebrochen.' % label
-        return state.set(status='failure', context=context, portal_status_message=msg)
+        message = u'Originaleintrag zu %s nicht auffindbar, Freigabe abgebrochen.' % label
+        context.plone_utils.addPortalMessage(message, 'info')
+        return state.set(status='failure', context=context)
 
     origautoid = origentry['autoid']
 
@@ -66,9 +67,9 @@ for autoid in confirm_ids:
 
     # delete copy without deleting anything else (except multilists)
     context.tableHandler[table].deleteEntry(int(autoid))
-    # build and append message
+    # build and deliver message
     label = context.getLabelString(table, None, origentry)
-    msgs.append(u'Eintrag %s freigegeben.%s Interne Id: %s' % (label, en_msg, origautoid))
+    message = u'Eintrag %s freigegeben.%s Interne Id: %s' % (label, en_msg, origautoid)
+    context.plone_utils.addPortalMessage(message, 'info')
 
-msg = u'<br />'.join(msgs)
-return state.set(status='success', context=context, portal_status_message=msg)
+return state.set(status='success', context=context)

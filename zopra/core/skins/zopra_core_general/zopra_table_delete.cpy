@@ -15,7 +15,8 @@ done = False
 # new permission handling
 entry = context.tableHandler[table].getEntry(autoid)
 if not 'delete' in context.getPermissionEntryInfo(table, entry):
-    return state.set(status='failure', context=context, portal_status_message="Nur berechtigte Redakteure dürfen Einträge löschen. Abgebrochen.")
+    context.plone_utils.addPortalMessage(u"Nur berechtigte Redakteure dürfen Einträge löschen. Abgebrochen.", 'info')
+    return state.set(status='failure', context=context)
 
 origentry = context.zopra_forceOriginal(table, entry)
 ak = (entry.get('autoid') != origentry.get('autoid'))
@@ -25,17 +26,17 @@ targetid = None
 special_message = ''
 if ak:
     targetid = origentry.get('autoid')
-    special_message = u'Arbeitskopie geloescht.'
+    special_message = u'Arbeitskopie gelöscht.'
 elif sk:
     targetid = sk
-    special_message = u'Sprachkopie geloescht.'
+    special_message = u'Sprachkopie gelöscht.'
 
 done = context.deleteEntries(table, [int(autoid)])
 
 # dependent-entries handling (tell the main-entry that a dependent multilist entry was removed)
 if done and request.get('origtable') and request.get('origid') and request.get('origattribute'):
     tmainobj = context.tableHandler[table]
-    message = ''
+    message = u''
     origid = int(request.get('origid'))
     attr = request.get('origattribute')
     otab = request.get('origtable')
@@ -60,7 +61,7 @@ if done and request.get('origtable') and request.get('origid') and request.get('
             # set the autoid in the entry
             orig['autoid'] = origid
             # create a fitting message
-            message = u'Verknuepfter Eintrag (%s) wurde entfernt. Arbeitskopie fuer Haupteintrag (%s) wurde erzeugt. Original-Id: %s. ' % (tmainobj.getLabel().decode("utf8"), tobj.getLabel().decode("utf8"), orig.get('iscopyof'))
+            message = u'Verknüpfter Eintrag (%s) wurde entfernt. Arbeitskopie fuer Haupteintrag (%s) wurde erzeugt. Original-Id: %s. ' % (tmainobj.getLabel().decode("utf8"), tobj.getLabel().decode("utf8"), orig.get('iscopyof'))
         else:
             # copy exists, we have it already (forceCopy was called above)
             # directly remove the ref (this does not create any log)
@@ -69,7 +70,7 @@ if done and request.get('origtable') and request.get('origid') and request.get('
             if tobj.do_cache:
                 tobj.cache.invalidate(orig['autoid'])
             # jump to referring entry
-            message = u'Verknuepfter Eintrag (%s) wurde entfernt. Arbeitskopie fuer Haupteintrag (%s) wurde aktualisiert. Original-Id: %s.' % (tmainobj.getLabel().decode("utf8"), tobj.getLabel().decode("utf8"), orig.get('iscopyof'))
+            message = u'Verknüpfter Eintrag (%s) wurde entfernt. Arbeitskopie fuer Haupteintrag (%s) wurde aktualisiert. Original-Id: %s.' % (tmainobj.getLabel().decode("utf8"), tobj.getLabel().decode("utf8"), orig.get('iscopyof'))
     else:
         # remove the deleted dependent entry from attr
         # directly remove the ref (this does not create any log)
@@ -78,7 +79,7 @@ if done and request.get('origtable') and request.get('origid') and request.get('
         if tobj.do_cache:
             tobj.cache.invalidate(orig['autoid'])
         # message deletion and deref
-        message = u'Verknuepfter Eintrag (%s) wurde geloescht und Haupteintrag (%s) aktualisiert.' % (tmainobj.getLabel().decode("utf8"), tobj.getLabel().decode("utf8"))
+        message = u'Verknüpfter Eintrag (%s) wurde geloescht und Haupteintrag (%s) aktualisiert.' % (tmainobj.getLabel().decode("utf8"), tobj.getLabel().decode("utf8"))
     # set message
     if message:
         context.plone_utils.addPortalMessage(message, 'info')
@@ -87,13 +88,13 @@ if done and request.get('origtable') and request.get('origid') and request.get('
     return
 
 if done:
-    message = special_message or u'Eintrag geloescht.'
+    message = special_message or u'Eintrag gelöscht.'
     context.plone_utils.addPortalMessage(message, 'info')
     if targetid:
         # jump to edit form of original
         request.RESPONSE.redirect('zopra_table_edit_form?table=%s&autoid=%s' % (table, targetid))
     return state.set(status='success', context=context)
 else:
-    message = u'Fehler beim Loeschen.'
+    message = u'Fehler beim Löschen.'
     context.plone_utils.addPortalMessage(message, 'info')
     return state.set(status='failure', context=context)

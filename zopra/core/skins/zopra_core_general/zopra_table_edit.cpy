@@ -53,12 +53,12 @@ msg = context.actionBeforeEdit(table, entry, request) or ''
 if not context.doesWorkingCopies(table):
     # normal update entry
     done = tobj.updateEntry(entry, autoid, orig_entry = oldentry)
-    message='Eintrag gespeichert. %sInterne Id: %s' % (msg, autoid)
+    message = u'Eintrag gespeichert. %sInterne Id: %s' % (msg, autoid)
 
 elif entry.get('iscopyof'):
     # this already is a working copy, just save it
     done = tobj.updateEntry(entry, autoid, orig_entry = oldentry)
-    message='Arbeitskopie gespeichert. %sOriginal-Id: %s' % (msg, entry.get('iscopyof'))
+    message = u'Arbeitskopie gespeichert. %sOriginal-Id: %s' % (msg, entry.get('iscopyof'))
 
 else:
     # create a working copy from oldentry (first creating a working copy with no changes for logging
@@ -73,7 +73,7 @@ else:
     entry['autoid'] = autoid
     # update it, pass oldentry for diff-log
     done = tobj.updateEntry(entry, int(autoid), orig_entry = oldentry)
-    message = 'Arbeitskopie erzeugt. Original-Id: %s' % entry.get('iscopyof')
+    message = u'Arbeitskopie erzeugt. Original-Id: %s' % entry.get('iscopyof')
 
 if done == True:
     context.plone_utils.addPortalMessage(message, 'info')
