@@ -7,16 +7,14 @@
 #    the Free Software Foundation; either version 2 of the License, or     #
 #    (at your option) any later version.                                   #
 ############################################################################
-
 import string
-
 from copy                import copy
 from types               import ListType, StringType
 
-from zopra.core.CorePart import ZCOL_SLIST, ZCOL_MLIST, ZCOL_HLIST
+from zopra.core.constants  import ZC
 from zopra.core.interfaces import IZopRAManager
 
-ZCOL_LISTTYPES = [ZCOL_SLIST, ZCOL_MLIST, ZCOL_HLIST]
+ZCOL_LISTTYPES = [ZC.ZCOL_SLIST, ZC.ZCOL_MLIST, ZC.ZCOL_HLIST]
 
 ZM_IMPH = 'ImportHandler'
 
@@ -322,7 +320,7 @@ class ImportHandler:
                 # lookup list handling
                 lookup = lookup_dict.get(j)
                 if lookup:
-                    if lookup.listtype == ZCOL_SLIST:
+                    if lookup.listtype == ZC.ZCOL_SLIST:
 
                         if item and item != ' ' and item != 'None':
                             if self.keepValuesForList(columnName):
@@ -338,7 +336,7 @@ class ImportHandler:
                                     new_entry[columnName] = autoid
                                 else:
                                     self.lost_entries.append( (i + 1, '%s:%s' % (columnName, item)) )
-                    elif lookup.listtype == ZCOL_MLIST:
+                    elif lookup.listtype == ZC.ZCOL_MLIST:
 
                         # replace " (used by excel to mark multiline fields)
                         item = item.replace('"', '')

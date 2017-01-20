@@ -454,17 +454,17 @@ class Filter:
 
 
     def setUncheckedConstraints(self, consdict):
-        """\brief set constraints without any field check"""
+        """ Set constraints without any field check. """
         for cons in consdict:
             self.constraints[cons] = consdict[cons]
         self.setInvalid()
 
 
     def setMultiConstraint(self, name, valuelist):
-        """\brief create children for each value of valuelist"""
+        """ Create children for each value of valuelist """
         for value in valuelist:
             fil = Filter(self.operator)
-            fil.setUncheckedConstraints({name: value})
+            fil.setUncheckedConstraints( {name: value} )
             self.addChild(fil)
 
 

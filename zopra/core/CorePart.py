@@ -5,13 +5,15 @@
 # Copyright: See COPYING file that comes with this distribution            #
 #                                                                          #
 ############################################################################
-"""\brief Provides Core functions to get Managers and dialogs
-            and some module functions."""
+""" Provides functions to get the managers and dialogs and some module
+    functions.
+"""
 
 #
 # Python Language Imports
 #
 from types                           import ListType
+
 
 #
 # PyHtmlGUI Imports
@@ -53,19 +55,6 @@ COL_URL         = 'URL'
 COL_CURRENCY    = 'NUMERIC(10,2)'
 COL_LOOKUPLIST  = 'singlelist'
 
-# ZopRA Column Types
-ZCOL_STRING = 'string'
-ZCOL_MEMO   = 'memo'
-ZCOL_INT    = 'int'
-ZCOL_LONG   = 'long'
-ZCOL_SLIST  = 'singlelist'
-ZCOL_MLIST  = 'multilist'
-ZCOL_HLIST  = 'hierarchylist'
-ZCOL_DATE   = 'date'
-ZCOL_FLOAT  = 'float'
-ZCOL_BOOL   = 'bool'
-ZCOL_CURR   = 'currency'
-
 #
 # Table Constants
 #
@@ -84,10 +73,8 @@ folder_types = ['Folder', 'ATFolder']
 
 
 class CorePart(Folder):
-    """ Core Part
-
-    The CorePart acts only as helper class for all situations that
-    can be handled in the context of Zope and without any other ZopRA classes.
+    """ The CorePart class extends the Folder class for all situations that can be handled in the
+        context of Zope and without any other ZopRA classes.
     """
     _classType     = ['CorePart']
     _properties    = Folder._properties
@@ -112,12 +99,11 @@ class CorePart(Folder):
 
 
     def getBackButtonStr(self, REQUEST = None, prop = True):
-        """\brief Returns a back button string.
+        """ Returns a back button string.
 
-        Wraps getBackButton.
+        Wraps getBackButton method.
 
-        \n
-        \return back button string.
+        @return String - contains the HTML representation for the back button.
         """
         return self.getBackButton(REQUEST, prop).getHtml()
 
@@ -132,26 +118,26 @@ class CorePart(Folder):
         \n
         \return back button.
         """
-        if REQUEST:
-            if 'go' in REQUEST:
-                number  = REQUEST['go']
-                if isinstance(number, ListType):
-                    number = number[0]
-                back_go = int(number) - 1
-            else:
-                back_go = -1
-            btn_go = hgPushButton(' Back ')
-            btn_go.setFunction('history.go(%s)' % back_go, True)
-            ret = btn_go
-            if prop:
-                ret += hgProperty('go', back_go)
-            if parent:
-                ret.reparent(parent)
-            return ret
-        else:
+        if REQUEST is None:
             btn_go = hgPushButton(' Back ', parent = parent)
             btn_go.setFunction('history.back()', True)
             return btn_go
+
+        if 'go' in REQUEST:
+            number  = REQUEST['go']
+            if isinstance(number, ListType):
+                number = number[0]
+            back_go = int(number) - 1
+        else:
+            back_go = -1
+        btn_go = hgPushButton(' Back ')
+        btn_go.setFunction('history.go(%s)' % back_go, True)
+        ret = btn_go
+        if prop:
+            ret += hgProperty('go', back_go)
+        if parent:
+            ret.reparent(parent)
+        return ret
 
 
     def getContainer(self):
@@ -218,15 +204,16 @@ class CorePart(Folder):
     def getManager(self, name, obj_id = None):
         """ Returns the specified manager.
 
+        If you use DTML to call a manager, be sure to work in the managers directory!
+        Use <dtml-with <dirname>> to achieve this. Otherwise, the dtml's directory will
+        be misunderstood as container and the searched manager will never be found.
+
         @param name  The argument \a name is the name of the manager.
         @param id    The argument \a id is to specify a manager id in an
                      environment where more than one manager of a special type
-                     is instanciated.
+                     is instantiated.
 
         @return a manager object if one was found, otherwise None.
-        If you use dtml to call a manager, be sure to work in the managers directory!
-        Use <dtml-with <dirname>> to achieve this. Otherwise, the dtml's directory will
-        be misunderstood as container and the searched manager will never be found.
         """
         container = self.getContainer()
         if name and hasattr(container, 'objectValues'):
@@ -290,9 +277,7 @@ class CorePart(Folder):
 
         @return String with the title, otherwise an empty string.
         """
-        if hasattr(self, 'title'):
-            return self.title
-        return ''
+        return self.title if hasattr(self, 'title') else ''
 
 
     def getId(self):
@@ -300,9 +285,7 @@ class CorePart(Folder):
 
         @return String with the id, otherwise an empty string.
         """
-        if hasattr(self, 'id'):
-            return self.id
-        return ''
+        return self.id if hasattr(self, 'id') else ''
 
 
     def getCSS(self):
@@ -330,24 +313,18 @@ class CorePart(Folder):
         dlg.add('</center>')
         dlg.add(hgNEWLINE)
         dlg.add(self.getBackButtonStr(REQUEST))
-
-        if html:
-            dlg = HTML( dlg.getHtml() )(self, None)
-
-        return dlg
+        return HTML( dlg.getHtml() )(self, None) if html else dlg
 
 
     def getUnauthorizedErrorDialog(self, message, REQUEST = None):
-        """\brief Returns the html source of an error dialog for unauthorized users.
+        """ Returns the HTML source of an error dialog for unauthorized users.
 
         The error dialog is a simple dialog that only shows the error string
         and a back button.
 
-        \param message   The argument \a message is a string with the error
-        message.
-        \param REQUEST  (optional)
-        \n
-        \return error html page
+        @param message   The argument \a message is a string with the error message.
+        @param REQUEST   (optional)
+        @return error HTML page
         """
         dlg  = getStdDialog( title = 'Error' )
         # unauthorized errors cannot use the navigation and

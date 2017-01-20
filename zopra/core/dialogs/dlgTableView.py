@@ -22,8 +22,11 @@ from PyHtmlGUI.table.hgTableView            import hgTableView
 
 from zopra.core.dialogs.Dialog              import Dialog
 
+
 class dlgTableViewPrivate:
-    """\class dlgTableViewPrivate going to replace ZMOMManagerPart.getTableEntryListHtml at some point"""
+    """\class dlgTableViewPrivate going to replace
+        ManagerPart.getTableEntryListHtml at some point
+    """
 
     def __init__(self):
         """\brief Constructs a dlgTableViewPrivate object."""
@@ -173,6 +176,8 @@ class dlgTableView(Dialog):
         return self.data.tableName
 
     tableName = property(getTableName)
+
+
     ##########################################################################
     #
     # Instance Methods
@@ -186,7 +191,7 @@ class dlgTableView(Dialog):
 
         # check table presents
         tableName = param_dict.get('$table')
-        if not tableName != None:
+        if tableName is None:
             self.initError()
 
         else:
@@ -200,9 +205,9 @@ class dlgTableView(Dialog):
             self.data.columnNames = db_table.keys()
 
             # fill default values
-            self.setShowNumber  ( 20                    )
-            self.setStartNumber ( 0                     )
-            self.setColumnOrder ( self.data.columnNames )
+            self.setShowNumber( 20                     )
+            self.setStartNumber( 0                     )
+            self.setColumnOrder( self.data.columnNames )
 
             # setup dialog layout
             self.initLayout()
@@ -241,9 +246,9 @@ class dlgTableView(Dialog):
            hasattr(self.data, 'tableName' ) and \
            self.data.tableName:
 
-            Dialog.execDlg  ( self, manager, REQUEST )
+            Dialog.execDlg( self, manager, REQUEST )
 
-            self.refreshContent ( manager )
+            self.refreshContent(manager)
 
 
     def updateDataFromTable(self, manager):

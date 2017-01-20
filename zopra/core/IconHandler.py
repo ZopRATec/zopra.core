@@ -73,7 +73,7 @@ class IconHandler(Folder):
         key = getattr(object, 'title', '')
 
         if not key:
-            key   = object.id()
+            key   = str(object.id())
             title = ''
         else:
             title = key
@@ -99,7 +99,6 @@ class IconHandler(Folder):
             self.title2properties[key] = copy(img_properties)
 
         self.id2title[id] = key
-
 
         return Folder._setObject(self, id, object, roles, user, set_owner, suppress_events)
 
@@ -130,8 +129,7 @@ class IconHandler(Folder):
     def has(self, title):
         """\brief."""
 
-        assert( isinstance(title, StringType) )
-
+        assert( isinstance(title, StringType) or isinstance(title, type(unicode(''))))
         return title in self.title2properties
 
 
@@ -261,6 +259,10 @@ class IconHandler(Folder):
 
         if self.has(title):
             img_properties = copy(self.title2properties[title])
+
+        # maybe its unicode?
+        if img_properties is None and self.has(unicode(title)):
+            img_properties = copy(self.title2properties[unicode(title)])
 
         # adjust path
         if img_properties and path:

@@ -13,13 +13,9 @@ from PyHtmlGUI                          import E_PARAM_TYPE
 from PyHtmlGUI.kernel.hgTable           import hgTable
 from PyHtmlGUI.widgets.hgLabel          import hgNEWLINE
 
-from zopra.core                         import SimpleItem
+from zopra.core                         import SimpleItem, ZC
 from zopra.core.tables.Filter           import Filter
 from zopra.core.elements.Buttons        import DLG_CUSTOM
-from zopra.core.connector.SqlConnector  import _edit_tracking_cols
-from zopra.core.constants               import TCN_AUTOID
-from zopra.core.CorePart                import COL_TYPE,       \
-                                               COL_LABEL
 
 
 ALLLISTS = ['multilist', 'hierarchylist', 'singlelist']
@@ -47,10 +43,11 @@ class TablePrivate:
         """
         if not name:
             return {}
+        
         # shortcut for ordinary autoid field
         if name == 'autoid':
-            return { COL_TYPE:  'int',
-                     COL_LABEL: 'Automatic No.' }
+            return { ZC.COL_TYPE:  'int',
+                     ZC.COL_LABEL: 'Automatic No.' }
 
         # get field description from manager tables
         elif self.tabledict.get(name):
@@ -64,16 +61,15 @@ class TablePrivate:
             # so we return something!
             # patch peter 11/2008 we never need the label in sql-statements, so don't try to get it
             # lead to error on foreign lists anyway (seems stored listhandler forgot its manager)
-            return { COL_TYPE:  lobj.listtype,
-                     COL_LABEL: name}
+            return { ZC.COL_TYPE:  lobj.listtype,
+                     ZC.COL_LABEL: name}
 
         # get field description from edit tracking fields
-        elif _edit_tracking_cols.get(name):
-            return _edit_tracking_cols[name]
+        elif ZC._edit_tracking_cols.get(name):
+            return ZC._edit_tracking_cols[name]
 
         # nothing really found
-        else:
-            return {}
+        return {}
 
 
 class TableNode(SimpleItem):
@@ -272,7 +268,7 @@ class TableNode(SimpleItem):
                 for val in values:
                     node = tobj.getTableNode()
                     # node.setPrefix(str(val))
-                    self.addChild(node, TCN_AUTOID, TCN_AUTOID)
+                    self.addChild(node, ZC.TCN_AUTOID, ZC.TCN_AUTOID)
                     # key = DLG_CUSTOM + str(val) + lname
                     node.setConstraints({lname: val})
                     node.setTemporary()
@@ -347,10 +343,7 @@ class TableNode(SimpleItem):
 
     def isTemporary(self):
         """\brief check whether node is temporary."""
-        if hasattr(self, 'temporary'):
-            return self.temporary
-        else:
-            return False
+        return self.temporary if hasattr(self, 'temporary') else False
 
 
     def setJoinAttrParent(self, attribute):
@@ -450,7 +443,7 @@ class TableNode(SimpleItem):
                 orderfield = self.data.getField(order)
                 if not orderfield:
                     raise ValueError('Unknown order field %s.' % str(order))
-                if orderfield[COL_TYPE] in ALLLISTS:
+                if orderfield[ZC.COL_TYPE] in ALLLISTS:
                     # to order by lists, we have to join the list-table -> new sql query
                     self.invalidate()
                 # otherwise, the tree doesn't have to be invalidated
@@ -694,7 +687,7 @@ class TableNode(SimpleItem):
                 select = 'SELECT %s%s%s.%s' % ( dist,
                                                 self.mgr.id,
                                                 self.data.tablename,
-                                                TCN_AUTOID )
+                                                ZC.TCN_AUTOID )
             else:
                 # joinattr is normal attr, select it
                 select = 'SELECT %s%s%s.%s' % ( dist,
@@ -718,9 +711,9 @@ class TableNode(SimpleItem):
             sellist = []
             for column in col_list:
                 if not self.data.getField(column) or \
-                       self.data.getField(column)[COL_TYPE] in MULLISTS:
+                       self.data.getField(column)[ZC.COL_TYPE] in MULLISTS:
                     raise ValueError('Internal Column Selection Error.')
-                if column == TCN_AUTOID:
+                if column == ZC.TCN_AUTOID:
                     # autoid can be appended without change. Even in case of grouping, it is the grouping column
                     attr = '%s%s.%s' % ( self.mgr.id,
                                          self.data.tablename,
@@ -755,10 +748,10 @@ class TableNode(SimpleItem):
             if do_group or (order and dist):
                 # autoid and order - attr have to be present in select,
                 # append if not the case
-                if TCN_AUTOID not in col_list:
+                if ZC.TCN_AUTOID not in col_list:
                     attr = '%s%s.%s' % ( self.mgr.id,
                                          self.data.tablename,
-                                         TCN_AUTOID )
+                                         ZC.TCN_AUTOID )
                     sellist.append( attr )
 
                 for oneorder in order.values():
@@ -776,12 +769,12 @@ class TableNode(SimpleItem):
             select = 'SELECT %s%s%s.%s' % ( dist,
                                             self.mgr.id,
                                             self.data.tablename,
-                                            TCN_AUTOID )
+                                            ZC.TCN_AUTOID )
             if self.order:
                 # use the orderstr sql representations of the order attrs in select
                 sellist = [select]
                 for oneorder in order.values():
-                    if oneorder['col'] == TCN_AUTOID:
+                    if oneorder['col'] == ZC.TCN_AUTOID:
                         continue
                     orderstr = oneorder['orderstr']
                     if isinstance(orderstr, ListType):
@@ -793,7 +786,7 @@ class TableNode(SimpleItem):
         if do_group:
             grpstr   = '%s%s.%s' % ( self.mgr.id,
                                      self.data.tablename,
-                                     TCN_AUTOID )
+                                     ZC.TCN_AUTOID )
             finalsql = '%s%s GROUP BY %s'
             finalsql = finalsql % ( select,
                                     self.sql,
@@ -887,7 +880,7 @@ class TableNode(SimpleItem):
                 function = listobj.function
 
             # order by own attr
-            if orderfield[COL_TYPE] in ALLLISTS and not function:
+            if orderfield[ZC.COL_TYPE] in ALLLISTS and not function:
                 # function lists have to be joined as TableNode Objects
                 # to order by value
                 # normal lists (even foreign) order on mgr+list.value
@@ -899,7 +892,7 @@ class TableNode(SimpleItem):
                     orderstring = '%s%s.value' % ( othermgr, listobj.foreign )
                 elif not listobj.cols:
                     # ordering on main table or multilist table
-                    if orderfield[COL_TYPE] in MULLISTS:
+                    if orderfield[ZC.COL_TYPE] in MULLISTS:
                         # multilist foreign table ref, but no column given
                         # order on multilisttable valueref column (named like column/order)
                         orderstring = '%s.%s' % ( listobj.dbname, order)
@@ -909,7 +902,7 @@ class TableNode(SimpleItem):
                 else:
                     orderstring = ['%s%s.%s' % (othermgr, listobj.foreign, col) for col in listobj.cols]
 
-            elif orderfield[COL_TYPE] in MULLISTS:
+            elif orderfield[ZC.COL_TYPE] in MULLISTS:
                 # multilists, but complex foreign list, so we order by id
                 orderstring = '%s.%s' % ( listobj.dbname, order)
             else:
@@ -917,7 +910,7 @@ class TableNode(SimpleItem):
                                             self.data.tablename,
                                             order )
             # only for distinct-queries, we need grouping when ordering on multilists
-            if dist and orderfield[COL_TYPE] in MULLISTS:
+            if dist and orderfield[ZC.COL_TYPE] in MULLISTS:
                 do_group = True
             orderdict = { 'col':      order,
                           'dir':      direction,
@@ -932,7 +925,7 @@ class TableNode(SimpleItem):
             # cycle through all again and wrap the orderstr in the fitting
             # function
             for order in result.values():
-                if order['col'] == TCN_AUTOID:
+                if order['col'] == ZC.TCN_AUTOID:
                     # it is okay, autoid does not need a function, it is the
                     # grouping column
                     continue

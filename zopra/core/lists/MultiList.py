@@ -22,8 +22,7 @@ from PyHtmlGUI.widgets.hgPushButton import hgPushButton
 #
 # ZopRA Imports
 #
-from zopra.core                             import ZM_PM
-from zopra.core.constants                   import SHOW, VALUE, NOTES, WIDGET_CONFIG, TCN_AUTOID
+from zopra.core                             import ZC
 from zopra.core.CorePart                    import COL_TYPE
 from zopra.core.elements.Buttons            import DLG_CUSTOM
 from zopra.core.elements.Styles.Default     import ssiDLG_MULTILIST
@@ -106,7 +105,7 @@ class MultiList(ForeignList):
 
         # try to create the list
         mgr = self.getManager()
-        m_product = mgr.getManager(ZM_PM)
+        m_product = mgr.getManager(ZC.ZM_PM)
 
         table_dict = { 'tableid':     { COL_TYPE: 'int'   },
                        self.listname: { COL_TYPE: 'int'   },
@@ -122,7 +121,7 @@ class MultiList(ForeignList):
         """\brief Create the database table."""
 
         mgr       = self.getManager()
-        m_product = mgr.getManager(ZM_PM)
+        m_product = mgr.getManager(ZC.ZM_PM)
         log       = True
 
         for ident in omit_log:
@@ -182,8 +181,8 @@ class MultiList(ForeignList):
 
             # fill the widget
             for entry in completelist:
-                if with_hidden or entry.get(SHOW) != 'no':
-                    mul.insertItem(entry[VALUE], entry[TCN_AUTOID])
+                if with_hidden or entry.get(ZC.SHOW) != 'no':
+                    mul.insertItem(entry[ZC.VALUE], entry[ZC.TCN_AUTOID])
 
         else:
             miss_str = 'ListHandling Error finding manager: %s for list %s'
@@ -219,7 +218,7 @@ class MultiList(ForeignList):
                                                       id1
                                                       )
 
-        result = mgr.getHierarchyUpManager(ZM_PM).executeDBQuery(query)
+        result = mgr.getHierarchyUpManager(ZC.ZM_PM).executeDBQuery(query)
         return [entry[0] for entry in result]
 
 
@@ -232,6 +231,9 @@ class MultiList(ForeignList):
         # replace None or empty list with empty string
         if not notes:
             notes = ''
+        if notes is None:
+            notes = ''
+
         # escape notes
         notes = notes.replace( "\'", "\\\'" ).replace( "\\\\'", "\\\'")
         query = "Update %s set notes = '%s' where tableid = %s and %s = %s"\
@@ -242,7 +244,7 @@ class MultiList(ForeignList):
                      listid
                     )
 
-        mgr.getManager(ZM_PM).executeDBQuery(query)
+        mgr.getManager(ZC.ZM_PM).executeDBQuery(query)
         return True
 
 
@@ -260,7 +262,7 @@ class MultiList(ForeignList):
                      listid
                     )
 
-        result = mgr.getManager(ZM_PM).executeDBQuery(query)
+        result = mgr.getManager(ZC.ZM_PM).executeDBQuery(query)
         if result:
             # make sure we return empty string if result is an empty item
             return result[0][0] or ''
@@ -288,13 +290,13 @@ class MultiList(ForeignList):
         else:
             return
 
-        mgr.getManager(ZM_PM).executeDBQuery(query)
+        mgr.getManager(ZC.ZM_PM).executeDBQuery(query)
 
 
     def addMLRef(self, tableid, value, notes = None):
         """\brief inserts a row with given tableid and value
                     in table 'multi'+list_name"""
-        assert value, E_PARAM_TYPE % (VALUE, 'not None value for %s' % self.listname, value )
+        assert value, E_PARAM_TYPE % (ZC.VALUE, 'not None value for %s' % self.listname, value )
         mgr = self.getManager()
 
         try:
@@ -317,7 +319,7 @@ class MultiList(ForeignList):
                                                                    False,
                                                                    'Notes' )
                  )
-        return mgr.getManager(ZM_PM).executeDBQuery(query)
+        return mgr.getManager(ZC.ZM_PM).executeDBQuery(query)
 
 
     def handleSelectionAdd(self, REQUEST, descr_dict, prefix = None):
@@ -389,7 +391,7 @@ class MultiList(ForeignList):
 
         # special list options
         # FIXME: correct usage, always use
-        confname = WIDGET_CONFIG + self.listname
+        confname = ZC.WIDGET_CONFIG + self.listname
         if confname in descr_dict:
             config = descr_dict[confname]
             # pattern, direction, type, short, tolerance
@@ -458,7 +460,7 @@ class MultiList(ForeignList):
 
                 lobj = foreign.listHandler[notes]
                 n_entries = lobj.getEntries()
-                n_list = [(entry[TCN_AUTOID], entry[VALUE]) for entry in n_entries]
+                n_list = [(entry[ZC.TCN_AUTOID], entry[ZC.VALUE]) for entry in n_entries]
                 dummy = ForeignList('dummy')
                 # overwrite notes (listname) with widget itself
                 notes = dummy.getSpecialWidget( entry_list = n_list, with_null = True)
@@ -552,7 +554,7 @@ class MultiList(ForeignList):
                     # set notes first
                     if self.notes:
                         for entry in selected:
-                            key = self.listname + NOTES + str(entry)
+                            key = self.listname + ZC.NOTES + str(entry)
                             widget.initNote(entry, descr_dict.get(key, ''))
                     # set selection
                     selvals = [manager.getLabelString(self.foreign, onesel) for onesel in selected]
@@ -591,8 +593,8 @@ class MultiList(ForeignList):
         # set Values
         entry_list = self.getEntries()
         for entry in entry_list:
-            if with_hidden or entry.get(SHOW) != 'no':
-                widget.insertItem(entry[VALUE], entry[TCN_AUTOID])
+            if with_hidden or entry.get(ZC.SHOW) != 'no':
+                widget.insertItem(entry[ZC.VALUE], entry[ZC.TCN_AUTOID])
 
         # set Selected Values
         selected = descr_dict.get(self.listname)
@@ -604,7 +606,7 @@ class MultiList(ForeignList):
         # set Notes
         if self.notes and selected:
             for entry in selected:
-                key = self.listname + NOTES + str(entry)
+                key = self.listname + ZC.NOTES + str(entry)
                 if descr_dict.get(key):
                     widget.initNote(entry, descr_dict[key])
             widget.refreshNotes()
@@ -666,7 +668,7 @@ class MultiList(ForeignList):
                     prop = hgProperty(pre + self.listname, item, parent = box)
                     lay.addWidget(prop, row, 1)
 
-                key = self.listname + NOTES + str(item)
+                key = self.listname + ZC.NOTES + str(item)
 
                 if descr_dict.get(key):
                     autoid = descr_dict.get(key)
@@ -743,7 +745,7 @@ class MultiList(ForeignList):
 
             query = 'Select autoid, %s from %s' % ( ','.join(columns),
                                                     mgr.getId() + name )
-            reslist = mgr.getManager(ZM_PM).executeDBQuery(query)
+            reslist = mgr.getManager(ZC.ZM_PM).executeDBQuery(query)
 
         mlist = hgMultiList(name = name, parent = parent)
 

@@ -21,6 +21,20 @@ class IZopRAManager(IFolder):
     """
 
 
+    def getZopraType(self):
+        """ Returns the internal type of the manager (to have different handling
+            for same managers with different type).
+
+        @result string - zopratyp
+        """
+
+    def getClassName(self):
+        """ Returns the class name.
+
+        @result string - class name (self.__class__.__name__)
+        """
+
+
 class IZopRAProduct(IZopRAManager):
     """ The IZopRAProduct interface marks a class to be a ZopRA product manager.
     """
@@ -53,5 +67,11 @@ class IZopRAList(Interface):
 
 class ISecurityManager(IZopRAManager):
     """ The ISecurityManager interface marks a class to provide security related
+        managing functionality.
+    """
+
+
+class IContactManager(IZopRAManager):
+    """ The IContactManager interface marks a class to provide contact related
         managing functionality.
     """

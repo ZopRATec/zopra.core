@@ -17,21 +17,17 @@ from PyHtmlGUI.widgets.hgPushButton  import hgPushButton
 from PyHtmlGUI.widgets.hgLabel       import hgLabel, hgProperty
 from PyHtmlGUI.widgets.hgComboBox    import hgComboBox
 
-from zopra.core.Storage.managers              import TN_CONTAINER, \
-                                                        TN_BOX,       \
-                                                        TN_POSITION
 
-from zopra.core.Storage                       import nsStorage 
+from zopra.core                      import ZC
+from zopra.storage.managers          import TN_CONTAINER, \
+                                            TN_BOX,       \
+                                            TN_POSITION,  \
+                                            nsStorage
+
 
 from zopra.core.elements.Buttons      import DLG_FUNCTION, \
                                                         BTN_HL_SELECT
 
-#from zopra.core.Storage.StorageManager    import StorageManager
-
-from zopra.core.CorePart  import MASK_ADD,       \
-                                        MASK_EDIT,      \
-                                        MASK_SEARCH,    \
-                                        MASK_SHOW
 
 
 CONTAINER_SELECT = '_conselect'
@@ -42,14 +38,6 @@ SELECT_TEXT      = 'Select'
 
 
 
-SWDG_HORIZONTAL = 0x0000
-SWDG_VERTICAL   = 0x0100
-SWDG_OPTIONAL   = 0x0200
-
-
-HORIZONTAL = SWDG_HORIZONTAL
-VERTICAL   = SWDG_VERTICAL
-OPTIONAL   = SWDG_OPTIONAL
 
 
 class hgStorageMgrPosSelector(hgWidget):
@@ -60,38 +48,46 @@ class hgStorageMgrPosSelector(hgWidget):
     """
     _className = 'hgStorageMgrPosSelector'
     _classType = hgWidget._classType + [ _className ]
-    
-    
-    def __init__(self, 
-                 storagemgr, # for labels on init only, not stored
-                 name     = None, 
-                 parent   = None, 
+
+    SWDG_HORIZONTAL = 0x0000
+    SWDG_VERTICAL   = 0x0100
+    SWDG_OPTIONAL   = 0x0200
+
+    HORIZONTAL = SWDG_HORIZONTAL
+    VERTICAL   = SWDG_VERTICAL
+    OPTIONAL   = SWDG_OPTIONAL
+
+
+    def __init__(self,
+                 storagemgr,  # for labels on init only, not stored
+                 name     = None,
+                 parent   = None,
                  prefix   = None,
-                 manager  = None, # the manager class name
+                 manager  = None,  # the manager class name
                  person   = None,
                  flags    = 0):
         """\brief Constructs a hgStorageMgrPosSelector widget."""
         hgWidget.__init__(self, parent, name)
-        
+
         self.parentmgr  = None
-        self.optional   = OPTIONAL
-        self.direction  = HORIZONTAL 
-        self.mode       = MASK_ADD
+        self.optional   = hgStorageMgrPosSelector.OPTIONAL
+        self.direction  = hgStorageMgrPosSelector.HORIZONTAL 
+        self.mode       = ZC.MASK_ADD
         self.person     = person
-        
-        if flags & VERTICAL:
-            self.mode   = VERTICAL
 
-        if flags & OPTIONAL:
-            self.mode   = OPTIONAL
+        if flags & hgStorageMgrPosSelector.VERTICAL:
+            self.mode   = hgStorageMgrPosSelector.VERTICAL
 
-        if flags & MASK_EDIT:
-            self.mode       = MASK_EDIT
-        elif flags & MASK_SEARCH:
-            self.mode       = MASK_SEARCH
-        elif flags & MASK_SHOW:
-            self.mode       = MASK_SHOW
-        
+        if flags & hgStorageMgrPosSelector.OPTIONAL:
+            self.mode   = hgStorageMgrPosSelector.OPTIONAL
+
+        if flags & ZC.MASK_EDIT:
+            self.mode       = ZC.MASK_EDIT
+        elif flags & ZC.MASK_SEARCH:
+            self.mode       = ZC.MASK_SEARCH
+        elif flags & ZC.MASK_SHOW:
+            self.mode       = ZC.MASK_SHOW
+
         if manager:
             self.parentmgr = manager
 
@@ -113,19 +109,19 @@ class hgStorageMgrPosSelector(hgWidget):
         # layout
         layout = hgGridLayout(self, 8, 8)
 
-        if self.mode & MASK_SHOW:
+        if self.mode & ZC.MASK_SHOW:
             return
 
         # container part
         self.containerlab = hgLabel('Container:', parent=self)
         layout.addWidget( self.containerlab, row, column)
-        if self.direction == HORIZONTAL:
+        if self.direction == hgStorageMgrPosSelector.HORIZONTAL:
             row += 1
         else:
             column += 1
         self.containerbox = hgComboBox(name = self.prefix + self.name + CONTAINER_SELECT, parent=self)
         layout.addWidget( self.containerbox, row, column )
-        if self.direction == HORIZONTAL:
+        if self.direction == hgStorageMgrPosSelector.HORIZONTAL:
             row += 1
         else:
             column += 1
@@ -134,7 +130,7 @@ class hgStorageMgrPosSelector(hgWidget):
         self.containerbtn.setToolTip('Select Container')
         layout.addWidget( self.containerbtn, row, column)
     
-        if self.direction == HORIZONTAL:
+        if self.direction == hgStorageMgrPosSelector.HORIZONTAL:
             row     = 0
             layout.addWidget( hgLabel('&nbsp;', parent=self), row, column+1)
             column += 2
@@ -146,14 +142,14 @@ class hgStorageMgrPosSelector(hgWidget):
         # box part
         self.boxlab = hgLabel('Box:', parent=self)
         layout.addWidget( self.boxlab, row, column)
-        if self.direction == HORIZONTAL:
+        if self.direction == hgStorageMgrPosSelector.HORIZONTAL:
             row += 1
         else:
             column += 1
         
         self.boxbox = hgComboBox(name = self.prefix + self.name + BOX_SELECT, parent=self)
         layout.addWidget( self.boxbox, row, column)
-        if self.direction == HORIZONTAL:
+        if self.direction == hgStorageMgrPosSelector.HORIZONTAL:
             row += 1
         else:
             column += 1
@@ -162,7 +158,7 @@ class hgStorageMgrPosSelector(hgWidget):
         self.boxbtn.setToolTip('Select Box')
         layout.addWidget( self.boxbtn, row, column)
     
-        if self.direction == HORIZONTAL:
+        if self.direction == hgStorageMgrPosSelector.HORIZONTAL:
             row     = 0
             layout.addWidget( hgLabel('&nbsp;', parent=self), row, column+1)
             column += 2
@@ -173,7 +169,7 @@ class hgStorageMgrPosSelector(hgWidget):
         # position part
         self.boxlab = hgLabel('Position:', parent=self)
         layout.addWidget( self.boxlab, row, column)
-        if self.direction == HORIZONTAL:
+        if self.direction == hgStorageMgrPosSelector.HORIZONTAL:
             row += 1
         else:
             column += 1
@@ -181,7 +177,7 @@ class hgStorageMgrPosSelector(hgWidget):
         self.positionbox = hgComboBox(name = self.prefix + self.name, parent=self)
         layout.addWidget( self.positionbox, row, column)
         
-        if self.direction == HORIZONTAL:
+        if self.direction == hgStorageMgrPosSelector.HORIZONTAL:
             row += 1
         else:
             column += 1
@@ -196,7 +192,7 @@ class hgStorageMgrPosSelector(hgWidget):
         """\brief Get data from storage manager and fill container"""
         
         if storagemgr:
-            if self.mode & MASK_SEARCH:
+            if self.mode & ZC.MASK_SEARCH:
                 predicate = lambda set, total: set > 0
             else:
                 predicate = lambda set, total: set < total
@@ -210,7 +206,7 @@ class hgStorageMgrPosSelector(hgWidget):
             if self.optional:
                 self.containerbox.insertItem(' -- no value -- ', 'NULL', 0)
                 
-            if self.mode & MASK_SEARCH:
+            if self.mode & ZC.MASK_SEARCH:
                 self.containerbox.insertItem(' -- no search value -- ', '', 0)
 
             if selected_id:
@@ -221,7 +217,7 @@ class hgStorageMgrPosSelector(hgWidget):
         """\brief Get data from storage manager and fill boxes"""
 
         if storagemgr:
-            if self.mode & MASK_SEARCH:
+            if self.mode & ZC.MASK_SEARCH:
                 # only boxes with content for search
                 predicate = lambda set, total: set > 0
                 
@@ -239,7 +235,7 @@ class hgStorageMgrPosSelector(hgWidget):
             if self.optional:
                 self.boxbox.insertItem('--none--', 'NULL', 0)
             
-            if self.mode & MASK_SEARCH:
+            if self.mode & ZC.MASK_SEARCH:
                 # no search value for search
                 self.boxbox.insertItem('--nsv--', '', 0)
     
@@ -251,7 +247,7 @@ class hgStorageMgrPosSelector(hgWidget):
         """\brief Get data from storage manager and fill positions"""
 
         if storagemgr:
-            if self.mode & MASK_SEARCH:
+            if self.mode & ZC.MASK_SEARCH:
                 predicate = lambda set: set
             else:
                 predicate = lambda set: not set
@@ -265,7 +261,7 @@ class hgStorageMgrPosSelector(hgWidget):
             if self.optional:
                 self.positionbox.insertItem('-no-', 'NULL', 0)
             
-            if self.mode & MASK_SEARCH:
+            if self.mode & ZC.MASK_SEARCH:
                 # no search value for search
                 self.positionbox.insertItem('-nsv-', '', 0)
             
@@ -484,7 +480,7 @@ class hgStorageMgrPosSelector(hgWidget):
     def handleRequest(self, REQUEST, descr_dict, storagemgr):
         """\brief Get configuration from REQUEST and fill widget"""
         
-        if self.mode & MASK_SHOW:
+        if self.mode & ZC.MASK_SHOW:
             pos = descr_dict.get(self.name)
             if pos == 'NULL':
                 pos = None
@@ -504,7 +500,7 @@ class hgStorageMgrPosSelector(hgWidget):
             # store selected container
             self.setProperty(CONTAINER_SELECT, container)
             
-            # check if new container was selected   
+            # check if new container was selected
             old_container = self.getProperty(REQUEST, CONTAINER_SELECT)
 
             box = None
@@ -533,5 +529,5 @@ class hgStorageMgrPosSelector(hgWidget):
         else:
             self.boxbtn.setDisabled()
 
-        if self.mode & MASK_EDIT:
+        if self.mode & ZC.MASK_EDIT:
             self.appendOriginalPosition(REQUEST, descr_dict, storagemgr)

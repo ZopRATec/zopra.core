@@ -8,10 +8,11 @@
 #    (at your option) any later version.                                   #
 ############################################################################
 
+import os
+import os.path as op
 import string
 from types      import ListType
-from os         import listdir, mkdir, remove
-from os.path    import split, normpath
+
 
 from PyHtmlGUI.kernel.hgTable           import hgTable
 from PyHtmlGUI.widgets.hgLabel          import hgLabel,         \
@@ -21,7 +22,7 @@ from PyHtmlGUI.widgets.hgLabel          import hgLabel,         \
 from PyHtmlGUI.widgets.hgTextEdit       import hgTextEdit
 from PyHtmlGUI.widgets.hgCheckBox       import hgCheckBox
 
-from zopra.core                         import HTML, ZM_PM, ZM_SCM, ZM_IM
+from zopra.core                         import HTML, ZC
 from zopra.core.tools.GenericManager    import GenericManager
 
 from zopra.core.dialogs                 import getStdDialog
@@ -42,6 +43,7 @@ from zopra.core.elements.Buttons        import BTN_L_ADD,        \
                                                mpfResetButton,   \
                                                mpfReset2Button
 from zopra.core.widgets                 import dlgLabel
+from zopra.core.utils.PersistentCache   import PersistentCache
 
 FILE_ERROR = 'File not found.'
 
@@ -49,7 +51,7 @@ FILE_ERROR = 'File not found.'
 class FileManager(GenericManager):
     """ File Manager """
 
-    _className  = ZM_IM
+    _className  = ZC.ZM_IM
     # the 'ZMOMTool' entry in the classType has a meaning, tools are not shown somewhere
     # don't know why and where :/
     _classType  = GenericManager._classType + [_className, 'ZMOMTool']
@@ -60,7 +62,7 @@ class FileManager(GenericManager):
             {'id': 'base_path',     'type': 'string',  'mode': 'w'},
         )
 
-    cache_size   = 20
+    cache_size      = 20
 
     _generic_config = {}
     _generic_config[TN_IMAGE] = { 'show_fields': [ TCN_NAME,
@@ -75,18 +77,15 @@ class FileManager(GenericManager):
         """\brief Deletes Entries"""
         if table == TN_IMAGE:
             image = self.getImage(id)
+
             # if path: delete the file on disk
             if image and image.get(TCN_PATH):
                 path = image.get(TCN_PATH)
-                if path in listdir(self.base_path):
-                    remove('%s%s' % (self.base_path, path))
+                if path in os.listdir(self.base_path):
+                    os.remove('%s%s' % (self.base_path, path))
+
             # remove the image from the cache
-            if id in self.cacheDict:
-                self.cacheList.remove(id)
-                del self.cacheDict[id]
-                # persistence force
-                self.cacheList = self.cacheList
-                self.cacheDict = self.cacheDict
+            self.cache.remove(id)
 
 
     def delImage(self, autoid):
@@ -119,7 +118,7 @@ class FileManager(GenericManager):
             tmp_file = '%s%s' % (self.base_path, autoid)
             query    = "select lo_export(imageid,'%s') " % ( tmp_file )
             query   += "from %s%s where autoid=%s" % ( self.id, TN_IMAGE, autoid )
-            result   = self.getManager(ZM_PM).executeDBQuery(query)
+            result   = self.getManager(ZC.ZM_PM).executeDBQuery(query)
 
             if result:
 
@@ -127,16 +126,15 @@ class FileManager(GenericManager):
                 fHandle = open(tmp_file, 'r')
                 filestr = fHandle.read()
                 fHandle.close()
-                remove(tmp_file)
+                os.remove(tmp_file)
 
         else:
+            path = op.join(self.base_path, descr_dict.get(TCN_PATH))
             try:
-                fHandle = open('%s%s' % ( self.base_path,
-                                          descr_dict.get(TCN_PATH) )
-                               )
-                filestr = fHandle.read()
-                fHandle.close()
+                with open(path, 'r') as fHandle:
+                    filestr = fHandle.read()
             except:
+                print 'Error accessing', path
                 filestr = ''
         return filestr
 
@@ -161,7 +159,7 @@ class FileManager(GenericManager):
             if hasattr(insert_file, 'filename'):
                 tmpname = str(insert_file.filename)
                 tmp2    = tmpname.replace('\\', '/')
-                tail    = split(normpath(tmp2))[1]
+                tail    = op.split(op.normpath(tmp2))[1]
                 name    = self.trimName(tail)
             else:
                 name    = ''
@@ -174,7 +172,7 @@ class FileManager(GenericManager):
             attr1 = TCN_IMAGEID
             val1  = "lo_import('%s')" % (tmp_file)
         else:
-            files  = listdir(self.base_path)
+            files  = os.listdir(self.base_path)
             if files:
                 maxentry = max(files)
                 # the insert_pic - tmpfile is in the way
@@ -218,7 +216,7 @@ class FileManager(GenericManager):
                                                         string.join(cols, ', '),
                                                         string.join(values, ', ')
                                                         )
-        self.getManager(ZM_PM).executeDBQuery(query)
+        self.getManager(ZC.ZM_PM).executeDBQuery(query)
         if hasattr(insert_file, 'close'):
             insert_file.close()
         return self.tableHandler[TN_IMAGE].getLastId()
@@ -254,7 +252,7 @@ class FileManager(GenericManager):
                 path = '%s%s' % ( self.base_path,
                                   image.get(TCN_PATH)
                                   )
-                remove(path)
+                os.remove(path)
                 diskfile = open(path, 'w')
                 diskfile.write(filestr)
                 diskfile.close()
@@ -268,7 +266,7 @@ class FileManager(GenericManager):
             if hasattr(file, 'filename'):
                 tmpname = str(file.filename)
                 tmp2    = tmpname.replace('\\', '/')
-                tail    = split(normpath(tmp2))[1]
+                tail    = op.split(op.normpath(tmp2))[1]
                 name    = self.trimName(tail)
             else:
                 name    = ''
@@ -288,7 +286,7 @@ class FileManager(GenericManager):
                                                            TN_IMAGE,
                                                            string.join(values, ', '),
                                                            autoid )
-        return self.getManager(ZM_PM).executeDBQuery(query)
+        return self.getManager(ZC.ZM_PM).executeDBQuery(query)
 #
 # List functions
 #
@@ -366,25 +364,17 @@ class FileManager(GenericManager):
         name = fileentry.get(TCN_NAME)
 
         # look in cache
-        if autoid in self.cacheDict:
-            filestr = self.cacheDict[autoid]
+        if self.cache.has(autoid):
+            filestr = self.cache.get(autoid)
         else:
             # not in cache, get it, put it in
             filestr = self.getImageFile(autoid)
 
             if filestr:
+
                 # put file into cache
-                self.cacheDict[autoid] = filestr
-                self.cacheList.append(autoid)
+                self.cache.set(autoid, filestr)
 
-                # persistence force
-                self.cacheDict = self.cacheDict
-                self.cacheList = self.cacheList
-
-                # check cachesize (FIFO)
-                if len(self.cacheList) > self.cache_size:
-                    oldid = self.cacheList.pop(0)
-                    del self.cacheDict[oldid]
             else:
                 err = self.getErrorDialog(FILE_ERROR + ' Image: ' + str(fileentry) + ' Config:' + str(self.base_path) + ' Please contact the Administrator.')
                 raise ValueError(err)
@@ -543,7 +533,7 @@ class FileManager(GenericManager):
 
     def actionBeforeShowList(self, table, param, REQUEST):
         """\brief Adjust the show List options."""
-        m_security = self.getHierarchyUpManager(ZM_SCM)
+        m_security = self.getHierarchyUpManager(ZC.ZM_SCM)
         if not m_security or m_security.getCurrentLevel() > 10:
             param['with_delete'] = True
 
@@ -573,11 +563,10 @@ class FileManager(GenericManager):
 
         button = self.getPressedButton(REQUEST)
         if button == BTN_L_RESET2:
-            self.cacheList = []
-            self.cacheDict = {}
+            self.cache = PersistentCache(FileManager.cache_size)
         tab = hgTable()
         row = 0
-        for entry in self.cacheList:
+        for entry in self.cache.getOrderedKeys():
             tab[row, 0] = self.getImageValue(entry)
             row += 1
         if row == 0:
@@ -633,7 +622,7 @@ class FileManager(GenericManager):
 
     def searchOrphanedFiles(self, do_del):
         """\brief Tests all files in the storage dir for database entries."""
-        files  = listdir(self.base_path)
+        files  = os.listdir(self.base_path)
         orph = []
         if files:
             tobj = self.tableHandler[TN_IMAGE]
@@ -646,36 +635,33 @@ class FileManager(GenericManager):
                 if not found:
                     orph.append(filename)
                     if do_del:
-                        remove('%s%s' % (self.base_path, filename))
+                        os.remove('%s%s' % (self.base_path, filename))
                 elif len(found) > 1:
                     orph.append('Found multiple entries: %s' % filename)
         return orph
 
 
-    def startupConfig(self, REQUEST):
+    def installConfig(self, REQUEST):
         """\brief Function called after creation by manageGeneric"""
-        base_path = REQUEST.get('base_path')
-        if base_path:
-            if not base_path[-1] == '/':
-                base_path = base_path + '/'
 
-        else:
+        self.cache  = PersistentCache(FileManager.cache_size)
+        base_path   = REQUEST.get('base_path')
+        if not base_path:
             base_path = '/tmp/'
 
-        path          = base_path + 'img/'
         print 'base_path', base_path
 
         try:
-            # we create a folder for our manager            
-            if 'img' not in listdir(base_path):
-                mkdir(path)
-            print 'mkdir'
-            if not str(self.id) in listdir(path):
-                mkdir(path + str(self.id))
-            print 'mkdir'
+            # we create a folder for our manager
+            path = op.join(base_path, str(self.id))
+            if not op.exists(path):
+                os.mkdir(path)
+                print 'create directory', path
+
             # overwrite base_path attribute in class with final version
             # this makes changes during runtime possible
-            self.base_path = path + str(self.id) + '/'
+            self.base_path = path + '/'
             print 'base_path', self.base_path
+
         except:
             raise ValueError('Error creating file hierarchy in %s' % base_path)

@@ -11,6 +11,9 @@
 from zopra.core                      import ZM_TEST
 from zopra.core.tools.GenericManager import GenericManager, GEN_LABEL, MASK_SHOW
 
+from zopra.core.dialogs.dlgMultiEdit import dlgMultiEdit
+
+
 A = 'frl_singlefilter'
 B = 'frl_multifilter'
 C = 'frl_singlerange'
@@ -29,7 +32,7 @@ class TestManager(GenericManager):
     suggest_id    = 't_manager'
     suggest_name  = 'Test Manager'
 
-    _dlgs         = GenericManager._dlgs + (('dlgMultiEdit', ''),)
+    _dlgs         = GenericManager._dlgs + (dlgMultiEdit,)
 
     def getSingleMask(self, table, flag = MASK_SHOW, descr_dict = None, prefix = None, parent = None):
         """\brief Returns one single Line-Mask."""

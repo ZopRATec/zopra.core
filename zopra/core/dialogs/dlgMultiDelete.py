@@ -18,12 +18,12 @@ from PyHtmlGUI.widgets.hgHBox           import hgHBox
 from PyHtmlGUI.widgets.hgGroupBox       import hgGroupBox
 from PyHtmlGUI.widgets.hgPushButton     import hgPushButton
 
+from zopra.core.constants               import ZC
 from zopra.core.elements.Buttons        import BTN_L_DELETE, \
                                                DLG_FUNCTION
+from zopra.core.dialogs                 import DLG_SHOW
 from zopra.core.dialogs.guiHandler      import guiHandler
-from zopra.core.security                import SC_DEL
 from zopra.core.security.GUIPermission  import GUIPermission
-from zopra.core.tools.GenericManager    import DLG_SHOW
 
 
 class dlgMultiDeletePrivate:
@@ -103,7 +103,7 @@ class dlgMultiDelete( hgDialog, guiHandler ):
             if not entry_dict:
                 manager.displayError('Entry with id %s doesn\'t exist in table %s in %s.' % (table, manager.getTitle()), 'Database Error')
 
-            if not manager.hasEntryPermission(table, descr_dict = entry_dict, permission_request = SC_DEL):
+            if not manager.hasEntryPermission(table, descr_dict = entry_dict, permission_request = ZC.SC_DEL):
                 manager.displayError('Insufficient access rights.', 'Access Error')
                 
             self.data.data_dicts[id] = entry_dict

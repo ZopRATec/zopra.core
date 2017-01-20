@@ -34,6 +34,7 @@ from zopra.core.elements.Buttons    import BTN_L_ADDITEM,  \
                                            BTN_FRL_NEXT,   \
                                            DLG_CUSTOM,     \
                                            mpfContinueButton
+from zopra.core.lists.GenericList   import GenericList
 from zopra.core.lists.List          import List
 from zopra.core.lists.ForeignList   import ForeignList
 from zopra.core.lists.MultiList     import MultiList
@@ -74,11 +75,11 @@ class ListHandler(Folder):
 
         # setup lists (given as <List> in the xml file)
         for list_idx in tmp_obj.list:
-            list_ = tmp_obj.list[list_idx]
-            list_name = list_.getName().encode('utf-8')
-            label     = list_.getLabel().encode('utf-8')
+            list_        = tmp_obj.list[list_idx]
+            list_name    = list_.getName().encode('utf-8')
+            label        = list_.getLabel().encode('utf-8')
             translations = list_.getTranslations()
-            translist = []
+            translist    = []
             if translations:
                 transtmp = translations.encode('utf-8').split(',')
                 for trans in transtmp:
@@ -91,7 +92,9 @@ class ListHandler(Folder):
                                   label,
                                   nocreate,
                                   translist)
-            # noedit affects the appearance of the column in the listedit-section of _index_html
+
+            # noedit affects the appearance of the column in the
+            # listedit-section of _index_html
             if list_.getNoedit():
                 lobj.noedit    = True
 
@@ -206,7 +209,6 @@ class ListHandler(Folder):
         self._setObject(listname, lobj)
 
         lobj_withmgr = self[listname]
-
         if not nocreate:
             lobj_withmgr.createTable()
 
@@ -222,10 +224,10 @@ class ListHandler(Folder):
         """
 
         # get the parameters
-        listname = column.getName().encode('utf-8')
-        listtype = column.getType().encode('utf-8')
+        listname  = column.getName().encode('utf-8')
+        listtype  = column.getType().encode('utf-8')
 
-        manager = function = label = map_ = None
+        manager   = function = label = map_ = None
         invisible = False
 
         if column.getManager():
@@ -304,7 +306,6 @@ class ListHandler(Folder):
             lobj.deleteTable( omit_log = [ZM_SCM, ZM_PM] )
 
         self._delObject(listname)
-
         return True
 
 
@@ -352,20 +353,15 @@ class ListHandler(Folder):
 
     def getLists(self, table, types = ['singlelist', 'multilist', 'hierarchylist'], include = True):
         """\brief Get all lists of a table that match"""
-
         if table not in self.maptable2lists:
             return []
 
         lists = []
-
-        if not isinstance(types, ListType):
-            types = [types]
+        types = types if isinstance(types, ListType) else [types]
 
         for listtype in ['singlelist', 'multilist', 'hierarchylist']:
-            if listtype in types:
-                process = True
-            else:
-                process = False
+
+            process = bool(listtype in types)
 
             if not include:
                 process = not process
@@ -373,7 +369,6 @@ class ListHandler(Folder):
             if process:
                 for listname in self.maptable2lists[table][listtype]:
                     lists.append(self[str(table) + '_' + listname])
-
 
         return lists
 
@@ -769,6 +764,20 @@ class ListHandler(Folder):
             r += 1
 
         return HTML( dlg.getHtml() )(self, REQUEST)
+
+
+    def correctMySQLDB(self, do = False):
+        """\brief mysql list tables have the show-column renamed to show1, which is not necessary anymore due to escaping. Rename the column."""
+        mgr = self.getManager()
+        pm = mgr.getManager(ZM_PM)
+        done = 0
+        for key in self.getListIDs():
+            lobj = self[key]
+            sql = 'ALTER TABLE %s%s CHANGE COLUMN `show1` `show` varchar(255)' % (self.getManager().getId(), lobj.listname)
+            if do:
+                pm.executeDBQuery(sql)
+            done += 1
+        return '%s Tabellen angepasst.' % done
 
 
     # TODO: FIXIT - adapt to new list objects / move to dialog!

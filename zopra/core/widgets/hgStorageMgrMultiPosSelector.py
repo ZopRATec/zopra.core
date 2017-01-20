@@ -20,40 +20,19 @@ from PyHtmlGUI.widgets.hgLabel       import hgLabel, hgProperty
 from PyHtmlGUI.widgets.hgComboBox    import hgComboBox
 from PyHtmlGUI.widgets.hgMultiList   import hgMultiList
 
+from zopra.core                         import ZC
 from zopra.core.elements.Styles.Default import ssiDLG_CLXMULTILIST
-
-from zopra.core.Storage.managers              import TN_CONTAINER, \
-                                                     TN_BOX,       \
-                                                     TN_POSITION
-
-from zopra.core.Storage                       import nsStorage 
-
-from zopra.core.elements.Buttons      import DLG_FUNCTION,  \
-                                                        BTN_L_ADDITEM, \
-                                                        BTN_L_REMOVE, \
-                                                        getPressedButton
-
-from zopra.core.CorePart  import MASK_ADD,       \
-                                        MASK_EDIT,      \
-                                        MASK_SEARCH,    \
-                                        MASK_SHOW
-
-CONTAINER_SELECT = '_conselect'
-BOX_SELECT       = '_boxselect'
-POSITION_SELECT  = '_posselect'
-SELECT_TEXT      = 'Select'
+from zopra.core.elements.Buttons        import DLG_FUNCTION,  \
+                                               BTN_L_ADDITEM, \
+                                               BTN_L_REMOVE, \
+                                               getPressedButton
 
 
+from zopra.storage.managers             import TN_CONTAINER, \
+                                               TN_BOX,       \
+                                               TN_POSITION, \
+                                               nsStorage
 
-
-MWDG_HORIZONTAL = 0x0000
-MWDG_VERTICAL   = 0x0100
-MWDG_OPTIONAL   = 0x0200
-
-
-HORIZONTAL = MWDG_HORIZONTAL
-VERTICAL   = MWDG_VERTICAL
-OPTIONAL   = MWDG_OPTIONAL
 
 class hgStorageMgrMultiPosSelector(hgWidget):
     """\class hgStorageMgrMultiPosSelector
@@ -63,8 +42,21 @@ class hgStorageMgrMultiPosSelector(hgWidget):
     """
     _className = 'hgStorageMgrMultiPosSelector'
     _classType = hgWidget._classType + [ _className ]
-    
-    
+
+    CONTAINER_SELECT = '_conselect'
+    BOX_SELECT       = '_boxselect'
+    POSITION_SELECT  = '_posselect'
+    SELECT_TEXT      = 'Select'
+
+    MWDG_HORIZONTAL = 0x0000
+    MWDG_VERTICAL   = 0x0100
+    MWDG_OPTIONAL   = 0x0200
+
+    HORIZONTAL = MWDG_HORIZONTAL
+    VERTICAL   = MWDG_VERTICAL
+    OPTIONAL   = MWDG_OPTIONAL
+
+
     def __init__(self, 
                  storagemgr,
                  name     = None, 
@@ -77,23 +69,23 @@ class hgStorageMgrMultiPosSelector(hgWidget):
         hgWidget.__init__(self, parent, name)
 
         self.parentmgr  = None
-        self.optional   = OPTIONAL
-        self.direction  = HORIZONTAL 
-        self.mode       = MASK_ADD
+        self.optional   = hgStorageMgrMultiPosSelector.OPTIONAL
+        self.direction  = hgStorageMgrMultiPosSelector.HORIZONTAL 
+        self.mode       = ZC.MASK_ADD
         self.person     = person
         
-        if flags & VERTICAL:
-            self.mode   = VERTICAL
+        if flags & hgStorageMgrMultiPosSelector.VERTICAL:
+            self.mode   = hgStorageMgrMultiPosSelector.VERTICAL
 
-        if flags & OPTIONAL:
-            self.mode   = OPTIONAL
+        if flags & hgStorageMgrMultiPosSelector.OPTIONAL:
+            self.mode   = hgStorageMgrMultiPosSelector.OPTIONAL
 
-        if flags & MASK_EDIT:
-            self.mode   = MASK_EDIT
-        elif flags & MASK_SEARCH:
-            self.mode   = MASK_SEARCH
-        elif flags & MASK_SHOW:
-            self.mode   = MASK_SHOW
+        if flags & ZC.MASK_EDIT:
+            self.mode   = ZC.MASK_EDIT
+        elif flags & ZC.MASK_SEARCH:
+            self.mode   = ZC.MASK_SEARCH
+        elif flags & ZC.MASK_SHOW:
+            self.mode   = ZC.MASK_SHOW
         
         if manager:
             self.parentmgr = manager
@@ -110,10 +102,10 @@ class hgStorageMgrMultiPosSelector(hgWidget):
     def buildLayout(self):
         """\brief builds layout"""
 
-        if self.mode & MASK_SHOW:
+        if self.mode & ZC.MASK_SHOW:
             return
 
-        if self.direction == HORIZONTAL:
+        if self.direction == hgStorageMgrMultiPosSelector.HORIZONTAL:
             self.buildHorizontalLayout()
         else:
             self.buildVerticalLayout()
@@ -132,14 +124,14 @@ class hgStorageMgrMultiPosSelector(hgWidget):
         self.containerlab = hgLabel('Container:', parent=self)
         layout.addWidget( self.containerlab, row, column)
         row += 1
-        self.containerbox = hgComboBox(name = self.prefix + self.name + CONTAINER_SELECT, parent=self)
+        self.containerbox = hgComboBox(name = self.prefix + self.name + hgStorageMgrMultiPosSelector.CONTAINER_SELECT, parent=self)
         layout.addWidget( self.containerbox, row, column)
         row += 1
         # add property widget at empty cell property 
         self.properties = hgWidget(parent = self)
         layout.addWidget(self.properties, row, column)
         row += 1
-        self.containerbtn = hgPushButton(SELECT_TEXT, name = DLG_FUNCTION + self.prefix + self.name + CONTAINER_SELECT, parent=self)
+        self.containerbtn = hgPushButton(hgStorageMgrMultiPosSelector.SELECT_TEXT, name = DLG_FUNCTION + self.prefix + self.name + hgStorageMgrMultiPosSelector.CONTAINER_SELECT, parent=self)
         layout.addWidget( self.containerbtn, row, column)
         row     = 0
         column += 1
@@ -153,10 +145,10 @@ class hgStorageMgrMultiPosSelector(hgWidget):
         self.boxlab = hgLabel('Box:', parent=self)
         layout.addWidget( self.boxlab, row, column )
         row += 1
-        self.boxbox = hgComboBox(name = self.prefix + self.name + BOX_SELECT, parent=self)
+        self.boxbox = hgComboBox(name = self.prefix + self.name + hgStorageMgrMultiPosSelector.BOX_SELECT, parent=self)
         layout.addWidget( self.boxbox, row, column )
         row += 2
-        self.boxbtn = hgPushButton(SELECT_TEXT, name = DLG_FUNCTION + self.prefix + self.name + BOX_SELECT, parent=self)
+        self.boxbtn = hgPushButton(hgStorageMgrMultiPosSelector.SELECT_TEXT, name = DLG_FUNCTION + self.prefix + self.name + hgStorageMgrMultiPosSelector.BOX_SELECT, parent=self)
         layout.addWidget( self.boxbtn, row, column )
         row     = 0
         column += 1
@@ -212,10 +204,10 @@ class hgStorageMgrMultiPosSelector(hgWidget):
         column += 1
         layout.addWidget( hgLabel('&nbsp;', parent=self), row, column)
         column += 1            
-        self.containerbox = hgComboBox(name = self.prefix + self.name + CONTAINER_SELECT, parent=self)
+        self.containerbox = hgComboBox(name = self.prefix + self.name + hgStorageMgrMultiPosSelector.CONTAINER_SELECT, parent=self)
         layout.addWidget( self.containerbox, row, column)
         column += 1
-        self.containerbtn = hgPushButton(SELECT_TEXT, name = DLG_FUNCTION + self.prefix + self.name + CONTAINER_SELECT, parent=self)
+        self.containerbtn = hgPushButton(hgStorageMgrMultiPosSelector.SELECT_TEXT, name = DLG_FUNCTION + self.prefix + self.name + hgStorageMgrMultiPosSelector.CONTAINER_SELECT, parent=self)
         layout.addWidget( self.containerbtn, row, column)
         row    += 1
         column  = 0
@@ -228,10 +220,10 @@ class hgStorageMgrMultiPosSelector(hgWidget):
         self.properties = hgWidget(parent = self)
         layout.addWidget(self.properties, row, column)
         column += 1       
-        self.boxbox = hgComboBox(name = self.prefix + self.name + BOX_SELECT, parent=self)
+        self.boxbox = hgComboBox(name = self.prefix + self.name + hgStorageMgrMultiPosSelector.BOX_SELECT, parent=self)
         layout.addWidget( self.boxbox, row, column)
         column += 1
-        self.boxbtn = hgPushButton(SELECT_TEXT, name = DLG_FUNCTION + self.prefix + self.name + BOX_SELECT, parent=self)
+        self.boxbtn = hgPushButton(hgStorageMgrMultiPosSelector.SELECT_TEXT, name = DLG_FUNCTION + self.prefix + self.name + hgStorageMgrMultiPosSelector.BOX_SELECT, parent=self)
         layout.addWidget( self.boxbtn, row, column)
     
         row    += 1
@@ -266,7 +258,7 @@ class hgStorageMgrMultiPosSelector(hgWidget):
         """\brief Get data from storage manager and fill container"""
         
         if storagemgr:
-            if self.mode & MASK_SEARCH:
+            if self.mode & ZC.MASK_SEARCH:
                 predicate = lambda set, total: set > 0
             else:
                 predicate = lambda set, total: set < total
@@ -280,7 +272,7 @@ class hgStorageMgrMultiPosSelector(hgWidget):
             if self.optional:
                 self.containerbox.insertItem(' -- no value -- ', 'NULL', 0)
                 
-            if self.mode & MASK_SEARCH:
+            if self.mode & ZC.MASK_SEARCH:
                 self.containerbox.insertItem(' -- no search value -- ', '', 0)
 
             if selected_id:
@@ -291,7 +283,7 @@ class hgStorageMgrMultiPosSelector(hgWidget):
         """\brief Get data from storage manager and fill boxes"""
 
         if storagemgr:
-            if self.mode & MASK_SEARCH:
+            if self.mode & ZC.MASK_SEARCH:
                 predicate = lambda set, total: set > 0
             else:
                 predicate = lambda set, total: set < total
@@ -314,7 +306,7 @@ class hgStorageMgrMultiPosSelector(hgWidget):
         """\brief Get data from storage manager and fill positions"""
 
         if storagemgr:
-            if self.mode & MASK_SEARCH:
+            if self.mode & ZC.MASK_SEARCH:
                 predicate = lambda set: set
             else:
                 predicate = lambda set: not set
@@ -350,7 +342,7 @@ class hgStorageMgrMultiPosSelector(hgWidget):
     def appendOriginalPositions(self, REQUEST, descr_dict, storagemgr):
         """\brief Insert current value into widget and mark it"""
 
-        if self.mode & MASK_EDIT:
+        if self.mode & ZC.MASK_EDIT:
             select = False
             # original position must have been property
             orig_ids = self.getProperty(REQUEST, '')
@@ -546,28 +538,28 @@ class hgStorageMgrMultiPosSelector(hgWidget):
         
         self.handleListButtons(REQUEST)
 
-        if self.mode & MASK_SHOW:
+        if self.mode & ZC.MASK_SHOW:
             linklabel = storagemgr.getLink(TN_POSITION, descr_dict.get(self.name), parent = self)
             self.layout().addWidget(linklabel, 0, 0)
             return
 
-        container = self.getValue(REQUEST, CONTAINER_SELECT)
+        container = self.getValue(REQUEST, hgStorageMgrMultiPosSelector.CONTAINER_SELECT)
                 
         self.fillContainers(storagemgr, container)
         
         if container and container != 'NULL':
             self.boxbtn.setEnabled()
             # store selected container
-            self.setProperty(CONTAINER_SELECT, container)
+            self.setProperty(hgStorageMgrMultiPosSelector.CONTAINER_SELECT, container)
             
             # check if new container was selected   
-            old_container = self.getProperty(REQUEST, CONTAINER_SELECT)
+            old_container = self.getProperty(REQUEST, hgStorageMgrMultiPosSelector.CONTAINER_SELECT)
     
             box = None
             
             # there is only an active box if no new container was selected
             if old_container and old_container == container:
-                box = self.getValue(REQUEST, BOX_SELECT)
+                box = self.getValue(REQUEST, hgStorageMgrMultiPosSelector.BOX_SELECT)
 
             # fill boxes
             self.fillBoxes(container, storagemgr, box)
@@ -575,7 +567,7 @@ class hgStorageMgrMultiPosSelector(hgWidget):
             if box and box != 'NULL':
                 self.addbtn.setEnabled()
                 # store selected box
-                self.setProperty(BOX_SELECT, box)
+                self.setProperty(hgStorageMgrMultiPosSelector.BOX_SELECT, box)
 
                 self.fillPositions(box, storagemgr)
             else:
@@ -584,7 +576,7 @@ class hgStorageMgrMultiPosSelector(hgWidget):
             self.addbtn.setDisabled()
             self.boxbtn.setDisabled()
             
-        if self.mode & MASK_EDIT:
+        if self.mode & ZC.MASK_EDIT:
             self.appendOriginalPositions(REQUEST, descr_dict, storagemgr)
             
         #if old_box and old_box == box:

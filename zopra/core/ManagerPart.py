@@ -19,10 +19,11 @@ from copy                            import deepcopy, copy
 from importlib                       import import_module
 
 from zope.interface                  import implements
+
 #
 # PyHtmlGUI Imports
 #
-from PyHtmlGUI                       import E_PARAM_TYPE, hg
+from PyHtmlGUI                       import hg
 from PyHtmlGUI.kernel.hgTable        import hgTable
 from PyHtmlGUI.kernel.hgWidget       import hgWidget, hgALIGN_CENTER, hgALIGN_LEFT
 from PyHtmlGUI.kernel.hgObject       import hgObject
@@ -49,17 +50,14 @@ from zopra.core                      import viewPermission, \
                                             HTML, \
                                             Image, \
                                             ClassSecurityInfo, \
-                                            getSecurityManager,  ZM_PM, ZM_SCM, ZM_MM, ZM_MBM
-from zopra.core.constants            import WIDGET_CONFIG, TCN_AUTOID
+                                            getSecurityManager,  ZC
+
+from zopra.core.dialogs              import getStdDialog, \
+                                            getStdZMOMDialog, \
+                                            getEmbeddedDialog
 from zopra.core.interfaces           import IZopRAManager, IZopRAProduct
+
 from zopra.core.CorePart             import CorePart, \
-                                            COL_TYPE,          \
-                                            ZCOL_BOOL,         \
-                                            ZCOL_STRING,       \
-                                            ZCOL_MEMO,         \
-                                            ZCOL_DATE,         \
-                                            COL_LABEL,         \
-                                            getStdDialog,      \
                                             FILTER_EDIT,       \
                                             FCB_DEFAULT_FILTER_TEXT
 
@@ -108,18 +106,19 @@ from zopra.core.elements.Buttons          import DLG_FUNCTION, \
 from zopra.core.dialogs.Dialog             import Dialog
 from zopra.core.dialogs.DialogHandler      import DialogHandler
 
-from zopra.core.security                   import SC_READ, \
-                                                  SC_LREAD, \
-                                                  SC_WRITE, \
-                                                  SC_DEL
 from zopra.core.security.GUIPermission     import GUIPermission
 
 from zopra.core.utils                      import getZopRAPath,\
-    getTableDefinition, getIconsDefinition
+                                                  getTableDefinition, \
+                                                  getIconsDefinition
 from zopra.core.widgets.hgSortButton       import hgSortButton
 from zopra.core.widgets                    import dlgLabel, dlgMiniSpacer
 
-from zopra.core.dialogs import getStdZMOMDialog, getEmbeddedDialog
+
+from zopra.core.dialogs.dlgTableEntry  import dlgTableEntry
+from zopra.core.dialogs.dlgMultiDelete import dlgMultiDelete
+
+from zopra.core.mixins import ManagerFinderMixin
 
 #
 # help function for letter increasing
@@ -136,7 +135,7 @@ SESSIONATTRS = ['basket', 'searchTree', 'columnChooser']
 
 # messages
 NOT_AUTHORIZED = 'You are not authorized to use this function.'
-NO_PERMISSION = 'You do not have sufficient permissions for this entry.'
+NO_PERMISSION  = 'You do not have sufficient permissions for this entry.'
 
 # alias for icon constants
 PB_PIXMAPSRC = hgPushButton.PB_PIXMAPSRC
@@ -147,9 +146,10 @@ PB_PIXMAPALT = hgPushButton.PB_PIXMAPALT
 SEARCH_KEYWORDS = ['NULL', '_not_', '_<_', '_>_', '_to_', '__']
 
 
-class ManagerPart(CorePart):
-    """\brief Manager Base Class provides basic Form and Request Handling,
-        Manager Location, Navigation and Menu Layout, Install and Uninstall methods """
+class ManagerPart(CorePart, ManagerFinderMixin):
+    """ ManagerPart class provides basic Form and Request Handling, Manager
+        Location, Navigation and Menu Layout, Install and Uninstall methods.
+    """
 
     implements(IZopRAManager)
 #
@@ -160,9 +160,7 @@ class ManagerPart(CorePart):
     meta_type   = ''
 
     # contains all dialog that will be installed with the manager
-    _dlgs         = ( ('dlgTableEntry', ''),
-                      ('dlgMultiDelete', ''),
-                      )
+    _dlgs         = ( dlgTableEntry, dlgMultiDelete, )
 
     # list of image handles for the dialog
     _icons = {}
@@ -212,15 +210,15 @@ class ManagerPart(CorePart):
     # the property for distinguishing multiple instances of one manager class
     zopratype     = ''
 
-#
-# Security
-#
+    #
+    # Security
+    #
     security = ClassSecurityInfo()
     security.declareObjectPublic()
 
-#
-# Icons for sort buttons for search result page
-#
+    #
+    # Icons for sort buttons for search result page
+    #
     IMG_SORTDEACT = 'Field sorting deactivated'
     IMG_SORTNONE  = 'Field not sorted'
     IMG_SORTASC   = 'Field sorted ascending'
@@ -231,9 +229,9 @@ class ManagerPart(CorePart):
                       IMG_SORTASC:   'sort_up_20.png',
                       IMG_SORTDESC:  'sort_down_20.png' }
 
-#
-# Icons for page buttons for search result page
-#
+    #
+    # Icons for page buttons for search result page
+    #
     IMG_PAGEFWD         = 'Page Forward'
     IMG_PAGEBWD         = 'Page Backward'
     IMG_PAGEFIRST       = 'First Page'
@@ -252,10 +250,9 @@ class ManagerPart(CorePart):
                       IMG_PAGEFIRST_DEACT: 'page_first_deact.png',
                       IMG_PAGELAST_DEACT:  'page_last_deact.png' }
 
-#
-# Icons for entry handling buttons
-#
-
+    #
+    # Icons for entry handling buttons
+    #
     IMG_CREATE = 'Create new'
     IMG_LIST   = 'List'
     IMG_SEARCH = 'Search'
@@ -284,10 +281,9 @@ class ManagerPart(CorePart):
                        IMG_SHOW:   'ziShow.png',
                        IMG_EDIT:   'ziEdit.png', }
 
-#
-# tooltips
-#
-
+    #
+    # tooltips
+    #
     TIP_CREATE = 'Create new %s entry.'
     TIP_LIST   = 'List all %s entries.'
     TIP_SEARCH = 'Search for %s entries.'
@@ -349,68 +345,78 @@ class ManagerPart(CorePart):
     security.declareProtected(modifyPermission, '_addTable')
 
     def _addTable(self):
-        """\brief Dummy function for extra table magic on add.
-                    Called by manage_afterAdd if table creation is enabled
-                    via dtml add form"""
+        """ Hook method for extra table magic on add.
+
+        Called by manage_afterAdd if table creation is enabled via DTML add
+        form.
+        """
         pass
 
 
     security.declareProtected(modifyPermission, '_addTable')
 
     def _delTable(self):
-        """\brief Dummy function for extra table magic on delete.
-                    Called by manage_beforeDelete if delete_tables option is set
-                    via properties screen"""
+        """ Hook method for extra table magic on delete.
+
+        Called by manage_beforeDelete if delete_tables option is set via
+        properties screen
+        """
         pass
 
 
     security.declareProtected(viewPermission, '_index_html')
 
     def _index_html(self, REQUEST, parent = None):
-        """\brief Dummy function for main window on start page.
-                    This function is overwritten by generic manager and should
-                    be overwritten again if you want a custom start page"""
+        """ Hook method for main window on start page.
+
+        This function is overwritten by generic manager and should be
+        overwritten again if you want a custom start page
+        """
         return ''
 
 
     security.declareProtected(managePermission, 'setDebugOutput')
 
     def setDebugOutput(self):
-        """\brief Dummy function for manager specific debug output.
-                This function is called by the management view-tab to
-                display further debug output."""
+        """ Hook method for manager specific debug output.
+
+        This function is called by the management view-tab to display further
+        debug output."""
         return ''
 
 
     security.declareProtected(viewPermission, 'contextMenuCustom')
 
     def contextMenuCustom(self, REQUEST, parent):
-        """\brief Dummy function for manager specific context menu.
-                    This function is called by contextMenu to display
-                    manager specific additional context data.
-                    """
+        """ Hook method for manager specific context menu.
+
+        This function is called by contextMenu to display manager specific
+        additional context data.
+        """
         return None
 
 
     security.declareProtected(viewPermission, 'navigationMenuCustom')
 
     def navigationMenuCustom(self, menubar, REQUEST):
-        """\brief Function for customizable part of navigation.
-                    Return True to indicate that something was added."""
-        return None
+        """ Hook method for customizable part of navigation.
+
+        Return True to indicate that something was added.
+        """
+        return False
 
 
     security.declareProtected(viewPermission, 'prepareEntryBeforeShowList')
 
     def prepareEntryBeforeShowList(self, table, dict, REQUEST):
-        """ Hook function called by getTableEntryListHtml to preprocess each
+        """ Hook method called by getTableEntryListHtml to preprocess each
             entry.
 
-            Overwrite this function to process each single entry before it is
-            displayed row-wise by getTableEntryListHtml. This can be useful to
-            substitute id's with labels / links in cases where singlelists are
-            not possible and the 'static' way using param[links] in
-            actionBeforeShowList is not wanted.
+        Overwrite this function to process each single entry before it is
+        displayed row-wise by getTableEntryListHtml. This can be useful to
+        substitute id's with labels / links in cases where singlelists are
+        not possible and the 'static' way using param[links] in
+        actionBeforeShowList is not wanted.
         """
         pass
 
@@ -444,6 +450,7 @@ class ManagerPart(CorePart):
 
         if not isinstance(msg, StringType):
             self.displayError('Expected string type.', 'Value Error.')
+
         r = 0
         error = hgTable()
         if topic:
@@ -468,7 +475,7 @@ class ManagerPart(CorePart):
 
     ###########################################################################
     #                                                                         #
-    # SimpleItem create / copy / delete hooks (deprecated but still in use    #
+    # SimpleItem create / copy / delete hooks (deprecated but still in use)   #
     #                                                                         #
     ###########################################################################
 
@@ -476,7 +483,7 @@ class ManagerPart(CorePart):
     security.declareProtected(managePermission, 'manage_afterAdd')
 
     def manage_afterAdd(self, item, container):
-        """\brief Manage the normal manage_afterAdd method of a SimpleItem.
+        """ Manage the normal manage_afterAdd method of a SimpleItem.
 
         1. The Method looks for an existing instance of an Product Manager. If
            there is no Product Manager the function will raise a
@@ -493,7 +500,7 @@ class ManagerPart(CorePart):
            Manager.
         """
 
-        m_product = self.getManager(ZM_PM)
+        m_product = self.getManager(ZC.ZM_PM)
 
         # copy hack to avoid errors on copy/paste
         if not m_product:
@@ -516,12 +523,10 @@ class ManagerPart(CorePart):
             self._setObject('listHandler', listHandler)
 
             # initialize tables
-            self.tableHandler.xmlInit( table_def,
-                                       self.nocreate )
+            self.tableHandler.xmlInit( table_def, self.nocreate )
 
             # initialize lists
-            self.listHandler.xmlInit( table_def,
-                                      self.nocreate )
+            self.listHandler.xmlInit( table_def, self.nocreate )
 
             # edit tracking lists
             self.createEditTrackingLists()
@@ -546,7 +551,7 @@ class ManagerPart(CorePart):
     def manage_beforeDelete(self, item, container):
         """\brief Clean up before deletion.
         """
-        m_product = self.getManager(ZM_PM)
+        m_product = self.getManager(ZC.ZM_PM)
 
         # delete the manager owned tables from the database
         if self.delete_tables:
@@ -640,6 +645,7 @@ class ManagerPart(CorePart):
                     iconHandler._setObject(name, image)
 
         # load local images from managers images directory
+        print 'Namespace', namespace
         if namespace != 'zopra.core':
 
             # re-import class to get the file location
@@ -648,6 +654,7 @@ class ManagerPart(CorePart):
 
             # remove the filename from the path and add the image path location
             path = os.path.join(os.path.split(path)[0], 'images')
+            print 'Image Path:', path
 
             if os.path.exists(path):
 
@@ -686,14 +693,17 @@ class ManagerPart(CorePart):
         self.dlgHandler = dlgHandler
 
         for entry in self._dlgs:
-            if not hasattr(self.dlgHandler, entry[0]):
-                self.dlgHandler.installDialog( entry[0], entry[1] )
+            if isinstance(entry, type(())):
+                continue
+
+            if not hasattr(self.dlgHandler, entry.__name__):
+                self.dlgHandler.installDialog(entry)
 
                 # set default parameters
-                if hasattr( self, entry[0] + '_params' ):
-                    params = getattr( self, entry[0] + '_params' )
+                if hasattr( self, entry.__name__ + '_params' ):
+                    params = getattr( self, entry.__name__ + '_params' )
                     if params:
-                        container = self.dlgHandler.getDialogContainer( entry[0] )
+                        container = self.dlgHandler.getDialogContainer(entry.__name__)
                         for param in params:
                             try:
                                 container._setProperty( param[0], param[1] )
@@ -716,6 +726,7 @@ class ManagerPart(CorePart):
         labels = {'creator': 'Creator',
                   'editor':  'Editor',
                   'owner':   'Owner'}
+
         # set up foreign lists if missing
         for listname in labels.keys():
 
@@ -725,6 +736,7 @@ class ManagerPart(CorePart):
             # edittrackers are invisible (except creator)
             if listname != 'creator':
                 list_def.setInvisible('1')
+
             for table in self.tableHandler.getTableIDs():
                 # but check whether it exists before (some managers still overwrite those lists :/)
                 # TODO: remove creator from tabledef of all managers, it is implicit
@@ -744,7 +756,8 @@ class ManagerPart(CorePart):
                        table,
                        idlist,
                        REQUEST = None ):
-        """ Basic function, forwards deletion request to Table object named table.
+        """ Basic function, forwards deletion request to Table object named
+            table.
 
         This function is called by all deletion methods and dialogs (single / multi)
         and gets overwritten by GenericManager to add a deletion hook which
@@ -766,9 +779,8 @@ class ManagerPart(CorePart):
     security.declareProtected(viewPermission, 'getZopraType')
 
     def getZopraType(self):
-        """\brief returns the internal type of the manager
-                  (to have different handling for same managers
-                  with diff. type).
+        """ Returns the internal type of the manager (to have different handling
+            for same managers with different type).
         """
         return self.zopratype
 
@@ -816,7 +828,7 @@ class ManagerPart(CorePart):
 
     def forwardCheckType(self, value, column_type, operator = False, label = None, do_replace = True):
         """\brief forward the type check call to the next ZopRAProduct"""
-        m_prod = self.getManager(ZM_PM)
+        m_prod = self.getManager(ZC.ZM_PM)
         # m_prod could be self, but doesnt matter
         return m_prod.checkType(value, column_type, operator, label, do_replace)
 
@@ -875,7 +887,7 @@ class ManagerPart(CorePart):
                     value = value[0]
 
                 # wildcard search
-                if value and do_wilds and typedefs[name] in [ZCOL_STRING, ZCOL_MEMO, ZCOL_DATE]:
+                if value and do_wilds and typedefs[name] in [ZC.ZCOL_STRING, ZC.ZCOL_MEMO, ZC.ZCOL_DATE]:
                     wcs = True
                     for skw in SEARCH_KEYWORDS:
                         if value.find(skw) != -1:
@@ -948,7 +960,7 @@ class ManagerPart(CorePart):
                 if filtertext and filtertext != FCB_DEFAULT_FILTER_TEXT:
                     if not isinstance(filtertext, StringType):
                         filtertext = str(filtertext)
-                    wcname = WIDGET_CONFIG + name
+                    wcname = ZC.WIDGET_CONFIG + name
                     if wcname not in descr_dict:
                         descr_dict[wcname] = {}
                     descr_dict[wcname]['pattern'] = filtertext
@@ -959,7 +971,7 @@ class ManagerPart(CorePart):
                 startitem = REQUEST['frl_startitem' + pre_name]
                 startitem = int(startitem)
 
-                wcname = WIDGET_CONFIG + name
+                wcname = ZC.WIDGET_CONFIG + name
                 if wcname not in descr_dict:
                     descr_dict[wcname] = {}
                 descr_dict[wcname]['offset'] = startitem
@@ -970,7 +982,7 @@ class ManagerPart(CorePart):
     security.declareProtected(viewPermission, 'quoteConstraints')
 
     def quoteConstraints(self, constraints):
-        """\brief convert dict into url-usable param string"""
+        """ Converts dictionary into URL-usable parameter string"""
         params = ''
         for key in constraints:
             if key == 'autoid':
@@ -993,24 +1005,23 @@ class ManagerPart(CorePart):
             # erase double entries
             buttons = dict([(b, None) for b in buttons]).keys()
             if len(buttons) > 1:
-                raise ValueError( self.getErrorDialog(
-                        'More then one button pressed. %s' % buttons) )
+                return self.getErrorDialog('More then one button pressed. %s' % buttons)
             return buttons[0]
 
     security.declareProtected(viewPermission, 'getValueListFromRequest')
 
     def getValueListFromRequest(self, REQUEST, field):
-        """\brief Filters multiple ids out of the REQUEST Handler.
+        """ Filters multiple IDs out of the REQUEST Handler.
 
-        \return list with values, otherwise None.
+        @return [<values>] list with values; otherwise None.
         """
-        if hasattr(REQUEST, field):
-            values = REQUEST[field]
-            if not isinstance(values, ListType):
-                values = [values]
-            return values
-        else:
+        if not hasattr(REQUEST, field):
             return []
+
+        values = REQUEST[field]
+        if not isinstance(values, ListType):
+            values = [values]
+        return values
 
     ###########################################################################
     #                                                                         #
@@ -1031,11 +1042,11 @@ class ManagerPart(CorePart):
             except Exception, exc:
                 msg = 'E-Mail Error: Could not send email %s from %s to %s: Error %s'
                 msg = msg % (subject, mfrom, mto, str(exc))
-                self.getManager(ZM_PM).writeLog(msg)
+                self.getManager(ZC.ZM_PM).writeLog(msg)
         else:
             msg = 'E-Mail Error: Could not send email %s from %s to %s: No Mailhost found.'
             msg = msg % (subject, mfrom, mto)
-            self.getManager(ZM_PM).writeLog(msg)
+            self.getManager(ZC.ZM_PM).writeLog(msg)
 
         return False
 
@@ -1049,22 +1060,26 @@ class ManagerPart(CorePart):
             except Exception, exc:
                 msg = 'E-Mail Error: Could not send email %s from %s to %s: Error %s'
                 msg = msg % (subject, mfrom, mto, str(exc))
-                self.getManager(ZM_PM).writeLog(msg)
+                self.getManager(ZC.ZM_PM).writeLog(msg)
         else:
             msg = 'E-Mail Error: Could not send email %s from %s to %s: No Mailhost found.'
             msg = msg % (subject, mfrom, mto)
-            self.getManager(ZM_PM).writeLog(msg)
+            self.getManager(ZC.ZM_PM).writeLog(msg)
 
         return False
 
     def prepare_zopra_currency_value(self, value):
-        """\brief Format a currency value according to german standard or return as is (for edit validation / search validation)"""
-        if not value:
+        """ Format a currency value according to german standard or return as is
+           (for edit validation / search validation)
+        """
+        if value is None:
             return ''
+
         try:
             res = ('%.2f' % float(str(value).replace(',', '.'))).replace('.', ',')
         except:
             res = str(value)
+
         return res
 
     ###########################################################################
@@ -1073,223 +1088,14 @@ class ManagerPart(CorePart):
     #                                                                         #
     ###########################################################################
 
-    security.declareProtected(viewPermission, 'getHierarchyUpManager')
-
-    def getHierarchyUpManager(self, name, obj_id = None):
-        """\brief Returns the specified manager out of the Folder Hierarchy.
-
-        \param name  The argument \a name is the name of the manager.
-        \param id    The argument \a id is to specify a manager id in an
-                     environment where more than one manager of a special type
-                     is instanciated.
-
-        \return a manager object if one was found, otherwise None.
-        """
-        if not name:
-            return None
-        # get path, traverse to each folder beginning at the last
-        # then look for manager
-        allpath = self.getPhysicalPath()
-        for index in xrange(len(allpath) - 1):
-            # get the path part without the end (larger index, longer end)
-            # loose at least 1 part (last is manager)
-            actpath = allpath[: -index - 1]
-            try:
-                fold = self.unrestrictedTraverse(actpath)
-            except:
-                raise ValueError([actpath, allpath, index])
-            if fold:
-                # iterate over container content
-                for obj in fold.objectValues():
-                    if hasattr(obj, '_classType') and \
-                       name in obj.getClassType():
-
-                        # if id is given then look also for these
-                        if obj_id:
-                            if hasattr(obj, 'id') and \
-                               str(obj.id) == obj_id:
-                                return obj
-
-                        # in all other cases return with the first object
-                        # that was found
-                        else:
-                            return obj
-        return None
-
-
-    security.declareProtected(viewPermission, 'getHierarchyDownManager')
-
-    def getHierarchyDownManager(self, name, obj_id = None, zopratype = ''):
-        """\brief Returns the specified manager out of the Folder Hierarchy.
-
-        \param name  The argument \a name is the name of the manager.
-        \param id    The argument \a id is to specify a manager id in an
-                     environment where more than one manager of a special type
-                     is instanciated.
-
-        \return a manager object if one was found, otherwise None.
-        """
-        assert name, E_PARAM_TYPE % ('name', 'Name of manager missing', name)
-
-        # go back until we find a folder
-        # for older zope versions that have a problem with redirection and getParentNode
-        # we have to look upwards for a folder, because getParentNode might be another manager
-        folder = self.getParentNode()
-        while not (hasattr(folder, 'meta_type') and folder.meta_type == 'Folder'):
-            folder = folder.getParentNode()
-
-        # start the loop on this folder
-        return self.getManagerDownLoop( folder,
-                                        name,
-                                        obj_id,
-                                        zopratype )
-
-
     security.declarePrivate('getManagerDownLoop')
-
-    def getManagerDownLoop( self,
-                            fold,
-                            name,
-                            obj_id = None,
-                            zopratype = '' ):
-        """\brief helper method to loop through children of a folder."""
-        if hasattr(fold, 'objectValues'):
-            # iterate over container content
-            for obj in fold.objectValues():
-                if hasattr(obj, 'getClassType') and name in obj.getClassType():
-                    # if id is given then look also for these
-                    if obj_id:
-                        if hasattr(obj, 'id') and str(obj.id) == obj_id:
-                            return obj
-                    elif zopratype:
-                        if hasattr(obj, 'getZopraType') and \
-                           obj.getZopraType() == zopratype:
-                            return obj
-
-                    # in all other cases return with the first
-                    # object that was found
-                    else:
-                        return obj
-
-                if obj.isPrincipiaFolderish:
-                    obj2 = self.getManagerDownLoop( obj,
-                                                    name,
-                                                    obj_id,
-                                                    zopratype )
-                    if obj2:
-                        return obj2
-                    # else stay in the loop
-        return None
-
-
     security.declarePrivate('getAllManagersDownLoop')
 
-    def getAllManagersDownLoop(self, fold, zopratype = '', result_dict = None, classname = None):
-        """\brief helper method to loop through children of a folder."""
-        if result_dict is None:
-            result_dict = {}
-        if hasattr(fold, 'objectValues'):
-
-            # iterate over container content
-            for obj in fold.objectValues():
-
-                # if we have a origin, the folder of the found manager must
-                # have the same id
-                if hasattr(obj, '_classType') and \
-                   (not zopratype or obj.getZopraType() == zopratype):
-
-                    if IZopRAManager.providedBy(obj):
-                        if not classname or obj.getClassName() == classname:
-                            result_dict[obj.id] = obj
-
-                if hasattr(obj, 'isPrincipiaFolderish') and \
-                   obj.isPrincipiaFolderish:
-                    self.getAllManagersDownLoop(obj, zopratype, result_dict, classname)
-
-        return result_dict
-
-
+    security.declareProtected(viewPermission, 'getHierarchyUpManager')
+    security.declareProtected(viewPermission, 'getHierarchyDownManager')
     security.declareProtected(viewPermission, 'getAllManagersHierarchyDown')
-
-    def getAllManagersHierarchyDown(self, zopratype = '', classname = None):
-        """\brief Returns a list with all managers found downward in the
-                  hierarchy.
-        """
-        return self.getAllManagersDownLoop( self.getParentNode(),
-                                            zopratype,
-                                            classname = classname
-                                            ).values()
-
-
     security.declareProtected(viewPermission, 'getAllManagers')
-
-    def getAllManagers(self, type_only = True, objects = False):
-        """\brief Returns a list with all managers of a special type.
-
-        @param type_only  The argument \a type_only is boolean. If True the
-                          result contains the meta_types of the manager. If
-                          False the result contains the ids of the managers.
-                          Default is True.
-        @result list - A list of meta_types or IDs of the managers from the
-                      actual container.
-        """
-        result_dict = {}
-
-        # we use a dict to receive only one manager per type
-        # now managers in the hierarchy
-        fold  = self.getParentNode()
-        ready = False
-
-        while not ready:
-            if hasattr(fold, 'objectValues'):
-
-                # iterate over container content
-                for obj in fold.objectValues():
-                    if IZopRAManager.providedBy(obj) and \
-                       not IZopRAProduct.providedBy(obj):
-
-                        if type_only:
-                            className = obj.getClassName()
-                            if className not in result_dict:
-                                result_dict[className] = obj
-
-                        else:
-                            result_dict[obj.id] = obj
-
-            if not fold or fold.isTopLevelPrincipiaApplicationObject:
-                ready = True
-            else:
-                fold = fold.getParentNode()
-
-        if objects:
-            return result_dict.values()
-
-        return result_dict.keys()
-
-
     security.declareProtected(viewPermission, 'topLevelProduct')
-
-    def topLevelProduct(self, zopratype = None):
-        """\brief Returns the hierarchy's topmost product manager."""
-        # TODO: switch to path-related traversal (see getHierarchyUpManager)
-        product = None
-        fold  = self.getContainer()
-        ready = False
-        while not ready:
-            if hasattr(fold, 'objectValues'):
-
-                # iterate over container content
-                for obj in fold.objectValues():
-                    if hasattr(obj, '_classType'):
-                        if ZM_PM in obj.getClassType():
-                            if not zopratype or obj.getZopraType() == zopratype:
-                                product = obj
-            if fold.isTopLevelPrincipiaApplicationObject or not fold:
-                ready = True
-            else:
-                fold = fold.getParentNode()
-
-        return product
 
     ###########################################################################
     #                                                                         #
@@ -1297,9 +1103,9 @@ class ManagerPart(CorePart):
     #   - EBaSe, SBAR, general permissions (entry / gui), forms               #
     ###########################################################################
 
-#
-# EBaSe functions
-#
+    #
+    # EBaSe functions
+    #
 
     security.declareProtected(managePermission, 'activateEBaSe')
 
@@ -1325,11 +1131,12 @@ class ManagerPart(CorePart):
         self.ebase = True
         if not self.checkEBaSe(table):
             return self.getErrorDialog('EBaSe not enabled.')
-        m_security = self.getHierarchyUpManager(ZM_SCM)
-        users = {}
-        all_group = m_security.tableHandler['ebasegroup'].getEntryAutoid('All', 'name')
-        tobj = self.tableHandler[table]
-        entries = tobj.getEntries()
+
+        m_security = self.getHierarchyUpManager(ZC.ZM_SCM)
+        users      = {}
+        all_group  = m_security.tableHandler['ebasegroup'].getEntryAutoid('All', 'name')
+        tobj       = self.tableHandler[table]
+        entries    = tobj.getEntries()
         # TODO: create umask
 
         # TODO: apply umask
@@ -1364,14 +1171,17 @@ class ManagerPart(CorePart):
     security.declareProtected(managePermission, 'activateSBAR')
 
     def activateSBAR(self):
-        """\brief"""
+        """ Activates the scope based access restrictions. """
         self.sbar = True
 
 
     security.declareProtected(viewPermission, 'checkSBAR')
 
     def checkSBAR(self):
-        """\brief"""
+        """ Returns whether the scope based access restrictions are enabled for a manager or not.
+
+        @return boolean - True if the scope based access restrictions are enabled; otherwise False.
+        """
         if not hasattr(self, 'sbar'):
             self.sbar = False
         return self.sbar
@@ -1385,7 +1195,7 @@ class ManagerPart(CorePart):
 
     def getGUIPermission(self):
         """\brief"""
-        obj = None
+        obj     = None
         session = None
 
         # get session
@@ -1413,6 +1223,7 @@ class ManagerPart(CorePart):
         """\brief"""
         # get session
         session = self.REQUEST.SESSION
+
         # test session
         session['GUIPermission'] = None
         return True
@@ -1421,28 +1232,35 @@ class ManagerPart(CorePart):
     security.declarePrivate('_createGUIPermission')
 
     def _createGUIPermission(self):
-        # function that creates the GUIPermission object
+        """ Returns a new created GUIPermission object. """
         # try to get security manager
-        m_sec = self.getHierarchyUpManager(ZM_SCM)
+        m_sec = self.getHierarchyUpManager(ZC.ZM_SCM)
         if m_sec:
+
             # get login
             login = m_sec.getCurrentLogin()
+
             # get global roles
             groles = m_sec.getGlobalRoles()
+
             # get access roles
             aroles = m_sec.getAccessRoles()
+
             # get access roles active managers
             active = m_sec.getAccessEnabledMgrs()
+
         else:
+
             # get login
             login = getSecurityManager().getUser()
+
             # no security manager -> everyone is admin
             groles = ['Admin']
             aroles = LevelCache(2, [100, 100], nonpersistent = True)
             active = {}
+
         # create object
-        obj = GUIPermission(login, groles, active, aroles)
-        return obj
+        return GUIPermission(login, groles, active, aroles)
 
 
     security.declareProtected(viewPermission, 'hasGUIPermission')
@@ -1459,10 +1277,7 @@ class ManagerPart(CorePart):
         tobj  = self.tableHandler[table]
         tabid = tobj.getUId()
 
-        if perm.hasPermission(permission_request, tabid, ztype):
-            return True
-        else:
-            return False
+        return bool(perm.hasPermission(permission_request, tabid, ztype))
 
 
     security.declareProtected(viewPermission, 'checkGUIPermission')
@@ -1477,7 +1292,7 @@ class ManagerPart(CorePart):
     security.declareProtected(viewPermission, 'isSuperUser')
 
     def isSuperUser(self, tabid = None, anytab = False):
-        """\brief Checks if the actual user is a superuser for table with tabid (or generell if no tabid given)"""
+        """\brief Checks if the actual user is a superuser for table with tabid (or general if no tabid given)"""
         # check permissions
         perm  = self.getGUIPermission()
         ztype = self.getZopraType()
@@ -1518,16 +1333,18 @@ class ManagerPart(CorePart):
     def getEntryPermissions(self, acl, table):
         # function that collects permissions for an acl
         # get security manager
-        m_sec = self.getHierarchyUpManager(ZM_SCM)
+        m_sec = self.getHierarchyUpManager(ZC.ZM_SCM)
         if m_sec:
             # get GUIPermission object
             perm = self.getGUIPermission()
 
             # check ebase
             if self.checkEBaSe(table):
+
                 # admin sees all? what about superuser?
                 if perm.hasRole(perm.SC_ADMIN):
-                    perms = [SC_READ, SC_LREAD, SC_WRITE, SC_DEL]
+                    perms = ZC.SC_L_ALL
+
                 else:
                     # get permissions
                     perms = m_sec.getCurrentEBaSePermission(acl)
@@ -1536,26 +1353,29 @@ class ManagerPart(CorePart):
                 # no ebase, use gui permission object to get permissions
                 perms = []
                 if perm.hasPermission(perm.SC_VIEW):
-                    perms.append(SC_READ)
-                    perms.append(SC_LREAD)
+                    perms.append(ZC.SC_READ)
+                    perms.append(ZC.SC_LREAD)
+
                 if perm.hasMinimumRole(perm.SC_SUPER):
-                    perms.append(SC_DEL)
-                    perms.append(SC_WRITE)
+                    perms.append(ZC.SC_DEL)
+                    perms.append(ZC.SC_WRITE)
+
         else:
             # everyone does everything
-            perms = [SC_READ, SC_LREAD, SC_WRITE, SC_DEL]
+            perms = ZC.SC_L_ALL
 
         return perms
 
 
-#
-# unauthorized forms
-#
+    #
+    # unauthorized forms
+    #
 
     security.declareProtected(viewPermission, 'unauthorizedHtml')
 
     def unauthorizedHtml(self, permission, html = True):
-        """\brief return dialog with unauthorized message (for an application part)."""
+        """ Return dialog with unauthorized message (for an application part).
+        """
         # TODO: use permission to differentiate messages
         dlg = getStdDialog('Error')
         dlg.add(hgNEWLINE)
@@ -1564,28 +1384,23 @@ class ManagerPart(CorePart):
         dlg.add('</center>')
         dlg.add(hgNEWLINE)
         dlg.add(self.getBackButtonStr())
-        if html:
-            return HTML( dlg.getHtml() )(self, None)
-        else:
-            return dlg
+        return HTML( dlg.getHtml() )(self, None) if html else dlg
 
 
     security.declareProtected(viewPermission, 'nopermissionHtml')
 
     def nopermissionHtml(self, permission, html = True):
-        """\brief return dialog with permission message (for an entry)."""
+        """ Return dialog with permission message (for an entry).
+        """
         # TODO: use permission to differentiate messages
         dlg = getStdDialog('Error')
         dlg.add(hgNEWLINE)
         dlg.add('<center>')
-        dlg.add( NO_PERMISSION )
+        dlg.add(NO_PERMISSION)
         dlg.add('</center>')
         dlg.add(hgNEWLINE)
         dlg.add(self.getBackButtonStr())
-        if html:
-            return HTML( dlg.getHtml() )(self, None)
-        else:
-            return dlg
+        return HTML( dlg.getHtml() )(self, None) if html else dlg
 
     ###########################################################################
     #                                                                         #
@@ -1596,7 +1411,7 @@ class ManagerPart(CorePart):
     security.declareProtected(managePermission, 'viewTab')
 
     def viewTab(self, REQUEST = None):
-        """\brief Returns the html source for the view form."""
+        """\brief Returns the HTML source for the view form."""
         perm = self.getGUIPermission()
         dlg = getStdDialog('Debug Output', '%s/viewTab' % self.absolute_url())
         dlg.setHeader('<dtml-var manage_page_header><dtml-var manage_tabs>')
@@ -1658,7 +1473,7 @@ class ManagerPart(CorePart):
     security.declareProtected(managePermission, 'getDebugOutput')
 
     def getDebugOutput(self, REQUEST):
-        """\brief Returns the html source of the debug output view."""
+        """\brief Returns the HTML source of the debug output view."""
         html = []
 
         additional = self.setDebugOutput()
@@ -1695,9 +1510,8 @@ class ManagerPart(CorePart):
             for col in self.tableHandler[table].getMainColumnNames():
                 tab[row + offset, 1] = col
                 colobj = self.tableHandler[table].getField(col)
-                tab[row + offset, 2] = colobj.get(COL_TYPE)
-                tab[row + offset, 3] = colobj.get( COL_LABEL,
-                                                   col )
+                tab[row + offset, 2] = colobj.get(ZC.COL_TYPE)
+                tab[row + offset, 3] = colobj.get(ZC.COL_LABEL, col)
                 offset += 1
             row += offset
         row += 1
@@ -1758,7 +1572,7 @@ class ManagerPart(CorePart):
 
     ###########################################################################
     #                                                                         #
-    # Table Dialogs (simple html forms, no real dialogs yet                   #
+    # Table Dialogs (simple HTML forms, no real dialogs yet                   #
     #   - new, show, edit, search, _list with helper functions                #
     ###########################################################################
 
@@ -2198,7 +2012,7 @@ class ManagerPart(CorePart):
                             dlg.add(hgProperty(formkey, oneval, parent = dlg))
                     else:
                         dlg.add(hgProperty(formkey, formval, parent = dlg))
-                raise ValueError(HTML( dlg.getHtml() )(self, None))
+                return HTML( dlg.getHtml() )(self, None)
         # all entries (search result)
         else:
             # check count
@@ -2217,7 +2031,7 @@ class ManagerPart(CorePart):
                                 dlg.add(hgProperty(formkey, oneval, parent = dlg))
                         else:
                             dlg.add(hgProperty(formkey, REQUEST.form[formkey], parent = dlg))
-                    raise ValueError(HTML( dlg.getHtml() )(self, None))
+                    return HTML( dlg.getHtml() )(self, None)
 
             autoidlist = []
             # Fixme: why is distinct False? this could generate a lot of double autoid entries
@@ -2227,7 +2041,7 @@ class ManagerPart(CorePart):
             autoidlist = deepcopy(cache.getItem(cache.IDLIST, sql))
 
             if not autoidlist:
-                results = self.getManager(ZM_PM).executeDBQuery(sql)
+                results = self.getManager(ZC.ZM_PM).executeDBQuery(sql)
                 if results:
                     aiddict = {}
                     for result in results:
@@ -2353,7 +2167,7 @@ class ManagerPart(CorePart):
             orderdir.append('asc')
         elif len(ordering) == 0:
             # nothing set yet, use autoid
-            ordering.append(TCN_AUTOID)
+            ordering.append(ZC.TCN_AUTOID)
             orderdir.append('asc')
         # set order in TableNode object
         treeRoot.setOrder(ordering, orderdir)
@@ -2362,19 +2176,13 @@ class ManagerPart(CorePart):
         func = 'count(distinct %sautoid)'
         # the type checks in getSQL throw ValueErrors for wrong types
         try:
-            row_count = self.getManager(ZM_PM).\
+            row_count = self.getManager(ZC.ZM_PM).\
                          executeDBQuery( treeRoot.getSQL(function = func, checker = self)
                                          )[0][0]
         except ValueError, vErr:
-            if not isinstance(vErr[0], StringType):
-                val = str(vErr[0])
-            else:
-                val = vErr[0]
-            if val.find('hgDialog') != -1:
-                dlg = val
-            else:
-                dlg = self.getErrorDialog(val, REQUEST)
-            raise ValueError(dlg)
+            val = str(vErr[0]) if not isinstance(vErr[0], StringType) else vErr[0]
+            dlg = val if val.find('hgDialog') != -1 else self.getErrorDialog(val, REQUEST)
+            return HTML(dlg)(self, None)
 
         # names of the show and edit buttons
         showprefix = table + '_show'
@@ -2652,7 +2460,7 @@ class ManagerPart(CorePart):
         autoidlist = []
 
         if row_count < 200 and param.get( 'with_autoid_navig' ):
-            autoidlist = self.getManager(ZM_PM).\
+            autoidlist = self.getManager(ZC.ZM_PM).\
                           executeDBQuery( treeRoot.getSQL(distinct = True, checker = self) )
             # flatten list
             autoidlist = [oneline[0] for oneline in autoidlist]
@@ -2688,7 +2496,7 @@ class ManagerPart(CorePart):
         directions = treeRoot.getOrderDirection()
         for field in show_fields:
             name = tabobj.getField(field).\
-                        get(COL_LABEL, field)
+                        get(ZC.COL_LABEL, field)
             bnamelab = hgLabel(name, parent = tab)
 
             sort_btn = hgSortButton(name = field, icons = sort_icons, parent = tab)
@@ -2726,7 +2534,7 @@ class ManagerPart(CorePart):
 
         row += 2
 
-        m_security = self.getHierarchyUpManager(ZM_SCM)
+        m_security = self.getHierarchyUpManager(ZC.ZM_SCM)
 
         # multi-edit flag
         multi_edit = param.get('with_multiedit') is True
@@ -2747,7 +2555,7 @@ class ManagerPart(CorePart):
 
             row += 1
             col  = 0
-            entry_id = entry[TCN_AUTOID]
+            entry_id = entry[ZC.TCN_AUTOID]
 
             isowner = entry['permission'].isOwner()
 
@@ -2835,9 +2643,11 @@ class ManagerPart(CorePart):
                             # trim shorter than checked
                             value = value[:40] + '...'
                     # test field type
-                    ftype = tabobj.getField(field)[COL_TYPE]
+                    field_info = tabobj.getField(field)
+                    print field, field_info
+                    ftype      = field_info[ZC.COL_TYPE]
 
-                    if ftype == ZCOL_BOOL:
+                    if ftype == ZC.ZCOL_BOOL:
                         tab.setCellAlignment(row, col, hgALIGN_CENTER)
                         widg = hgCheckBox(parent = tab)
                         widg.setDisabled()
@@ -2846,7 +2656,7 @@ class ManagerPart(CorePart):
                     else:
                         widg = hgLabel( value, parent = tab )
                         # different aligning for different cols is autsch -> commented out
-                        # if ftype in [ ZCOL_INT, ZCOL_LONG, ZCOL_DATE, ZCOL_FLOAT ]:
+                        # if ftype in [ ZC.ZCOL_INT, ZC.ZCOL_LONG, ZC.ZCOL_DATE, ZC.ZCOL_FLOAT ]:
                         #    tab.setCellAlignment(row, col, hgALIGN_RIGHT)
                         # else:
                         tab.setCellAlignment(row, col, hgALIGN_LEFT)
@@ -2864,7 +2674,7 @@ class ManagerPart(CorePart):
                     linkpart = param['links'][name].get('link')
                     field    = param['links'][name].get('field')
                     if not field:
-                        field = TCN_AUTOID
+                        field = ZC.TCN_AUTOID
                     # if check is given, the function with this name
                     # calculates the id (or None) or a label (if link is '')
                     # else we have a normal manager field
@@ -3108,7 +2918,7 @@ class ManagerPart(CorePart):
             # no own zt, but another manager set one
             orig = REQUEST.SESSION.get('zopratype')
 
-        m_product = self.getHierarchyDownManager(ZM_PM, zopratype = orig)
+        m_product = self.getHierarchyDownManager(ZC.ZM_PM, zopratype = orig)
         if m_product:
             # now we need the toplevel product of that zopratype
             m_product = m_product.topLevelProduct(zopratype = orig)
@@ -3117,17 +2927,17 @@ class ManagerPart(CorePart):
             bar.insertItem(text = str(lab))
 
         # link to message center
-        m_msgm = self.getHierarchyUpManager(ZM_MM)
+        m_msgm = self.getHierarchyUpManager(ZC.ZM_MM)
         if m_msgm:
             m_msgm.buildMenuItem(bar, REQUEST)
 
         # link to message board
-        m_zmbm = self.getHierarchyUpManager(ZM_MBM)
+        m_zmbm = self.getHierarchyUpManager(ZC.ZM_MBM)
         if m_zmbm:
             m_zmbm.buildMenuItem(bar, REQUEST)
 
         # security manager personal page
-        m_sec = self.getHierarchyUpManager(ZM_SCM)
+        m_sec = self.getHierarchyUpManager(ZC.ZM_SCM)
         if m_sec:
             url = '%s/personalPage' % m_sec.absolute_url()
             link = hgLabel('Personal Page', url)
@@ -3166,7 +2976,7 @@ class ManagerPart(CorePart):
                 link = m_product.absolute_url() + '?adminPage=1'
             else:
                 # no downstream product, look upstream
-                prod2 = self.getHierarchyUpManager(ZM_PM)
+                prod2 = self.getHierarchyUpManager(ZC.ZM_PM)
                 link = prod2.absolute_url() + '?adminPage=1'
 
             bar.insertItem(text = str(hgLabel('Managers', link)), popup = pop)
@@ -3185,8 +2995,8 @@ class ManagerPart(CorePart):
                                               objects   = True )
         if tmp_list:
             for mgr in tmp_list:
-                if mgr                              and \
-                   ZM_PM not in mgr.getClassType()      and \
+                if mgr                                     and \
+                   ZC.ZM_PM not in mgr.getClassType()      and \
                    ('ZMOMTool' not in mgr.getClassType() or admin):
 
                     title = mgr.getTitle()
@@ -3201,7 +3011,7 @@ class ManagerPart(CorePart):
                 for mgr in tmp_list2:
                     # make sure we didnt already find that one
                     if mgr                                  and \
-                       ZM_PM not in mgr.getClassType()      and \
+                       ZC.ZM_PM not in mgr.getClassType()   and \
                        ('ZMOMTool' not in mgr.getClassType() or admin) and \
                        mgr not in tmp_list:
 
@@ -3222,7 +3032,7 @@ class ManagerPart(CorePart):
         # next line means immediate login, which never works
         RESPONSE.setHeader('WWW-Authenticate', 'basic realm="%s"' % realm, 1)
 
-        m_prod = self.getHierarchyUpManager(ZM_PM)
+        m_prod = self.getHierarchyUpManager(ZC.ZM_PM)
         base2 = str(m_prod.absolute_url())
         if base2[-1] == '/':
             base2 = base2[:-1]
@@ -3276,7 +3086,7 @@ class ManagerPart(CorePart):
 
     def contextMenu(self, REQUEST = None):
         """\brief Create the Context Menu for Basket and Search-Management."""
-        m_security    = self.getHierarchyUpManager(ZM_SCM)
+        m_security    = self.getHierarchyUpManager(ZC.ZM_SCM)
         html          = []
         columnChooser = ''
         context       = ''
@@ -3369,6 +3179,14 @@ class ManagerPart(CorePart):
             elif hasattr(self, '_generic_config'):
 
                 table = REQUEST.get('table')
+
+                # TODO: Fix, if dialog and back button string active at the same
+                #       time we end up with [ <table_name>, <table_name> ]
+                #       This if statement tries to repair it
+                if isinstance(table, ListType) and \
+                   len(table) == 2 and table[0] == table[1]:
+                    table            = table[0]
+
                 if table                            and \
                    self._generic_config.get(table)  and \
                    self._generic_config[table].get('basket_active'):
@@ -3414,7 +3232,8 @@ class ManagerPart(CorePart):
     security.declareProtected(viewPermission, 'index_html')
 
     def index_html(self, REQUEST = None):
-        """\brief Returns the html source of an standard index_html view."""
+        """ Returns the HTML source of an standard index_html view."""
+
         # Managing Overview Form
         title = '%s Overview' % self.getTitle()
 
@@ -3489,14 +3308,20 @@ class ManagerPart(CorePart):
 
     security.declareProtected(viewPermission, 'exportForm')
 
-    def exportForm(self, REQUEST, RESPONSE, autoidlist = [], show_fields = [], table = None):
-        """\brief Returns the html source of an export table dialog.
+    def exportForm(self, REQUEST, RESPONSE, autoidlist = None, show_fields = None, table = None):
+        """Returns the HTML source of an export table dialog.
 
-        \param REQUEST  The argument \a REQUEST is used for the button handling
+        @param REQUEST  The argument \a REQUEST is used for the button handling
                         and should be a ZOPE REQUEST object.
-        \param autoidlist If autoidlist, show_fields and table are given, show this params
-        \result html page - export dialog
+        @param autoidlist If autoidlist, show_fields and table are given, show this params
+        @result HTML page - export dialog
         """
+        if autoidlist is None:
+            autoidlist = []
+
+        if show_fields is None:
+            show_fields = []
+
         #
         # dialog functions
         #
@@ -3508,8 +3333,7 @@ class ManagerPart(CorePart):
 
             if BTN_L_EXPORT in buttons:
                 if not table:
-                    raise RuntimeError( self.getErrorDialog(
-                           'Please select a table to export.') )
+                    return self.getErrorDialog('Please select a table to export.')
 
                 # we need also the admin fields
                 allcols = REQUEST.get('all_columns')
@@ -3739,7 +3563,10 @@ class ManagerPart(CorePart):
     security.declareProtected(managePermission, 'recreateTableHandlers')
 
     def recreateTableHandlers(self):
-        """\brief recreate table handler and reload all table objects with xml from table_dict"""
+        """ Recreate table handler and reload all table objects with XML from
+            table_dict
+        """
+
         # remove tableHandler
         self._delObject('tableHandler')
         self.tableHandler = None
@@ -3755,8 +3582,9 @@ class ManagerPart(CorePart):
     security.declareProtected(managePermission, 'recreateListHandlers')
 
     def recreateListHandlers(self):
-        """\brief recreate the list handler and reload all list objects with xml from table_dict
-                as well as the editTracking Lists"""
+        """ Recreate the list handler and reload all list objects with XML from
+            table_dict as well as the editTracking Lists
+        """
 
         # remove old listhandler
         self._delObject('listHandler')

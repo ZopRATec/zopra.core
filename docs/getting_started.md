@@ -2,20 +2,6 @@
 
 \tableofcontents
 
-\section intro Introduction
-
-
-The Zope Research Architecture (ZopRA) is a webbased data management framework for Zope using relational databases for data storage. The framework consists of two packages. ZMOM is the database wrapper and data handling layer providing database access and handling data entries. A part of ZMOM deals with user dialogs and visualization, using the second package, PyHtmlGUI, which is a visualization toolkit for the web. Recent developments have lead to a template based visualization for ZMOM as an alternative to PyHtmlGUI. As objects are derived from the data structures rather than the other way around, ZopRA can be seen as a relational-object-mapper.
-
-
-ZopRA can be used to handle any kind of data that can be structured in a relational way. We have been developing applications using ZopRA in the genetics sector, lab management and more recently for course management for universities.
-
-
-Since 2004, ZopRA has developed from a small database wrapper into a large framework. We will continue to improve the core framework (especially in the areas of multi-languages and security) and use it to develop more applications in the vicinity of the university.
-
-
-This document will explain how to easily create your own ZopRA package to manage your data and install it into a zope instance. Installation instructions for the packages can be found in the INSTALL documents located in the root folder of the respective package.
-
 \section package The Package
 
 This section covers the creation of a new ZopRA package. 
@@ -146,17 +132,17 @@ The listHandler of class ListHandler is a container for all Lists and List Refer
 To get an idea of how tables and lists interact and can be used, we will have a look on the generic editorial views.
 
 \section editorial_views Using the standard editorial views
-Go to the index_html for your editorial area to get access to the manager listing. When you click on your manager, you will get the manager’s main form display.
+Go to the index_html for your editorial area to get access to the manager listing. When you click on your manager, you will get the managerï¿½s main form display.
 
 \image html manager_overview.png
 
-Each table is listed here with the generic functionality for creating new entries, searching entries or listing all entries. Below the table listing, you will find a link-list for all of the manager’s lists.  
+Each table is listed here with the generic functionality for creating new entries, searching entries or listing all entries. Below the table listing, you will find a link-list for all of the managerï¿½s lists.  
 
 First we need to add some values to the lists in order to be able to select them on entry creation. Click on one of the lists to get to the list management screen. Add some values using the form and submit it each time. You can also delete and update the existing values later on.
 
 \image html new_list_entry.png
 
-Now we will have a look on the create form, as we need some example entries for this tutorial. On the manager’s main form, click the "create"-Image for one table to get there (the example uses the "point" table). The interface is generated automatically and since we did not specify anything yet, all columns will be rendered automatically.
+Now we will have a look on the create form, as we need some example entries for this tutorial. On the managerï¿½s main form, click the "create"-Image for one table to get there (the example uses the "point" table). The interface is generated automatically and since we did not specify anything yet, all columns will be rendered automatically.
 
 \image html new_entry.png
 
@@ -172,11 +158,11 @@ Fill in a value to get exactly the entries you are looking for. Press the "Searc
 
 \image html search_results.png
 
-Each entry is represented by one line. You can use the "anzeigen"-Link to get a detailed display of the entry. Since we did not configure anything, all attributes of the table are used in the listing. We will change that later on to have a more compact list view. The "bearbeiten"-Link can be used to edit the entry and the "löschen"-Link is used to delete it. Use the "anzeigen"-link to get to the view display of an entry. 
+Each entry is represented by one line. You can use the "anzeigen"-Link to get a detailed display of the entry. Since we did not configure anything, all attributes of the table are used in the listing. We will change that later on to have a more compact list view. The "bearbeiten"-Link can be used to edit the entry and the "lï¿½schen"-Link is used to delete it. Use the "anzeigen"-link to get to the view display of an entry. 
 
 \image html show_entry.png
 
-The heading says "Point 1". It is using the table’s label together with the entry’s label (which is the autoid as long as you didn’t overwrite the "getLabelString"-method). You can see that the different types of attributes are rendered differently. Strings will be shown on single lines while memo-attributes are displayed as blocks of text. Singlelists look like normal strings and multilists will be displayed as a list of values.  Push the edit-Button at the bottom of the page to get to the edit display. 
+The heading says "Point 1". It is using the tableï¿½s label together with the entryï¿½s label (which is the autoid as long as you didnï¿½t overwrite the "getLabelString"-method). You can see that the different types of attributes are rendered differently. Strings will be shown on single lines while memo-attributes are displayed as blocks of text. Singlelists look like normal strings and multilists will be displayed as a list of values.  Push the edit-Button at the bottom of the page to get to the edit display. 
 
 \image html edit_entry.png
 
@@ -377,7 +363,7 @@ same_entry python: mgr.getEntry(tablename, 1);
 
 The first statement returns all entries in the table "rectangle". The "getLabel"-method returns the label of the table. You can also use it to get the labels of each attribute of the table by calling it with an attribute name as parameter. To get a list of all columns, use the "getColumnDefs"-method. It returns a dictionary with the column names as keys and the column definition dictionary containing more info about each column as values. Since we only need the names, we use the "keys"-method of the dictionary to get the list of keys. 
 
-There are two ways to get one exact entry of a table identified by its autoid: You can request it directly from that table (line 4) or use a function in the manager to do the same for you, by giving it the tablename and autoid as parameters (line 5). The difference is that you can’t alter the ZMOMTable "getEntry"-method, but you can overwrite the manager’s "getEntry"-method. In this way, you are for example able to load related entries and store them inside you entry. Since all operations that are using the cache actually deliver copies instead of the cached entries, you do no need to worry about accidentally cached items, but you also cannot use the cache to store anything else then the plain entry. 
+There are two ways to get one exact entry of a table identified by its autoid: You can request it directly from that table (line 4) or use a function in the manager to do the same for you, by giving it the tablename and autoid as parameters (line 5). The difference is that you canï¿½t alter the ZMOMTable "getEntry"-method, but you can overwrite the managerï¿½s "getEntry"-method. In this way, you are for example able to load related entries and store them inside you entry. Since all operations that are using the cache actually deliver copies instead of the cached entries, you do no need to worry about accidentally cached items, but you also cannot use the cache to store anything else then the plain entry. 
 
 The return value of the entry gathering functions like "getEntries" (see chapter 9) are lists of entries. Each entry is a dictionary. To display the label and all attributes of all entries, you could use a TAL-statement as follows (in combination with the previous define statements):
 
@@ -445,7 +431,7 @@ def startupConfig(self, REQUEST):
 \endcode
 
 \section permissons Permissions
-You will have sufficient privileges to install a manager or to view it, as Zope’s "Manager" role is automatically given those permissions when ZMOM is installed. ZMOM comes with 4 permissions that can be directly imported into your manager from the ZMOM main package:
+You will have sufficient privileges to install a manager or to view it, as Zopeï¿½s "Manager" role is automatically given those permissions when ZMOM is installed. ZMOM comes with 4 permissions that can be directly imported into your manager from the ZMOM main package:
 
 \code{.py}
 modifyPermission = 'Modify ZopRA Content'

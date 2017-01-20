@@ -1,4 +1,5 @@
 import os.path
+import inspect
 import StringIO
 import types
 
@@ -7,7 +8,9 @@ from OFS.interfaces         import IObjectManager
 import zopra.core
 from zopra.core.interfaces  import IZopRAManager
 from zopra.core.Classes     import XMLHandler, make_parser
-import inspect
+
+
+E_FILE_NOT_FOUND = '[Error] File not found: %s'
 
 
 def getZopRAPath():
@@ -98,6 +101,18 @@ def getClassPath(obj):
     return os.path.split(inspect.getfile(obj.__class__))[0]
 
 
+def getModulePath(cls):
+    """ This method returns the path of the object's class file.
+
+    @param cls - class for which the class file path should be returned
+    @result path object - contains the path to the class file
+    """
+    _path = inspect.getfile(cls)
+    if _path.endswith('pyc'):
+        _path = _path[:-1]
+    return _path
+
+
 def getTableDefinition(manager):
     """ This method returns the table definition of the given manager.
 
@@ -106,18 +121,15 @@ def getTableDefinition(manager):
     """
 
     # model loading
-    className   = manager.getClassName()
-    xml_file    = os.path.join( getClassPath(manager),
-                                'model', '%s.xml' % className )
+    className = manager.getClassName()
+    _file     = os.path.join( getClassPath(manager),
+                              'model', '%s.xml' % className )
 
-    if os.path.exists(xml_file):
-        fHandle     = open(xml_file, 'r')
-        result      = fHandle.read()
-        fHandle.close()
-    else:
-        result    = '<?xml version="1.0"?><Tabledefinition />'
+    if os.path.exists(_file):
+        with open(_file, 'r') as fHandle:
+            return fHandle.read()
 
-    return result
+    return '<?xml version="1.0"?><Tabledefinition />'
 
 
 def getIconsDefinition(manager):
@@ -128,15 +140,12 @@ def getIconsDefinition(manager):
     """
 
     # model loading
-    className   = manager.getClassName()
-    xml_file    = os.path.join( getClassPath(manager),
-                                'icons', '%s.xml' % className )
+    className = manager.getClassName()
+    _file     = os.path.join( getClassPath(manager),
+                              'icons', '%s.xml' % className )
 
-    if os.path.exists(xml_file):
-        fHandle = open(xml_file, 'r')
-        result  = fHandle.read()
-        fHandle.close()
-    else:
-        result  = '<?xml version="1.0"?><Icondefinitions />'
+    if os.path.exists(_file):
+        with open(_file, 'r') as fHandle:
+            return fHandle.read()
 
-    return result
+    return '<?xml version="1.0"?><Icondefinitions />'

@@ -31,13 +31,13 @@ from PyHtmlGUI.widgets.hgMenuBar        import hgMenuBar
 
 from PyHtmlGUI.stylesheet.hgStyleSheet  import hgStyleSheetItem
 
-from Products.ZMOM.ZMOMCorePart         import TCN_AUTOID
+from zopra.core.constants               import TCN_AUTOID
                                                
-from Products.ZMOM.dialogs.guiHandler   import guiHandler
+from zopra.core.dialogs.guiHandler      import guiHandler
 
-from Products.ZMOM.secGUIPermission     import secGUIPermission
+from zopra.core.secGUIPermission        import secGUIPermission
 
-from Products.ZMOM.AuditAndSecurity.managers import TN_THREAD,      \
+from zopra.core.tools.managers import TN_THREAD,      \
                                                     TN_GLOBAL,      \
                                                     TN_SENT,        \
                                                     TN_LOCAL,       \

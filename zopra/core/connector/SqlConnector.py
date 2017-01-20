@@ -12,27 +12,7 @@ from importlib    import import_module
 from time         import strftime, strptime
 from types        import StringType, IntType, DictType, ListType
 
-#
-# ZopRA Imports
-#
-from zopra.core           import SimpleItem
-from zopra.core.CorePart  import COL_FLOAT,       \
-                                 COL_TYPE,        \
-                                 COL_TEXT,        \
-                                 COL_LABEL,       \
-                                 COL_DATE,        \
-                                 COL_CURRENCY,    \
-                                 COL_DEFAULT,     \
-                                 COL_REFERENCE,   \
-                                 COL_PRIMARY_KEY, \
-                                 COL_INT4,        \
-                                 COL_INT8
-from zopra.core.constants import TCN_AUTOID,      \
-                                 TCN_CREATOR,     \
-                                 TCN_EDITOR,      \
-                                 TCN_OWNER,       \
-                                 TCN_DATE,        \
-                                 TCN_EDATE
+from zopra.core   import SimpleItem, ZC
 
 # date mapping for convertDate
 format_list = [ '%d-%m-%y',
@@ -51,40 +31,15 @@ format_list = [ '%d-%m-%y',
                 '%d\%m\%Y',
                 ]
 
-E_PARAM_TYPE   = '[Error] Parameter %s has to be %s, but got %s.'
-
-_edit_tracking_cols = { TCN_CREATOR: { COL_TYPE:    'singlelist',
-                                       COL_LABEL:   'Creator'},
-                        TCN_DATE:    { COL_TYPE:    'date',
-                                       COL_LABEL:   'Entry Date',
-                                       COL_DEFAULT: 'now()'},
-                        TCN_EDITOR:  { COL_TYPE:    'singlelist',
-                                       COL_LABEL:   'Last edited by'},
-                        TCN_EDATE:   { COL_TYPE:    'date',
-                                       COL_LABEL:   'Last edited on',
-                                       COL_DEFAULT: 'now()'},
-                        TCN_OWNER:   { COL_TYPE:    'singlelist',
-                                       COL_LABEL:   'Owner'},
-                        }
 
 # dict of available connector classes and the corresponding db name (see DBInfo)
 connectors = { 'Psycopg':  'PostgresConnector',
+               'Psycopg2': 'PostgresConnector',
                'PyGreSQL': 'PostgresConnector',
                'PoPy':     'PostgresConnector',
                'MySQL':    'MySqlConnector',  }
 
 # why is string converted to COL_TEXT (text)? shouldn't this be VARCHAR(255)? does this harm database speed?
-
-type_map = { 'string':      COL_TEXT,
-             'memo':        COL_TEXT,
-             'int':         COL_INT4,
-             'singlelist':  COL_INT4,
-             'date':        COL_DATE,
-             'float':       COL_FLOAT,
-             'bool':        COL_INT4,
-             'int8':        COL_INT8,
-             'currency':    COL_CURRENCY
-             }
 
 
 def getConnector(context, connector_id, connection_id):
@@ -115,7 +70,9 @@ def getConnector(context, connector_id, connection_id):
 
 
 class SqlConnector(SimpleItem):
-    """\brief SQL Connector Base Class"""
+    """ The SqlConnector class provides a base, abstract implementation for a
+        database connection.
+    """
     _className = 'SqlConnector'
     _classType = [_className]
 
@@ -125,13 +82,24 @@ class SqlConnector(SimpleItem):
     # date format for database operations
     format_new  = '%d.%m.%Y'
 
+    type_map    = { 'string':      ZC.COL_TEXT,
+                    'memo':        ZC.COL_TEXT,
+                    'int':         ZC.COL_INT4,
+                    'singlelist':  ZC.COL_INT4,
+                    'date':        ZC.COL_DATE,
+                    'float':       ZC.COL_FLOAT,
+                    'bool':        ZC.COL_INT4,
+                    'int8':        ZC.COL_INT8,
+                    'currency':    ZC.COL_CURRENCY
+                    }
 
-    def __init__ (self, id, connection_id):
-        """\brief Initialise the SQL Part
 
-        \param connection_id   The argument \a connection_id contains the id of
+    def __init__(self, id, connection_id):
+        """ Initialize the SQL Part
+
+        @param connection_id   The argument \a connection_id contains the id of
                                the connection object that should be used.
-        \param shared_connection_id The argument \a shared_connection_id
+        @param shared_connection_id The argument \a shared_connection_id
                                contains as well a id to a connection object but
                                for one that can handle queries system wide.
         """
@@ -145,7 +113,7 @@ class SqlConnector(SimpleItem):
 
         @result SQLConnector
         """
-        return getattr(self, self.connection_id)
+        return getattr(self, self.connection_id)()
 
 
     def query(self, query_text):
@@ -156,13 +124,15 @@ class SqlConnector(SimpleItem):
 
         @param query_text  - The argument \a query_text contains the complete
                              SQL query string.
+        @return result
         """
+        raise NotImplementedError(ZC.E_CALL_ABSTRACT)
 
-        conDA       = self._getConnection()
-        connection  = conDA()
 
-        # fetch info and result, but return the result only
-        return connection.query(query_text)[1]
+    def escape_sql_name(self, name):
+        """ Escape SQL names (cols and tables), default: do nothing"""
+        return name
+
 
 #
 # table handling
@@ -174,9 +144,9 @@ class SqlConnector(SimpleItem):
         These function is only for converting date types before inserting in a
         database!
 
-        \param old_date  The argument \a date is a date that should be changed
+        @param old_date  The argument \a date is a date that should be changed
                            into a new format.
-        \result String with new date or 'NULL', otherwise an empty string.
+        @result String with new date or 'NULL', otherwise an empty string.
         """
         if not old_date:
             return 'NULL'
@@ -189,8 +159,7 @@ class SqlConnector(SimpleItem):
 
         for format_old in format_list:
             try:
-                new_date = strftime(self.format_new, strptime(old_date, format_old))
-                return new_date
+                return strftime(self.format_new, strptime(old_date, format_old))
             except ValueError:
                 pass
 
@@ -220,10 +189,7 @@ class SqlConnector(SimpleItem):
             value = value.strip()
             pos_to  = value.find( '_to_' )
             # inserts of __ in text should work -> operator indicates search
-            if operator:
-                pos_sep = value.find( '__'   )
-            else:
-                pos_sep = -1
+            pos_sep = value.find( '__'   ) if operator else -1
             pos_lt  = value.find( '_<_'  )
             pos_lte = value.find( '_<=_'  )
             pos_gt  = value.find( '_>_'  )
@@ -238,7 +204,7 @@ class SqlConnector(SimpleItem):
         elif isinstance(value, ListType):
             if '_not_ NULL' in value or '_not_NULL' in value:
                 value = 'NOT NULL'
-                oper = 'IS'
+                oper  = 'IS'
             else:
                 entry_list = map( lambda onevalue: self.checkType( onevalue,
                                                            column_type,
@@ -247,12 +213,12 @@ class SqlConnector(SimpleItem):
                                   value
                                   )
                 value = u'(%s)' % u', '.join(entry_list)
-                oper = 'IN'
+                oper  = 'IN'
 
         # check for _not_ NULL
         elif value.replace(' ', '') == '_not_NULL' or value.replace(' ', '') == '_not__0_':
             value = 'NOT NULL'
-            oper    = 'IS'
+            oper  = 'IS'
 
         # we allow range searches with keyword _to_
         elif pos_to != -1:
@@ -277,6 +243,7 @@ class SqlConnector(SimpleItem):
                               valuelist
                               )
             value = u'(%s)' % u', '.join(entry_list)
+
         elif pos_lt != -1:
             oper  = '<'
             value = self.checkType( value[pos_lt + 3:].strip(),
@@ -311,12 +278,14 @@ class SqlConnector(SimpleItem):
                 raise ValueError( 'No Type found%s.' % labelstr)
 
             if column_type == 'string' or column_type == 'memo':
-                oper = ''
+                oper  = ''
                 if do_replace:
                     # replace wildcards
                     value = value.replace( "*", "%" )
+
                 # escape some characters
                 value = value.replace( "\'", "\\\'" )
+
                 # remove double escape for ' in text
                 value = value.replace( "\\\\'", "\\\'")
 
@@ -324,6 +293,7 @@ class SqlConnector(SimpleItem):
                 if value.find('_not_') == 0:
                     value = value[5:].lstrip()
                     oper    = 'not '
+
                 oper += self.LIKEOPERATOR
                 value = "'" + value + "'"
 
@@ -331,6 +301,7 @@ class SqlConnector(SimpleItem):
                 oper, value = self.checkDateValue(value, labelstr)
 
             elif column_type == 'int' or column_type == 'singlelist':
+
                 # we allow != searches with keyword _not_
                 if value.find('_not_') == 0:
                     value = value[5:].lstrip()
@@ -377,18 +348,14 @@ class SqlConnector(SimpleItem):
             else:
                 oper  = '='
 
-        if operator:
-            return (unicode(value), unicode(oper))
-
-        else:
-            return unicode(value)
+        return (unicode(value), unicode(oper)) if operator else unicode(value)
 
 
     def checkDateValue(self, value, labelstr = ''):
         """\brief check date values in extra function for overwrite possibility"""
         value = value.replace("*", "%")
         oper  = ''
-        if str(value).find('_not_') == 0:
+        if value.find('_not_') == 0:
             value = value[5:].lstrip()
             oper  = 'not '
 
@@ -404,169 +371,128 @@ class SqlConnector(SimpleItem):
         return oper, value
 
 
-    def convertType(self, coltype):
-        """ This method converts ZopRA-intern types to DB-types."""
-        return type_map.get(coltype, COL_TEXT)
+    def convertType(self, col_type):
+        """ This method converts ZopRA-intern types to DB-types.
+
+        If col_type is not available this method will raise a ValueError
+        exception.
+
+        @param  coltype - ZopRA column type
+        @result string  - database dependent column type
+        """
+        assert ZC.checkType('col_type', col_type, StringType)
+
+        return self.type_map.get(col_type, ZC.COL_TEXT)
 
 
     def getColumnDefinition(self, cols_dict):
-        assert isinstance(cols_dict, DictType), \
-               E_PARAM_TYPE % ('cols_dict', 'DictType', cols_dict)
+        assert ZC.checkType('cols_dict', cols_dict, DictType)
 
         cols_str = []
         for col in cols_dict:
-            name = col
-            try:
-                # type conversion
-                dbtype  = self.convertType(cols_dict[col][COL_TYPE])
-                kind    = ' %s' % dbtype
-            except:
-                raise ValueError(str(cols_dict) + str(col))
-            if cols_dict[col].get(COL_DEFAULT):
-                default = ' DEFAULT %s' % cols_dict[col][COL_DEFAULT]
-            else:
-                default = ''
-            if cols_dict[col].get(COL_REFERENCE):
-                reference = ' REFERENCES %s' % cols_dict[col][COL_REFERENCE]
-            else:
-                reference = ''
-            cols_str.append('%s%s%s%s' % (name, kind, default, reference) )
+
+            # type conversion
+            dbtype      = ' %s' % self.convertType(cols_dict[col][ZC.COL_TYPE])
+
+            # default value
+            col_default = cols_dict[col].get(ZC.COL_DEFAULT)
+            default     = ' DEFAULT %s' % col_default if col_default else ''
+
+            # reference value
+            col_ref     = cols_dict[col].get(ZC.COL_REFERENCE)
+            reference   = ' REFERENCES %s' % col_ref if col_ref else ''
+
+            # join the column statement
+            cols_str.append('%s%s%s%s' % (self.escape_sql_name(col), dbtype, default, reference) )
+
         return ', '.join(cols_str)
 
 
     def testForTable(self, name):
-        """\brief Test if the table already exists.
+        """ Test if the table already exists.
 
-        \param name           The argument \a name is a string with the
-                              fullname of a table.
+        @param name           The argument \a name is a string with the
+                              full name of a table.
 
-        \return Boolean       Returns True if the table exists, otherwise False
+        @return Boolean       Returns True if the table exists; otherwise False.
         """
-        assert isinstance(name, StringType), \
-               E_PARAM_TYPE % ('name', 'StringType', name)
-
-        query_text = "SELECT * FROM pg_class WHERE relname LIKE '%s'" % name
-        return bool(self.query(query_text))
+        raise NotImplementedError(ZC.E_CALL_ABSTRACT)
 
 
     def testForColumn(self, mgrid, table, column):
-        """\brief Test if the column already exists in table.
+        """ Test if the column already exists in table.
 
-        \param manager        The argument \a manager is a string with the
+        @param manager        The argument \a manager is a string with the
                               manager id.
 
-        \param table           The argument \a table is a string with the
+        @param table           The argument \a table is a string with the
                               fullname of a table.
 
-        \param column         The argument \a column is a string with the
+        @param column         The argument \a column is a string with the
                               fullname of a column.
 
-        \return Boolean       Returns True if the column exists in table, otherwise False
+        @return Boolean       Returns True if the column exists in table, otherwise False
         """
-        assert isinstance(mgrid, StringType), \
-               E_PARAM_TYPE % ('mgrid', 'StringType', mgrid)
-
-        assert isinstance(table, StringType), \
-               E_PARAM_TYPE % ('table', 'StringType', table)
-
-        assert isinstance(table, StringType), \
-               E_PARAM_TYPE % ('column', 'StringType', column)
-
-        query_text  = "SELECT count(a.attname) AS tot FROM pg_catalog.pg_stat_user_tables AS t, pg_catalog.pg_attribute a "
-        query_text += "WHERE t.relid = a.attrelid AND t.schemaname = 'public' "
-        query_text += "AND t.relname = '%s%s'  AND a.attname = '%s';" % (mgrid.lower(), table, column)
-
-        result = self.query(query_text)
-        return bool(result[0][0])
+        raise NotImplementedError(ZC.E_CALL_ABSTRACT)
 
 
     def createTable(self, name, cols_dict, edit_tracking = True):
-        """\brief Adds a SQL table to an existing database."""
-        # Tests moved to manage_afterAdd to avoid system specific testForTable
+        """ This method adds a SQL table to an existing database.
 
-        assert isinstance(name, StringType), \
-               E_PARAM_TYPE % ('name', 'StringType', name)
-        assert isinstance(cols_dict, DictType), \
-               E_PARAM_TYPE % ('cols_dict', 'DictType', cols_dict)
-        assert edit_tracking == True or edit_tracking == False, \
-               E_PARAM_TYPE % ('edit_tracking',  'BooleanType', edit_tracking)
-
-        create_text = ['CREATE TABLE %s (' % name]
-        create_text.append( "autoid INT4 autoincrement," )
-
-        if edit_tracking:
-            create_text.append( self.getColumnDefinition(_edit_tracking_cols) )
-            create_text.append(', ')
-
-        # we have to take care of columns with the same name as edit_tracking_cols
-        cols_copy = {}
-        for key in cols_dict:
-            if key not in _edit_tracking_cols:
-                cols_copy[key] = cols_dict[key]
-
-        add_cols = self.getColumnDefinition(cols_copy)
-        if add_cols:
-            create_text.append( add_cols )
-            create_text.append( ', '     )
-
-        # add the primary key
-        primary_keys = []
-        for col in cols_copy:
-            if cols_copy[col].get(COL_PRIMARY_KEY):
-                primary_keys.append(col)
-
-        if primary_keys:
-            create_text.append( ' PRIMARY KEY (%s)' % \
-                                ', '.join(primary_keys) )
-        else:
-            create_text.append(' PRIMARY KEY (autoid)')
-        create_text.append(');')
-
-        # create table
-        self.query(' '.join(create_text))
-
-
-    def dropTable(self, name):
-        """\brief Drops table from a database.
+        @param name          - string containing the table name
+        @param cols_dict     - dictionary containing the column definition
+        @param edit_tracking - if enabled special columns for tracking the
+                               edit changes will be added; default is True.
         """
-        assert isinstance(name, StringType), \
-               E_PARAM_TYPE % ('name', 'StringType', name)
-
-        self.query('DROP TABLE %s;' % name)
+        raise NotImplementedError(ZC.E_CALL_ABSTRACT)
 
 
-#
-# index handling
-#
-    def createIndex(self, table, column):
-        """\brief Creates an index for table ith specified column."""
-        assert isinstance(table, StringType), \
-               E_PARAM_TYPE % ('table', 'StringType', table)
-        assert isinstance(column, StringType), \
-               E_PARAM_TYPE % ('column', 'StringType', column)
+    def dropTable(self, table_name):
+        """ This method drops a table from the database.
 
-        index_text = "CREATE INDEX %s_index_%s ON %s (%s); " % ( table,
-                                                                 column,
-                                                                 table,
-                                                                 column )
-        self.query(index_text)
+        @param table_name - string with the name of the table
+        """
+        assert ZC.checkType('table_name', table_name, StringType)
 
-#
-# select handling
-#
+        self.query('DROP TABLE %s' % table_name)
+
+
+    ############################################################################
+    #
+    # index handling
+    #
+    ############################################################################
+    def createIndex(self, name, column):
+        """ This method creates an index for table on the specified \a column.
+
+        @param name   - string containing the table name
+        @param column - string containing the column name
+        """
+        assert ZC.checkType('name', name, StringType)
+        assert ZC.checkType('column', column, StringType)
+
+        self.query("CREATE INDEX %s_index_%s ON %s (%s)" % ( name,
+                                                             column,
+                                                             name,
+                                                             column ) )
+
+    ############################################################################
+    #
+    # select handling
+    #
+    ############################################################################
     def simpleIns(self, name, origcols_dict, entry_dict):
         """ insert into table """
-        assert isinstance(name, StringType), \
-               E_PARAM_TYPE % ('name', 'StringType', name)
+        assert ZC.checkType('name', name, StringType)
 
         insert_text = ['INSERT INTO %s ( ' % name]
         cols_list   = []
         data_list   = []
         cols_dict   = deepcopy(origcols_dict)
 
-        for col in _edit_tracking_cols:
+        for col in ZC._edit_tracking_cols:
             if col not in cols_dict:
-                cols_dict[col] = _edit_tracking_cols[col]
+                cols_dict[col] = ZC._edit_tracking_cols[col]
         cols = entry_dict.keys()
 
         for col in cols:
@@ -583,10 +509,10 @@ class SqlConnector(SimpleItem):
             # build data_list
             # get type of col
             if cols_dict.get(col):
-                col_type = cols_dict[col][COL_TYPE]
+                col_type = cols_dict[col][ZC.COL_TYPE]
 
-            elif _edit_tracking_cols.get(col):
-                col_type = _edit_tracking_cols[col][COL_TYPE]
+            elif ZC._edit_tracking_cols.get(col):
+                col_type = ZC._edit_tracking_cols[col][ZC.COL_TYPE]
 
             # this needs to be here to allow autoid overwriting
             elif col == 'autoid':
@@ -596,12 +522,12 @@ class SqlConnector(SimpleItem):
 
             # build proper data entries
             data_list.append( self.checkType( entry_dict[col],
-                                         col_type,
-                                         False,
-                                         cols_dict.get(col, {}).get(COL_LABEL, ''),
-                                         False  # no char replacement
-                                         )
-                              )
+                                              col_type,
+                                              False,
+                                              cols_dict.get(col, {}).get(ZC.COL_LABEL, ''),
+                                              False  # no char replacement
+                                              )
+                             )
 
         insert_text.append( ', '.join(cols_list) )
         insert_text.append( ') VALUES ( ')
@@ -612,20 +538,21 @@ class SqlConnector(SimpleItem):
         self.query(''.join(insert_text))
 
         # get last id
-        return self.getLastId(TCN_AUTOID, name)
+        return self.getLastId(ZC.TCN_AUTOID, name)
 
 
-    def getLastId(self, idfield, name, wherestr = ''):
-        """\brief get max entry of idfield"""
-        query_text = 'SELECT max(%s) FROM %s%s;' % ( idfield,
-                                                     name,
-                                                     wherestr )
-        result = self.query( query_text )
-        res = 0
-        if result:
-            if result[0][0]:
-                res = result[0][0]
-        return res
+    def getLastId(self, id_field, table_name, where = ''):
+        """ This method returns the last id from id_field.
+
+        @param  id_field   - name of the field containing the id
+        @param  table_name - name of the table
+        @param  where      - additional where clause
+        @result integer    - max value of the id field
+        """
+        result = self.query( 'SELECT max(%s) FROM %s%s' % ( id_field,
+                                                            table_name,
+                                                            where ) )
+        return result[0][0] if result and result[0][0] else 0
 
 
     def simpleUpd( self,
@@ -637,10 +564,8 @@ class SqlConnector(SimpleItem):
         if isinstance(autoid, StringType):
             autoid = int(autoid)
 
-        assert isinstance(name, StringType), \
-               E_PARAM_TYPE % ('name', 'StringType', name)
-        assert isinstance(autoid, IntType), \
-               E_PARAM_TYPE % ('autoid', 'IntType', autoid)
+        assert ZC.checkType(ZC.TCN_AUTOID, autoid, IntType)
+        assert ZC.checkType('name', name, StringType)
 
         # build update query text
         query_text = []
@@ -650,22 +575,21 @@ class SqlConnector(SimpleItem):
         for colname in entry_dict:
             if colname in origcols_dict:
                 field = origcols_dict[colname]
-            elif colname in _edit_tracking_cols:
-                field = _edit_tracking_cols[colname]
+            elif colname in ZC._edit_tracking_cols:
+                field = ZC._edit_tracking_cols[colname]
             else:
                 # rest is ignored
                 field = None
             if field:
                 value_text.append(' %s = %s' % ( colname,
                                                  self.checkType(
-                                                    entry_dict.get(colname),
-                                                    field.get(COL_TYPE),
-                                                    False,
-                                                    field.get(COL_LABEL)
-                                                           )
-                                                 )
+                                                                entry_dict.get(colname),
+                                                                field.get(ZC.COL_TYPE),
+                                                                False,
+                                                                field.get(ZC.COL_LABEL)
+                                                                )
+                                                )
                                   )
-
 
         if not value_text:
             return False
@@ -678,14 +602,63 @@ class SqlConnector(SimpleItem):
         return True
 
 
+    def simpleSel( self,
+                   name,
+                   col_list,
+                   origcols_dict,
+                   where_dict):
+        """\brief select requested columns of entries specified by entry_dict"""
+        assert ZC.checkType('name', name, StringType)
+
+        # build select query text
+        query = []
+        where = []
+
+        query.append('SELECT %s FROM %s' % (', '.join(self.escape_sql_name(col) for col in col_list), name) )
+        for colname in where_dict:
+            if colname in origcols_dict:
+                field = origcols_dict[colname]
+            elif colname in ZC._edit_tracking_cols:
+                field = ZC._edit_tracking_cols[colname]
+            elif colname == ZC.TCN_AUTOID:
+                field = { ZC.COL_TYPE:  'int',
+                          ZC.COL_LABEL: 'Automatic No.' }
+            else:
+                # rest is ignored
+                field = None
+            if field:
+                where.append('%s = %s' % ( colname,
+                                                 self.checkType(
+                                                                where_dict.get(colname),
+                                                                field.get(ZC.COL_TYPE),
+                                                                False,
+                                                                field.get(ZC.COL_LABEL)
+                                                                )
+                                                )
+                                  )
+        if where:
+            query.append('WHERE ' + ' AND '.join(where) )
+        results = self.query( ' '.join(query) )
+        res = []
+        for result in results:
+            entry = {}
+            if col_list == ['*']:
+                entry[ZC.TCN_AUTOID] = result[0]
+            else:
+                for index, col in enumerate(col_list):
+                    entry[col] = result[index]
+            res.append(entry)
+        return res
+
+
     def simpleVal(self, col_dict, entry_dict):
         """\brief validate the entry against the column definition"""
         errors = {}
         for colname in entry_dict:
             if colname in col_dict:
                 field = col_dict[colname]
-            elif colname in _edit_tracking_cols:
-                field = _edit_tracking_cols[colname]
+            elif colname in ZC._edit_tracking_cols:
+                field = ZC._edit_tracking_cols[colname]
             else:
                 # rest is ignored
                 continue
@@ -695,67 +668,74 @@ class SqlConnector(SimpleItem):
             if field and val:
                 try:
                     self.checkType( val,
-                                    field.get(COL_TYPE),
+                                    field.get(ZC.COL_TYPE),
                                     False,
-                                    field.get(COL_LABEL)
+                                    field.get(ZC.COL_LABEL)
                                     )
                 except:
                     errors[colname] = ('Invalid input', val)
         return errors
 
 
-    def simpleDel(self, name, autoid):
-        """\brief delete the entry with given autoid."""
-        assert isinstance(name, StringType), \
-               E_PARAM_TYPE % ('name', 'StringType', name)
-        assert isinstance(autoid, IntType), \
-               E_PARAM_TYPE % ('autoid', 'IntType', autoid)
+    def simpleDel(self, table_name, autoid):
+        """ This method is used to delete the entry with given autoid.
 
-        query_text = "DELETE FROM %s where autoid = %s;" % (name, autoid)
-        self.query( query_text )
-
+        @param name   - string containing the name of the table
+        @param autoid - integer containing the entries autoid
+        """
+        assert ZC.checkType('table_name', table_name, StringType)
+        assert ZC.checkType('autoid',     autoid,     IntType)
+        self.query( "DELETE FROM %s where autoid = %s" % (table_name, autoid) )
         return True
 
 
-    def getRowCount(self, name, wherestring = ''):
-        """\brief Returns the number of rows matching where string."""
-        assert isinstance(name, StringType), \
-               E_PARAM_TYPE % ('name', 'StringType', name)
-        assert isinstance(wherestring, StringType), \
-               E_PARAM_TYPE % ('wherestring', 'StringType', wherestring)
+    def getRowCount(self, name, where = ''):
+        """ This method returns the number of rows matching the where clause.
 
-        if wherestring and wherestring.upper().find('WHERE') == -1:
-            wherestring = "WHERE " + wherestring
-        query_text = 'SELECT count(*) FROM %s %s;' % (name, wherestring)
-        result     = self.query( query_text )
-        if result:
-            return result[0][0]
+        @param name  - string containing the table name
+        @param where - string containing the where clause
+        @result row count
+        """
+        assert ZC.checkType('name', name, StringType)
+        assert ZC.checkType('where', where, StringType)
 
-#
-# Function handling
-#
+        # handling of the case that the keyword WHERE is not already included
+        if where and where.upper().find('WHERE') == -1:
+            where = "WHERE " + where
+
+        result = self.query( 'SELECT count(*) FROM %s %s' % (name, where) )
+        return result[0][0] if result else None
+
+
+    ############################################################################
+    #
+    # SQL function handling
+    #
+    ############################################################################
     def addFunctionSql(self, name, param, output, sql):
-        """\brief Creates a SQL function in the database."""
-        assert isinstance(name, StringType), \
-               E_PARAM_TYPE % ('name', 'StringType', name)
+        """ This method creates a SQL function in the database.
 
-        # TODO: shared test for existence if shared
-        query_text = []
-        query_text.append("CREATE FUNCTION %s(%s)" % (name, param))
-        query_text.append("RETURNS %s" % output)
-        query_text.append("AS '%s'" % sql)
-        query_text.append("LANGUAGE 'sql';")
-        self.query( '\n'.join(query_text) )
+        @param name   - string containing the function name
+        @param param  - parameters of the function
+        @param output -
+        @param sql    -
+        """
+        raise NotImplementedError(ZC.E_CALL_ABSTRACT)
+
 
     def addFunction(self, function):
-        """\brief create a function"""
-        self.query(function)
+        """ This method creates a SQL function in the database.
+
+        @param function - string containing a SQL statement to create a stored
+                          procedure
+        """
+        raise NotImplementedError(ZC.E_CALL_ABSTRACT)
 
 
     def delFunction(self, name, param):
-        """\brief Deletes a function from the database."""
-        assert isinstance(name, StringType), \
-               E_PARAM_TYPE % ('name', 'StringType', name)
+        """ This method deletes a SQL function from the database.
 
-        # TODO: shared test for other sharing managers
-        self.query( 'DROP FUNCTION %s(%s);' % (name, param) )
+        @param name  - string containing the function name
+        @param param - string containing the function parameters
+        """
+        raise NotImplementedError(ZC.E_CALL_ABSTRACT)

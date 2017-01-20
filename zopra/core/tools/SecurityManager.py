@@ -31,18 +31,15 @@ from zopra.core                              import HTML, getSecurityManager, ZM
                                                     ZM_SCM,      \
                                                     ZM_MM,       \
                                                     ZM_PM,       \
-                                                    ZM_MBM
+                                                    ZM_MBM,      \
+                                                    ZC
 
 
 from zopra.core.elements.Buttons             import DLG_FUNCTION,    \
                                                     getPressedButton
-from zopra.core.constants                    import TCN_AUTOID
 from zopra.core.dialogs                      import getStdDialog, getPlainDialog
 from zopra.core.widgets                      import dlgLabel
 from zopra.core.interfaces                   import ISecurityManager
-from zopra.core.CorePart                     import MASK_ADD,    \
-                                                    MASK_EDIT,   \
-                                                    MASK_SHOW
 
 from zopra.core.LevelCache                   import LevelCache
 
@@ -77,8 +74,6 @@ from zopra.core.tools.managers               import TN_USER,        \
                                                     TCN_LASTNAME,   \
                                                     TCN_EMAIL
 
-from zopra.core.security                     import SC_LREAD, SC_READ, SC_WRITE
-
 
 class SecurityManager(GenericManager):
     """ Security Manager """
@@ -93,15 +88,15 @@ class SecurityManager(GenericManager):
 
     system = ''
 
-    _generic_config = { TN_USER: { 'basket_to':     False,
-                                   'basket_from':   False,
-                                   'basket_active': False },
-                        TN_GROUP:{ 'basket_to':     False,
-                                   'basket_from':   False,
-                                   'basket_active': False },
-                        TN_EBASE:{ 'basket_to':     False,
-                                   'basket_from':   False,
-                                   'basket_active': False }}
+    _generic_config = { TN_USER:  { 'basket_to':     False,
+                                    'basket_from':   False,
+                                    'basket_active': False },
+                        TN_GROUP: { 'basket_to':     False,
+                                    'basket_from':   False,
+                                    'basket_active': False },
+                        TN_EBASE: { 'basket_to':     False,
+                                    'basket_from':   False,
+                                    'basket_active': False }}
     """ usage: _generic_config = {table: {key:value}}
         keys: basket_to     (True / False) - for showForm/showList-BasketButton
               basket_from   (True / False) - for newForm-BasketButton
@@ -115,9 +110,10 @@ class SecurityManager(GenericManager):
                   id        = None,
                   nocreate  = 0,
                   zopratype = ''):
-        GenericManager.__init__( self,     title,     id,
-                                  nocreate, zopratype )
+        GenericManager.__init__(self, title, id, nocreate, zopratype)
+
         self._aclcache = {}
+
 
     # adjust cache
     def manage_afterAdd(self, item, container):
@@ -131,15 +127,17 @@ class SecurityManager(GenericManager):
 #
 
     def getCurrentLogin(self):
-        """\brief login"""
+        """ Returns the login for the current user.
+
+        @return string - login name of the current user.
+        """
         return str(getSecurityManager().getUser())
 
 
     def getUserByLogin(self, login):
-        """\brief Return the User with the given Login."""
+        """ Returns the user with the given Login. """
         if login:
-            tobj = self.tableHandler[TN_USER]
-            return tobj.getEntryBy(str(login), TCN_LOGIN)
+            return self.tableHandler[TN_USER].getEntryBy(str(login), TCN_LOGIN)
         return {}
 
 
@@ -155,18 +153,23 @@ class SecurityManager(GenericManager):
 
 
     def getCurrentUser(self):
+        """ Returns the current user.
+
+        @return string - current user.
+        """
+
         # implementation without permissions (to avoid recursion loading permissions)
-        tobj = self.tableHandler[TN_USER]
-        login = self.getCurrentLogin()
-        uid = tobj.getEntryAutoid(login, TCN_LOGIN)
+        login   = self.getCurrentLogin()
+        tobj    = self.tableHandler[TN_USER]
+        uid     = tobj.getEntryAutoid(login, TCN_LOGIN)
+
         # security check (acl_users-user without zopra-user-entry has no uid)
         if not uid:
-            msg = 'You do not have a valid zopra login or are not logged in correctly. Sorry.'
+            msg = 'You do not have a valid ZopRA login or are not logged in correctly. Sorry.'
             dlg = self.getUnauthorizedErrorDialog(msg)
             raise ValueError(dlg)
 
-        user = tobj.getEntry(uid, None, None, True)
-        return user
+        return tobj.getEntry(uid, None, None, True)
 
 
 
@@ -183,7 +186,7 @@ class SecurityManager(GenericManager):
         fold = self.getContainer()
         ready = False
         while not ready:
-            if hasattr (fold, 'objectValues'):
+            if hasattr(fold, 'objectValues'):
 
                 # iterate over container content
                 for obj in fold.objectValues():
@@ -191,7 +194,7 @@ class SecurityManager(GenericManager):
                         return obj
 
             if not ready:
-                if fold == None or fold.isTopLevelPrincipiaApplicationObject:
+                if fold is None or fold.isTopLevelPrincipiaApplicationObject:
                     ready = True
                 else:
                     fold = fold.getParentNode()
@@ -202,10 +205,10 @@ class SecurityManager(GenericManager):
         """\brief register user."""
         usrfold = self.getUserFolder()
 
-        if usrfold:
-            if not usrfold.getUser(login):
-                usrfold.userFolderAddUser(login, password, [], [])
-                return True
+        if usrfold and not usrfold.getUser(login):
+            usrfold.userFolderAddUser(login, password, [], [])
+            return True
+
         return False
 
 
@@ -327,7 +330,7 @@ class SecurityManager(GenericManager):
         if not entries:
             autoid = tobj.addEntry({TCN_CONTENT: value})
         else:
-            autoid = entries[0][TCN_AUTOID]
+            autoid = entries[0][ZC.TCN_AUTOID]
         return autoid
 
 
@@ -377,7 +380,7 @@ class SecurityManager(GenericManager):
 
         # get user
         user = self.getCurrentUser()
-        uid  = user[TCN_AUTOID]
+        uid  = user[ZC.TCN_AUTOID]
 
         # check acl cache
         perms = self._aclcache.get([uid, acl])
@@ -455,7 +458,7 @@ class SecurityManager(GenericManager):
         layout.addWidget(lab, 0, 4)
 
         # order
-        rights = [SC_LREAD, SC_READ, SC_WRITE]
+        rights = [ZC.SC_LREAD, ZC.SC_READ, ZC.SC_WRITE]
 
         row = 1
         # go through perms
@@ -526,16 +529,13 @@ class SecurityManager(GenericManager):
                           login )
         level = self.getManager(ZM_PM).executeDBQuery(query)[0][0]
 
-        if level != None:
-            return level
-
-        return 0
+        return level if level is not None else 0
 
 
     def hasRole(self, role, login = None):
         """\brief test current user (or login) for role"""
         if not login:
-            login =  getSecurityManager().getUser()
+            login = getSecurityManager().getUser()
 
         user   = self.getUserByLogin( str(login) )
         if user:
@@ -548,52 +548,68 @@ class SecurityManager(GenericManager):
 
 
     def getGlobalRoles(self):
-        """\brief Return Global Roles of user."""
-        user =  self.getCurrentUser()
+        """ Returns the list of global roles for the current user.
+
+        @return list of strings - [ global-role* ]
+        """
+        user = self.getCurrentUser()
         if user:
-            gids = user[TCN_GROUPS]
             tobj = self.tableHandler[TN_GROUP]
             res  = []
-            for gid in gids:
+
+            for gid in user[TCN_GROUPS]:
                 group = tobj.getEntry(gid, ignore_permissions = True)
                 if group:
                     res.append(group.get(TCN_NAME))
+
             return res
-        else:
-            raise ValueError('Internal Error: Current User not found.')
+
+        # We should not be able to reach that point. It means we could not find the current user.
+        raise ValueError('Internal Error: Current User not found.')
 
 #
 # Scope Based Access Roles (SBAR) security functions
 #
 
     def getAccessEnabledMgrs(self):
-        """\brief Return all tabids (with zopratype)
-                  of managers with access roles."""
-        tabids = {}
-        mgrs = self.getAllManagersHierarchyDown()
-        for mgr in mgrs:
+        """ Returns all table_ids (with zopratype) of managers with access roles.
+
+        If scope based entry restrictions are not enabled for any manager within an installation
+        then the returned dictionary will be empty.
+
+        @return dictionary - { <unique-table-id>: None | [ zopratype* ] }
+        """
+        table_ids  = {}
+
+        # iterate over all managers that are available
+        for mgr in self.getAllManagersHierarchyDown():
+
+            # if scope based access restrictions are enabled gather information for all tables
             if mgr.checkSBAR():
-                # get all tables, get zt, put in tabids
-                tabs = mgr.tableHandler.keys()
+
+                # get zopratype
                 ztype = mgr.getZopraType()
-                for tab in tabs:
-                    tobj = mgr.tableHandler[tab]
-                    uid = tobj.getUId()
+
+                # iterate over all tables
+                for table in mgr.tableHandler.keys():
+                    uid = mgr.tableHandler[table].getUId()
                     if not ztype:
-                        tabids[uid] = None
+                        table_ids[uid] = None
+
                     else:
-                        if uid in tabids:
-                            tabids[uid].append(ztype)
-                        else:
-                            tabids[uid] = [ztype]
-        return tabids
+                        if uid not in table_ids:
+                            table_ids[uid] = []
+
+                        table_ids[uid].append(ztype)
+
+        return table_ids
 
 
     def getAccessRoles(self):
         """\brief Return Access Roles of user."""
         # get user
         user = self.getCurrentUser()
-        uid  = user[TCN_AUTOID]
+        uid  = user[ZC.TCN_AUTOID]
         # rolescope table
         robj = self.tableHandler[TN_ROLESCOPE]
         # scopedefs table
@@ -623,10 +639,7 @@ class SecurityManager(GenericManager):
         """\brief Return user-role mapping for that scope"""
         robj = self.tableHandler[TN_ROLESCOPE]
         roles = robj.getEntries(scopeid, TCN_SCOPEID)
-        users = {}
-        for role in roles:
-            users[role[TCN_EUSER]] = role[TCN_ROLE]
-        return users
+        return dict( [(TCN_EUSER, role[TCN_ROLE]) for role in roles] )
 
 
     def getSBARMask(self, users, edit = False, parent = None):
@@ -785,66 +798,40 @@ class SecurityManager(GenericManager):
         """\brief Management Overview for security Manager"""
         perm = self.getGUIPermission()
         if perm.hasMinimumRole(perm.SC_SUPER):
-            
+
             dlg, mask = getPlainDialog(self.absolute_url() + '/buttonForwardForm', parent, border)
             lay = mask.layout()
-            
-            widget, super, hasperm = self.createOverviewBox(TN_USER, perm, mask)
-            lay.addWidget(widget, 0, 0)
+
+            widget = self.createOverviewBox(TN_USER, perm, mask)[0]
             widget.setCaption('User Management')
-            widget, super, hasperm = self.createOverviewBox(TN_GROUP, perm, mask)
-            lay.addWidget(widget, 1, 0)
+            lay.addWidget(widget, 0, 0)
+
+            widget = self.createOverviewBox(TN_GROUP, perm, mask)[0]
             widget.setCaption('Global Group Management')
-            
+            lay.addWidget(widget, 1, 0)
+
             if perm.hasMinimumRole(perm.SC_ADMIN):
-                # ebase block 
-                widget, super, hasperm = self.createOverviewBox(TN_EBASE, perm, mask)
-                lay.addWidget(widget, 0, 1)
+
+                # ebase block
+                widget = self.createOverviewBox(TN_EBASE, perm, mask)[0]
                 widget.setCaption('EBaSe Group Management')
-                
+                lay.addWidget(widget, 0, 1)
+
                 # extra management block
                 tabmask = hgGroupBox(1, hg.Horizontal, 'Additional Management', mask)
                 lay.addWidget(tabmask, 1, 1)
-                #tabmask.margin = 0
+
+                # tabmask.margin = 0
                 url = self.absolute_url()
- 
-                hgLabel ( 'Personal Page',
-                          '%s/personalPage' % (url),
-                          parent = tabmask )
-                hgLabel ( 'Scope Based Access Roles (SBAR)',
-                          '%s/sbarPage' % (url),
-                          parent = tabmask )
+
+                hgLabel( 'Personal Page',
+                         '%s/personalPage' % (url),
+                         parent = tabmask )
+                hgLabel( 'Scope Based Access Roles (SBAR)',
+                         '%s/sbarPage' % (url),
+                         parent = tabmask )
             return dlg
-            
-#            tab[0, 0]  = dlgLabel( '<b>User Managing</b>'                    )
-#            tab[2, 0]  = hgLabel ( 'New User',
-#                                   '%s/newForm?table=%s' % (url, TN_USER)    )
-#            tab[3, 0]  = hgLabel ( 'User Search',
-#                                   '%s/searchForm?table=%s' % (url, TN_USER) )
-#            tab[4, 0]  = hgLabel ( 'User List',
-#                                   '%s/showList?table=%s' % (url, TN_USER)   )
-#
-#            tab[7, 0]  = dlgLabel( '<b>Group Managing</b>'                   )
-#            tab[9, 0]  = hgLabel ( 'New Group',
-#                                   '%s/newForm?table=%s' % (url, TN_GROUP)   )
-#            tab[10, 0] = hgLabel ( 'Group Search',
-#                                   '%s/searchForm?table=%s' % (url, TN_GROUP))
-#            tab[11, 0] = hgLabel ( 'Group List',
-#                                   '%s/showList?table=%s' % (url, TN_GROUP)  )
-#
-#            tab[13, 0] = dlgLabel( '<b>EBaSe Group Managing</b>'             )
-#            tab[15, 0] = hgLabel ( 'New Group',
-#                                   '%s/newForm?table=%s' % (url, TN_EBASE)   )
-#            tab[16, 0] = hgLabel ( 'Group Search',
-#                                   '%s/searchForm?table=%s' % (url, TN_EBASE))
-#            tab[17, 0] = hgLabel ( 'Group List',
-#                                   '%s/showList?table=%s' % (url, TN_EBASE)  )
-#
-#            tab[19, 0] = hgLabel ( 'Personal Page',
-#                                   '%s/personalPage' % (url) )
-#            tab[20, 0] = hgLabel ( 'Scope Based Access Roles',
-#                                   '%s/sbarPage' % (url)     )
-#            return tab
+
 
         else:
             return self.personalPage(True)
@@ -856,7 +843,7 @@ class SecurityManager(GenericManager):
 
     def getLabelString(self, table, autoid = None, descr_dict = None):
         """\brief Return label for entry, overwrite for special functionality."""
-        #return autoid, no matter what table
+        # return autoid, no matter what table
         if autoid:
             ddict = self.getEntry(table, autoid)
         elif descr_dict:
@@ -878,7 +865,7 @@ class SecurityManager(GenericManager):
         elif table == TN_ACCESS:
             lab = ddict.get(TCN_NAME)
         elif table == TN_ACL:
-            lab = '%s: %s' % (ddict.get(TCN_AUTOID), ddict.get(TCN_CONTENT))
+            lab = '%s: %s' % (ddict.get(ZC.TCN_AUTOID), ddict.get(TCN_CONTENT))
         elif table == 'scope':
             lab = ddict.get('name', 'No Name')
             if ddict.get('isdefault'):
@@ -900,7 +887,7 @@ class SecurityManager(GenericManager):
                           'zt_select': ztype,
                           'tab_select': tab}
                 if button == 'Add':
-                    self.addNewScopeDef(newdef, descr_dict.get(TCN_AUTOID))
+                    self.addNewScopeDef(newdef, descr_dict.get(ZC.TCN_AUTOID))
                 else:
                     descr_dict['newdef'] = newdef
             elif button == 'Discard':
@@ -939,7 +926,7 @@ class SecurityManager(GenericManager):
                     raise ValueError(msg)
 
             else:
-                if euser != self.getCurrentUser()[TCN_AUTOID]:
+                if euser != self.getCurrentUser()[ZC.TCN_AUTOID]:
                     raise ValueError('userids do not match.')
 
 
@@ -954,13 +941,13 @@ class SecurityManager(GenericManager):
                 error  = '[Error] SecurityManager: '
                 error += 'Password mismatch. Please try again.'
                 raise ValueError(self.getErrorDialog( error ))
-            
+
             # create message user if necessary
             m_msgm = self.getHierarchyUpManager(ZM_MM)
 
             if m_msgm:
-                muser = m_msgm.getMUser(descr_dict[TCN_AUTOID])
-            
+                muser = m_msgm.getMUser(descr_dict[ZC.TCN_AUTOID])
+
 
             done = self.addUser(login, password)
             if not done:
@@ -985,7 +972,7 @@ class SecurityManager(GenericManager):
             
             entries = tobj.getEntries(userid, TCN_USERID)
             
-            if entries and entries[0][TCN_AUTOID] != descr_dict[TCN_AUTOID]:
+            if entries and entries[0][ZC.TCN_AUTOID] != descr_dict[ZC.TCN_AUTOID]:
                 error = 'Login for selected Person already exists.'
                 raise ValueError(self.getErrorDialog( error ))
             
@@ -1028,7 +1015,7 @@ class SecurityManager(GenericManager):
 
     def getSingleMask( self,
                        table,
-                       flag = MASK_SHOW,
+                       flag = ZC.MASK_SHOW,
                        descr_dict = None,
                        prefix = None ):
         """\brief"""
@@ -1063,7 +1050,7 @@ class SecurityManager(GenericManager):
         login = self.getCurrentLogin()
         user  = self.getUserByLogin(login)
         cmid  = user.get('userid')
-        uid   = user[TCN_AUTOID]
+        uid   = user[ZC.TCN_AUTOID]
         label = hgLabel(login, parent = mask)
         layout.addMultiCellWidget(label, row, row, 2, 3)
         row += 1
@@ -1271,13 +1258,13 @@ class SecurityManager(GenericManager):
             layout.addWidget(label, row, 0)
             # show link
             url = '%s/showForm?table=%s&id=%s'
-            url = url % (self.absolute_url(), TN_SCOPE, scope[TCN_AUTOID])
+            url = url % (self.absolute_url(), TN_SCOPE, scope[ZC.TCN_AUTOID])
             link = hgLabel('show', url, mask)
             layout.addWidget(link, row, 1)
             # edit link
             if edit:
                 url = '%s/editForm?table=%s&id=%s'
-                url = url % (self.absolute_url(), TN_SCOPE, scope[TCN_AUTOID])
+                url = url % (self.absolute_url(), TN_SCOPE, scope[ZC.TCN_AUTOID])
                 link = hgLabel('edit', url, mask)
                 layout.addWidget(link, row, 2)
                 row += 1
@@ -1305,7 +1292,7 @@ class SecurityManager(GenericManager):
         dlg.add(mask)
         self.listScopes('NULL', mask)
         # add scope
-        
+
 
         return HTML(dlg.getHtml())(self, None)
 
@@ -1332,7 +1319,7 @@ class SecurityManager(GenericManager):
         if perm.hasMinimumRole(perm.SC_SUPER):
             label = hgLabel('Scope Type', parent = mask)
             layout.addWidget(label, 3, 0)
-            if flag & MASK_ADD:
+            if flag & ZC.MASK_ADD:
                 prop = hgProperty('euser', scope.get('euser'), parent = mask)
                 layout.addWidget(prop, 3, 2)
             if 'euser' in scope:
@@ -1346,20 +1333,20 @@ class SecurityManager(GenericManager):
                 label = hgLabel(lab, parent = mask)
                 layout.addWidget(label, 3, 1)
 
-        elif flag & MASK_ADD:
-            uid = self.getCurrentUser()[TCN_AUTOID]
+        elif flag & ZC.MASK_ADD:
+            uid = self.getCurrentUser()[ZC.TCN_AUTOID]
             prop = hgProperty('euser', str(uid), parent = mask)
             layout.addWidget(prop, 3, 1)
 
         # show link for edit / add
-        if flag & (MASK_EDIT | MASK_ADD) and scope.get(TCN_AUTOID):
+        if flag & (ZC.MASK_EDIT | ZC.MASK_ADD) and scope.get(ZC.TCN_AUTOID):
             url = '%s/showForm?table=scope&id=%s'
-            url = url % (self.absolute_url(), scope[TCN_AUTOID])
+            url = url % (self.absolute_url(), scope[ZC.TCN_AUTOID])
             label = hgLabel('Show', url, parent = mask)
             layout.addWidget(label, 0, 1)
 
-        autoid = scope.get(TCN_AUTOID)
-        if autoid and (flag & (MASK_SHOW | MASK_EDIT)):
+        autoid = scope.get(ZC.TCN_AUTOID)
+        if autoid and (flag & (ZC.MASK_SHOW | ZC.MASK_EDIT)):
             # get scope defs
             defs = self.tableHandler['scopedef'].getEntries(autoid, 'scopeid')
             sub = self.getMaskScopedef(flag, defs, scope.get('newdef'), mask)
@@ -1422,16 +1409,16 @@ class SecurityManager(GenericManager):
             label = hgLabel(tname, parent = mask)
             layout.addWidget(label, row, 4)
 
-            if flag & MASK_EDIT:
+            if flag & ZC.MASK_EDIT:
                 # remove button
-                name = DLG_FUNCTION + 'remscopedef%s' % entry[TCN_AUTOID]
+                name = DLG_FUNCTION + 'remscopedef%s' % entry[ZC.TCN_AUTOID]
                 button = hgPushButton('Remove', name, parent = mask)
                 layout.addWidget(button, row, 5)
 
             row += 1
 
         # edit
-        if flag & MASK_EDIT:
+        if flag & ZC.MASK_EDIT:
             row += 1
             # new scopedef
             mgr = None
@@ -1652,7 +1639,7 @@ class SecurityManager(GenericManager):
                 if cmasks:
                     cmask = cmasks[0]
                     cmask['acl'] = acl
-                    cobj.updateEntry(cmask, cmask[TCN_AUTOID])
+                    cobj.updateEntry(cmask, cmask[ZC.TCN_AUTOID])
                 else:
                     cmask = { 'scopeid': scopeid,
                               'acl': acl}
@@ -1741,13 +1728,13 @@ class SecurityManager(GenericManager):
                         if new_role != old_role:
                             # update
                             entry[TCN_ROLE] = new_role
-                            robj.updateEntry(entry, entry[TCN_AUTOID])
+                            robj.updateEntry(entry, entry[ZC.TCN_AUTOID])
                         # remove from users
                         del users[userid]
 
                     else:
                         # delete entry
-                        robj.deleteEntry(entry[TCN_AUTOID])
+                        robj.deleteEntry(entry[ZC.TCN_AUTOID])
 
                 rest = users.keys()
                 # new entries
@@ -1790,7 +1777,7 @@ class SecurityManager(GenericManager):
         return HTML(dlg.getHtml())(self, None)
 
 
-    def getMaskUser(self, flag = MASK_SHOW, descr_dict = None):
+    def getMaskUser(self, flag = ZC.MASK_SHOW, descr_dict = None):
 
         if descr_dict:
             user = descr_dict
@@ -1810,7 +1797,7 @@ class SecurityManager(GenericManager):
                                           user )
         layout = mask.layout()
 
-        if flag & MASK_EDIT:
+        if flag & ZC.MASK_EDIT:
             # login not editable (except admins)
             if self.getCurrentLevel() < 100:
                 widg = mask.child(TCN_LOGIN)
@@ -1824,34 +1811,34 @@ class SecurityManager(GenericManager):
                                        mask,
                                        flag,
                                        user)
-        
-        if flag & (MASK_ADD | MASK_EDIT):
+
+        if flag & (ZC.MASK_ADD | ZC.MASK_EDIT):
             # adjust contact list
             widget_list = entry.getItemList()
             contact_list = []
             for item in widget_list:
                 contact_list.append(item[1])
-                
+
             contact_list.sort()
-            
+
             # current db value stays in list
-            if flag & MASK_EDIT and \
-               user.get(TCN_AUTOID):
-                db_user = self.tableHandler[TN_USER].getEntry(user[TCN_AUTOID])
+            if flag & ZC.MASK_EDIT and \
+               user.get(ZC.TCN_AUTOID):
+                db_user = self.tableHandler[TN_USER].getEntry(user[ZC.TCN_AUTOID])
                 # should always be true
                 if db_user[TCN_USERID] in contact_list:
                     contact_list.remove(db_user[TCN_USERID])
-            
+
             user_list = self.tableHandler[TN_USER].getEntries()
-            
+
             # remove used contacts from contact widget
             for user in user_list:
                 cm_id = user.get(TCN_USERID)
-                
+
                 if cm_id:
                     if cm_id in contact_list:
                         entry.removeItemByValue(cm_id)
-            
+
             # password
             lab = dlgLabel('Password', parent = mask)
             layout.addWidget(lab, 1, 0)
@@ -1871,10 +1858,10 @@ class SecurityManager(GenericManager):
             layout.addWidget(lab, 6, 0)
             widg = hgCheckBox('', '1', mask, 'sendmail')
             layout.addWidget(widg, 6, 1)
-            
+
         # add contact selection widget
         layout.addWidget(entry, 3, 1)
-            
+
 
         return mask
 
