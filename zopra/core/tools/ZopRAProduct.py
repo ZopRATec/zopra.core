@@ -490,10 +490,6 @@ class ZopRAProduct(ManagerPart):
         diff_before = {}
         diff_after  = {}
 
-        print 'backup',   backup
-        print 'newentry', newentry
-        print action, tabid, entryid, backup, newentry
-
         if backup and newentry:
             ignore        = ['permission']
             no_diff_check = ['autoid', 'owner', 'entrydate', 'editor', 'changedate', 'creator', 'permission']
