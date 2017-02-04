@@ -34,11 +34,12 @@ for attr in types.keys():
             if copyentry.has_key(attr):
                 copyentry[attr].replace(',', '.')
 
-if not copyentry.get('iscopyof'):
+# check iscopyof (working copy marker) on the db entry (origentry might not include this info)
+if not entry.get('iscopyof'):
     message = 'Nur Arbeitskopien können freigegeben werden. Dieser Eintrag ist aktuell, die Freigabe wird abgebrochen.'
     return state.set(status='failure', context=context, portal_status_message=message)
 
-origentry = context.tableHandler[table].getEntry(copyentry.get('iscopyof'))
+origentry = context.tableHandler[table].getEntry(entry.get('iscopyof'))
 
 if not origentry:
     message = 'Originaleintrag nicht auffindbar, Freigabe abgebrochen.'
@@ -52,7 +53,7 @@ if not context.doesTranslations(table) or copyentry.get('language') == context.l
     for key in copyentry.keys():
         if key not in ['hastranslation', 'language']:
             origentry[key] = copyentry[key]
-        
+
 else:
     # english copy stays the same except for text and string values
     for key in copyentry.keys():
