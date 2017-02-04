@@ -8,6 +8,7 @@
 ##parameters=table, autoid
 ##title=
 ##
+from zopra.core import zopraMessageFactory as _
 request = context.REQUEST
 
 # for now, we save the request values (which might have been changed by the reviewer)
@@ -35,14 +36,14 @@ for attr in types.keys():
                 copyentry[attr].replace(',', '.')
 
 if not copyentry.get('iscopyof'):
-    message = u'Nur Arbeitskopien können freigegeben werden. Dieser Eintrag ist aktuell, die Freigabe wird abgebrochen.'
+    message = _('zopra_editconfirm_abort_no_copy', default = u'Nur Arbeitskopien können freigegeben werden. Dieser Eintrag ist aktuell, die Freigabe wird abgebrochen.')
     context.plone_utils.addPortalMessage(message, 'info')
     return state.set(status='failure', context=context)
 
 origentry = context.tableHandler[table].getEntry(copyentry.get('iscopyof'))
 
 if not origentry:
-    message = u'Originaleintrag nicht auffindbar, Freigabe abgebrochen.'
+    message = _('zopra_editconfirm_abort_not_found', default = u'Originaleintrag nicht auffindbar, Freigabe abgebrochen.')
     context.plone_utils.addPortalMessage(message, 'info')
     return state.set(status='failure', context=context)
 
@@ -56,7 +57,7 @@ if not context.doesTranslations(table) or copyentry.get('language') == context.l
             origentry[key] = copyentry[key]
 
 else:
-    # english copy stays the same except for text and string values
+    # language copy stays the same except for text and string values
     for key in copyentry.keys():
         if types.get(key) in ['string', 'memo']:
             origentry[key] = copyentry[key]
@@ -75,6 +76,7 @@ context.actionBeforeEdit(table, origentry, request)
 # update entry
 done = context.tableHandler[table].updateEntry(origentry, origautoid)
 
+status = 'failure'
 if done == True:
     # update the nontext values of the english version if it exists
     en_msg = ''
@@ -83,22 +85,27 @@ if done == True:
         # updateTranslation also updates the working copy of the translation, if it exists
         translated = context.updateTranslation(table, origentry)
         if translated:
-            en_msg = u' Die Nicht-Text-Felder der englischen Version wurde ebenfalls gespeichert.'
+            en_msg = _('zopra_editconfirm_translation_okay', default = ' Die Nicht-Text-Felder der englischen Version wurde ebenfalls gespeichert.')
     # check if this is a translation (for msg only, action done already)
     elif origentry.get('language') in context.lang_additional:
-        en_msg = u' Lediglich die Textfelder wurden übernommen, da es sich um eine Sprachkopie handelt.'
+        en_msg = _('zopra_editconfirm_is_translation', default = ' Lediglich die Textfelder wurden übernommen, da es sich um eine Sprachkopie handelt.')
 
     # delete copy without deleting anything else (except multilists)
     done = context.tableHandler[table].deleteEntry(int(autoid))
     if done == True:
-        message = u'Eintrag freigegeben.%s Interne Id: %s' % (en_msg, origautoid)
-        context.plone_utils.addPortalMessage(message, 'info')
-        return state.set(status='success', context=context)
+        message = _('zopra_editconfirm_success',
+                    default = u'Eintrag freigegeben.${additional_msg} Interne Id: ${internal_id}',
+                    mapping = {u'internal_id': origautoid, u'additional_msg': en_msg})
+        status = 'success'
     else:
-        message = u'Eintrag freigegeben.%s Fehler beim Löschen der Arbeitskopie. Interne Id: %s' % (en_msg, origautoid)
-        context.plone_utils.addPortalMessage(message, 'info')
-        return state.set(status='failure', context=context)
+        message = _('zopra_editconfirm_almost_success',
+                    default = u'Eintrag freigegeben.${additional_msg} Fehler beim Löschen der Arbeitskopie. Interne Id: ${internal_id}',
+                    mapping = {u'internal_id': origautoid, u'additional_msg': en_msg})
+
 else:
-    message = u'Fehler bei der Freigabe: ' + str(done)
-    context.plone_utils.addPortalMessage(message, 'info')
-    return state.set(status='failure', context=context)
+    message = _('zopra_editconfirm_failure',
+                default = u'Fehler bei der Freigabe: ${reason}',
+                mapping = {u'reason': done})
+
+context.plone_utils.addPortalMessage(message, 'info')
+return state.set(status = status, context = context)
