@@ -645,7 +645,6 @@ class ManagerPart(CorePart, ManagerFinderMixin):
                     iconHandler._setObject(name, image)
 
         # load local images from managers images directory
-        print 'Namespace', namespace
         if namespace != 'zopra.core':
 
             # re-import class to get the file location
@@ -654,7 +653,6 @@ class ManagerPart(CorePart, ManagerFinderMixin):
 
             # remove the filename from the path and add the image path location
             path = os.path.join(os.path.split(path)[0], 'images')
-            print 'Image Path:', path
 
             if os.path.exists(path):
 

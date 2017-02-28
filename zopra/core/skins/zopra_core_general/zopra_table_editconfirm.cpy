@@ -35,12 +35,13 @@ for attr in types.keys():
             if copyentry.has_key(attr):
                 copyentry[attr].replace(',', '.')
 
-if not copyentry.get('iscopyof'):
+# check iscopyof (working copy marker) on the db entry (origentry might not include this info)
+if not entry.get('iscopyof'):
     message = _('zopra_editconfirm_abort_no_copy', default = u'Nur Arbeitskopien können freigegeben werden. Dieser Eintrag ist aktuell, die Freigabe wird abgebrochen.')
     context.plone_utils.addPortalMessage(message, 'info')
     return state.set(status='failure', context=context)
 
-origentry = context.tableHandler[table].getEntry(copyentry.get('iscopyof'))
+origentry = context.tableHandler[table].getEntry(entry.get('iscopyof'))
 
 if not origentry:
     message = _('zopra_editconfirm_abort_not_found', default = u'Originaleintrag nicht auffindbar, Freigabe abgebrochen.')
@@ -88,7 +89,7 @@ if done == True:
             en_msg = _('zopra_editconfirm_translation_okay', default = ' Die Nicht-Text-Felder der englischen Version wurde ebenfalls gespeichert.')
     # check if this is a translation (for msg only, action done already)
     elif origentry.get('language') in context.lang_additional:
-        en_msg = _('zopra_editconfirm_is_translation', default = ' Lediglich die Textfelder wurden übernommen, da es sich um eine Sprachkopie handelt.')
+        en_msg = _('zopra_editconfirm_is_translation', default = ' Lediglich die Textfelder wurden uebernommen, da es sich um eine Sprachkopie handelt.')
 
     # delete copy without deleting anything else (except multilists)
     done = context.tableHandler[table].deleteEntry(int(autoid))
@@ -99,7 +100,7 @@ if done == True:
         status = 'success'
     else:
         message = _('zopra_editconfirm_almost_success',
-                    default = u'Eintrag freigegeben.${additional_msg} Fehler beim Löschen der Arbeitskopie. Interne Id: ${internal_id}',
+                    default = u'Eintrag freigegeben.${additional_msg} Fehler beim Loeschen der Arbeitskopie. Interne Id: ${internal_id}',
                     mapping = {u'internal_id': origautoid, u'additional_msg': en_msg})
 
 else:
