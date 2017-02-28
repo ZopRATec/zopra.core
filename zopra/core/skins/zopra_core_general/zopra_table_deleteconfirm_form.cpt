@@ -72,18 +72,18 @@
 
       <div class="formHelp">
           <span tal:condition="python: ak">
-          Beim Löschen einer Arbeitskopie wird der Originaleintrag nicht verändert. Die Änderungen der Arbeitskopie gehen verloren.
+          Beim Loeschen einer Arbeitskopie wird der Originaleintrag nicht veraendert. Die Aenderungen der Arbeitskopie gehen verloren.
         </span>
         <span tal:condition="python: not ak and not sk">
-          Beim Löschen eines Originaleintrags werden automatisch die Sprachkopie und die Arbeitskopie mit gelöscht, sofern vorhanden.
+          Beim Loeschen eines Originaleintrags werden automatisch die Sprachkopie und die Arbeitskopie mit geloescht, sofern vorhanden.
         </span>
           <span tal:condition="python: not ak and sk">
-          Beim Löschen einer Sprachkopie wird der Originaleintrag nicht verändert. Eine eventuell existierende Arbeitskopie der Sprachkopie wird mit gelöscht.
+          Beim Loeschen einer Sprachkopie wird der Originaleintrag nicht veraendert. Eine eventuell existierende Arbeitskopie der Sprachkopie wird mit geloescht.
         </span>
       </div>
 
       <div class="formHelp" tal:condition="request/origtable|nothing">
-        Sie löschen einen verknüpften Eintrag. Die Verknüpfung im dazugehörigen Haupteintrag vom Typ <span tal:content="request/origtable"></span> wird beim Löschen entfernt.
+        Sie loeschen einen verknuepften Eintrag. Die Verknuepfung im dazugehoerigen Haupteintrag vom Typ <span tal:content="request/origtable"></span> wird beim Loeschen entfernt.
         <input type="hidden" name="origtable" tal:attributes="value request/origtable" />
         <input type="hidden" name="origid" tal:attributes="value request/origid" />
         <input type="hidden" name="origattribute" tal:attributes="value request/origattribute" />
@@ -97,7 +97,7 @@
             <input class="context"
                    type="submit"
                    name=""
-                   value="Löschen"
+                   value="Delete"
                    i18n:domain="plone"
                    i18n:attributes="value"
                    tal:attributes="name button"
@@ -107,7 +107,9 @@
                    onclick="history.back(-1)"
                    type="button"
                    name="form.button.Cancel"
-                   value="Zurück"
+                   i18n:domain="plone"
+                   value="Cancel"
+                   i18n:attributes="value"
                    tal:condition="not:request/origid|nothing"
             />
 
@@ -115,7 +117,9 @@
                    onclick="top.close()"
                    type="button"
                    name="form.button.Cancel"
-                   value="Schliessen"
+                   i18n:domain="plone"
+                   value="Close"
+                   i18n:attributes="value"
                    tal:condition="request/origid|nothing"
             />
         </div>

@@ -1,0 +1,87 @@
+# Gettext Message File for ZopRA/ZMOM
+# Peter Seifert <peter.seifert@zopra.de>, 2010
+msgid ""
+msgstr ""
+"Project-Id-Version: ZMOM 1.0\n"
+"POT-Creation-Date: 2010-05-06 14:11+0000\n"
+"PO-Revision-Date: 2010-05-06 14:11+0100\n"
+"Last-Translator: Peter Seifert <peter.seifert@zopra.de>\n"
+"Language-Team: ZMOM i18n <i18n@zopra.de>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Domain: zopra\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"Preferred-encodings: utf-8\n"
+
+# general zopra template translations
+
+#: ./skins/zopra_core_general/zopra_widget_edit_display.pt
+msgid "zopra_for"
+msgstr ""
+
+#: ./skins/zopra_core_general/zopra_testExistance.py
+msgid "zopra_entry_notfound"
+msgstr ""
+
+msgid "search"
+msgstr ""
+
+msgid "Redaktion"
+msgstr ""
+
+##################### original translations ################################
+
+# Edit-tracking Cols
+msgid "Automatic No."
+msgstr ""
+
+msgid "Entry Date"
+msgstr ""
+
+# buttons
+msgid "Close"
+msgstr ""
+
+msgid "Back"
+msgstr ""
+
+msgid "Delete Workingcopy"
+msgstr ""
+
+msgid "Unfreeze"
+msgstr ""
+
+msgid "Translate"
+msgstr ""
+
+# general zopra template translations
+msgid "Invalid input"
+msgstr ""
+
+msgid "Input required"
+msgstr ""
+
+msgid "Required"
+msgstr ""
+
+msgid "zopra_sr_label_pages"
+msgstr ""
+
+msgid "zopra_sr_label_pages_first"
+msgstr ""
+
+msgid "zopra_sr_label_pages_before"
+msgstr ""
+
+msgid "zopra_sr_label_pages_next"
+msgstr ""
+
+msgid "zopra_sr_label_pages_last"
+msgstr ""
+
+msgid "zopra_edit_delete"
+msgstr ""
+
+msgid "zopra_edit_edit"
+msgstr ""

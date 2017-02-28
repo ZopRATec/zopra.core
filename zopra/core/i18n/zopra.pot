@@ -3,46 +3,263 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ZMOM 1.0\n"
-"POT-Creation-Date: 2010-05-06 14:11+0000\n"
+"POT-Creation-Date: 2017-02-28 18:25+0000\n"
 "PO-Revision-Date: 2010-05-06 14:11+0100\n"
 "Last-Translator: Peter Seifert <peter.seifert@zopra.de>\n"
 "Language-Team: ZMOM i18n <i18n@zopra.de>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Domain: zopra\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+"Language-Code: en\n"
+"Language-Name: English\n"
+"Preferred-Encodings: utf-8 latin1\n"
+"Domain: zopra\n"
 "Preferred-encodings: utf-8\n"
 
-# general zopra template translations
+#: ./skins/zopra_core_general/zopra_table_import_form.cpt:59
+msgid "Aktivieren Sie diese Option, wenn die Datei als tab-separierter Text formatiert ist."
+msgstr ""
 
+##################### original translations ################################
+# Edit-tracking Cols
+msgid "Automatic No."
+msgstr ""
+
+#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:21
+msgid "Back"
+msgstr ""
+
+#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:75
+msgid "CVS-Datei"
+msgstr ""
+
+#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:85
+msgid "CVS-Encoding"
+msgstr ""
+
+#: ./skins/zopra_core_general/zopra_list_edit_form.cpt:219
+#: ./skins/zopra_core_general/zopra_table_import_form.cpt:79
+#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:116
+msgid "Cancel"
+msgstr ""
+
+#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:31
+#: ./skins/zopra_core_general/zopra_table_created_dependency.pt:39
+#: ./skins/zopra_core_general/zopra_table_deleted_dependency.pt:35
+msgid "Close"
+msgstr ""
+
+#: ./skins/zopra_core_general/zopra_table_import_form.cpt:48
+msgid "Datei"
+msgstr ""
+
+#: ./skins/zopra_core_general/zopra_table_import_form.cpt:46
+msgid "Datei-Import"
+msgstr ""
+
+#: ./skins/zopra_core_general/zopra_list_edit_form.cpt:213
+msgid "Delete"
+msgstr ""
+
+#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:54
+msgid "Delete Workingcopy"
+msgstr ""
+
+#: ./skins/zopra_core_general/zopra_table_import_form.cpt:49
+msgid "Die Importdaten (z.B. aus Excel) als komma-separierter oder tabstopp-separierter Text (CSV)."
+msgstr ""
+
+#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:76
+msgid "Die Studiengangsdatei (excel) als mit einem Trennzeichen separierten Text. Das zu aktualisierende Attribut wird automatisch erkannt."
+msgstr ""
+
+#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:64
+msgid "Die Tabelle in welcher die Eintr&auml;ge importiert werden sollen."
+msgstr ""
+
+msgid "Entry Date"
+msgstr ""
+
+#: ./skins/zopra_core_general/zopra_table_multiconfirm_form.cpt:41
+#: ./skins/zopra_core_general/zopra_table_multiconfirm_listing.pt:14
+msgid "Freigabe"
+msgstr ""
+
+#: ./skins/zopra_core_general/zopra_table_multiconfirm_form.cpt:73
+msgid "Freigeben"
+msgstr ""
+
+#: ./skins/zopra_core_general/zopra_list_edit_form.cpt:130
+msgid "Hierarchiedarstellung"
+msgstr ""
+
+#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:86
+msgid "In welchem Format wurde die CVS-Datei gespeichert, z.B.: macroman, latin1, utf8."
+msgstr ""
+
+msgid "Input required"
+msgstr ""
+
+# general zopra template translations
+msgid "Invalid input"
+msgstr ""
+
+#: ./skins/zopra_core_general/zopra_manager_main_form.pt:47
+msgid "Manager Overview"
+msgstr ""
+
+#: ./skins/zopra_core_general/zopra_main_form.cpt:44
+msgid "Module"
+msgstr ""
+
+msgid "Redaktion"
+msgstr ""
+
+msgid "Required"
+msgstr ""
+
+#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:96
+msgid "Standard-Trennzeichen, z.B.: Semikolon, Komma, Tabulator (\t)"
+msgstr ""
+
+#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:41
+msgid "Translate"
+msgstr ""
+
+#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:95
+msgid "Trennzeichen"
+msgstr ""
+
+#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:63
+msgid "Unfreeze"
+msgstr ""
+
+#: ./skins/zopra_core_general/zopra_list_edit_form.cpt:207
+msgid "Update"
+msgstr ""
+
+#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:63
+msgid "Ziel-Tabelle"
+msgstr ""
+
+#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:60
+msgid "Zwei-Spalten-Tabellen-Import"
+msgstr ""
+
+msgid "search"
+msgstr ""
+
+#. Default: "Chosen criteria:"
+#: ./skins/zopra_core_general/zopra_table_search_result.pt:83
+msgid "sins_sr_criteria"
+msgstr ""
+
+#: ./skins/zopra_core_general/zopra_table_import_form.cpt:58
+msgid "tab-separiertes Format"
+msgstr ""
+
+#. Default: "delete"
+#: ./skins/zopra_core_general/zopra_table_deleteconfirm_form.cpt:51
+msgid "zopra_edit_delete"
+msgstr ""
+
+#. Default: "edit"
+#: ./skins/zopra_core_general/zopra_table_edit_form.cpt:55
+msgid "zopra_edit_edit"
+msgstr ""
+
+#. Default: "Language:"
+#: ./skins/zopra_core_general/zopra_table_edit_form.cpt:57
+msgid "zopra_edit_language"
+msgstr ""
+
+#. Default: "Nur Arbeitskopien können freigegeben werden. Dieser Eintrag ist aktuell, die Freigabe wird abgebrochen."
+#: ./skins/zopra_core_general/zopra_table_editconfirm.cpy:40
+msgid "zopra_editconfirm_abort_no_copy"
+msgstr ""
+
+#. Default: "Originaleintrag nicht auffindbar, Freigabe abgebrochen."
+#: ./skins/zopra_core_general/zopra_table_editconfirm.cpy:47
+msgid "zopra_editconfirm_abort_not_found"
+msgstr ""
+
+#. Default: "Eintrag freigegeben.${additional_msg} Fehler beim Loeschen der Arbeitskopie. Interne Id: ${internal_id}"
+#: ./skins/zopra_core_general/zopra_table_editconfirm.cpy:102
+msgid "zopra_editconfirm_almost_success"
+msgstr ""
+
+#. Default: "Fehler bei der Freigabe: ${reason}"
+#: ./skins/zopra_core_general/zopra_table_editconfirm.cpy:107
+msgid "zopra_editconfirm_failure"
+msgstr ""
+
+#. Default: " Lediglich die Textfelder wurden uebernommen, da es sich um eine Sprachkopie handelt."
+#: ./skins/zopra_core_general/zopra_table_editconfirm.cpy:92
+msgid "zopra_editconfirm_is_translation"
+msgstr ""
+
+#. Default: "Eintrag freigegeben.${additional_msg} Interne Id: ${internal_id}"
+#: ./skins/zopra_core_general/zopra_table_editconfirm.cpy:97
+msgid "zopra_editconfirm_success"
+msgstr ""
+
+#. Default: " Die Nicht-Text-Felder der englischen Version wurde ebenfalls gespeichert."
+#: ./skins/zopra_core_general/zopra_table_editconfirm.cpy:89
+msgid "zopra_editconfirm_translation_okay"
+msgstr ""
+
+#: ./skins/zopra_core_general/zopra_testExistance.py:16
+msgid "zopra_entry_notfound"
+msgstr ""
+
+# general zopra template translations
 #: ./skins/zopra_core_general/zopra_widget_edit_display.pt
 msgid "zopra_for"
 msgstr ""
 
-#: ./skins/zopra_core_general/zopra_testExistance.py
-msgid "zopra_entry_notfound"
+#. Default: "Pages:"
+#: ./skins/zopra_core_general/zopra_search_tools.pt:12
+msgid "zopra_sr_label_pages"
 msgstr ""
 
-# SINS template translations
-#./skins/zopra_sins/zopra_table_show_form_nice_studiengang.pt
-msgid "sins_stg_bewerb_deutsch_ein"
+#. Default: "back"
+#: ./skins/zopra_core_general/zopra_search_tools.pt:53
+msgid "zopra_sr_label_pages_before"
 msgstr ""
 
-msgid "sins_stg_inlaender"
+#. Default: "first"
+#: ./skins/zopra_core_general/zopra_search_tools.pt:45
+msgid "zopra_sr_label_pages_first"
 msgstr ""
 
-msgid "sins_stg_tip_inlaender"
+#. Default: "last"
+#: ./skins/zopra_core_general/zopra_search_tools.pt:83
+msgid "zopra_sr_label_pages_last"
 msgstr ""
 
-msgid "sins_stg_bewerb_aus"
+#. Default: "next"
+#: ./skins/zopra_core_general/zopra_search_tools.pt:76
+msgid "zopra_sr_label_pages_next"
 msgstr ""
 
-msgid "sins_stg_bewerb_auslaender_ein"
+#. Default: "Übersetzung erzeugt. Interne Id: ${newid}"
+#: ./skins/zopra_core_general/zopra_table_edittranslate.cpy:54
+msgid "zopra_translation_created"
 msgstr ""
 
-msgid "sins_stg_auslaender"
+#. Default: "Übersetzung existiert bereits. Übersetzung abgebrochen."
+#: ./skins/zopra_core_general/zopra_table_edittranslate.cpy:59
+msgid "zopra_translation_exists"
 msgstr ""
 
-msgid "sins_stg_tip_auslaender"
+#. Default: "Diese Tabelle unterstützt keine Übersetzungen. Übersetzung abgebrochen."
+#: ./skins/zopra_core_general/zopra_table_edittranslate.cpy:15
+msgid "zopra_translation_not_supported"
 msgstr ""
+
+#. Default: "Originaleintrag nicht auffindbar, Übersetzung abgebrochen."
+#: ./skins/zopra_core_general/zopra_table_edittranslate.cpy:23
+msgid "zopra_translation_orig_not_found"
+msgstr ""
+

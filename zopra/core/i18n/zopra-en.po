@@ -3,7 +3,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ZMOM 1.0\n"
-"POT-Creation-Date: 2010-05-06 14:11+0000\n"
+"POT-Creation-Date: 2017-02-28 18:25+0000\n"
 "PO-Revision-Date: 2010-05-06 14:11+0100\n"
 "Last-Translator: Peter Seifert <peter.seifert@zopra.de>\n"
 "Language-Team: ZMOM i18n <i18n@zopra.de>\n"
@@ -17,164 +17,248 @@ msgstr ""
 "Domain: zopra\n"
 "X-Is-Fallback-For: en-au en-bz en-ca en-ie en-jm en-nz en-ph en-za en-tt en-gb en-us en-zw\n"
 
-#: ./skins/zopra_core_general/zopra_widget_edit_display.pt
-msgid "zopra_for"
-msgstr "for"
-
-#: ./skins/zopra_core_general/zopra_testExistance.py
-msgid "zopra_entry_notfound"
+#: ./skins/zopra_core_general/zopra_table_import_form.cpt:59
+msgid "Aktivieren Sie diese Option, wenn die Datei als tab-separierter Text formatiert ist."
 msgstr ""
 
-# SINS Fachberater translations
-msgid "sins_fachberater_desc"
-msgstr "Special Course Guidance Counselors sorted by programmes and courses:"
+##################### original translations ################################
+# Edit-tracking Cols
+msgid "Automatic No."
+msgstr ""
 
-msgid "sins_fachberater_heading"
-msgstr "Special Course Guidance"
+#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:21
+msgid "Back"
+msgstr ""
 
-msgid "sins_immaberater_desc"
-msgstr "Admission officials sorted by degree programmes:"
+#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:75
+msgid "CVS-Datei"
+msgstr ""
 
-# SINS translations
+#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:85
+msgid "CVS-Encoding"
+msgstr ""
 
-msgid "sins_editorial_immamail_name"
-msgstr "Admissions office"
+#: ./skins/zopra_core_general/zopra_list_edit_form.cpt:219
+#: ./skins/zopra_core_general/zopra_table_import_form.cpt:79
+#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:116
+msgid "Cancel"
+msgstr ""
 
-msgid "sins_editorial_immamail_title"
-msgstr "Questions regarding the programmes can be addressed to the admission officials, that are listed on the programme-specific contact details pages."
+#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:31
+#: ./skins/zopra_core_general/zopra_table_created_dependency.pt:39
+#: ./skins/zopra_core_general/zopra_table_deleted_dependency.pt:35
+msgid "Close"
+msgstr ""
 
-msgid "search"
-msgstr "Search"
+#: ./skins/zopra_core_general/zopra_table_import_form.cpt:48
+msgid "Datei"
+msgstr ""
+
+#: ./skins/zopra_core_general/zopra_table_import_form.cpt:46
+msgid "Datei-Import"
+msgstr ""
+
+#: ./skins/zopra_core_general/zopra_list_edit_form.cpt:213
+msgid "Delete"
+msgstr ""
+
+#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:54
+msgid "Delete Workingcopy"
+msgstr ""
+
+#: ./skins/zopra_core_general/zopra_table_import_form.cpt:49
+msgid "Die Importdaten (z.B. aus Excel) als komma-separierter oder tabstopp-separierter Text (CSV)."
+msgstr ""
+
+#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:76
+msgid "Die Studiengangsdatei (excel) als mit einem Trennzeichen separierten Text. Das zu aktualisierende Attribut wird automatisch erkannt."
+msgstr ""
+
+#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:64
+msgid "Die Tabelle in welcher die Eintr&auml;ge importiert werden sollen."
+msgstr ""
+
+msgid "Entry Date"
+msgstr ""
+
+#: ./skins/zopra_core_general/zopra_table_multiconfirm_form.cpt:41
+#: ./skins/zopra_core_general/zopra_table_multiconfirm_listing.pt:14
+msgid "Freigabe"
+msgstr ""
+
+#: ./skins/zopra_core_general/zopra_table_multiconfirm_form.cpt:73
+msgid "Freigeben"
+msgstr ""
+
+#: ./skins/zopra_core_general/zopra_list_edit_form.cpt:130
+msgid "Hierarchiedarstellung"
+msgstr ""
+
+#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:86
+msgid "In welchem Format wurde die CVS-Datei gespeichert, z.B.: macroman, latin1, utf8."
+msgstr ""
+
+msgid "Input required"
+msgstr ""
+
+# general zopra template translations
+msgid "Invalid input"
+msgstr ""
+
+#: ./skins/zopra_core_general/zopra_manager_main_form.pt:47
+msgid "Manager Overview"
+msgstr ""
+
+#: ./skins/zopra_core_general/zopra_main_form.cpt:44
+msgid "Module"
+msgstr ""
 
 msgid "Redaktion"
 msgstr "Editorial"
 
-msgid "sins_editorial"
-msgstr "Home Editorial"
-
-msgid "sins_aktInform"
-msgstr "News"
-
-msgid "sins_editStg"
-msgstr "Edit course"
-
-msgid "sins_start_keysearch"
-msgstr "Keyword search"
-
-msgid "sins_start_listingsHeading"
-msgstr "Listings of all programmes"
-
-msgid "sins_start_TooltipGrundst"
+msgid "Required"
 msgstr ""
 
-msgid "sins_start_TooltipWeiterf"
+#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:96
+msgid "Standard-Trennzeichen, z.B.: Semikolon, Komma, Tabulator (\t)"
 msgstr ""
 
-msgid "sins_start_req"
-msgstr "limited admission"
-
-msgid "sins_start_typ"
-msgstr "Style of study"
-
-msgid "sins_start_alphabetical"
-msgstr "alphabetical"
-
-msgid "sins_start_byDegr"
-msgstr "by degree"
-
-msgid "sins_start_byFac"
-msgstr "by faculty"
-
-msgid "sins_start_byAr"
-msgstr "by area of science"
-
-msgid "sins_start_studSax"
-msgstr "The web presentation of degree programmes was financed by the Free State of Saxony with the campaign \"PACK DEIN STUDIUM\"."
-
-msgid "sins_start_listEN"
-msgstr "degree programmes taught in english"
-
-# Sins Studiengang translations
-
-msgid "studyform"
-msgstr "form of study"
-
-msgid "sins_intv_ref"
-msgstr "Interview was appointed to the following courses:"
-
-msgid "sins_cstct_tip"
-msgstr "Go to contact details"
-
-msgid "sins_cstct_info"
-msgstr "Information about the person"
-
-##################### original translations ################################
-# general zopra template translations
-
-# SINS content translations
-
-msgid "Zentrale Studienberatung"
-msgstr "Central Student Information and Counselling Services"
-
-msgid "Immatrikulationsamt"
-msgstr "Admissions Office"
-
-msgid "sins_link_institution_title"
-msgstr "Link to institution"
-
-# SINS template translations
-#./skins/zopra_sins/zopra_table_show_form_nice_studiengang.pt
-msgid "sins_stg_bewerb_deutsch_ein"
+#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:41
+msgid "Translate"
 msgstr ""
 
-msgid "sins_stg_einblenden"
-msgstr "show"
-
-msgid "sins_stg_ausblenden"
-msgstr "hide"
-
-msgid "sins_stg_bewerb_auslaender_ein"
+#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:95
+msgid "Trennzeichen"
 msgstr ""
 
-msgid "sins_stg_tip_selfassessment"
-msgstr "Selfassessments are online consulaton tools with tests which help interested study applicants determine their aptitude and affinity for their desired study courses."
+#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:63
+msgid "Unfreeze"
+msgstr ""
 
-msgid "zopra_sr_label_pages"
-msgstr "Pages:"
+#: ./skins/zopra_core_general/zopra_list_edit_form.cpt:207
+msgid "Update"
+msgstr ""
 
-msgid "zopra_sr_label_pages_first"
-msgstr "first"
+#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:63
+msgid "Ziel-Tabelle"
+msgstr ""
 
-msgid "zopra_sr_label_pages_before"
-msgstr "back"
+#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:60
+msgid "Zwei-Spalten-Tabellen-Import"
+msgstr ""
 
-msgid "zopra_sr_label_pages_next"
-msgstr "next"
+msgid "search"
+msgstr "Search"
 
-msgid "zopra_sr_label_pages_last"
-msgstr "last"
+#. Default: "Chosen criteria:"
+#: ./skins/zopra_core_general/zopra_table_search_result.pt:83
+msgid "sins_sr_criteria"
+msgstr ""
 
-msgid "Fakultät"
-msgstr "faculty"
+#: ./skins/zopra_core_general/zopra_table_import_form.cpt:58
+msgid "tab-separiertes Format"
+msgstr ""
 
-msgid "Studiendokumente"
-msgstr "Documents"
-
-msgid "Weitere Informationen"
-msgstr "Further information"
-
-msgid "sins_csnav_faq"
-msgstr "Degree programme - FAQ"
-
-############################### ERP translations ##################################
-msgid "erp_importHelp"
-msgstr "Here you may upload a .csv-file with your data. If no errors are encountered, the data will be transfered. You may find a template to use with this feature with the instructionschapter 'Instruction to use the CSV Import'."
-
+#. Default: "delete"
+#: ./skins/zopra_core_general/zopra_table_deleteconfirm_form.cpt:51
 msgid "zopra_edit_delete"
 msgstr "delete"
 
+#. Default: "edit"
+#: ./skins/zopra_core_general/zopra_table_edit_form.cpt:55
 msgid "zopra_edit_edit"
 msgstr "edit"
 
+#. Default: "Language:"
+#: ./skins/zopra_core_general/zopra_table_edit_form.cpt:57
 msgid "zopra_edit_language"
 msgstr "Language:"
+
+#. Default: "Nur Arbeitskopien können freigegeben werden. Dieser Eintrag ist aktuell, die Freigabe wird abgebrochen."
+#: ./skins/zopra_core_general/zopra_table_editconfirm.cpy:40
+msgid "zopra_editconfirm_abort_no_copy"
+msgstr ""
+
+#. Default: "Originaleintrag nicht auffindbar, Freigabe abgebrochen."
+#: ./skins/zopra_core_general/zopra_table_editconfirm.cpy:47
+msgid "zopra_editconfirm_abort_not_found"
+msgstr ""
+
+#. Default: "Eintrag freigegeben.${additional_msg} Fehler beim Loeschen der Arbeitskopie. Interne Id: ${internal_id}"
+#: ./skins/zopra_core_general/zopra_table_editconfirm.cpy:102
+msgid "zopra_editconfirm_almost_success"
+msgstr ""
+
+#. Default: "Fehler bei der Freigabe: ${reason}"
+#: ./skins/zopra_core_general/zopra_table_editconfirm.cpy:107
+msgid "zopra_editconfirm_failure"
+msgstr ""
+
+#. Default: " Lediglich die Textfelder wurden uebernommen, da es sich um eine Sprachkopie handelt."
+#: ./skins/zopra_core_general/zopra_table_editconfirm.cpy:92
+msgid "zopra_editconfirm_is_translation"
+msgstr ""
+
+#. Default: "Eintrag freigegeben.${additional_msg} Interne Id: ${internal_id}"
+#: ./skins/zopra_core_general/zopra_table_editconfirm.cpy:97
+msgid "zopra_editconfirm_success"
+msgstr ""
+
+#. Default: " Die Nicht-Text-Felder der englischen Version wurde ebenfalls gespeichert."
+#: ./skins/zopra_core_general/zopra_table_editconfirm.cpy:89
+msgid "zopra_editconfirm_translation_okay"
+msgstr ""
+
+#: ./skins/zopra_core_general/zopra_testExistance.py:16
+msgid "zopra_entry_notfound"
+msgstr ""
+
+#: ./skins/zopra_core_general/zopra_widget_edit_display.pt
+msgid "zopra_for"
+msgstr "for"
+
+#. Default: "Pages:"
+#: ./skins/zopra_core_general/zopra_search_tools.pt:12
+msgid "zopra_sr_label_pages"
+msgstr "Pages:"
+
+#. Default: "back"
+#: ./skins/zopra_core_general/zopra_search_tools.pt:53
+msgid "zopra_sr_label_pages_before"
+msgstr "back"
+
+#. Default: "first"
+#: ./skins/zopra_core_general/zopra_search_tools.pt:45
+msgid "zopra_sr_label_pages_first"
+msgstr "first"
+
+#. Default: "last"
+#: ./skins/zopra_core_general/zopra_search_tools.pt:83
+msgid "zopra_sr_label_pages_last"
+msgstr "last"
+
+#. Default: "next"
+#: ./skins/zopra_core_general/zopra_search_tools.pt:76
+msgid "zopra_sr_label_pages_next"
+msgstr "next"
+
+#. Default: "Übersetzung erzeugt. Interne Id: ${newid}"
+#: ./skins/zopra_core_general/zopra_table_edittranslate.cpy:54
+msgid "zopra_translation_created"
+msgstr ""
+
+#. Default: "Übersetzung existiert bereits. Übersetzung abgebrochen."
+#: ./skins/zopra_core_general/zopra_table_edittranslate.cpy:59
+msgid "zopra_translation_exists"
+msgstr ""
+
+#. Default: "Diese Tabelle unterstützt keine Übersetzungen. Übersetzung abgebrochen."
+#: ./skins/zopra_core_general/zopra_table_edittranslate.cpy:15
+msgid "zopra_translation_not_supported"
+msgstr ""
+
+#. Default: "Originaleintrag nicht auffindbar, Übersetzung abgebrochen."
+#: ./skins/zopra_core_general/zopra_table_edittranslate.cpy:23
+msgid "zopra_translation_orig_not_found"
+msgstr ""
+
