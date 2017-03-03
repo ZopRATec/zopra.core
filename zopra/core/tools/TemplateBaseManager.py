@@ -247,8 +247,6 @@ class TemplateBaseManager(GenericManager):
             return autoid
 
 
-<<<<<<< Updated upstream
-=======
     def removeTranslationInfo(self, table, autoid):
         """\brief after deleting a translation entry, the orginal entry needs to be corrected (removing the hastranslation marker)"""
         # the entry with autoid is a default language entry, whose translation was deleted
@@ -292,7 +290,6 @@ class TemplateBaseManager(GenericManager):
 # Table and Entry centered Functions
 #
 
->>>>>>> Stashed changes
     def getFilteredColumnDefs(self, table, vis_only = False, edit_tracking = False):
         """\brief Indirection to retrieve column defs, allows addition and removal before listing"""
         tobj = self.tableHandler[table]
