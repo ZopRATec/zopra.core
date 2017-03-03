@@ -14,7 +14,7 @@
                type="submit"
                name="form.button.Save"
                value="Save"
-                 i18n:domain="plone"
+                 i18n:domain="zopra"
                  i18n:attributes="value"
         />
 
@@ -64,7 +64,7 @@
                 class="standalone"
                 type="submit"
                 name="form.button.Confirm"
-                value="Unfreeze"
+                value="Release"
                  i18n:attributes="value"
                  i18n:domain="zopra"
         />

@@ -3,7 +3,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ZMOM 1.0\n"
-"POT-Creation-Date: 2017-02-28 18:25+0000\n"
+"POT-Creation-Date: 2017-03-03 09:59+0000\n"
 "PO-Revision-Date: 2010-05-06 14:11+0100\n"
 "Last-Translator: Peter Seifert <peter.seifert@zopra.de>\n"
 "Language-Team: ZMOM i18n <i18n@zopra.de>\n"
@@ -42,7 +42,7 @@ msgstr ""
 #: ./skins/zopra_core_general/zopra_table_import_form.cpt:79
 #: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:116
 msgid "Cancel"
-msgstr ""
+msgstr "Abbrechen"
 
 # buttons
 #: ./skins/zopra_core_general/zopra_button_link_bar.cpt:31
@@ -61,7 +61,7 @@ msgstr ""
 
 #: ./skins/zopra_core_general/zopra_list_edit_form.cpt:213
 msgid "Delete"
-msgstr ""
+msgstr "Löschen"
 
 #: ./skins/zopra_core_general/zopra_button_link_bar.cpt:54
 msgid "Delete Workingcopy"
@@ -108,7 +108,7 @@ msgstr "Ungültige Eingabe"
 
 #: ./skins/zopra_core_general/zopra_manager_main_form.pt:47
 msgid "Manager Overview"
-msgstr ""
+msgstr "Manager Überblick"
 
 #: ./skins/zopra_core_general/zopra_main_form.cpt:44
 msgid "Module"
@@ -117,8 +117,16 @@ msgstr ""
 msgid "Redaktion"
 msgstr "Redaktion"
 
+#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:63
+msgid "Release"
+msgstr "Freigeben"
+
 msgid "Required"
 msgstr "Erforderlich"
+
+#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:13
+msgid "Save"
+msgstr "Speichern"
 
 #: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:96
 msgid "Standard-Trennzeichen, z.B.: Semikolon, Komma, Tabulator (\t)"
@@ -132,13 +140,9 @@ msgstr "Übersetzen"
 msgid "Trennzeichen"
 msgstr ""
 
-#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:63
-msgid "Unfreeze"
-msgstr "Freigeben"
-
 #: ./skins/zopra_core_general/zopra_list_edit_form.cpt:207
 msgid "Update"
-msgstr ""
+msgstr "Speichern"
 
 #: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:63
 msgid "Ziel-Tabelle"
@@ -154,7 +158,7 @@ msgstr "Suchen"
 #. Default: "Chosen criteria:"
 #: ./skins/zopra_core_general/zopra_table_search_result.pt:83
 msgid "sins_sr_criteria"
-msgstr ""
+msgstr "Suchkriterien"
 
 #: ./skins/zopra_core_general/zopra_table_import_form.cpt:58
 msgid "tab-separiertes Format"
@@ -168,47 +172,47 @@ msgstr "löschen"
 #. Default: "edit"
 #: ./skins/zopra_core_general/zopra_table_edit_form.cpt:55
 msgid "zopra_edit_edit"
-msgstr "edit"
+msgstr "bearbeiten"
 
 #. Default: "Language:"
 #: ./skins/zopra_core_general/zopra_table_edit_form.cpt:57
 msgid "zopra_edit_language"
-msgstr ""
+msgstr "Sprache:"
 
-#. Default: "Nur Arbeitskopien können freigegeben werden. Dieser Eintrag ist aktuell, die Freigabe wird abgebrochen."
+#. Default: "Only working copies can be released. This entry is up-to-date. Release was cancelled."
 #: ./skins/zopra_core_general/zopra_table_editconfirm.cpy:40
 msgid "zopra_editconfirm_abort_no_copy"
-msgstr ""
+msgstr "Nur Arbeitskopien können freigegeben werden. Dieser Eintrag ist aktuell, die Freigabe wird abgebrochen."
 
-#. Default: "Originaleintrag nicht auffindbar, Freigabe abgebrochen."
+#. Default: "Original entry could not be found. Release was cancelled."
 #: ./skins/zopra_core_general/zopra_table_editconfirm.cpy:47
 msgid "zopra_editconfirm_abort_not_found"
-msgstr ""
+msgstr "Originaleintrag nicht auffindbar, Freigabe wurde abgebrochen."
 
-#. Default: "Eintrag freigegeben.${additional_msg} Fehler beim Loeschen der Arbeitskopie. Interne Id: ${internal_id}"
+#. Default: "Entry has been released.${additional_msg} Error during deletion of working copy. Internal Id: ${internal_id}"
 #: ./skins/zopra_core_general/zopra_table_editconfirm.cpy:102
 msgid "zopra_editconfirm_almost_success"
-msgstr ""
+msgstr "Eintrag wurde freigegeben.${additional_msg} Fehler beim Löschen der Arbeitskopie. Interne Id: ${internal_id}"
 
-#. Default: "Fehler bei der Freigabe: ${reason}"
+#. Default: "Error during release: ${reason}"
 #: ./skins/zopra_core_general/zopra_table_editconfirm.cpy:107
 msgid "zopra_editconfirm_failure"
-msgstr ""
+msgstr "Fehler bei der Freigabe: ${reason}"
 
-#. Default: " Lediglich die Textfelder wurden uebernommen, da es sich um eine Sprachkopie handelt."
+#. Default: " Only the textual fields have been saved (because this is a translation)."
 #: ./skins/zopra_core_general/zopra_table_editconfirm.cpy:92
 msgid "zopra_editconfirm_is_translation"
-msgstr ""
+msgstr " Lediglich die Textfelder wurden übernommen, da es sich um eine Sprachkopie handelt."
 
-#. Default: "Eintrag freigegeben.${additional_msg} Interne Id: ${internal_id}"
+#. Default: "Entry has been released.${additional_msg} Internal Id: ${internal_id}"
 #: ./skins/zopra_core_general/zopra_table_editconfirm.cpy:97
 msgid "zopra_editconfirm_success"
-msgstr ""
+msgstr "Eintrag wurde freigegeben.${additional_msg} Interne Id: ${internal_id}"
 
-#. Default: " Die Nicht-Text-Felder der englischen Version wurde ebenfalls gespeichert."
+#. Default: " The non-textual fields of the translated version have also been updated."
 #: ./skins/zopra_core_general/zopra_table_editconfirm.cpy:89
 msgid "zopra_editconfirm_translation_okay"
-msgstr ""
+msgstr " Die Nicht-Text-Felder der englischen Version wurden ebenfalls gespeichert."
 
 #: ./skins/zopra_core_general/zopra_testExistance.py:16
 msgid "zopra_entry_notfound"

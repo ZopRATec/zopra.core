@@ -37,14 +37,14 @@ for attr in types.keys():
 
 # check iscopyof (working copy marker) on the db entry (origentry might not include this info)
 if not entry.get('iscopyof'):
-    message = _('zopra_editconfirm_abort_no_copy', default = u'Nur Arbeitskopien können freigegeben werden. Dieser Eintrag ist aktuell, die Freigabe wird abgebrochen.')
+    message = _('zopra_editconfirm_abort_no_copy', default = u'Only working copies can be released. This entry is up-to-date. Release was cancelled.')
     context.plone_utils.addPortalMessage(message, 'info')
     return state.set(status='failure', context=context)
 
 origentry = context.tableHandler[table].getEntry(entry.get('iscopyof'))
 
 if not origentry:
-    message = _('zopra_editconfirm_abort_not_found', default = u'Originaleintrag nicht auffindbar, Freigabe abgebrochen.')
+    message = _('zopra_editconfirm_abort_not_found', default = u'Original entry could not be found. Release was cancelled.')
     context.plone_utils.addPortalMessage(message, 'info')
     return state.set(status='failure', context=context)
 
@@ -86,26 +86,26 @@ if done == True:
         # updateTranslation also updates the working copy of the translation, if it exists
         translated = context.updateTranslation(table, origentry)
         if translated:
-            en_msg = _('zopra_editconfirm_translation_okay', default = ' Die Nicht-Text-Felder der englischen Version wurde ebenfalls gespeichert.')
+            en_msg = _('zopra_editconfirm_translation_okay', default = ' The non-textual fields of the translated version have also been updated.')
     # check if this is a translation (for msg only, action done already)
     elif origentry.get('language') in context.lang_additional:
-        en_msg = _('zopra_editconfirm_is_translation', default = ' Lediglich die Textfelder wurden uebernommen, da es sich um eine Sprachkopie handelt.')
+        en_msg = _('zopra_editconfirm_is_translation', default = ' Only the textual fields have been saved (because this is a translation).')
 
     # delete copy without deleting anything else (except multilists)
     done = context.tableHandler[table].deleteEntry(int(autoid))
     if done == True:
         message = _('zopra_editconfirm_success',
-                    default = u'Eintrag freigegeben.${additional_msg} Interne Id: ${internal_id}',
+                    default = u'Entry has been released.${additional_msg} Internal Id: ${internal_id}',
                     mapping = {u'internal_id': origautoid, u'additional_msg': en_msg})
         status = 'success'
     else:
         message = _('zopra_editconfirm_almost_success',
-                    default = u'Eintrag freigegeben.${additional_msg} Fehler beim Loeschen der Arbeitskopie. Interne Id: ${internal_id}',
+                    default = u'Entry has been released.${additional_msg} Error during deletion of working copy. Internal Id: ${internal_id}',
                     mapping = {u'internal_id': origautoid, u'additional_msg': en_msg})
 
 else:
     message = _('zopra_editconfirm_failure',
-                default = u'Fehler bei der Freigabe: ${reason}',
+                default = u'Error during release: ${reason}',
                 mapping = {u'reason': done})
 
 context.plone_utils.addPortalMessage(message, 'info')

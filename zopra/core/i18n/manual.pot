@@ -20,39 +20,17 @@ msgstr ""
 msgid "zopra_for"
 msgstr ""
 
-#: ./skins/zopra_core_general/zopra_testExistance.py
-msgid "zopra_entry_notfound"
-msgstr ""
-
 msgid "search"
 msgstr ""
 
 msgid "Redaktion"
 msgstr ""
 
-##################### original translations ################################
-
 # Edit-tracking Cols
 msgid "Automatic No."
 msgstr ""
 
 msgid "Entry Date"
-msgstr ""
-
-# buttons
-msgid "Close"
-msgstr ""
-
-msgid "Back"
-msgstr ""
-
-msgid "Delete Workingcopy"
-msgstr ""
-
-msgid "Unfreeze"
-msgstr ""
-
-msgid "Translate"
 msgstr ""
 
 # general zopra template translations
@@ -63,25 +41,4 @@ msgid "Input required"
 msgstr ""
 
 msgid "Required"
-msgstr ""
-
-msgid "zopra_sr_label_pages"
-msgstr ""
-
-msgid "zopra_sr_label_pages_first"
-msgstr ""
-
-msgid "zopra_sr_label_pages_before"
-msgstr ""
-
-msgid "zopra_sr_label_pages_next"
-msgstr ""
-
-msgid "zopra_sr_label_pages_last"
-msgstr ""
-
-msgid "zopra_edit_delete"
-msgstr ""
-
-msgid "zopra_edit_edit"
 msgstr ""
