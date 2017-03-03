@@ -247,6 +247,49 @@ class TemplateBaseManager(GenericManager):
             return autoid
 
 
+    def removeTranslationInfo(self, table, autoid):
+        """\brief after deleting a translation entry, the orginal entry needs to be corrected (removing the hastranslation marker)"""
+        # the entry with autoid is a default language entry, whose translation was deleted
+        tobj = self.tableHandler[table]
+        entry = tobj.getEntry(autoid)
+        # check for remaining translations
+        translations = tobj.getEntryAutoidList(constraints = {'istranslationof': autoid})
+        if not translations:
+            # remove the hastranslation marker
+            entry['hastranslation'] = 0
+            tobj.updateEntry(entry, autoid)
+            # check for working copies
+            workingcopy = self.getWorkingCopy(table, autoid)
+            if workingcopy:
+                # use the original autoid and the change as entry_diff
+                self.updateWorkingCopy(table, {'autoid': autoid, 'hastranslation': 0})
+
+
+    def correctTranslationInfo(self):
+        """\brief update step for correcting translation info"""
+        # deleting language copies did not reset the hastranslation marker before
+        from zopra.core import ZC
+        done = []
+        pm = self.getManager(ZC.ZM_PM)
+        for table in self.tableHandler.getTableIDs():
+            if self.doesTranslations(table):
+                sql1 = 'SELECT istranslationof from {}{} where istranslationof != 0'.format(self.getId(), table)
+                res = pm.executeDBQuery(sql1)
+                origids = [row[0] for row in res]
+                if not origids:
+                    continue
+                idstring = ', '.join([str(orid) for orid in origids])
+                sql2 = 'SELECT COUNT(*) FROM {}{} WHERE hastranslation > 0 AND autoid NOT IN ({})'.format(self.getId(), table, idstring)
+                res = pm.executeDBQuery(sql2)
+                done.append('Removed {} hastranslation markers for {}.'.format(res[0][0], table))
+                sql3 = 'UPDATE {}{} SET hastranslation = 0 WHERE hastranslation > 0 AND autoid NOT IN ({})'.format(self.getId(), table, idstring)
+                pm.executeDBQuery(sql3)
+        return '\n'.join(done)
+
+#
+# Table and Entry centered Functions
+#
+
     def getFilteredColumnDefs(self, table, vis_only = False, edit_tracking = False):
         """\brief Indirection to retrieve column defs, allows addition and removal before listing"""
         tobj = self.tableHandler[table]

@@ -1,0 +1,34 @@
+Zusammenfassung der ZopRA Datenbank API
+
+
+Struktur der Manager:
+
+ZopRAProduct
+ |-- connector (mysql, postgres etc.)
+
+
+mgrXYZ (->GenericManager)
+ |        |- 
+ |        |-
+ |        |-
+ |        |-
+ |        |-
+ |-- tableHandler(TableHandler) --- keys()
+     |                               |- get(name), auch [name]  
+     |-- Table --- getEntry(autoid)
+                    |- getEntries(...)
+                    |- getEntryAutoidList(...)
+                    |- getTableNode?
+                    |- updateEntry(autoid, dict)
+                    |- deleteEntries([autoid, autoid])
+                    |- addEntry(dict)
+                    |- 
+
+ |-- listHandler(ListHandler) --- getList(table, name)
+     |
+     |
+     |-- List --- getEntries()
+                   |- getEntry()
+                   |- addEntry()
+                   |- edit?
+
