@@ -19,8 +19,8 @@ if not 'delete' in context.getPermissionEntryInfo(table, entry):
     return state.set(status='failure', context=context)
 
 origentry = context.zopra_forceOriginal(table, entry)
-ak = (entry.get('autoid') != origentry.get('autoid'))
-sk = entry.get('istranslationof')
+ak = context.doesWorkingCopies(table) and (entry.get('autoid') != origentry.get('autoid'))
+sk = context.doesTranslations(table) and entry.get('istranslationof')
 
 targetid = None
 special_message = ''
@@ -32,6 +32,9 @@ elif sk:
     special_message = u'Sprachkopie gelöscht.'
 
 done = context.deleteEntries(table, [int(autoid)])
+
+if done and sk:
+    context.removeTranslationInfo(table, sk)
 
 # dependent-entries handling (tell the main-entry that a dependent multilist entry was removed)
 if done and request.get('origtable') and request.get('origid') and request.get('origattribute'):

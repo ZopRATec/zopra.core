@@ -56,7 +56,8 @@
       <!-- table cons set as hidden inputs for the form to be able to traverse back to search result afterwards (if button_res is set) -->
         <tal:block tal:condition="button_res"
                    tal:repeat="con python: cons.keys()">
-            <tal:def tal:define="attr_type python: tobj.getField(con).get('TYPE')">
+            <tal:def tal:define="field python: tobj.getField(con);
+                                 attr_type python: field and field.get('TYPE')">
                 <tal:block tal:condition="python: attr_type in ['multilist', 'singlelist']">
                     <tal:block tal:repeat="oneval python: cons.get(con, [])">
                       <input tal:condition="python: oneval"
