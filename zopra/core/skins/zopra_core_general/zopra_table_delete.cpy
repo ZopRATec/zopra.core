@@ -15,7 +15,9 @@ done = False
 # new permission handling
 entry = context.tableHandler[table].getEntry(autoid)
 if not 'delete' in context.getPermissionEntryInfo(table, entry):
-    context.plone_utils.addPortalMessage(u"Nur berechtigte Redakteure dürfen Einträge löschen. Abgebrochen.", 'info')
+    message = _('zopra_delete_permission_missing',
+                default = u'Only editors with delete permission are allowed to delete entries. Aborted.')
+    context.plone_utils.addPortalMessage(message, 'info')
     return state.set(status='failure', context=context)
 
 origentry = context.zopra_forceOriginal(table, entry)
@@ -23,13 +25,13 @@ ak = context.doesWorkingCopies(table) and (entry.get('autoid') != origentry.get(
 sk = context.doesTranslations(table) and entry.get('istranslationof')
 
 targetid = None
-special_message = ''
+special_message = None
 if ak:
     targetid = origentry.get('autoid')
-    special_message = u'Arbeitskopie gelöscht.'
+    special_message = _('zopra_deleted_workingcopy', default = u'Working copy has been deleted.')
 elif sk:
     targetid = sk
-    special_message = u'Sprachkopie gelöscht.'
+    special_message = _('zopra_deleted_translation', default = u'Translation has been deleted.')
 
 done = context.deleteEntries(table, [int(autoid)])
 
@@ -64,7 +66,9 @@ if done and request.get('origtable') and request.get('origid') and request.get('
             # set the autoid in the entry
             orig['autoid'] = origid
             # create a fitting message
-            message = u'Verknüpfter Eintrag (%s) wurde entfernt. Arbeitskopie fuer Haupteintrag (%s) wurde erzeugt. Original-Id: %s. ' % (tmainobj.getLabel().decode("utf8"), tobj.getLabel().decode("utf8"), orig.get('iscopyof'))
+            message = _('zopra_delete_dependent_create_wc_success',
+                        default = u'A dependent entry (${table}) has been deleted. A working copy for the main entry (${maintable} with the original Id ${internal_id}) has been created.',
+                        mapping = {u'maintable': tmainobj.getLabel(), u'table': tobj.getLabel(), u'internal_id': orig.get('iscopyof')})
         else:
             # copy exists, we have it already (forceCopy was called above)
             # directly remove the ref (this does not create any log)
@@ -73,7 +77,9 @@ if done and request.get('origtable') and request.get('origid') and request.get('
             if tobj.do_cache:
                 tobj.cache.invalidate(orig['autoid'])
             # jump to referring entry
-            message = u'Verknüpfter Eintrag (%s) wurde entfernt. Arbeitskopie fuer Haupteintrag (%s) wurde aktualisiert. Original-Id: %s.' % (tmainobj.getLabel().decode("utf8"), tobj.getLabel().decode("utf8"), orig.get('iscopyof'))
+            message = _('zopra_delete_dependent_update_wc_success',
+                        default = u'A dependent entry (${table}) has been deleted. The working copy for the main entry (${maintable} with the original Id ${internal_id}) has been updated.',
+                        mapping = {u'maintable': tmainobj.getLabel(), u'table': tobj.getLabel(), u'internal_id': orig.get('iscopyof')})
     else:
         # remove the deleted dependent entry from attr
         # directly remove the ref (this does not create any log)
@@ -82,7 +88,9 @@ if done and request.get('origtable') and request.get('origid') and request.get('
         if tobj.do_cache:
             tobj.cache.invalidate(orig['autoid'])
         # message deletion and deref
-        message = u'Verknüpfter Eintrag (%s) wurde geloescht und Haupteintrag (%s) aktualisiert.' % (tmainobj.getLabel().decode("utf8"), tobj.getLabel().decode("utf8"))
+        message = _('zopra_delete_dependent_success',
+                    default = u'A dependent entry (${table}) has been deleted. The reference from the main entry (${maintable} has been removed.',
+                    mapping = {u'maintable': tmainobj.getLabel(), u'table': tobj.getLabel()})
     # set message
     if message:
         context.plone_utils.addPortalMessage(message, 'info')
@@ -91,13 +99,13 @@ if done and request.get('origtable') and request.get('origid') and request.get('
     return
 
 if done:
-    message = special_message or u'Eintrag gelöscht.'
+    message = special_message or _('zopra_delete_success', default = 'Entry has been deleted.')
     context.plone_utils.addPortalMessage(message, 'info')
     if targetid:
         # jump to edit form of original
         request.RESPONSE.redirect('zopra_table_edit_form?table=%s&autoid=%s' % (table, targetid))
-    return state.set(status='success', context=context)
+    return state.set(status = 'success', context = context)
 else:
-    message = u'Fehler beim Löschen.'
+    message = _('zopra_delete_failure', default = 'Error during deletion.')
     context.plone_utils.addPortalMessage(message, 'info')
-    return state.set(status='failure', context=context)
+    return state.set(status = 'failure', context = context)
