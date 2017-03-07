@@ -267,7 +267,8 @@ class TemplateBaseManager(GenericManager):
 
     def correctTranslationInfo(self):
         """\brief update step for correcting translation info"""
-        # deleting language copies did not reset the hastranslation marker before
+        # deleting language copies did not reset the hastranslation marker before, so we have to correct entries on db level
+        # attention: working copies are problematic and are left out. Better make sure there are non when using this function.
         from zopra.core import ZC
         done = []
         pm = self.getManager(ZC.ZM_PM)
@@ -279,10 +280,16 @@ class TemplateBaseManager(GenericManager):
                 if not origids:
                     continue
                 idstring = ', '.join([str(orid) for orid in origids])
+                # exclude working copies:
+                wc = self.doesWorkingCopies(table)
                 sql2 = 'SELECT COUNT(*) FROM {}{} WHERE hastranslation > 0 AND autoid NOT IN ({})'.format(self.getId(), table, idstring)
+                if wc:
+                    sql2 = sql2 + ' AND iscopyof IS NULL'
                 res = pm.executeDBQuery(sql2)
                 done.append('Removed {} hastranslation markers for {}.'.format(res[0][0], table))
                 sql3 = 'UPDATE {}{} SET hastranslation = 0 WHERE hastranslation > 0 AND autoid NOT IN ({})'.format(self.getId(), table, idstring)
+                if wc:
+                    sql3 = sql3 + ' AND iscopyof IS NULL'
                 pm.executeDBQuery(sql3)
         return '\n'.join(done)
 
