@@ -409,6 +409,7 @@ class ForeignList(GenericList):
                 for result in reslist:
                     if value is None or \
                        value in result[1]:
+                        # this is not multilingual, target functions neet to supply correct language
                         newentry = { ZC.TCN_AUTOID: result[0],
                                      ZC.VALUE:      result[1],
                                      ZC.SHOW:       'yes' }
