@@ -27,7 +27,8 @@
             $("a.autoupdate_popup").live("click", function(e) {
                 var link = $(this);
                 var widget = $(this).parents('div.field');
-                var fieldset = widget.parents('fieldset');
+                // the fieldset is not the direct parent in the rendered version, but a super-parent, but it works anyway?
+                var fieldset = widget.parent();
                 var label = fieldset.children('legend').html();
                 var wnd = window.open("zopra_popup?url="+encodeURIComponent(link.attr('href')),"","width=910,height=500");
 
@@ -61,7 +62,8 @@
                                         $("a[href*='origid="+autoid+"']").each(function() {
                                             this.href = this.href.replace("origid="+autoid, "origid="+new_autoid);
                                         });
-                                        // .. links from top and bottom -> do we really need this? working-copy handling should be transparent
+                                        // .. links from top and bottom
+                                        // TODO: check if this is necessary (doesn't work right now, class is gone, tabs might need handling), but maybe we do not need to replace the id here anyway
                                         $(".zopra_special_links a[href*='"+autoid+"']").each(function() {
                                             this.href = this.href.replace(new RegExp(autoid, "g"), new_autoid);
                                         });
@@ -96,7 +98,7 @@
 
 
                         }
-                    } catch (e) {throw e}
+                    } catch (e) {}
                 }, 200);
 
                 e.preventDefault();
