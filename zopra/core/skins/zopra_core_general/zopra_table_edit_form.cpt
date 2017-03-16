@@ -20,6 +20,7 @@
         });
         -->
     </script>
+    <script type="text/javascript" tal:attributes="src string:${portal_url}/autoupdate-widget/jquery.autoupdate-widget.js"></script>
 </metal:javascriptslot>
 
 <metal:topslot fill-slot="top_slot">
