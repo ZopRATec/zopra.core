@@ -85,8 +85,8 @@
                                             var index = widget.index();
                                             widget.replaceWith(reduced2Widget);
                                             new_widget = fieldset.children().get(index);
-                                            // this seems too general. we need to use field instead fieldset
-                                            field.find("a").addClass('autoupdate_popup');
+                                            // this seems too general. we need to use new_widget instead fieldset (or not do this at all?)
+                                            fieldset.find("a").addClass('autoupdate_popup');
                                             widget = new_widget;
                                         }
                                     });
