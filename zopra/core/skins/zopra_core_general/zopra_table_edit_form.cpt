@@ -48,7 +48,6 @@
                            edit_lang python: here.doesTranslations(table) and entry.get('language');
                            entry_perm python: here.getPermissionEntryInfo(table, entry);
                            edit_permitted python: here.getPermissionInfo(table, 'table_edit') or here.getPermissionInfo(table, 'table_edit_own') and 'edit' in entry_perm;">
-<div tal:content="python: errors or 'No Errors'"></div>
         <h1 class="documentFirstHeading">
             <span i18n:translate="" tal:content="python: tobj.getLabel()"></span>
             <span tal:content="python: here.getLabelString(table, autoid, entry)"></span>
