@@ -21,9 +21,9 @@
     <tal:block define="
         global lang here/portal_languages/getPreferredLanguage|here/language_used|here/Language|site_properties/default_language;
         errors python: {};
-        table request/table;
-        autoid request/autoid;
-        label request/label;
+        table request/table|nothing;
+        autoid request/autoid|nothing;
+        label request/label|nothing;
         tobj python: here.tableHandler[table];
         coltypes python:tobj.getColumnDefs();
         origentry python: tobj.getEntry(autoid);

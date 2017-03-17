@@ -28,7 +28,7 @@
                 var link = $(this);
                 var widget = $(this).parents('div.field');
                 // the fieldset is not the direct parent in the rendered version, but a super-parent, but it works anyway?
-                var fieldset = widget.parent();
+                var fieldset = widget.parents('fieldset');
                 var label = fieldset.children('legend').html();
                 var wnd = window.open("zopra_popup?url="+encodeURIComponent(link.attr('href')),"","width=910,height=500");
 
@@ -71,7 +71,6 @@
                                         autoid = new_autoid;
 
                                     }
-
                                     $.ajax({
                                         type	: "GET",
                                         cache	: false,
