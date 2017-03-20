@@ -32,9 +32,10 @@
                                                             origattribute request/origattribute|nothing;
                                                                     entry python: request.get('autoid') and tobj.getEntry(request.get('autoid')) or here.getDefaultCreateValues(table);
                                                                             required python: here.getGenericConfig(table).get('required',[]);">
-        <h1 class="documentFirstHeading">
-          <span i18n:translate="zopra_create_heading">Create entry</span>
-          <span i18n:translate="" tal:content="python: tobj.getLabel()"></span>
+        <h1 class="documentFirstHeading"
+            i18n:translate="zopra_create_heading">
+          Create entry
+          <span i18n:name="table" i18n:translate="" tal:content="python: tobj.getLabel()"></span>
         </h1>
         <form name="edit_form"
               action="."
@@ -85,7 +86,7 @@
                         <div class="row">
                             <div class="contentSlot">
                                 <div class="field">
-                                    <span i18n:translate="create_repeat_hint">Wählen Sie aus wie oft die folgenden Felder benötigt werden</span>
+                                    <span i18n:translate="create_repeat_hint">Please choose, how often you want to replicate the following fields.</span>
                                     <select name="repeats_select"
                                             id="repeats_select" tal:define="length python: range(1, 21);">
                                         <tal:block tal:repeat="i length">

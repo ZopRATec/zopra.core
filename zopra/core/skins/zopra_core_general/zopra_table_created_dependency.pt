@@ -8,13 +8,6 @@
 
     </tal:comment>
 
-
-
-<!--       <metal:css_slot fill-slot="css_slot">
-            <link rel="stylesheet" type="text/css" media="all"  tal:attributes="href string:${portal_url}/zopra.css" />
-            <link rel="stylesheet" type="text/css" media="all"  tal:attributes="href string:${portal_url}/zopra_edit.css" />
-      </metal:css_slot>
- -->
       <metal:main fill-slot="main"
                   tal:define="table request/table;
                               isAnon context/@@plone_portal_state/anonymous;"
@@ -24,12 +17,12 @@
             </tal:block>
             <tal:block tal:define="tobj python: here.tableHandler[table];
                                    entry python: request.get('autoid') and tobj.getEntry(request.get('autoid')) or here.getDefaultCreateValues(table);">
-                <h1 class="documentFirstHeading">
-                    <span i18n:translate="zopra_create_heading">Create entry</span>
-                    <span i18n:translate="" tal:content="python: tobj.getLabel()"></span>
+                <h1 class="documentFirstHeading" i18n:translate="zopra_create_heading">
+                    Create entry
+                    <span i18n:name="table" i18n:translate="" tal:content="python: tobj.getLabel()"></span>
                 </h1>
                 <p i18n:translate="zopra_created_dependency_message">
-                      The dependent entry for
+                      The dependent entry
                     <span i18n:name="table" tal:content="tobj/getLabel"></span>
                     <span i18n:name="label" tal:content="python: here.getLabelString(table, None, entry)"></span>
                     has been created.

@@ -3,7 +3,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ZMOM 1.0\n"
-"POT-Creation-Date: 2017-03-07 19:11+0000\n"
+"POT-Creation-Date: 2017-03-20 13:53+0000\n"
 "PO-Revision-Date: 2010-05-06 14:11+0100\n"
 "Last-Translator: Peter Seifert <peter.seifert@zopra.de>\n"
 "Language-Team: ZMOM i18n <i18n@zopra.de>\n"
@@ -44,7 +44,7 @@ msgid "Cancel"
 msgstr ""
 
 #: ./skins/zopra_core_general/zopra_button_link_bar.cpt:31
-#: ./skins/zopra_core_general/zopra_table_created_dependency.pt:39
+#: ./skins/zopra_core_general/zopra_table_created_dependency.pt:32
 #: ./skins/zopra_core_general/zopra_table_deleteconfirm_form.cpt:122
 msgid "Close"
 msgstr ""
@@ -151,8 +151,8 @@ msgstr ""
 msgid "Zwei-Spalten-Tabellen-Import"
 msgstr ""
 
-#. Default: "Wählen Sie aus wie oft die folgenden Felder benötigt werden"
-#: ./skins/zopra_core_general/zopra_table_create_form.cpt:88
+#. Default: "Please choose, how often you want to replicate the following fields."
+#: ./skins/zopra_core_general/zopra_table_create_form.cpt:89
 msgid "create_repeat_hint"
 msgstr ""
 
@@ -183,9 +183,9 @@ msgstr ""
 msgid "zopra_create_dependent_update_wc_success"
 msgstr ""
 
-#. Default: "Create entry"
-#: ./skins/zopra_core_general/zopra_table_create_form.cpt:36
-#: ./skins/zopra_core_general/zopra_table_created_dependency.pt:28
+#. Default: "Create entry ${table}"
+#: ./skins/zopra_core_general/zopra_table_create_form.cpt:38
+#: ./skins/zopra_core_general/zopra_table_created_dependency.pt:22
 msgid "zopra_create_heading"
 msgstr ""
 
@@ -200,12 +200,12 @@ msgid "zopra_create_new_entry"
 msgstr ""
 
 #. Default: "Please close this window to reference this new entry from the main entry."
-#: ./skins/zopra_core_general/zopra_table_created_dependency.pt:37
+#: ./skins/zopra_core_general/zopra_table_created_dependency.pt:30
 msgid "zopra_created_dependency_hint"
 msgstr ""
 
-#. Default: "The dependent entry for ${table} ${label} has been created."
-#: ./skins/zopra_core_general/zopra_table_created_dependency.pt:34
+#. Default: "The dependent entry ${table} ${label} has been created."
+#: ./skins/zopra_core_general/zopra_table_created_dependency.pt:27
 msgid "zopra_created_dependency_message"
 msgstr ""
 
@@ -227,6 +227,11 @@ msgstr ""
 #. Default: "Error during deletion."
 #: ./skins/zopra_core_general/zopra_table_delete.cpy:109
 msgid "zopra_delete_failure"
+msgstr ""
+
+#. Default: "Deletion of ${table}"
+#: ./skins/zopra_core_general/zopra_table_deleted_dependency.pt:30
+msgid "zopra_delete_heading"
 msgstr ""
 
 #. Default: "Only editors with delete permission are allowed to delete entries. Aborted."
@@ -264,6 +269,16 @@ msgstr ""
 msgid "zopra_deleteconfirm_hint_wc"
 msgstr ""
 
+#. Default: "Close this window to update the display of the main entry."
+#: ./skins/zopra_core_general/zopra_table_deleted_dependency.pt:38
+msgid "zopra_deleted_dependency_hint"
+msgstr ""
+
+#. Default: "The dependent entry ${table} has been deleted."
+#: ./skins/zopra_core_general/zopra_table_deleted_dependency.pt:35
+msgid "zopra_deleted_dependency_message"
+msgstr ""
+
 #. Default: "Translation has been deleted."
 #: ./skins/zopra_core_general/zopra_table_delete.cpy:34
 msgid "zopra_deleted_translation"
@@ -279,13 +294,13 @@ msgstr ""
 msgid "zopra_delteconfirm_confirm"
 msgstr ""
 
-#. Default: "edit"
+#. Default: "Edit ${table} ${label} ${language}"
 #: ./skins/zopra_core_general/zopra_table_edit_form.cpt:55
-msgid "zopra_edit_edit"
+msgid "zopra_edit_heading"
 msgstr ""
 
 #. Default: "Language:"
-#: ./skins/zopra_core_general/zopra_table_edit_form.cpt:57
+#: ./skins/zopra_core_general/zopra_table_edit_form.cpt:56
 msgid "zopra_edit_language"
 msgstr ""
 
