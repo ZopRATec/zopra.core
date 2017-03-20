@@ -712,7 +712,7 @@ class TableNode(SimpleItem):
             for column in col_list:
                 if not self.data.getField(column) or \
                        self.data.getField(column)[ZC.COL_TYPE] in MULLISTS:
-                    raise ValueError('Internal Column Selection Error.')
+                    raise ValueError('Internal Column Selection Error: %s.' % column)
                 if column == ZC.TCN_AUTOID:
                     # autoid can be appended without change. Even in case of grouping, it is the grouping column
                     attr = '%s%s.%s' % ( self.mgr.id,
