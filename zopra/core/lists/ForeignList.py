@@ -247,7 +247,8 @@ class ForeignList(GenericList):
         if local.getClassName() == self.manager:
             foreign = local
         else:
-            foreign = local.getHierarchyUpManager(self.manager)
+            # try same container first and then up the hierarchy
+            foreign = local.getManager(self.manager) or local.getHierarchyUpManager(self.manager)
             # if that does not work, try down
             # CAUTION: down could be multiple managers of same type, first found gets returned
             # FIXME: should build in zopratype differentiation somehow
