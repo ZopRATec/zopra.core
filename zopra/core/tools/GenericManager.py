@@ -471,7 +471,7 @@ class GenericManager(ManagerPart):
         return True
 
 
-    def getEntry(self, table, autoid, lang = None):
+    def getEntry(self, table, autoid, lang = None, ignore_permissions = False):
         """ Calls tableHandlers getEntry, overwrite for special functionality.
         """
 
@@ -489,7 +489,7 @@ class GenericManager(ManagerPart):
 
         # get entry
         tobj  = self.tableHandler[table]
-        entry = tobj.getEntry(autoid)
+        entry = tobj.getEntry(autoid, ignore_permissions = ignore_permissions)
 
         # return empty dictionary if no entry was found
         if entry is None:
@@ -498,7 +498,7 @@ class GenericManager(ManagerPart):
         # do translation if we have a translation for the table
         if lang and self.doesTranslations(table) and entry['language'] != lang:
             result = tobj.getEntryList(constraints = {'istranslationof': autoid,
-                                                      'language':        lang} )
+                                                      'language':        lang}, ignore_permissions = ignore_permissions)
             if result:
                 entry = result[0]
 
@@ -940,7 +940,7 @@ class GenericManager(ManagerPart):
     def buttonForwardForm(self, REQUEST):
         """\brief Function that receives the form of the index_html of a manager,
             when a button is pressed."""
-        # the product-overview pages might have different forms forwarding button-actions 
+        # the product-overview pages might have different forms forwarding button-actions
         # to this function in the respective manager
         # we do some generic handling here and then call the hook_buttonForwardForm function
         # for managerspecific additional handling
@@ -1266,8 +1266,8 @@ class GenericManager(ManagerPart):
         # build dialog
         dlg = getStdDialog(heading, url)
 
-        # build mask 
-        # NOTE: tracking col lists can not be resolved 
+        # build mask
+        # NOTE: tracking col lists can not be resolved
         #       by buildSemiGenericMask with new listHandler
         #       ()
         # TODO: fix it
@@ -1348,7 +1348,7 @@ class GenericManager(ManagerPart):
         dlg.add(autoprop)
         tableprop = hgProperty('table', table, parent = dlg)
         dlg.add(tableprop)
- 
+
         # add mask
         dlg.add(mask)
 
@@ -1506,7 +1506,7 @@ class GenericManager(ManagerPart):
     security.declareProtected(modifyPermission, 'newForm')
     def newForm(self, table, REQUEST = None):
         """\brief Returns the html source of the generic new form."""
-        # first check for create dialogs, if found, return the 
+        # first check for create dialogs, if found, return the
         # dialog-container's show function
         dlgname = self.getDialogName(table, ZC.DLG_NEW)
         if dlgname:
@@ -1574,16 +1574,16 @@ class GenericManager(ManagerPart):
 
                 # required check after all initial (custom) handling was done
                 missing = self.checkRequiredFields(table, descr_dict)
-        
+
                 if missing:
                     msg = ''
                     tobj = self.tableHandler[table]
                     for field in missing:
                         msg += 'Missing value for field %s.<br>' % tobj.getLabel(field)
-                    
+
                     # raise the error to reverse whatever was done before
                     self.displayError(msg, 'Required fields missing')
-                
+
                 autoid = tobj.addEntry(descr_dict)
                 descr_dict[TCN_AUTOID] = autoid
                 message2 = self.actionAfterAdd(table, descr_dict, REQUEST)
@@ -1595,7 +1595,7 @@ class GenericManager(ManagerPart):
                         if message and message[-1] != ' ':
                             message += ' '
                         message += message2
-                        
+
                     REQUEST['zopra_message'] = message
                 else:
                     REQUEST['zopra_message']       = True
@@ -1638,7 +1638,7 @@ class GenericManager(ManagerPart):
     security.declareProtected(modifyPermission, 'editForm')
     def editForm(self, id, table, REQUEST = None):
         """\brief Returns the html source of the generic edit form."""
-        # first check for edit dialogs, if found, return the 
+        # first check for edit dialogs, if found, return the
         # dialog-container's show function
         dlgname = self.getDialogName(table, ZC.DLG_EDIT)
         if dlgname:
@@ -1652,7 +1652,7 @@ class GenericManager(ManagerPart):
             attr = {'REQUEST': REQUEST}
             # return the function call
             return func(**attr)
-        
+
         perm  = self.getGUIPermission()
         ztype = self.getZopraType()
         tobj  = self.tableHandler[table]
@@ -1700,7 +1700,7 @@ class GenericManager(ManagerPart):
         # we had a "bug" with emptied multilists, they don't appear in the edit_dict
         # but not editable multilists as well ... so the getShowHtml uses hgProperty now
         # TODO: somehow make sure that this is only done on follow-up calls to editForm
-        # if somehow the edit_dict is not empty on the first call, we end up with missing 
+        # if somehow the edit_dict is not empty on the first call, we end up with missing
         # multilist values
         # FIXME: introduce oldstyle-list-property for this check, default:false -> no check
         # edittracking cols are always present, so this check can work
@@ -1759,16 +1759,16 @@ class GenericManager(ManagerPart):
 
                 # required check after all initial (custom) handling was done
                 missing = self.checkRequiredFields(table, descr_dict)
-        
+
                 if missing:
                     msg = ''
                     tobj = self.tableHandler[table]
                     for field in missing:
                         msg += 'Missing value for field %s.<br>' % tobj.getLabel(field)
-                    
+
                     # raise the error to reverse whatever was done before
                     self.displayError(msg, 'Required fields missing')
-                
+
                 # do the update
                 tobj.updateEntry( descr_dict,
                                   descr_dict.get(TCN_AUTOID) )
@@ -1867,7 +1867,7 @@ class GenericManager(ManagerPart):
     security.declareProtected(viewPermission, 'showForm')
     def showForm(self, id, table, REQUEST = None, auto = None):
         """\brief Returns the html source of the generic show form."""
-        # first check for show dialogs, if found, return the 
+        # first check for show dialogs, if found, return the
         # dialog-container's show function
         dlgname = self.getDialogName(table, ZC.DLG_SHOW)
         if dlgname:
@@ -1948,14 +1948,14 @@ class GenericManager(ManagerPart):
                     if basket:
                         # we add the actual entry
                         self.basketAdd(table, descr_dict, REQUEST)
-    
+
                 if button == BTN_L_EDIT:
                     return self.editForm(id, table, REQUEST)
-    
+
                 elif button == BTN_L_CLOSE:
                     # close form
                     return self.closeForm(table, REQUEST)
-                
+
                 else:
 
                     # check previous / next buttons
@@ -2221,7 +2221,7 @@ class GenericManager(ManagerPart):
 
 
 ################################################
-# Mask preparation functions for entry display 
+# Mask preparation functions for entry display
 #   - normally only overwrite getSingleMask / getRowMask
 #
 ################################################
@@ -2232,7 +2232,7 @@ class GenericManager(ManagerPart):
                     buildSemiGenericMask can aid with the basic mask layout, adding
                     custom parts to the basic mask afterwards. If you are using multi-
                     mask generic handling for the search (overwrote getSearchPattern?),
-                    make sure to test for a list as descr_dict and forward to getMultiMask 
+                    make sure to test for a list as descr_dict and forward to getMultiMask
                     in that case. This handling sucks, but there is no easy way for now."""
         assert isinstance(table, StringTypes)
         assert isinstance(flag, IntType)
@@ -3144,7 +3144,7 @@ class GenericManager(ManagerPart):
 
         # the really short report
         tab = hgTable()
-        tab[0, 0] = hgLabel( '%s entries for %s successfully created.' % 
+        tab[0, 0] = hgLabel( '%s entries for %s successfully created.' %
                              (len(created), self.tableHandler[tablename].getLabel()) )
         if doubles:
             tab[1, 0] = hgLabel('%s double entries for %s found.' %

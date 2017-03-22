@@ -143,16 +143,15 @@ class TemplateBaseManager(GenericManager):
         """\brief """
         tobj = self.tableHandler[table]
         cons = {'iscopyof': '_not_NULL'}
-        return tobj.getEntryList(constraints = cons)
+        return tobj.getEntryList(constraints = cons, ignore_permissions = True)
 
 
     def getWorkingCopy(self, table, autoid):
         """\brief Return the working copy or None"""
         if self.doesWorkingCopies(table):
-            copy = self.tableHandler[table].getEntryList(constraints = {'iscopyof' : autoid} )
+            copy = self.tableHandler[table].getEntryList(constraints = {'iscopyof' : autoid}, ignore_permissions = True)
             if copy:
                 return copy[0]
-
         return None
 
 
@@ -182,7 +181,7 @@ class TemplateBaseManager(GenericManager):
         cons = {'iscopyof': autoid}
         tobj = self.tableHandler[table]
         types = tobj.getColumnTypes()
-        res = tobj.getEntryList(constraints = cons)
+        res = tobj.getEntryList(constraints = cons, ignore_permissions = True)
         if res:
             wc = res[0]
             for key in entry_diff.keys():
@@ -208,7 +207,7 @@ class TemplateBaseManager(GenericManager):
         cons = {'istranslationof': autoid}
         tobj = self.tableHandler[table]
         types = tobj.getColumnTypes()
-        res = tobj.getEntryList(constraints = cons)
+        res = tobj.getEntryList(constraints = cons, ignore_permissions = True)
         if res:
             eng = res[0]
             # need a dict for the changed stuff to not accidentally overwrite the working copy values on updateWorkingCopy
@@ -251,7 +250,7 @@ class TemplateBaseManager(GenericManager):
         """\brief after deleting a translation entry, the orginal entry needs to be corrected (removing the hastranslation marker)"""
         # the entry with autoid is a default language entry, whose translation was deleted
         tobj = self.tableHandler[table]
-        entry = tobj.getEntry(autoid)
+        entry = tobj.getEntry(autoid, ignore_permissions = True)
         # check for remaining translations
         translations = tobj.getEntryAutoidList(constraints = {'istranslationof': autoid})
         if not translations:
@@ -355,7 +354,7 @@ class TemplateBaseManager(GenericManager):
         if constr_or:
             fi = root.getFilter()
             fi.setOperator(fi.OR)
-        return tobj.requestEntries(root, show_number, start_number)
+        return tobj.requestEntries(root, show_number, start_number, ignore_permissions = True)
 
     def handleHierarchyListOnSearch(self, table, cons):
         """\brief Add to given branch item all his possible children"""
@@ -515,15 +514,15 @@ class TemplateBaseManager(GenericManager):
     def getCopyDiff(self, table, autoid):
         """\brief find the copy or original and the diff"""
         tobj = self.tableHandler[table]
-        entry = tobj.getEntry(autoid)
+        entry = tobj.getEntry(autoid, ignore_permissions = True)
         copy = None
         orig = None
         if entry.get('iscopyof'):
             copy = entry
-            orig = tobj.getEntry(entry.get('iscopyof'))
+            orig = tobj.getEntry(entry.get('iscopyof'), ignore_permissions = True)
         else:
             orig = entry
-            res  = tobj.getEntryList(constraints = {'iscopyof': entry.get('autoid')})
+            res  = tobj.getEntryList(constraints = {'iscopyof': entry.get('autoid')}, ignore_permissions = True)
             if res:
                 copy = res[0]
         if copy and orig:
@@ -580,7 +579,7 @@ class TemplateBaseManager(GenericManager):
         # FIXED: return all entries for all languages, in template select only relevant languages
         lobj = self.listHandler.getList(table, attribute)
         getEntry = self.tableHandler[table].getEntry
-        return [getEntry(autoid, lang) for autoid in lobj.getMLRef(None, autoid)]
+        return [getEntry(autoid, lang, ignore_permissions = True) for autoid in lobj.getMLRef(None, autoid)]
 
 
     def prepareLinks(self, text):
