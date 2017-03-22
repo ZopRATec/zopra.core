@@ -159,7 +159,10 @@ class TemplateBaseManager(GenericManager):
         # used to create a working copy of an entry
         tobj = self.tableHandler[table]
 
-        # TODO: Check if a WC exists, return it instead of creating?
+        # check if a WoCo exists, return it instead of creating
+        check = tobj.getEntries(entry['autoid'], 'iscopyof')
+        if check:
+            return check[0]
 
         # copy the objects
         copy = deepcopy(entry)
