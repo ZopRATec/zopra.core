@@ -66,6 +66,47 @@ class TemplateBaseManager(GenericManager):
         REQUEST.RESPONSE.redirect(parent.absolute_url())
 
 
+    def consistencyCheckTranslations(self, do = None):
+        """Consistency Checker for translations"""
+        special_fields = ['autoid', 'hastranslation', 'istranslationof', 'iscopyof', 'language']
+        import logging
+        logger = logging.getLogger('ZopRA')
+        for tablename in self.tableHandler.keys():
+            if self.doesTranslations(tablename):
+                count = 0
+                logger.info('Checking {}'.format(tablename))
+                tobj = self.tableHandler[tablename]
+                coldefs = tobj.getColumnDefs()
+                translations = tobj.getEntryList(constraints = {'istranslationof': '_not_NULL', 'iscopyof': 'NULL'})
+                for translation in translations:
+                    entry_diff = {}
+                    log_diff = {}
+                    orig = tobj.getEntry(translation['istranslationof'])
+                    for key in coldefs:
+                        thetype = coldefs.get(key)['TYPE']
+                        if thetype not in ['string', 'memo'] and key not in special_fields:
+                            val_orig = orig[key]
+                            val_tran = translation[key]
+                            if thetype in ['multilist', 'hierarchylist']:
+                                val_orig = sorted(val_orig)
+                                val_tran = sorted(val_tran)
+                            if val_orig != val_tran:
+                                entry_diff[key] = orig[key]
+                                log_diff[key] = orig[key]
+                                log_diff['{}_trans'.format(key)] = translation[key]
+                                log_diff['{}_type'.format(key)] = thetype
+                    if entry_diff:
+                        entry_diff['autoid'] = orig['autoid']
+                        log_diff['autoid'] = orig['autoid']
+                        if do:
+                            self.updateTranslation(tablename, entry_diff)
+                        logger.info('diff found: {}'.format(str(log_diff)))
+                        count += 1
+                if count:
+                    logger.info('Corrected {} entries with differences for table {}'.format(count, tablename))
+        logger.info('Done')
+
+
     def doesWorkflows(self, table):
         """\brief """
         return False
