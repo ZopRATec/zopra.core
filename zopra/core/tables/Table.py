@@ -336,7 +336,7 @@ class Table(SimpleItem, PropertyManager):
                 result    = data_tuple
 
             # value handling speedup (1ms per call) using izip and the dict constructor that works on a list of 2-tuples and map (for checking each value)
-            check = lambda (x, y): (x and hasattr(x, 'strftime') and x.strftime('%d.%m.%Y') or x or x is None and self.getField(y)[ZC.COL_TYPE] != 'singlelist' and '' or None, y)
+            check = lambda (x, y): (x, y and hasattr(y, 'strftime') and y.strftime('%d.%m.%Y') or y or y is None and self.getField(x)[ZC.COL_TYPE] != 'singlelist' and '' or None)
             entry = dict(map(check, izip(cols_list, result)))
 
             # add multilist ids
