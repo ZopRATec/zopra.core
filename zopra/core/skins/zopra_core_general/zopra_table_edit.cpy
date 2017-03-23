@@ -65,7 +65,7 @@ if not context.doesWorkingCopies(table):
                 en_msg = ' Die Nicht-Text-Felder der englischen Version wurde ebenfalls gespeichert.'
         # check if this is a translation (for msg only, action done already)
         elif oldentry.get('language') in context.lang_additional:
-            en_msg = ' Lediglich die Textfelder wurden übernommen, da es sich um eine Sprachkopie handelt.'
+            en_msg = ' Lediglich die Textfelder wurden uebernommen, da es sich um eine Sprachkopie handelt.'
         if en_msg:
             message = message + en_msg
 
