@@ -130,7 +130,7 @@
         <!-- Offset gets added to quotedcons later, just set the input for the form -->
         <input type="hidden" name="offset" id="offset" tal:attributes="value offset" />
 
-        <tal:block tal:define="global quotedcons python: quotedcons + (quotedcons and '&' or '') + 'count=%s' % (count)" />
+        <tal:block tal:define="global quotedcons python: quotedcons + '&count=%s&%s' % (count, '&'.join(['sel_attr='+col for col in cols]))" />
 
         <metal:block metal:use-macro="here/zopra_search_tools/macros/editorial_pagelinks" />
         <div>

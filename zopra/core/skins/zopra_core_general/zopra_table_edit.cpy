@@ -53,7 +53,21 @@ msg = context.actionBeforeEdit(table, entry, request) or ''
 if not context.doesWorkingCopies(table):
     # normal update entry
     done = tobj.updateEntry(entry, autoid, orig_entry = oldentry)
-    message='Eintrag gespeichert. %sInterne Id: %s' % (msg, autoid)
+    message = 'Eintrag gespeichert. %sInterne Id: %s' % (msg, autoid)
+    # check translations
+    if context.doesTranslations(table):
+        en_msg = ''
+        # check if there are translations of this entry
+        if oldentry.get('language') == context.lang_default and oldentry.get('hastranslation'):
+            # updateTranslation also updates the working copy of the translation, if it exists
+            translated = context.updateTranslation(table, entry)
+            if translated:
+                en_msg = ' Die Nicht-Text-Felder der englischen Version wurde ebenfalls gespeichert.'
+        # check if this is a translation (for msg only, action done already)
+        elif oldentry.get('language') in context.lang_additional:
+            en_msg = ' Lediglich die Textfelder wurden uebernommen, da es sich um eine Sprachkopie handelt.'
+        if en_msg:
+            message = message + en_msg
 
 elif entry.get('iscopyof'):
     # this already is a working copy, just save it

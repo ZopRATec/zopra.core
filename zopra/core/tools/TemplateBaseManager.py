@@ -66,6 +66,47 @@ class TemplateBaseManager(GenericManager):
         REQUEST.RESPONSE.redirect(parent.absolute_url())
 
 
+    def consistencyCheckTranslations(self, do = None):
+        """Consistency Checker for translations"""
+        special_fields = ['autoid', 'hastranslation', 'istranslationof', 'iscopyof', 'language']
+        import logging
+        logger = logging.getLogger('ZopRA')
+        for tablename in self.tableHandler.keys():
+            if self.doesTranslations(tablename):
+                count = 0
+                logger.info('Checking {}'.format(tablename))
+                tobj = self.tableHandler[tablename]
+                coldefs = tobj.getColumnDefs()
+                translations = tobj.getEntryList(constraints = {'istranslationof': '_not_NULL', 'iscopyof': 'NULL'})
+                for translation in translations:
+                    entry_diff = {}
+                    log_diff = {}
+                    orig = tobj.getEntry(translation['istranslationof'])
+                    for key in coldefs:
+                        thetype = coldefs.get(key)['TYPE']
+                        if thetype not in ['string', 'memo'] and key not in special_fields:
+                            val_orig = orig[key]
+                            val_tran = translation[key]
+                            if thetype in ['multilist', 'hierarchylist']:
+                                val_orig = sorted(val_orig)
+                                val_tran = sorted(val_tran)
+                            if val_orig != val_tran:
+                                entry_diff[key] = orig[key]
+                                log_diff[key] = orig[key]
+                                log_diff['{}_trans'.format(key)] = translation[key]
+                                log_diff['{}_type'.format(key)] = thetype
+                    if entry_diff:
+                        entry_diff['autoid'] = orig['autoid']
+                        log_diff['autoid'] = orig['autoid']
+                        if do:
+                            self.updateTranslation(tablename, entry_diff)
+                        logger.info('diff found: {}'.format(str(log_diff)))
+                        count += 1
+                if count:
+                    logger.info('Corrected {} entries with differences for table {}'.format(count, tablename))
+        logger.info('Done')
+
+
     def doesWorkflows(self, table):
         """\brief """
         return False
@@ -267,7 +308,8 @@ class TemplateBaseManager(GenericManager):
 
     def correctTranslationInfo(self):
         """\brief update step for correcting translation info"""
-        # deleting language copies did not reset the hastranslation marker before
+        # deleting language copies did not reset the hastranslation marker before, so we have to correct entries on db level
+        # attention: working copies are problematic and are left out. Better make sure there are non when using this function.
         from zopra.core import ZC
         done = []
         pm = self.getManager(ZC.ZM_PM)
@@ -279,10 +321,16 @@ class TemplateBaseManager(GenericManager):
                 if not origids:
                     continue
                 idstring = ', '.join([str(orid) for orid in origids])
+                # exclude working copies:
+                wc = self.doesWorkingCopies(table)
                 sql2 = 'SELECT COUNT(*) FROM {}{} WHERE hastranslation > 0 AND autoid NOT IN ({})'.format(self.getId(), table, idstring)
+                if wc:
+                    sql2 = sql2 + ' AND iscopyof IS NULL'
                 res = pm.executeDBQuery(sql2)
                 done.append('Removed {} hastranslation markers for {}.'.format(res[0][0], table))
                 sql3 = 'UPDATE {}{} SET hastranslation = 0 WHERE hastranslation > 0 AND autoid NOT IN ({})'.format(self.getId(), table, idstring)
+                if wc:
+                    sql3 = sql3 + ' AND iscopyof IS NULL'
                 pm.executeDBQuery(sql3)
         return '\n'.join(done)
 

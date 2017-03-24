@@ -8,7 +8,7 @@
 ##parameters=table, file, encoding, delim
 ##title=
 ##
-
+import logging
 request = context.REQUEST
 request.RESPONSE.setHeader('Content-Type','text/html;;charset=utf8')
 msg = ""
@@ -71,12 +71,24 @@ if attribute == None:
     context.plone_utils.addPortalMessage('Please correct the indicated errors.', 'info')
     return state.set(status='failure',context=context)
 
+logger = logging.getLogger('import')
+
 # construct new values
-context.plone_utils.addPortalMessage(u"Einträge wurden erfolgreich aktualisiert:", 'info')
-for c in content:
+context.plone_utils.addPortalMessage(u"Import von %s Eintraegen in Spalte %s" % (len(content), attribute), 'info')
+context.plone_utils.addPortalMessage(u"Einträge wurden erfolgreich aktualisiert.", 'info')
+for index, c in enumerate(content):
     autoid = c[0]
     value = c[1]
     entry_diff = { 'autoid': autoid, attribute: value }
+    if not autoid:
+        context.plone_utils.addPortalMessage('Autoid misssing for Line %s' % (index + 1), 'info')
+        continue
+    # check entry exists
+    entry = tobj.getEntry(autoid)
+    if not entry:
+        context.plone_utils.addPortalMessage('Entry not found for autoid %s' % autoid, 'info')
+        continue
+    logger.info('Updating %s with %s' % (autoid, value))
     tobj.updateEntry(entry_diff, autoid)
     msg = u"- Originaleintrag mit autoid: %s " % str(autoid)
     if manager.doesWorkingCopies(table) and manager.updateWorkingCopy(table, entry_diff):
