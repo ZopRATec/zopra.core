@@ -24,7 +24,8 @@ import simplejson
 # ZopRA Imports
 #
 from zopra.core                         import ClassSecurityInfo, \
-                                               getSecurityManager
+                                               getSecurityManager, \
+                                               ZC
 from zopra.core.CorePart                import MASK_SHOW
 from zopra.core.tools.GenericManager    import GenericManager
 
@@ -98,6 +99,7 @@ class TemplateBaseManager(GenericManager):
                     if entry_diff:
                         entry_diff['autoid'] = orig['autoid']
                         log_diff['autoid'] = orig['autoid']
+                        log_diff['trans_autoid'] = translation['autoid']
                         if do:
                             self.updateTranslation(tablename, entry_diff)
                         logger.info('diff found: {}'.format(str(log_diff)))
@@ -433,6 +435,24 @@ class TemplateBaseManager(GenericManager):
             return 'gesetzt'
         else:
             return attr_value
+
+
+    def getChangeDate(self, table, autoid):
+        """get the last change / creation date of the entry with the given autoid"""
+        if not autoid:
+            return None
+        tobj = self.tableHandler[table]
+        root = tobj.getTableNode()
+        root.setConstraints({'autoid': autoid})
+        sql = root.getSQL(col_list = ['entrydate', 'changedate'],
+                          distinct = True,
+                          checker = self)
+        results = self.getManager(ZC.ZM_PM).executeDBQuery(sql)
+        if results:
+            # use changedate, if set, entrydate otherwise
+            date = results[0][1] or results[0][0]
+            # return a user friendly and localization-aware formatted representation using a helper function (plone wrapper)
+            return self.toLocalizedTime(date)
 
 
     def generateMailLink(self, email):
