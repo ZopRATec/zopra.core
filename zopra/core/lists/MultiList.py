@@ -94,8 +94,8 @@ class MultiList(ForeignList):
                               self.table,
                               self.listname
                               )
-
-        assert len(self.dbname) < 33, E_PARAM_TYPE % ('dbname', 'database name too long (>32 chars)',  self.dbname)
+        # Removed, cause no modern systems have such restrictions
+        #assert len(self.dbname) < 33, E_PARAM_TYPE % ('dbname', 'database name too long (>32 chars)',  self.dbname)
 
         return self.dbname
 
