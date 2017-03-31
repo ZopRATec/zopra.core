@@ -17,9 +17,7 @@ from random     import randint
 import re
 from sets       import Set as set
 from types      import ListType, StringType
-
-import simplejson
-
+import json
 #
 # ZopRA Imports
 #
@@ -698,12 +696,12 @@ class TemplateBaseManager(GenericManager):
 
     def py2json(self,object,encoding="utf-8"):
         """\brief translate python object to json"""
-        return simplejson.dumps(object).decode('raw-unicode-escape').encode(encoding)
+        return json.dumps(object).decode('raw-unicode-escape').encode(encoding)
 
 
     def json2py(self,json, encoding="utf-8"):   # JSON -> python object
         """\brief translate json to python object"""
-        return simplejson.loads(json, encoding)
+        return json.loads(json, encoding)
 
 
     # Button and REQUEST handling
