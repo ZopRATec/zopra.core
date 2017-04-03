@@ -694,14 +694,14 @@ class TemplateBaseManager(GenericManager):
         return self.listHandler[name].getValueByAutoid(descr_dict.get(attr_name or name, '')) or ''
 
 
-    def py2json(self,object,encoding="utf-8"):
+    def py2json(self, object, encoding="utf-8"):
         """\brief translate python object to json"""
         return json.dumps(object).decode('raw-unicode-escape').encode(encoding)
 
 
-    def json2py(self,json, encoding="utf-8"):   # JSON -> python object
+    def json2py(self, jsonstring, encoding="utf-8"):
         """\brief translate json to python object"""
-        return json.loads(json, encoding)
+        return json.loads(jsonstring, encoding)
 
 
     # Button and REQUEST handling
