@@ -18,16 +18,17 @@ import re
 from sets       import Set as set
 from types      import ListType, StringType
 from urllib import quote
-
-import simplejson
+import json
 
 # Zope Imports
 from zope.component import getMultiAdapter
+
 #
 # ZopRA Imports
 #
 from zopra.core                         import ClassSecurityInfo, \
-                                               getSecurityManager
+                                               getSecurityManager, \
+                                               ZC
 from zopra.core.CorePart                import MASK_SHOW
 from zopra.core.tools.GenericManager    import GenericManager
 
@@ -141,6 +142,47 @@ class TemplateBaseManager(GenericManager):
 #
 # Workflow Functions
 #
+    def consistencyCheckTranslations(self, do = None):
+        """Consistency Checker for translations"""
+        special_fields = ['autoid', 'hastranslation', 'istranslationof', 'iscopyof', 'language']
+        import logging
+        logger = logging.getLogger('ZopRA')
+        for tablename in self.tableHandler.keys():
+            if self.doesTranslations(tablename):
+                count = 0
+                logger.info('Checking {}'.format(tablename))
+                tobj = self.tableHandler[tablename]
+                coldefs = tobj.getColumnDefs()
+                translations = tobj.getEntryList(constraints = {'istranslationof': '_not_NULL', 'iscopyof': 'NULL'})
+                for translation in translations:
+                    entry_diff = {}
+                    log_diff = {}
+                    orig = tobj.getEntry(translation['istranslationof'])
+                    for key in coldefs:
+                        thetype = coldefs.get(key)['TYPE']
+                        if thetype not in ['string', 'memo'] and key not in special_fields:
+                            val_orig = orig[key]
+                            val_tran = translation[key]
+                            if thetype in ['multilist', 'hierarchylist']:
+                                val_orig = sorted(val_orig)
+                                val_tran = sorted(val_tran)
+                            if val_orig != val_tran:
+                                entry_diff[key] = orig[key]
+                                log_diff[key] = orig[key]
+                                log_diff['{}_trans'.format(key)] = translation[key]
+                                log_diff['{}_type'.format(key)] = thetype
+                    if entry_diff:
+                        entry_diff['autoid'] = orig['autoid']
+                        log_diff['autoid'] = orig['autoid']
+                        log_diff['trans_autoid'] = translation['autoid']
+                        if do:
+                            self.updateTranslation(tablename, entry_diff)
+                        logger.info('diff found: {}'.format(str(log_diff)))
+                        count += 1
+                if count:
+                    logger.info('Corrected {} entries with differences for table {}'.format(count, tablename))
+        logger.info('Done')
+
 
     def doesWorkflows(self, table):
         """\brief """
@@ -226,16 +268,15 @@ class TemplateBaseManager(GenericManager):
         """\brief """
         tobj = self.tableHandler[table]
         cons = {'iscopyof': '_not_NULL'}
-        return tobj.getEntryList(constraints = cons)
+        return tobj.getEntryList(constraints = cons, ignore_permissions = True)
 
 
     def getWorkingCopy(self, table, autoid):
         """\brief Return the working copy or None"""
         if self.doesWorkingCopies(table):
-            copy = self.tableHandler[table].getEntryList(constraints = {'iscopyof' : autoid} )
+            copy = self.tableHandler[table].getEntryList(constraints = {'iscopyof' : autoid}, ignore_permissions = True)
             if copy:
                 return copy[0]
-
         return None
 
 
@@ -243,7 +284,10 @@ class TemplateBaseManager(GenericManager):
         # used to create a working copy of an entry
         tobj = self.tableHandler[table]
 
-        # TODO: Check if a WC exists, return it instead of creating?
+        # check if a WoCo exists, return it instead of creating
+        check = tobj.getEntries(entry['autoid'], 'iscopyof')
+        if check:
+            return check[0]
 
         # copy the objects
         copy = deepcopy(entry)
@@ -265,7 +309,7 @@ class TemplateBaseManager(GenericManager):
         cons = {'iscopyof': autoid}
         tobj = self.tableHandler[table]
         types = tobj.getColumnTypes()
-        res = tobj.getEntryList(constraints = cons)
+        res = tobj.getEntryList(constraints = cons, ignore_permissions = True)
         if res:
             wc = res[0]
             for key in entry_diff.keys():
@@ -295,7 +339,7 @@ class TemplateBaseManager(GenericManager):
         cons = {'istranslationof': autoid}
         tobj = self.tableHandler[table]
         types = tobj.getColumnTypes()
-        res = tobj.getEntryList(constraints = cons)
+        res = tobj.getEntryList(constraints = cons, ignore_permissions = True)
         if res:
             eng = res[0]
             # need a dict for the changed stuff to not accidentally overwrite the working copy values on updateWorkingCopy
@@ -338,7 +382,7 @@ class TemplateBaseManager(GenericManager):
         """\brief after deleting a translation entry, the orginal entry needs to be corrected (removing the hastranslation marker)"""
         # the entry with autoid is a default language entry, whose translation was deleted
         tobj = self.tableHandler[table]
-        entry = tobj.getEntry(autoid)
+        entry = tobj.getEntry(autoid, ignore_permissions = True)
         # check for remaining translations
         translations = tobj.getEntryAutoidList(constraints = {'istranslationof': autoid})
         if not translations:
@@ -442,7 +486,7 @@ class TemplateBaseManager(GenericManager):
         if constr_or:
             fi = root.getFilter()
             fi.setOperator(fi.OR)
-        return tobj.requestEntries(root, show_number, start_number)
+        return tobj.requestEntries(root, show_number, start_number, ignore_permissions = True)
 
     def handleHierarchyListOnSearch(self, table, cons):
         """\brief Add to given branch item all his possible children"""
@@ -477,6 +521,24 @@ class TemplateBaseManager(GenericManager):
             return 'gesetzt'
         else:
             return attr_value
+
+
+    def getChangeDate(self, table, autoid):
+        """get the last change / creation date of the entry with the given autoid"""
+        if not autoid:
+            return None
+        tobj = self.tableHandler[table]
+        root = tobj.getTableNode()
+        root.setConstraints({'autoid': autoid})
+        sql = root.getSQL(col_list = ['entrydate', 'changedate'],
+                          distinct = True,
+                          checker = self)
+        results = self.getManager(ZC.ZM_PM).executeDBQuery(sql)
+        if results:
+            # use changedate, if set, entrydate otherwise
+            date = results[0][1] or results[0][0]
+            # return a user friendly and localization-aware formatted representation using a helper function (plone wrapper)
+            return self.toLocalizedTime(date)
 
 
     def generateMailLink(self, email):
@@ -602,15 +664,15 @@ class TemplateBaseManager(GenericManager):
     def getCopyDiff(self, table, autoid):
         """\brief find the copy or original and the diff"""
         tobj = self.tableHandler[table]
-        entry = tobj.getEntry(autoid)
+        entry = tobj.getEntry(autoid, ignore_permissions = True)
         copy = None
         orig = None
         if entry.get('iscopyof'):
             copy = entry
-            orig = tobj.getEntry(entry.get('iscopyof'))
+            orig = tobj.getEntry(entry.get('iscopyof'), ignore_permissions = True)
         else:
             orig = entry
-            res  = tobj.getEntryList(constraints = {'iscopyof': entry.get('autoid')})
+            res  = tobj.getEntryList(constraints = {'iscopyof': entry.get('autoid')}, ignore_permissions = True)
             if res:
                 copy = res[0]
         if copy and orig:
@@ -667,7 +729,7 @@ class TemplateBaseManager(GenericManager):
         # FIXED: return all entries for all languages, in template select only relevant languages
         lobj = self.listHandler.getList(table, attribute)
         getEntry = self.tableHandler[table].getEntry
-        return [getEntry(autoid, lang) for autoid in lobj.getMLRef(None, autoid)]
+        return [getEntry(autoid, lang, ignore_permissions = True) for autoid in lobj.getMLRef(None, autoid)]
 
 
     def prepareLinks(self, text):
@@ -720,14 +782,14 @@ class TemplateBaseManager(GenericManager):
         return self.listHandler[name].getValueByAutoid(descr_dict.get(attr_name or name, '')) or ''
 
 
-    def py2json(self,object,encoding="utf-8"):
+    def py2json(self, object, encoding="utf-8"):
         """\brief translate python object to json"""
-        return simplejson.dumps(object).decode('raw-unicode-escape').encode(encoding)
+        return json.dumps(object).decode('raw-unicode-escape').encode(encoding)
 
 
-    def json2py(self,json, encoding="utf-8"):   # JSON -> python object
+    def json2py(self, jsonstring, encoding="utf-8"):
         """\brief translate json to python object"""
-        return simplejson.loads(json, encoding)
+        return json.loads(jsonstring, encoding)
 
 
     # Button and REQUEST handling

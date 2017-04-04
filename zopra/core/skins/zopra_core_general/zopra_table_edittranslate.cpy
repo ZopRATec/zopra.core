@@ -26,7 +26,7 @@ if not origentry:
 
 if not origentry.get('hastranslation'):
     # use original entry if translating a working copy
-    origentry = context.zopra_forceOriginal('studiengang', origentry)
+    origentry = context.zopra_forceOriginal(table, origentry)
 
     # create translation
     entry = {}
@@ -34,6 +34,7 @@ if not origentry.get('hastranslation'):
         entry[key] = origentry[key]
 
     entry['istranslationof'] = origentry['autoid']
+    # TODO: what about other languages? hardwiring en is bad.
     entry['language'] = 'en'
     entry['iscopyof'] = 'NULL'
 
