@@ -48,7 +48,7 @@ if not origentry:
 origautoid = origentry['autoid']
 
 # language switch: english language -> only save the text values
-if not context.doesTranslations(table) or copyentry.get('language') == context.lang_default:
+if not context.doesTranslations(table) or origentry.get('language') == context.lang_default:
     # original entry is updated
     for key in copyentry.keys():
         if key not in ['hastranslation', 'language']:
