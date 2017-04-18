@@ -419,7 +419,6 @@ class Table(SimpleItem, PropertyManager):
         @return The definition dictionary; otherwise None
         """
         mgr       = self.getManager()
-        m_product = mgr.getManager(ZC.ZM_PM)
 
         # shortcut for ordinary autoid field
         if name == TCN_AUTOID:
@@ -440,6 +439,7 @@ class Table(SimpleItem, PropertyManager):
                      ZC.COL_LABEL: lobj.getLabel(),
                      ZC.COL_INVIS: lobj.invisible }
 
+        m_product = mgr.getManager(ZC.ZM_PM)
         # get field description from edit tracking fields
         # no elif here (else same-name cols will be ignored)
         if m_product._edit_tracking_cols.get(name):
