@@ -217,8 +217,9 @@ class MultiList(ForeignList):
                                                       id1name,
                                                       id1
                                                       )
-
-        result = mgr.getHierarchyUpManager(ZC.ZM_PM).executeDBQuery(query)
+        # try same container first and then up the hierarchy
+        pm = mgr.getManager(ZC.ZM_PM) or mgr.getHierarchyUpManager(ZC.ZM_PM)
+        result = pm.executeDBQuery(query)
         return [entry[0] for entry in result]
 
 
@@ -448,12 +449,14 @@ class MultiList(ForeignList):
                     # notes list resides in other manager!
                     notesmgr = self.notes[:ind]
                     notes    = self.notes[ind + 1:]
-                    foreign = local.getHierarchyUpManager(notesmgr)
+                    # try same container first and then up the hierarchy
+                    foreign = local.getManager(notesmgr) or local.getHierarchyUpManager(notesmgr)
                     # if that does not work, try down
                     # CAUTION: down could be multiple managers of same type, first found gets returned
                     # FIXME: should build in zopratype differentiation somehow
                     if not foreign:
                         foreign = local.getHierarchyDownManager(notesmgr)
+                        # TODO: what if this fails too? ignore the list?
                 else:
                     foreign = local
                     notes = self.notes
@@ -684,12 +687,14 @@ class MultiList(ForeignList):
                             # notes list resides in other manager!
                             notesmgr = self.notes[:ind]
                             notes    = self.notes[ind + 1:]
-                            foreign = local.getHierarchyUpManager(notesmgr)
+                            # try same container first and then up the hierarchy
+                            foreign = local.getManager(notesmgr) or local.getHierarchyUpManager(notesmgr)
                             # if that does not work, try down
                             # CAUTION: down could be multiple managers of same type, first found gets returned
                             # FIXME: should build in zopratype differentiation somehow
                             if not foreign:
                                 foreign = local.getHierarchyDownManager(notesmgr)
+                                # TODO: what if this fails too? ignore the list?
                         else:
                             foreign = local
                             notes = self.notes

@@ -7,6 +7,7 @@
 
 from copy     import deepcopy
 from types    import StringType, ListType, TupleType, DictType, BooleanType
+from itertools import izip
 
 from zope.interface.declarations            import implements
 
@@ -284,8 +285,11 @@ class Table(SimpleItem, PropertyManager):
         if self.do_cache and entry_id:
             entry = self.cache.getItem(self.cache.ITEM, int(entry_id))
 
-        if not entry:
 
+        if entry:
+            # do not use the cached entry but a copy
+            entry = deepcopy(entry)
+        else:
             entry = {}
 
             # no luck
@@ -293,35 +297,24 @@ class Table(SimpleItem, PropertyManager):
             assert self.tabledict, E_PARAM_FAIL % 'tabledict'
 
             if not data_tuple or not col_list:
-
-
                 # get table definition
                 cols_list   = self.tabledict.keys()
-
-                # build query text
-                query_text  = ['SELECT ']
-
                 # add edit tracking cols
                 for tfield in ZC._edit_tracking_cols:
                     if tfield not in self.tabledict:
                         cols_list.append(tfield)
-
                 # autoid
                 if TCN_AUTOID not in self.tabledict:
                     cols_list.append(TCN_AUTOID)
-
-                # get fields
-                query_text.append(', '.join(cols_list))
-                query_text.append(' FROM %s WHERE %s = %s' % (
-                                                    mgr.id + self.tablename,
-                                                    TCN_AUTOID,
-                                                    entry_id ) )
-                query_text = ''.join(query_text)
+                # build query text
+                query_text = 'SELECT {} FROM {}{} WHERE {} = {}'.format(', '.join(cols_list),
+                                                                        mgr.id,
+                                                                        self.tablename,
+                                                                        TCN_AUTOID,
+                                                                        entry_id)
 
                 # execute query
                 results = mgr.getManager(ZC.ZM_PM).executeDBQuery(query_text)
-
-                # result handling
 
                 # test for no result
                 if not results:
@@ -342,45 +335,34 @@ class Table(SimpleItem, PropertyManager):
                 cols_list = col_list
                 result    = data_tuple
 
-            count = 0
-            for field in cols_list:
-                if not result[count] is None:
-                    entry[field] = result[count]
-
-                    # TODO: better date time handling necessary
-                    if hasattr( entry[field], 'strftime'):
-                        entry[field] = entry[field].strftime('%d.%m.%Y')
-
-                else:
-                    # empty entry
-                    ftype        = self.getField(field)[ZC.COL_TYPE]
-                    entry[field] = None if ftype == 'singlelist' else ''
-
-                count += 1
+            # value handling speedup (1ms per call) using izip and the dict constructor that works on a list of 2-tuples and map (for checking each value)
+            # the complex expression works as follows: 1) check if y is some kind of DateTime/datetime object, then use the strftime method to convert it into a string
+            #                                          2) otherwise use the original value, if it is not empty
+            #                                          3) empty values are expressed as empty strings if the field is not of type singlelist
+            #                                          4) empty singlelist fields are expressed as None (this part could not be achieved by boolean expressions, but by inner if)
+            check = lambda (x, y): (x, hasattr(y, 'strftime') and y.strftime('%d.%m.%Y') or y or ('' if (y is None and self.getField(x)[ZC.COL_TYPE] != 'singlelist') else None))
+            entry = dict(map(check, izip(cols_list, result)))
 
             # add multilist ids
             autoid = entry[TCN_AUTOID]
-
+            # get all multilists for the table
             multilists = mgr.listHandler.getLists(self.tablename, types = ['singlelist'], include = False)
-
+            # fetch multilist ids
             for multilist in multilists:
                 field = multilist.listname
                 entry[field] = multilist.getMLRef(autoid)
-
                 # and the notes if enabled
                 if multilist.notes:
                     for item in entry[field]:
                         key = field + 'notes' + str(item)
                         entry[key] = multilist.getMLNotes(autoid, item)
-
             # caching
             if self.do_cache:
                 self.cache.insertItem( self.cache.ITEM,
                                        int(autoid),
                                        entry )
-
-        # copy entry
-        entry = deepcopy(entry)
+                # do not use the cached version but a copy
+                entry = deepcopy(entry)
 
         # because security settings can change without inducing cache reload,
         # we decided to not have security objects cached
@@ -441,7 +423,6 @@ class Table(SimpleItem, PropertyManager):
         @return The definition dictionary; otherwise None
         """
         mgr       = self.getManager()
-        m_product = mgr.getManager(ZC.ZM_PM)
 
         # shortcut for ordinary autoid field
         if name == TCN_AUTOID:
@@ -462,6 +443,7 @@ class Table(SimpleItem, PropertyManager):
                      ZC.COL_LABEL: lobj.getLabel(),
                      ZC.COL_INVIS: lobj.invisible }
 
+        m_product = mgr.getManager(ZC.ZM_PM)
         # get field description from edit tracking fields
         # no elif here (else same-name cols will be ignored)
         if m_product._edit_tracking_cols.get(name):
@@ -1267,7 +1249,8 @@ class Table(SimpleItem, PropertyManager):
                         treeRoot,
                         show = None,
                         start = None,
-                        oneCol = None ):
+                        oneCol = None,
+                        ignore_permissions = False ):
         """\brief Returns an entry list (or a list of values of oneCol),
                   Constraints and order are transported by treeRoot (TableNode tree),
                   number and offset of entries controlled by show and start."""
@@ -1323,7 +1306,7 @@ class Table(SimpleItem, PropertyManager):
             # autoid is always first column
             # get the entry (for all via map/lambda def)
             # data_tuple parameter speeds up entry creation, contains base values
-            entries = map( lambda result, cols = cols: local_getEntry(result[0], data_tuple = result, col_list = cols), results )
+            entries = map( lambda result, cols = cols: local_getEntry(result[0], result, cols, ignore_permissions), results )
 
         # put complete entries in cache (since list-resolving is done later, this is safe)
         if self.do_cache:
@@ -1460,7 +1443,8 @@ class Table(SimpleItem, PropertyManager):
                       constraints    = None,
                       order          = None,
                       direction      = None,
-                      constr_or       = False
+                      constr_or      = False,
+                      ignore_permissions = False
                       ):
         """\brief Returns a list of entries, same as getEntries but with constraints, start_number and show_number.
         """
@@ -1474,7 +1458,7 @@ class Table(SimpleItem, PropertyManager):
         if constr_or:
             fi = root.getFilter()
             fi.setOperator(fi.OR)
-        return self.requestEntries(root, show_number, start_number)
+        return self.requestEntries(root, show_number, start_number, ignore_permissions = ignore_permissions)
 
 
     def getEntryDict(self, idfield = TCN_AUTOID, constraints = None):
