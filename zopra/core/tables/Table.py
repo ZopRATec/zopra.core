@@ -5,7 +5,7 @@
 #                                                                         #
 ###########################################################################
 
-from copy     import deepcopy
+from copy     import copy, deepcopy
 from types    import StringType, ListType, TupleType, DictType, BooleanType
 from itertools import izip
 
@@ -284,11 +284,10 @@ class Table(SimpleItem, PropertyManager):
         # caching first:
         if self.do_cache and entry_id:
             entry = self.cache.getItem(self.cache.ITEM, int(entry_id))
-
-
-        if entry:
-            # do not use the cached entry but a copy
-            entry = deepcopy(entry)
+            if entry:
+                # do not use the cached entry but a copy
+                # TODO: check and remove / replace by 2-level-copy
+                entry = deepcopy(entry)
         else:
             entry = {}
 
@@ -362,6 +361,7 @@ class Table(SimpleItem, PropertyManager):
                                        int(autoid),
                                        entry )
                 # do not use the cached version but a copy
+                # TODO: check and remove / replace by 2-level-copy
                 entry = deepcopy(entry)
 
         # because security settings can change without inducing cache reload,
@@ -1276,6 +1276,7 @@ class Table(SimpleItem, PropertyManager):
             cached = self.cache.getItem(self.cache.IDLIST, sql)
             if cached:
                 # added deepcopy call 03/2009 (had some changes to cached-items hanging in the cache)
+                # TODO: check and remove / replace by 2-level-copy
                 return deepcopy(cached)
 
         results = mgr.getManager(ZC.ZM_PM).executeDBQuery( sql )
@@ -1313,9 +1314,11 @@ class Table(SimpleItem, PropertyManager):
             self.cache.insertItem( self.cache.IDLIST,
                                    sql,
                                    entries )
-
-        # return a deepcopy (origs went in the cache)
-        return deepcopy(entries)
+        if oneCol:
+            return entries
+        else:
+            # return a copy (origs went in the cache, but entries are copied by getentry again, so no worry here)
+            return copy(entries)
 
 
     def requestEntryCount( self, treeRoot):
