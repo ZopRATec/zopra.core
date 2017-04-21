@@ -26,9 +26,8 @@ setup( name                 = 'zopra.core',
        install_requires     = [
            'setuptools',
            # -*- Extra requirements: -*-
-           'importlib',
-           'PyHtmlGUI',
-           'simplejson'
+           'importlib',# for the generic manager autoloader (because managers are no ContentTypes yet)
+           'PyHtmlGUI',# ZopRA default display generation
        ],
        entry_points         = """
        # -*- Entry points: -*-
