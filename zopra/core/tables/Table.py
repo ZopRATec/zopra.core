@@ -288,7 +288,8 @@ class Table(SimpleItem, PropertyManager):
                 # do not use the cached entry but a copy
                 # TODO: check and remove / replace by 2-level-copy
                 entry = deepcopy(entry)
-        else:
+
+        if not entry:
             entry = {}
 
             # no luck
