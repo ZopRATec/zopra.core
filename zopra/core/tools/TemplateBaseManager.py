@@ -673,7 +673,7 @@ class TemplateBaseManager(GenericManager):
                 # something wrong, do not touch the original string
                 return s.group()
         # apply the function to all hits of the expression
-        return expr.sub(apply, text)
+        return expr.sub(apply, text or '')
 
     def removeLinks(self, text):
         """\brief find all links in text starting with www or http and remove the []-label"""
