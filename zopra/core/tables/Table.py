@@ -5,7 +5,7 @@
 #                                                                         #
 ###########################################################################
 
-from copy     import deepcopy
+from copy     import copy, deepcopy
 from types    import StringType, ListType, TupleType, DictType, BooleanType
 from itertools import izip
 
@@ -284,12 +284,12 @@ class Table(SimpleItem, PropertyManager):
         # caching first:
         if self.do_cache and entry_id:
             entry = self.cache.getItem(self.cache.ITEM, int(entry_id))
+            if entry:
+                # do not use the cached entry but a copy
+                # TODO: check and remove / replace by 2-level-copy
+                entry = deepcopy(entry)
 
-
-        if entry:
-            # do not use the cached entry but a copy
-            entry = deepcopy(entry)
-        else:
+        if not entry:
             entry = {}
 
             # no luck
@@ -336,7 +336,11 @@ class Table(SimpleItem, PropertyManager):
                 result    = data_tuple
 
             # value handling speedup (1ms per call) using izip and the dict constructor that works on a list of 2-tuples and map (for checking each value)
-            check = lambda (x, y): (x, y and hasattr(y, 'strftime') and y.strftime('%d.%m.%Y') or y or y is None and self.getField(x)[ZC.COL_TYPE] != 'singlelist' and '' or None)
+            # the complex expression works as follows: 1) check if y is some kind of DateTime/datetime object, then use the strftime method to convert it into a string
+            #                                          2) otherwise use the original value, if it is not empty
+            #                                          3) empty values are expressed as empty strings if the field is not of type singlelist
+            #                                          4) empty singlelist fields are expressed as None (this part could not be achieved by boolean expressions, but by inner if)
+            check = lambda (x, y): (x, hasattr(y, 'strftime') and y.strftime('%d.%m.%Y') or y or ('' if (y is None and self.getField(x)[ZC.COL_TYPE] != 'singlelist') else None))
             entry = dict(map(check, izip(cols_list, result)))
 
             # add multilist ids
@@ -358,6 +362,7 @@ class Table(SimpleItem, PropertyManager):
                                        int(autoid),
                                        entry )
                 # do not use the cached version but a copy
+                # TODO: check and remove / replace by 2-level-copy
                 entry = deepcopy(entry)
 
         # because security settings can change without inducing cache reload,
@@ -419,7 +424,6 @@ class Table(SimpleItem, PropertyManager):
         @return The definition dictionary; otherwise None
         """
         mgr       = self.getManager()
-        m_product = mgr.getManager(ZC.ZM_PM)
 
         # shortcut for ordinary autoid field
         if name == TCN_AUTOID:
@@ -440,6 +444,7 @@ class Table(SimpleItem, PropertyManager):
                      ZC.COL_LABEL: lobj.getLabel(),
                      ZC.COL_INVIS: lobj.invisible }
 
+        m_product = mgr.getManager(ZC.ZM_PM)
         # get field description from edit tracking fields
         # no elif here (else same-name cols will be ignored)
         if m_product._edit_tracking_cols.get(name):
@@ -1272,6 +1277,7 @@ class Table(SimpleItem, PropertyManager):
             cached = self.cache.getItem(self.cache.IDLIST, sql)
             if cached:
                 # added deepcopy call 03/2009 (had some changes to cached-items hanging in the cache)
+                # TODO: check and remove / replace by 2-level-copy
                 return deepcopy(cached)
 
         results = mgr.getManager(ZC.ZM_PM).executeDBQuery( sql )
@@ -1309,9 +1315,11 @@ class Table(SimpleItem, PropertyManager):
             self.cache.insertItem( self.cache.IDLIST,
                                    sql,
                                    entries )
-
-        # return a deepcopy (origs went in the cache)
-        return deepcopy(entries)
+        if oneCol:
+            return entries
+        else:
+            # return a copy (origs went in the cache, but entries are copied by getentry again, so no worry here)
+            return copy(entries)
 
 
     def requestEntryCount( self, treeRoot):
