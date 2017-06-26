@@ -127,7 +127,7 @@
             <input type="hidden" name="form.submitted" value="1"/>
             <input type="hidden" name="table" tal:attributes="value table" />
             <input type="hidden" name="autoid" tal:attributes="value autoid" />
-            <input type="hidden" name="origid" tal:attributes="value request/autoid" />
+            <input type="hidden" name="origid" tal:condition="request/origid|nothing" tal:attributes="value request/origid" />
         </form>
     </tal:block>
 </metal:main>
