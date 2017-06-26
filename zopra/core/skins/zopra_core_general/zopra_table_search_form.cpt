@@ -43,94 +43,77 @@
           <tal:block tal:define="global isAnon context/@@plone_portal_state/anonymous;"></tal:block>
       </metal:topslot>
 
-    <metal:main fill-slot="main">
-
-      <tal:block tal:condition="isAnon">
+<metal:main fill-slot="main">
+    <tal:block tal:condition="isAnon">
         <tal:block replace="context/raiseUnauthorized"></tal:block>
-      </tal:block>
-
-      <form name="search_form"
-            id="search_form"
-            action="."
-            method="post"
-            enctype="multipart/form-data"
-            tal:define="errors options/state/getErrors;
+    </tal:block>
+    <tal:block tal:define="errors options/state/getErrors;
                      table request/table;
                      tobj python: here.tableHandler[table];
                      coltypes python:tobj.getColumnDefs(edit_tracking = True);
                      fieldsets python:here.getLayoutInfo(table, 'search');
                      helpTexts python: here.getHelpTexts(table);
-                     default python: here.getDefaultSearchValues(table);"
-            tal:attributes="action string:${here/getId}/${template/getId}" >
+                     default python: here.getDefaultSearchValues(table);">
+      <form name="search_form"
+            id="search_form"
+            method="post"
+            enctype="multipart/form-data"
+            class="enableFormTabbing zopra-form"
+            tal:attributes="action string:${here/absolute_url}/${template/getId}" >
+        <h1 i18n:translate="" tal:content="python: 'Suche ' + tobj.getLabel()"></h1>
+        <metal:block metal:use-macro="here/zopra_button_link_bar/macros/buttons_search" />
+        <tal:block tal:define="show_additional python: True"
+                   tal:repeat="fieldset fieldsets">
+            <fieldset tal:define="title python: fieldset.get('label') or fieldset.get('id');
+                                  add_macro python: 'additional_%s_%s' % (table, fieldset.get('id') or fieldset.get('label'));
+                                  add_path python: 'zopra_table_search_additional_%s' % here.meta_type;"
+                      tal:condition="python: fieldset.get('fields') or exists('here/?add_path/macros/?add_macro')">
+                <legend i18n:translate="" tal:attributes="id python:fieldset.get('id') or fieldset.get('label')" tal:content="title">Datenfelder</legend>
+                <tal:block tal:define="sortables python: fieldset.get('sortables', [])"
+                           tal:repeat="attr_name fieldset/fields">
+                    <tal:block tal:define="br br|nothing;
+                                           global br python: br or attr_name == '<br>'"
+                               tal:condition="python: attr_name != '<br>'">
+                        <tal:check tal:define="dummy python: not coltypes.get(attr_name) and here.zopra_raiser('Field not found: ' + attr_name)"></tal:check>
 
-      <h1 i18n:translate="" tal:content="python: 'Suche ' + tobj.getLabel()"></h1>
-
-      <metal:block metal:use-macro="here/zopra_button_link_bar/macros/buttons_search" />
-
-      <tal:block tal:define="show_additional python: True"
-                 tal:repeat="fieldset fieldsets">
-        <fieldset tal:define="add_macro python: 'additional_%s_%s' % (table, fieldset.get('id') or fieldset.get('label'));
-                              add_path python: 'zopra_table_search_additional_%s' % here.meta_type;"
-                  tal:condition="python: fieldset.get('fields') or exists('here/?add_path/macros/?add_macro')">
-
-          <legend i18n:translate="" tal:attributes="id python:fieldset.get('id') or fieldset.get('label')" tal:content="fieldset/label">Datenfelder</legend>
-          <tal:block tal:define="sortables python: fieldset.get('sortables', [])"
-                     tal:repeat="attr_name fieldset/fields">
-            <tal:block tal:define="br br|nothing;
-                                   global br python: br or attr_name == '<br>'"
-                       tal:condition="python: attr_name != '<br>'">
-              <tal:check tal:define="dummy python: not coltypes.get(attr_name) and here.zopra_raiser('Field not found: ' + attr_name)"></tal:check>
-
-              <div class="field"
-                   tal:define="error python: errors.get(attr_name);
-                               attr_value python:request.get(attr_name, '') or default.get(attr_name, '');
-                               field python:coltypes[attr_name];
-                               attr_type python:field['TYPE'];
-                               attr_sort python:attr_name in sortables;"
-                   tal:attributes="class python: 'field' + (error and ' error' or '') + (br and ' floatclearer' or '')">
-
-                <label tal:attributes="for attr_name" tal:content="python: field['LABEL']" i18n:translate="">Attribute Name</label>
-
-                <div class="formHelp"
-                     tal:content="helpTexts/?attr_name |nothing">
-                  Hinweistext
-                </div>
-
-                <div tal:condition="error" tal:content="error" i18n:domain="zopra" i18n:translate="">Validation error output</div>
-
-                <metal:block metal:use-macro="here/zopra_widget_search_display/macros/widget_selector" />
-
-              </div>
-              <tal:check tal:define="global br python:False"></tal:check>
-            </tal:block>
-          </tal:block>
-          <tal:condition tal:condition="show_additional">
-            <tal:additional tal:condition="exists: here/?add_path/macros/?add_macro">
-              <metal:use metal:use-macro="here/?add_path/macros/?add_macro">
-                Additional Fields
-              </metal:use>
-            </tal:additional>
-          </tal:condition>
-      </fieldset>
+                                <div class="row">
+                                    <div class="contentSlot">
+                                        <div class="field"
+                                             tal:define="error python: errors.get(attr_name);
+                                                         attr_value python:request.get(attr_name, '') or default.get(attr_name, '');
+                                                         field python:coltypes[attr_name];
+                                                         attr_type python:field['TYPE'];
+                                                         attr_sort python:attr_name in sortables;"
+                                             tal:attributes="class python: 'field' + (error and ' error' or '') + (br and ' floatclearer' or '')">
+                                            <label tal:attributes="for attr_name" tal:content="python: field['LABEL']" i18n:translate="">Attribute Name</label>
+                                            <div class="formHelp"
+                                                 tal:content="helpTexts/?attr_name |nothing">
+                                                Hinweistext
+                                            </div>
+                                            <div tal:condition="error" tal:content="error" i18n:domain="zopra" i18n:translate="">Validation error output</div>
+                                            <metal:block metal:use-macro="here/zopra_widget_search_display/macros/widget_selector" />
+                                        </div>
+                                    </div>
+                                </div>
+                        <tal:check tal:define="global br python:False"></tal:check>
+                    </tal:block>
+                </tal:block>
+            <tal:condition tal:condition="show_additional">
+                <tal:additional tal:condition="exists: here/?add_path/macros/?add_macro">
+                    <metal:use metal:use-macro="here/?add_path/macros/?add_macro">
+                        Additional Fields
+                    </metal:use>
+                </tal:additional>
+            </tal:condition>
+        </fieldset>
     </tal:block>
     <metal:block metal:use-macro="here/zopra_button_link_bar/macros/buttons_search" />
-
-    <input type="hidden" name="form.submitted" value="1" />
-    <input type="hidden" name="table" tal:attributes="value table" />
-    <input type="hidden" name="searching" value="1" />
-
-  </form>
-
+          <input type="hidden" name="form.submitted" value="1" />
+          <input type="hidden" name="table" tal:attributes="value table" />
+          <input type="hidden" name="searching" value="1" />
+      </form>
+    </tal:block>
 </metal:main>
 
-    <!--<metal:column_two_slot fill-slot="column_two_slot">
-      <metal:block metal:use-macro="here/zopra_context_menu/macros/context_menu" />
-    </metal:column_two_slot>-->
-
-    <metal:bottom fill-slot="bottom">
-      <metal:block metal:use-macro="here/zopra_bottom/macros/bottom" />
-    </metal:bottom>
-
   </body>
-
 </html>

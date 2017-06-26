@@ -12,11 +12,6 @@
 
       </metal:javascriptslot>
 
-      <metal:css_slot fill-slot="css_slot">
-            <link rel="stylesheet" type="text/css" media="all"  tal:attributes="href string:${portal_url}/zopra.css" />
-            <link rel="stylesheet" type="text/css" media="all"  tal:attributes="href string:${portal_url}/zopra_edit.css" />
-      </metal:css_slot>
-
       <metal:main fill-slot="main"
                   tal:define="table request/table;
                               isAnon context/@@plone_portal_state/anonymous;">
@@ -49,10 +44,6 @@
                 </div>
             </tal:block>
       </metal:main>
-
-      <metal:bottom fill-slot="bottom">
-            <metal:block metal:use-macro="here/zopra_bottom/macros/bottom" />
-      </metal:bottom>
 
 </body>
 </html>

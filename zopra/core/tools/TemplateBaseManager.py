@@ -70,6 +70,26 @@ class TemplateBaseManager(GenericManager):
         REQUEST.RESPONSE.redirect(parent.absolute_url())
 
 
+# configuration for main_form display (import / export)
+    def getMainFormImportData(self, import_data, default_url):
+        if isinstance(import_data, tuple):
+            title = import_data[1] or 'Import'
+            url = '{}/{}'.format(self.absolute_url(), import_data[0])
+        else:
+            title = 'Import'
+            url = default_url
+        return (title, url)
+
+    def getMainFormExportData(self, export_data, default_url):
+        if isinstance(export_data, tuple):
+            title = export_data[1] or 'Export'
+            url = '{}/{}'.format(self.absolute_url(), export_data[0])
+        else:
+            title = 'Export'
+            url = default_url
+        return (title, url)
+
+
 #
 # Plone 4.3 Integration for Social Links and Content Actions
 #
@@ -196,6 +216,11 @@ class TemplateBaseManager(GenericManager):
 #
 # security and permission functions
 #
+
+    def checkTablePermission(self, tablename):
+        """Table permission check for zopra_manager_main_form, when visibility is False"""
+        # default: False means False, leave it at that
+        return False
 
 
     def getListOwnUsers(self, table):
@@ -830,6 +855,14 @@ class TemplateBaseManager(GenericManager):
                 del entry[col]
 
         return entry
+
+
+    def filterRealSearchConstraints(self, constraints):
+        """\brief check if there are any real constraints in the dictionary"""
+        for key in constraints:
+            if not key.endswith('_AND'):
+                return True
+        return False
 
 
     def prepareHierarchylistDisplayEntries(self, entries):

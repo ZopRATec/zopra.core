@@ -4,154 +4,126 @@
       i18n:domain="zopra">
 
   <body>
-    <metal:css_slot fill-slot="css_slot">
-       <link rel="stylesheet" type="text/css" media="all"  tal:attributes="href string:${portal_url}/zopra.css" />
-       <link rel="stylesheet" type="text/css" media="all"  tal:attributes="href string:${portal_url}/zopra_edit.css" />
-    </metal:css_slot>
 
       <metal:topslot fill-slot="top_slot">
           <tal:block tal:define="global isAnon context/@@plone_portal_state/anonymous;"></tal:block>
       </metal:topslot>
 
-    <metal:main fill-slot="main">
-
-      <tal:block tal:condition="isAnon">
-        <tal:block replace="context/raiseUnauthorized"></tal:block>
-      </tal:block>
-
-      <form name="show_form"
-            action="."
-            method="post"
-            enctype="multipart/form-data"
-            tal:define="errors options/state/getErrors;
-                     table request/table;
-                     tobj python: here.tableHandler[table];
-                     coltypes python:tobj.getColumnDefs();
-                     fieldsets python:here.getLayoutInfo(table, 'show');
-                     autoid request/autoid;
-                     entry python:tobj.getEntry(autoid);
-                     entry python: here.zopra_forceCopy(table, entry, request);
-                     autoid python: entry.get('autoid')#again to get copy;
-                     lang entry/language|lang;
-                     helpTexts python: here.getHelpTexts(table);
-                     entry_perm python: here.getPermissionEntryInfo(table, entry);
-                     show_permitted python: here.getPermissionInfo(table, 'table_show') or here.getPermissionInfo(table, 'table_show_own') and 'show' in entry_perm;
-                     "
-            tal:attributes="action string:${here/getId}/${template/getId}" >
-
-      <tal:block tal:condition="python: not show_permitted or not 'show' in entry_perm">
-        <div tal:define="dummy python: request.RESPONSE.redirect('require_login?came_from=' + here.absolute_url_path() +'/zopra_main_form')" />
-      </tal:block>
-
-      <h1 class="documentFirstHeading">
-          <span i18n:translate="zopra_show_heading">View</span>
-          <span tal:content="python: tobj.getLabel()">TabelleX</span>
-          <span tal:content="python: here.getLabelString(table, autoid, entry, lang = lang)">EintragY</span>
-      </h1>
-      <div>
-        <metal:block metal:use-macro="here/zopra_button_link_bar/macros/links_show" />
-        <metal:block metal:use-macro="here/zopra_button_link_bar/macros/buttons_show" />
-      </div>
-
-      <tal:block tal:define="show_additional python: not here.doesTranslations(table) or entry.get('language') == 'de'"
-                 tal:repeat="fieldset fieldsets">
-      <fieldset tal:define="add_macro python: 'additional_%s_%s' % (table, fieldset.get('id') or fieldset.get('label'));
-                            add_path python: 'zopra_table_show_additional_%s' % here.meta_type;
-                            add_check python: 'zopra_table_show_has_additional_%s' % here.meta_type;
-                            add_hascontent python: not hasattr(here, add_check) or getattr(here, add_check)(fieldset.get('label'), table, entry, request);"
-                tal:condition="python: fieldset.get('fields') or (exists('here/?add_path/macros/?add_macro') and add_hascontent)">
-
-       <tal:block define="r_fields python: fieldset.get('repeatfields',[])">
-
-          <legend i18n:translate="" tal:content="fieldset/label">Datenfelder</legend>
-          <tal:block tal:define="sortables python: fieldset.get('sortables', [])"
-                     tal:repeat="attr_name fieldset/fields">
-              <tal:block tal:define="br br|nothing;
-                                   global br python: br or attr_name == '<br>'"
-                       tal:condition="python: attr_name != '<br>'">
-              <tal:check tal:define="dummy python: not coltypes.get(attr_name) and here.zopra_raiser('Field not found: ' + attr_name)"></tal:check>
-
-              <div class="field"
-                   tal:define="attr_value python:entry.get(attr_name, '');
-                               field python:coltypes[attr_name];
-                               attr_type python:field['TYPE'];
-                               attr_sort python:attr_name in sortables;
-                               attr_notes python: attr_type == 'multilist' and dict([[a,entry[a]] for a in entry.keys() if a.startswith(attr_name + 'notes')]) or {};"
-                   tal:condition="python: not coltypes.get(attr_name).get('INVIS')# and attr_name not in r_fields">
-
-                <label tal:attributes="for attr_name" tal:content="python: field['LABEL']" i18n:translate="">Attribute Name</label>
-
-                <div class="formHelp"
-                     tal:content="helpTexts/?attr_name |nothing">
-                  Hinweistext
-                </div>
-
-                <metal:block metal:use-macro="here/zopra_widget_show_display/macros/widget_selector" />
-
-              </div>
-              <tal:check tal:define="global br python:False"></tal:check>
+<metal:main fill-slot="main">
+    <tal:block tal:condition="isAnon">
+      <tal:block replace="context/raiseUnauthorized"></tal:block>
+    </tal:block>
+    <tal:block tal:define="errors options/state/getErrors;
+                 table request/table;
+                 tobj python: here.tableHandler[table];
+                 coltypes python:tobj.getColumnDefs();
+                 fieldsets python:here.getLayoutInfo(table, 'show');
+                 autoid request/autoid;
+                 entry python:tobj.getEntry(autoid);
+                 entry python: here.zopra_forceCopy(table, entry, request);
+                 autoid python: entry.get('autoid')#again to get copy;
+                 lang entry/language|lang;
+                 helpTexts python: here.getHelpTexts(table);
+                 edit_lang python: here.doesTranslations(table) and entry.get('language');
+                 entry_perm python: here.getPermissionEntryInfo(table, entry);
+                 show_permitted python: here.getPermissionInfo(table, 'table_show') or here.getPermissionInfo(table, 'table_show_own') and 'show' in entry_perm;">
+        <tal:block tal:condition="python: not show_permitted or not 'show' in entry_perm">
+            <tal:block replace="context/raiseUnauthorized"></tal:block>
+        </tal:block>
+        <h1 class="documentFirstHeading" i18n:translate="zopra_show_heading">
+            Details
+            <span i18n:name="table" i18n:translate="" tal:content="python: tobj.getLabel()"></span>
+            <span i18n:name="label" tal:content="python: here.getLabelString(table, autoid, entry)"></span>
+            <span tal:condition="edit_lang" i18n:name="language">
+                (<span i18n:translate="zopra_edit_language">Language:</span>
+                <span tal:content="edit_lang"></span>)
+            </span>
+        </h1>
+        <form name="show_form"
+              id="show_form"
+              method="post"
+              enctype="multipart/form-data"
+              class="enableFormTabbing zopra-form"
+              tal:attributes="action string:${here/absolute_url}/${template/getId}" >
+            <metal:block metal:use-macro="here/zopra_button_link_bar/macros/links_show" />
+            <metal:block metal:use-macro="here/zopra_button_link_bar/macros/buttons_show" />
+            <tal:block tal:define="show_additional python: not here.doesTranslations(table) or entry.get('language') == 'de'"
+                       tal:repeat="fieldset fieldsets">
+                <fieldset tal:define="title python: fieldset.get('label') or fieldset.get('id');
+                                      add_macro python: 'additional_%s_%s' % (table, fieldset.get('id') or fieldset.get('label'));
+                                      add_path python: 'zopra_table_show_additional_%s' % here.meta_type;
+                                      add_check python: 'zopra_table_show_has_additional_%s' % here.meta_type;
+                                      add_hascontent python: not hasattr(here, add_check) or getattr(here, add_check)(fieldset.get('id') or fieldset.get('label'), table, entry, request);
+                                      r_fields python: fieldset.get('repeatfields',[]);"
+                          tal:condition="python: fieldset.get('fields') or (exists('here/?add_path/macros/?add_macro') and add_hascontent)">
+                    <legend i18n:translate="" tal:attributes="id python:fieldset.get('id') or fieldset.get('label')" tal:content="title">Data fields</legend>
+                    <tal:block tal:define="sortables python: fieldset.get('sortables', [])"
+                               tal:repeat="attr_name fieldset/fields">
+                        <tal:block tal:define="br br|nothing;
+                                             global br python: br or attr_name == '<br>'"
+                                 tal:condition="python: attr_name != '<br>'">
+                            <tal:check tal:define="dummy python: not coltypes.get(attr_name) and here.zopra_raiser('Field not found: ' + attr_name)"></tal:check>
+                            <div class="row">
+                                <div class="contentSlot">
+                                    <div class="field"
+                                         tal:define="attr_value python:entry.get(attr_name, '');
+                                                     field python:coltypes[attr_name];
+                                                     attr_type python:field['TYPE'];
+                                                     attr_sort python:attr_name in sortables;
+                                                     attr_notes python: attr_type == 'multilist' and dict([[a,entry[a]] for a in entry.keys() if a.startswith(attr_name + 'notes')]) or {};"
+                                         tal:condition="python: not coltypes.get(attr_name).get('INVIS')# and attr_name not in r_fields">
+                                        <label tal:attributes="for attr_name" tal:content="python: field['LABEL']" i18n:translate="">Attribute Name</label>
+                                        <div class="formHelp"
+                                             tal:content="helpTexts/?attr_name |nothing">
+                                          Hinweistext
+                                        </div>
+                                        <metal:block metal:use-macro="here/zopra_widget_show_display/macros/widget_selector" />
+                                    </div>
+                                </div>
+                            </div>
+                            <tal:check tal:define="global br python:False"></tal:check>
+                        </tal:block>
+                    </tal:block>
+                    <tal:block condition="python: request.get('autoidlist')"
+                               repeat="entryid request/autoidlist">
+                        <tal:block tal:define="rentry python: tobj.getEntry(entryid)"
+                                   tal:repeat="attr_name r_fields">
+                          <tal:check tal:define="dummy python: not coltypes.get(attr_name) and here.zopra_raiser('Field not found: ' + attr_name)"></tal:check>
+                          <div style="clear:both;"></div>
+                          <div class="field"
+                               tal:define="attr_value python:rentry.get(attr_name, '');
+                                           field python:coltypes[attr_name];
+                                           attr_type python:field['TYPE'];"
+                               tal:condition="python: not coltypes.get(attr_name).get('INVIS')">
+                            <label tal:attributes="for attr_name" tal:content="python: field['LABEL']" i18n:translate="">Attribute Name</label>
+                            <div class="formHelp"
+                                 tal:content="helpTexts/?attr_name |nothing">
+                              Hinweistext
+                            </div>
+                            <metal:block metal:use-macro="here/zopra_widget_show_display/macros/widget_selector" />
+                            <div style="clear:both;"></div>
+                          </div>
+                        </tal:block>
+                    </tal:block>
+                    <tal:additional tal:condition="exists: here/?add_path/macros/?add_macro">
+                        <div class="row">
+                            <div class="contentSlot">
+                                <metal:use metal:use-macro="here/?add_path/macros/?add_macro">
+                                    Additional Fields
+                                </metal:use>
+                            </div>
+                        </div>
+                    </tal:additional>
+                </fieldset>
             </tal:block>
-          </tal:block>
-
-          <tal:comment tal:replace="nothing">
-              What is this? Looks like repeated fields are assumed to be displayed together, but they are not.
-              autoidlist is empty when showing an entry later on. Is this used directly after adding?
-          </tal:comment>
-          <tal:block condition="python: request.get('autoidlist')"
-                     repeat="entryid request/autoidlist">
-            <tal:block tal:define="rentry python: tobj.getEntry(entryid)"
-                       tal:repeat="attr_name r_fields">
-              <tal:check tal:define="dummy python: not coltypes.get(attr_name) and here.zopra_raiser('Field not found: ' + attr_name)"></tal:check>
-              <div style="clear:both;"></div>
-              <div class="field"
-                   tal:define="attr_value python:rentry.get(attr_name, '');
-                               field python:coltypes[attr_name];
-                               attr_type python:field['TYPE'];"
-                   tal:condition="python: not coltypes.get(attr_name).get('INVIS')">
-
-                <label tal:attributes="for attr_name" tal:content="python: field['LABEL']" i18n:translate="">Attribute Name</label>
-
-                <div class="formHelp"
-                     tal:content="helpTexts/?attr_name |nothing">
-                  Hinweistext
-                </div>
-
-                <metal:block metal:use-macro="here/zopra_widget_show_display/macros/widget_selector" />
-                <div style="clear:both;"></div>
-              </div>
-            </tal:block>
-          </tal:block>
-
-          <tal:additional tal:condition="exists: here/?add_path/macros/?add_macro">
-            <metal:use metal:use-macro="here/?add_path/macros/?add_macro">
-              Additional Fields
-            </metal:use>
-          </tal:additional>
-       </tal:block>
-
-     </fieldset>
-     </tal:block>
-          <div>
-          <metal:block metal:use-macro="here/zopra_button_link_bar/macros/links_show" />
-          <metal:block metal:use-macro="here/zopra_button_link_bar/macros/buttons_show" />
-          </div>
-        <input type="hidden" name="autoid" tal:attributes="value autoid" />
-
-        <input type="hidden" name="form.submitted" value="1" />
-        <input type="hidden" name="table" tal:attributes="value table" />
-
-
-      </form>
-    </metal:main>
-
-    <!--<metal:column_two_slot fill-slot="column_two_slot">
-      <metal:block metal:use-macro="here/zopra_context_menu/macros/context_menu" />
-    </metal:column_two_slot>-->
-
-    <metal:bottom fill-slot="bottom">
-      <metal:block metal:use-macro="here/zopra_bottom/macros/bottom" />
-    </metal:bottom>
+            <metal:block metal:use-macro="here/zopra_button_link_bar/macros/links_show" />
+            <metal:block metal:use-macro="here/zopra_button_link_bar/macros/buttons_show" />
+            <input type="hidden" name="autoid" tal:attributes="value autoid" />
+            <input type="hidden" name="form.submitted" value="1" />
+            <input type="hidden" name="table" tal:attributes="value table" />
+        </form>
+    </tal:block>
+</metal:main>
 
   </body>
-
 </html>

@@ -9,7 +9,7 @@
 
     <script type="text/javascript" tal:attributes="src string:${portal_url}/++resource++plone.app.jquery.js"></script>
     <link rel="stylesheet" type="text/css" tal:attributes="href string:${portal_url}/autoupdate-widget/jquery.autoupdate-widget.css" media="screen" />
-    <title>Popup: TUD - ZopRA - Redaktion</title>
+    <title>Popup: TUD - ZopRA - Editorial</title>
     <script language="javascript">
 
         function resizeIframe() {

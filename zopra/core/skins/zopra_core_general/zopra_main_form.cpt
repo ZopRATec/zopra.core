@@ -7,14 +7,6 @@
       i18n:domain="zopra">
 
   <body>
-    <metal:css_slot fill-slot="css_slot">
-       <link rel="stylesheet" type="text/css" media="all"  tal:attributes="href string:${portal_url}/zopra.css" />
-       <link rel="stylesheet" type="text/css" media="all"  tal:attributes="href string:${portal_url}/zopra_edit.css" />
-    </metal:css_slot>
-    <metal:css_slot fill-slot="style_slot">
-       <link rel="stylesheet" type="text/css" media="all"  tal:attributes="href string:${portal_url}/zopra.css" />
-       <link rel="stylesheet" type="text/css" media="all"  tal:attributes="href string:${portal_url}/zopra_edit.css" />
-    </metal:css_slot>
 
     <metal:topslot fill-slot="top_slot">
        <tal:block tal:define="
@@ -36,7 +28,8 @@
       <tal:block tal:condition="python: isAnon or not (user.has_role(('ZopRAAuthor', 'ZopRAReviewer', 'ZopRAAdmin'), here))">
         <tal:block replace="context/raiseUnauthorized"></tal:block>
       </tal:block>
-
+<div class="row">
+    <div class="contentSlot">
       <tal:block tal:define="zpath python: hasattr(here, 'zopra_path') and here.zopra_path or 'app/pm';
                              pm python:here.path2ob(zpath);
                              check python: pm or here.zopra_raiser('Product not found, check the zopra_path property or name your Product Manager pm.');
@@ -45,9 +38,11 @@
         <ul>
           <li tal:repeat="onemgr python:all.keys()">
             <a tal:attributes="href python:all[onemgr] + '/zopra_manager_main_form';"
+               class="button"
                tal:content="onemgr">Link to manager</a>
           </li>
         </ul>
+        <br />
         <tal:block tal:repeat="onemgr python:all.keys()">
           <div tal:define="manager python: getattr(here, all[onemgr].split('/')[-1]);
                            tname python: 'zopra_manager_info_' + manager.getClassName()"
@@ -58,14 +53,9 @@
         <br />
         <a tal:condition="exists:here/anonymous_zopra_main_form" href="anonymous_zopra_main_form">Zurück zur Startseite</a>
       </tal:block>
+    </div>
+</div>
     </metal:main>
 
-    <!--<metal:column_two_slot fill-slot="column_two_slot">
-      <metal:block metal:use-macro="here/zopra_context_menu/macros/context_menu" />
-    </metal:column_two_slot>-->
-
-    <metal:bottom fill-slot="bottom">
-      <metal:block metal:use-macro="here/zopra_bottom/macros/bottom" />
-    </metal:bottom>
   </body>
 </html>

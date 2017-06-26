@@ -8,16 +8,14 @@
 
 </tal:comment>
 
-    <metal:css_slot fill-slot="css_slot">
-       <link rel="stylesheet" type="text/css" media="all"  tal:attributes="href string:${portal_url}/zopra.css" />
-       <link rel="stylesheet" type="text/css" media="all"  tal:attributes="href string:${portal_url}/zopra_edit.css" />
-    </metal:css_slot>
-
-      <metal:topslot fill-slot="top_slot">
-          <tal:block tal:define="global isAnon context/@@plone_portal_state/anonymous;"></tal:block>
-      </metal:topslot>
+    <metal:topslot fill-slot="top_slot">
+        <tal:block tal:define="global isAnon context/@@plone_portal_state/anonymous;"></tal:block>
+    </metal:topslot>
 
     <metal:main fill-slot="main">
+
+<div class="row">
+    <div class="contentSlot">
 
       <tal:block tal:condition="isAnon">
         <tal:block replace="context/raiseUnauthorized"></tal:block>
@@ -225,15 +223,9 @@
           <input type="hidden" name="form.submitted" value="1" />
         </div>
       </form>
+    </div>
+</div>
     </metal:main>
-
-    <!--<metal:column_two_slot fill-slot="column_two_slot">
-      <metal:block metal:use-macro="here/zopra_context_menu/macros/context_menu" />
-    </metal:column_two_slot>-->
-
-    <metal:bottom fill-slot="bottom">
-      <metal:block metal:use-macro="here/zopra_bottom/macros/bottom" />
-    </metal:bottom>
 
   </body>
 

@@ -23,9 +23,6 @@ msgstr ""
 msgid "search"
 msgstr ""
 
-msgid "Redaktion"
-msgstr ""
-
 # Edit-tracking Cols
 msgid "Automatic No."
 msgstr ""

@@ -3,7 +3,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ZMOM 1.0\n"
-"POT-Creation-Date: 2017-06-26 17:27+0000\n"
+"POT-Creation-Date: 2017-06-26 18:26+0000\n"
 "PO-Revision-Date: 2010-05-06 14:11+0100\n"
 "Last-Translator: Peter Seifert <peter.seifert@zopra.de>\n"
 "Language-Team: ZMOM i18n <i18n@zopra.de>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Domain: zopra\n"
 "Preferred-encodings: utf-8\n"
 
-#: ./skins/zopra_core_general/zopra_table_import_form.cpt:59
+#: ./skins/zopra_core_general/zopra_table_import_form.cpt:54
 msgid "Aktivieren Sie diese Option, wenn die Datei als tab-separierter Text formatiert ist."
 msgstr ""
 
@@ -29,36 +29,36 @@ msgstr ""
 msgid "Back"
 msgstr ""
 
-#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:75
+#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:69
 msgid "CVS-Datei"
 msgstr ""
 
-#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:85
+#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:79
 msgid "CVS-Encoding"
 msgstr ""
 
-#: ./skins/zopra_core_general/zopra_list_edit_form.cpt:219
-#: ./skins/zopra_core_general/zopra_table_deleteconfirm_form.cpt:113
-#: ./skins/zopra_core_general/zopra_table_import_form.cpt:79
+#: ./skins/zopra_core_general/zopra_list_edit_form.cpt:217
+#: ./skins/zopra_core_general/zopra_table_deleteconfirm_form.cpt:108
+#: ./skins/zopra_core_general/zopra_table_import_form.cpt:74
 msgid "Cancel"
 msgstr ""
 
 #: ./skins/zopra_core_general/zopra_button_link_bar.cpt:31
 #: ./skins/zopra_core_general/zopra_table_created_dependency.pt:32
-#: ./skins/zopra_core_general/zopra_table_deleteconfirm_form.cpt:122
+#: ./skins/zopra_core_general/zopra_table_deleteconfirm_form.cpt:117
 msgid "Close"
 msgstr ""
 
-#: ./skins/zopra_core_general/zopra_table_import_form.cpt:48
+#: ./skins/zopra_core_general/zopra_table_import_form.cpt:43
 msgid "Datei"
 msgstr ""
 
-#: ./skins/zopra_core_general/zopra_table_import_form.cpt:46
+#: ./skins/zopra_core_general/zopra_table_import_form.cpt:41
 msgid "Datei-Import"
 msgstr ""
 
-#: ./skins/zopra_core_general/zopra_list_edit_form.cpt:213
-#: ./skins/zopra_core_general/zopra_table_deleteconfirm_form.cpt:106
+#: ./skins/zopra_core_general/zopra_list_edit_form.cpt:211
+#: ./skins/zopra_core_general/zopra_table_deleteconfirm_form.cpt:101
 msgid "Delete"
 msgstr ""
 
@@ -66,26 +66,26 @@ msgstr ""
 msgid "Delete Workingcopy"
 msgstr ""
 
-#: ./skins/zopra_core_general/zopra_table_import_form.cpt:49
+#: ./skins/zopra_core_general/zopra_table_import_form.cpt:44
 msgid "Die Importdaten (z.B. aus Excel) als komma-separierter oder tabstopp-separierter Text (CSV)."
 msgstr ""
 
-#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:76
+#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:70
 msgid "Die Studiengangsdatei (excel) als mit einem Trennzeichen separierten Text. Das zu aktualisierende Attribut wird automatisch erkannt."
 msgstr ""
 
-#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:64
+#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:58
 msgid "Die Tabelle in welcher die Eintr&auml;ge importiert werden sollen."
 msgstr ""
 
 msgid "Entry Date"
 msgstr ""
 
-#: ./skins/zopra_core_general/zopra_list_edit_form.cpt:130
+#: ./skins/zopra_core_general/zopra_list_edit_form.cpt:128
 msgid "Hierarchiedarstellung"
 msgstr ""
 
-#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:86
+#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:80
 msgid "In welchem Format wurde die CVS-Datei gespeichert, z.B.: macroman, latin1, utf8."
 msgstr ""
 
@@ -96,15 +96,12 @@ msgstr ""
 msgid "Invalid input"
 msgstr ""
 
-#: ./skins/zopra_core_general/zopra_manager_main_form.pt:47
+#: ./skins/zopra_core_general/zopra_manager_main_form.pt:36
 msgid "Manager Overview"
 msgstr ""
 
-msgid "Redaktion"
-msgstr ""
-
 #: ./skins/zopra_core_general/zopra_button_link_bar.cpt:63
-#: ./skins/zopra_core_general/zopra_table_multiconfirm_form.cpt:73
+#: ./skins/zopra_core_general/zopra_table_multiconfirm_form.cpt:58
 msgid "Release"
 msgstr ""
 
@@ -115,7 +112,7 @@ msgstr ""
 msgid "Save"
 msgstr ""
 
-#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:96
+#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:90
 msgid "Standard-Trennzeichen, z.B.: Semikolon, Komma, Tabulator (\t)"
 msgstr ""
 
@@ -123,36 +120,31 @@ msgstr ""
 msgid "Translate"
 msgstr ""
 
-#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:95
+#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:89
 msgid "Trennzeichen"
 msgstr ""
 
-#: ./skins/zopra_core_general/zopra_list_edit_form.cpt:207
+#: ./skins/zopra_core_general/zopra_list_edit_form.cpt:205
 msgid "Update"
 msgstr ""
 
-#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:63
+#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:57
 msgid "Ziel-Tabelle"
 msgstr ""
 
-#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:60
+#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:54
 msgid "Zwei-Spalten-Tabellen-Import"
 msgstr ""
 
 #. Default: "Please choose, how often you want to replicate the following fields."
-#: ./skins/zopra_core_general/zopra_table_create_form.cpt:89
+#: ./skins/zopra_core_general/zopra_table_create_form.cpt:86
 msgid "create_repeat_hint"
 msgstr ""
 
 msgid "search"
 msgstr ""
 
-#. Default: "Chosen criteria:"
-#: ./skins/zopra_core_general/zopra_table_search_result.pt:80
-msgid "sins_sr_criteria"
-msgstr ""
-
-#: ./skins/zopra_core_general/zopra_table_import_form.cpt:58
+#: ./skins/zopra_core_general/zopra_table_import_form.cpt:53
 msgid "tab-separiertes Format"
 msgstr ""
 
@@ -172,7 +164,7 @@ msgid "zopra_create_dependent_update_wc_success"
 msgstr ""
 
 #. Default: "Create entry ${table}"
-#: ./skins/zopra_core_general/zopra_table_create_form.cpt:38
+#: ./skins/zopra_core_general/zopra_table_create_form.cpt:36
 #: ./skins/zopra_core_general/zopra_table_created_dependency.pt:22
 msgid "zopra_create_heading"
 msgstr ""
@@ -218,7 +210,7 @@ msgid "zopra_delete_failure"
 msgstr ""
 
 #. Default: "Deletion of ${table}"
-#: ./skins/zopra_core_general/zopra_table_deleted_dependency.pt:30
+#: ./skins/zopra_core_general/zopra_table_deleted_dependency.pt:25
 msgid "zopra_delete_heading"
 msgstr ""
 
@@ -233,37 +225,37 @@ msgid "zopra_delete_success"
 msgstr ""
 
 #. Default: "You are deleting a depdendent entry. The reference from the main entry (${maintable}) will be removed."
-#: ./skins/zopra_core_general/zopra_table_deleteconfirm_form.cpt:93
+#: ./skins/zopra_core_general/zopra_table_deleteconfirm_form.cpt:88
 msgid "zopra_deleteconfirm_dependent_hint"
 msgstr ""
 
 #. Default: "Delete ${entry_type} ${table} ${label}"
-#: ./skins/zopra_core_general/zopra_table_deleteconfirm_form.cpt:55
+#: ./skins/zopra_core_general/zopra_table_deleteconfirm_form.cpt:50
 msgid "zopra_deleteconfirm_heading"
 msgstr ""
 
 #. Default: "When deleting an entry, a working copy and all translations will be deleted automatically, if they exist."
-#: ./skins/zopra_core_general/zopra_table_deleteconfirm_form.cpt:80
+#: ./skins/zopra_core_general/zopra_table_deleteconfirm_form.cpt:75
 msgid "zopra_deleteconfirm_hint"
 msgstr ""
 
 #. Default: "When deleting a translation, the original entry will not be updated. If there is a working copy of the translation, it will be deleted as well."
-#: ./skins/zopra_core_general/zopra_table_deleteconfirm_form.cpt:83
+#: ./skins/zopra_core_general/zopra_table_deleteconfirm_form.cpt:78
 msgid "zopra_deleteconfirm_hint_translation"
 msgstr ""
 
 #. Default: "When deleting a working copy, the original entry will not be updated. The changes of the working copy will be lost."
-#: ./skins/zopra_core_general/zopra_table_deleteconfirm_form.cpt:77
+#: ./skins/zopra_core_general/zopra_table_deleteconfirm_form.cpt:72
 msgid "zopra_deleteconfirm_hint_wc"
 msgstr ""
 
 #. Default: "Close this window to update the display of the main entry."
-#: ./skins/zopra_core_general/zopra_table_deleted_dependency.pt:38
+#: ./skins/zopra_core_general/zopra_table_deleted_dependency.pt:33
 msgid "zopra_deleted_dependency_hint"
 msgstr ""
 
 #. Default: "The dependent entry ${table} has been deleted."
-#: ./skins/zopra_core_general/zopra_table_deleted_dependency.pt:35
+#: ./skins/zopra_core_general/zopra_table_deleted_dependency.pt:30
 msgid "zopra_deleted_dependency_message"
 msgstr ""
 
@@ -278,17 +270,18 @@ msgid "zopra_deleted_workingcopy"
 msgstr ""
 
 #. Default: "Are you sure?"
-#: ./skins/zopra_core_general/zopra_table_deleteconfirm_form.cpt:101
+#: ./skins/zopra_core_general/zopra_table_deleteconfirm_form.cpt:96
 msgid "zopra_delteconfirm_confirm"
 msgstr ""
 
 #. Default: "Edit ${table} ${label} ${language}"
-#: ./skins/zopra_core_general/zopra_table_edit_form.cpt:56
+#: ./skins/zopra_core_general/zopra_table_edit_form.cpt:57
 msgid "zopra_edit_heading"
 msgstr ""
 
 #. Default: "Language:"
-#: ./skins/zopra_core_general/zopra_table_edit_form.cpt:57
+#: ./skins/zopra_core_general/zopra_table_edit_form.cpt:58
+#: ./skins/zopra_core_general/zopra_table_show_form.cpt:38
 msgid "zopra_edit_language"
 msgstr ""
 
@@ -347,7 +340,7 @@ msgid "zopra_editconfirm_success"
 msgstr ""
 
 #. Default: "entry"
-#: ./skins/zopra_core_general/zopra_table_deleteconfirm_form.cpt:51
+#: ./skins/zopra_core_general/zopra_table_deleteconfirm_form.cpt:46
 msgid "zopra_entry"
 msgstr ""
 
@@ -417,7 +410,7 @@ msgid "zopra_links_edit_translation_show"
 msgstr ""
 
 #. Default: "Modules"
-#: ./skins/zopra_core_general/zopra_main_form.cpt:44
+#: ./skins/zopra_core_general/zopra_main_form.cpt:37
 msgid "zopra_main_modules"
 msgstr ""
 
@@ -447,13 +440,23 @@ msgid "zopra_multiconfirm_success"
 msgstr ""
 
 #. Default: "Release"
-#: ./skins/zopra_core_general/zopra_table_multiconfirm_form.cpt:41
+#: ./skins/zopra_core_general/zopra_table_multiconfirm_form.cpt:30
 #: ./skins/zopra_core_general/zopra_table_multiconfirm_listing.pt:14
 msgid "zopra_release_heading"
 msgstr ""
 
-#. Default: "View"
-#: ./skins/zopra_core_general/zopra_table_show_form.cpt:47
+#. Default: "Chosen criteria:"
+#: ./skins/zopra_core_general/zopra_table_search_result.pt:83
+msgid "zopra_search_criteria"
+msgstr ""
+
+#. Default: "Search Results"
+#: ./skins/zopra_core_general/zopra_table_search_result.pt:77
+msgid "zopra_search_results_heading"
+msgstr ""
+
+#. Default: "Details ${table} ${label} ${language}"
+#: ./skins/zopra_core_general/zopra_table_show_form.cpt:37
 msgid "zopra_show_heading"
 msgstr ""
 
@@ -483,7 +486,7 @@ msgid "zopra_sr_label_pages_next"
 msgstr ""
 
 #. Default: "translation"
-#: ./skins/zopra_core_general/zopra_table_deleteconfirm_form.cpt:52
+#: ./skins/zopra_core_general/zopra_table_deleteconfirm_form.cpt:47
 msgid "zopra_translation"
 msgstr ""
 
@@ -508,7 +511,7 @@ msgid "zopra_translation_orig_not_found"
 msgstr ""
 
 #. Default: "working copy"
-#: ./skins/zopra_core_general/zopra_table_deleteconfirm_form.cpt:50
+#: ./skins/zopra_core_general/zopra_table_deleteconfirm_form.cpt:45
 msgid "zopra_workingcopy"
 msgstr ""
 

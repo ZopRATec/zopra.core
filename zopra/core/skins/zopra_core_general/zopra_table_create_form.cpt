@@ -8,12 +8,6 @@
 
 </tal:comment>
 
-<metal:css_slot fill-slot="css_slot">
-    <link rel="stylesheet" type="text/css" media="all"  tal:attributes="href string:${portal_url}/zopra.css" />
-    <link rel="stylesheet" type="text/css" media="all"  tal:attributes="href string:${portal_url}/zopra_edit.css" />
-    <link rel="stylesheet" type="text/css" media="print"  tal:attributes="href string:${portal_url}/sins_print.css" />
-</metal:css_slot>
-
 <metal:topslot fill-slot="top_slot">
     <tal:block tal:define="global isAnon context/@@plone_portal_state/anonymous;"></tal:block>
 </metal:topslot>
@@ -23,37 +17,41 @@
         <tal:block replace="context/raiseUnauthorized"></tal:block>
     </tal:block>
     <tal:block tal:define="errors options/state/getErrors;
-            tobj python: here.tableHandler[table];
-                    coltypes python:tobj.getColumnDefs();
-                            fieldsets python:here.getLayoutInfo(table, 'create');
-                                    helpTexts python: here.getHelpTexts(table);
-                                            origtable request/origtable|nothing;
-                                                    origid request/origid|nothing;
-                                                            origattribute request/origattribute|nothing;
-                                                                    entry python: request.get('autoid') and tobj.getEntry(request.get('autoid')) or here.getDefaultCreateValues(table);
-                                                                            required python: here.getGenericConfig(table).get('required',[]);">
+                           tobj python: here.tableHandler[table];
+                           coltypes python:tobj.getColumnDefs();
+                           fieldsets python:here.getLayoutInfo(table, 'create');
+                           helpTexts python: here.getHelpTexts(table);
+                           origtable request/origtable|nothing;
+                           origid request/origid|nothing;
+                           origattribute request/origattribute|nothing;
+                           entry python: request.get('autoid') and tobj.getEntry(request.get('autoid')) or here.getDefaultCreateValues(table);
+                           required python: here.getGenericConfig(table).get('required',[]);
+                           create_permitted python: here.getPermissionInfo(table, 'table_create')">
+        <tal:block tal:condition="python: not created_permitted">
+            <tal:block replace="context/raiseUnauthorized"></tal:block>
+        </tal:block>
         <h1 class="documentFirstHeading"
             i18n:translate="zopra_create_heading">
           Create entry
           <span i18n:name="table" i18n:translate="" tal:content="python: tobj.getLabel()"></span>
         </h1>
         <form name="edit_form"
-              action="."
+              id="edit_form"
               method="post"
               enctype="multipart/form-data"
               class="enableFormTabbing zopra-form"
-                 tal:attributes="action string:${here/getId}/${template/getId}" >
+              tal:attributes="action string:${here/absolute_url}/${template/getId}" >
             <tal:block tal:define="show_additional python: not here.doesTranslations(table) or entry.get('language') == 'de'"
                      tal:repeat="fieldset fieldsets">
                 <fieldset id="addFieldset"
-                         tal:define="add_macro python: 'additional_%s_%s' % (table, fieldset.get('label'));
-                                add_path python: 'zopra_table_create_additional_%s' % here.meta_type;
-                                        add_check python: 'zopra_table_create_has_additional_%s' % here.meta_type;
-                                                add_checked python: exists(add_check) and getattr(here, add_check)(table, entry, request);
-                                                        add_hascontent python: not exists(add_check) or add_checked"
+                         tal:define="title python: fieldset.get('label') or fieldset.get('id');
+                                     add_macro python: 'additional_%s_%s' % (table, fieldset.get('id') or fieldset.get('label'));
+                                     add_path python: 'zopra_table_create_additional_%s' % here.meta_type;
+                                     add_check python: 'zopra_table_create_has_additional_%s' % here.meta_type;
+                                     add_checked python: exists(add_check) and getattr(here, add_check)(fieldset.get('id') or fieldset.get('label'), table, entry, request);
+                                     add_hascontent python: not exists(add_check) or add_checked"
                          tal:condition="python: fieldset.get('fields') or (exists('here/?add_path/macros/?add_macro') and add_hascontent)">
-
-                    <legend i18n:translate="" tal:attributes="id python:fieldset.get('id') or fieldset.get('label')" tal:content="fieldset/label">
+                    <legend i18n:translate="" tal:attributes="id python:fieldset.get('id') or fieldset.get('label')" tal:content="title">
                         Data fields
                     </legend>
                     <tal:block tal:define="sortables python: fieldset.get('sortables', []);
@@ -62,7 +60,6 @@
                         <tal:block tal:define="br br|nothing;
                                 global br python: br or attr_name == '<br>'"
                                  tal:condition="python: attr_name != '<br>'">
-
                             <tal:check tal:define="dummy python: not coltypes.get(attr_name) and here.zopra_raiser('Field not found: ' + attr_name)"></tal:check>
                             <div class="row">
                                 <div class="contentSlot">
@@ -200,10 +197,6 @@
         </form>
     </tal:block>
 </metal:main>
-
-<metal:bottom fill-slot="bottom">
-    <metal:block metal:use-macro="here/zopra_bottom/macros/bottom" />
-</metal:bottom>
 
 </body>
 </html>

@@ -8,11 +8,6 @@
 
   <body>
 
-    <metal:css_slot fill-slot="css_slot">
-       <link rel="stylesheet" type="text/css" media="all" tal:attributes="href string:${portal_url}/zopra.css" />
-       <link rel="stylesheet" type="text/css" media="all" tal:attributes="href string:${portal_url}/zopra_edit.css" />
-    </metal:css_slot>
-
     <metal:javascriptslot fill-slot="javascript_head_slot">
         <script type="text/javascript" tal:attributes="src string:${portal_url}/dragtable.js"></script>
         <script language="javascript">
@@ -60,112 +55,89 @@
 
                      ">
 
-    <tal:block tal:condition="isAnon">
-        <tal:block replace="context/raiseUnauthorized"></tal:block>
-    </tal:block>
+        <tal:block tal:condition="isAnon">
+            <tal:block replace="context/raiseUnauthorized"></tal:block>
+        </tal:block>
 
-    <form id="search_result_form"
-          action="zopra_manager_show_log" method="post"
-          tal:define="global quotedcons string:;">
+        <form id="search_result_form"
+              action="zopra_manager_show_log" method="post"
+              tal:define="global quotedcons string:;">
 
-        <h1>Log-Tabelle</h1>
-        <metal:block metal:use-macro="here/zopra_button_link_bar/macros/buttons_search_result" />
-        <input type="hidden" name="table" tal:attributes="value python: request.get('table','')" />
-        <!-- Offset gets added to quotedcons later, just set the input for the form -->
-        <input type="hidden" name="offset" id="offset" tal:attributes="value offset" />
+            <h1>Log-Tabelle</h1>
+            <metal:block metal:use-macro="here/zopra_button_link_bar/macros/buttons_search_result" />
+            <input type="hidden" name="table" tal:attributes="value python: request.get('table','')" />
+            <!-- Offset gets added to quotedcons later, just set the input for the form -->
+            <input type="hidden" name="offset" id="offset" tal:attributes="value offset" />
 
-        <tal:block tal:define="global quotedcons python: quotedcons + (quotedcons and '&' or '') + 'count=%s' % (count)" />
+            <tal:block tal:define="global quotedcons python: quotedcons + (quotedcons and '&' or '') + 'count=%s' % (count)" />
 
-        <metal:block metal:use-macro="here/zopra_search_tools/macros/editorial_pagelinks_log" />
-        <div>
-            <span>Anzeige Einträge:</span>
-            <span tal:content="python: bool(entries) and str(offset + 1) or '0'">1</span>
-            <span>-</span>
-            <span tal:content="python:str(min(offset + count, rowcount))">10</span>
-            <span>/</span>
-            <span tal:content="rowcount">10</span>
-        </div>
-        <style type="text/css">
-            #tab{
-                border:1px solid #ccc;
-                border-bottom:0;
-                width:100%;
-                padding:0;
-                margin:0;
-            }
-            #tab tr{
-                margin:0;
-                padding:0;
-            }
-            #tab tr td, #tab tr th{
-                padding:2px;
-                margin:0;
-                border:0;
-                border-right:1px solid #ccc;
-                border-bottom:1px solid #ccc;
+            <metal:block metal:use-macro="here/zopra_search_tools/macros/editorial_pagelinks_log" />
+            <div>
+                <span>Anzeige Einträge:</span>
+                <span tal:content="python: bool(entries) and str(offset + 1) or '0'">1</span>
+                <span>-</span>
+                <span tal:content="python:str(min(offset + count, rowcount))">10</span>
+                <span>/</span>
+                <span tal:content="rowcount">10</span>
+            </div>
+            <style type="text/css">
+                #tab{
+                    border:1px solid #ccc;
+                    border-bottom:0;
+                    width:100%;
+                    padding:0;
+                    margin:0;
+                }
+                #tab tr{
+                    margin:0;
+                    padding:0;
+                }
+                #tab tr td, #tab tr th{
+                    padding:2px;
+                    margin:0;
+                    border:0;
+                    border-right:1px solid #ccc;
+                    border-bottom:1px solid #ccc;
 
-            }
-            #tab tr th{
-                cursor:move;
-            }
-            #tab tr td:last-child{border-right:0;}
-        </style>
-        <table class="draggable" width="100%" id="tab" cellpadding="0" cellspacing="0">
-            <tr>
-                <th tal:repeat="attr_name cols">
-                    <span tal:replace="python: coltypes.get(attr_name, {}).get('LABEL','')">attributename</span>
-                    <input type="hidden" class="copy2exportForm" tal:attributes="value attr_name" name="columnList:list" />
-                </th>
-                <th>Aktion</th>
-                <th>Eintrags-ID</th>
-                <th>Tabelle</th>
-                <th>Zusammenfassung Unterschiede</th>
-                <th>Detail-Diff</th>
-            </tr>
-            <tr tal:repeat="entry entries">
-                <tal:block tal:repeat="attr_name cols">
-                    <td tal:define="attr_type python:coltypes.get(attr_name,{}).get('TYPE', 'string'); attr_value python:entry.get(attr_name);">
-                        <metal:block metal:use-macro="here/zopra_widget_listing_display/macros/widget_selector" />
-                    </td>
-                </tal:block>
-                <tal:block define="action python: entry['action'].split(' ');
-                                   ontable python: action[1] == 'table'">
-                    <td tal:content="python: action[0] + ' ' + action[1]"></td>
-                    <td tal:content="python: not ontable and action[2] or ''"></td>
-                    <td tal:content="python: not ontable and (len(action)>4 and action[4] or '') or action[2]"></td>
-                    <td tal:content="python: entry.get('entrydiff_before') and pm.getKeysFromPickledDict(entry['entrydiff_before']) or 'Nicht verfügbar'"></td>
-                    <td> <a tal:condition="python: action[0] == 'update'" tal:attributes="href python:here.absolute_url() + '/zopra_manager_show_diff?logid=' + str(entry['autoid'])">Diff</a></td>
-                </tal:block>
-            </tr>
-        </table>
-        <metal:block metal:use-macro="here/zopra_search_tools/macros/editorial_pagelinks_log" />
-        <metal:block metal:use-macro="here/zopra_button_link_bar/macros/buttons_search_result" />
-    </form>
+                }
+                #tab tr th{
+                    cursor:move;
+                }
+                #tab tr td:last-child{border-right:0;}
+            </style>
+            <table class="draggable" width="100%" id="tab" cellpadding="0" cellspacing="0">
+                <tr>
+                    <th tal:repeat="attr_name cols">
+                        <span tal:replace="python: coltypes.get(attr_name, {}).get('LABEL','')">attributename</span>
+                        <input type="hidden" class="copy2exportForm" tal:attributes="value attr_name" name="columnList:list" />
+                    </th>
+                    <th>Aktion</th>
+                    <th>Eintrags-ID</th>
+                    <th>Tabelle</th>
+                    <th>Zusammenfassung Unterschiede</th>
+                    <th>Detail-Diff</th>
+                </tr>
+                <tr tal:repeat="entry entries">
+                    <tal:block tal:repeat="attr_name cols">
+                        <td tal:define="attr_type python:coltypes.get(attr_name,{}).get('TYPE', 'string'); attr_value python:entry.get(attr_name);">
+                            <metal:block metal:use-macro="here/zopra_widget_listing_display/macros/widget_selector" />
+                        </td>
+                    </tal:block>
+                    <tal:block define="action python: entry['action'].split(' ');
+                                       ontable python: action[1] == 'table'">
+                        <td tal:content="python: action[0] + ' ' + action[1]"></td>
+                        <td tal:content="python: not ontable and action[2] or ''"></td>
+                        <td tal:content="python: not ontable and (len(action)>4 and action[4] or '') or action[2]"></td>
+                        <td tal:content="python: entry.get('entrydiff_before') and pm.getKeysFromPickledDict(entry['entrydiff_before']) or 'Nicht verfügbar'"></td>
+                        <td> <a tal:condition="python: action[0] == 'update'" tal:attributes="href python:here.absolute_url() + '/zopra_manager_show_diff?logid=' + str(entry['autoid'])">Diff</a></td>
+                    </tal:block>
+                </tr>
+            </table>
+            <metal:block metal:use-macro="here/zopra_search_tools/macros/editorial_pagelinks_log" />
+            <metal:block metal:use-macro="here/zopra_button_link_bar/macros/buttons_search_result" />
+        </form>
 
     </metal:main>
 
-    <metal:portal_message metal:fill-slot="portal_message">
-        <div class="portalMessage"
-                i18n:domain="sins"
-                tal:define="portal_message request/portal_status_message | nothing"
-                tal:condition="python:portal_message and user.has_role(['Authenticated'])">
-            <tal:block replace="structure here/info.gif" />
-            <span>
-                <strong tal:content="structure portal_message" i18n:domain="sins" i18n:translate="">
-                    message
-                </strong>
-            </span>
-        </div>
-    </metal:portal_message>
-
-    <metal:column_two_slot fill-slot="column_two_slot">
-      <metal:block metal:use-macro="here/zopra_context_menu/macros/context_menu" />
-    </metal:column_two_slot>
-
-    <metal:bottom fill-slot="bottom">
-        <metal:block metal:use-macro="here/zopra_bottom/macros/bottom" />
-    </metal:bottom>
-
   </body>
-
 </html>

@@ -1,138 +1,76 @@
 @media all {
-    /* editorial styles for sins */
-    .zopra_navigation {
-        line-height: 220%;
-        margin-bottom: 5px;
-    }
-
-    .zopra_navigation a {
-        border: 1px solid #40779E !important;
-        background-color: #DDDDDD;
-        background-image: none;
-        padding: 1px 2px !important;
-        font-weight: 200;
-    }
-
-    .zopra_navigation a.selected {
-        border: 2px dotted #0B2A51;
-    }
-
-    .zopra_navigation a:visited {
-        color: #40779E;
-    }
-
+/* erp special colors for table cell markers */
     .invrejected {
         background-color: #E93636 !important;
     }
-
     .inverror {
         background-color: #FFCE7B !important;
     }
-
     .invstorno {
         background-color: #eeff7b !important;
     }
 
-    .formHelpShort {
-        width: 290px;
-    }
-
+/* fuer die zopra_list_edit_form.cpt */
     .zopra_listvalues {
         border-collapse: collapse;
     }
-
     .zopra_listvalues tr {
         vertical-align: top;
     }
-
     .zopra_listvalues tr td {
         padding: 2px;
         margin: 2px;
         text-align: left;
     }
-
     .zopra_listvalues tr.zopra_newvalue td {
         padding-top: 7px;
     }
 
-    fieldset {
-        text-align: left;
-    }
-
-    form fieldset legend {
-        background-color: #CCCCCC;
-        border: 1px solid;
-        font-size: 110%;
-        font-weight: bold;
-        margin: 0 0 5px -5px;
-        padding: 5px;
-        position: relative;
-    }
-
-    fieldset.table_actions {
-        float: left;
-        margin: 0 5px;
-        padding: 0 5px;
-    }
-
-    fieldset.table_actions a img.action_image {
-        border: 1px solid #333333;
-        margin-left: 1px;
-    }
-
-    fieldset.list_actions {
-        width: 460px;
-        margin: 0 5px;
-        padding: 0 5px;
-    }
-
+/* field error marker -> vermutlich überfluessig*/
     .error {
         width: 404px;
         padding: 2px;
     }
 
+/* Suchergebnisse (zopra_table_search_result.pt), Panel für Zusatz-Aktionen auf Suchergebnissen (CSV-Export) */
     .result_options_field {
         border: 1px solid #999999;
         margin: 4px 1px 2px;
         padding: 2px;
     }
-
     .result_options_subfield {
         margin: 2px;
         display: block;
     }
-
+/* diff Anzeige -> tools/ZopRAProduct.getEntryLogDiff, ev. automatisch via HTMLDiff output */
     .diff {
         background-color: #2dcb70;
         border: 1px #A7CBFF solid;
     }
 
-    /* editorial buttons */
+/* editorial buttons, z.B. edit_form, insbesondere disable-Styles bei ERP-VS*/
     .standalone {
         margin-bottom: 2px;
     }
-
     .standalone[disabled="disabled"] {
         background-color: #999999;
         cursor: default;
     }
-
     .context {
         margin-bottom: 2px;
     }
 
+/* zopra_overview table z.B. ERP VS */
     table.zopra_overview {
         border: 1px solid #ccc;
         border-bottom: 0;
         padding: 0;
         margin: 0;
     }
-
     table.zopra_overview tr {
         margin: 0;
         padding: 0;
     }
-
     table.zopra_overview tr td, table.zopra_overview tr th {
         padding: 2px;
         margin: 0;
@@ -140,11 +78,11 @@
         border-right: 1px solid #ccc;
         border-bottom: 1px solid #ccc;
     }
-
     table.zopra_overview tr td:last-child {
         border-right: 0;
     }
 
+/* search result page main table */
     #result_tab {
         border: 1px solid #ccc;
         border-bottom: 0;
@@ -152,12 +90,10 @@
         padding: 0;
         margin: 0;
     }
-
     #result_tab tr {
         margin: 0;
         padding: 0;
     }
-
     #result_tab tr td, #result_tab tr th {
         padding: 2px;
         margin: 0;
@@ -165,24 +101,10 @@
         border-right: 1px solid #ccc;
         border-bottom: 1px solid #ccc;
     }
-
     #result_tab tr th {
         cursor: move;
     }
-
     #result_tab tr td:last-child {
         border-right: 0;
-    }
-}
-
-@media print {
-    /* Editorial Printing styles */
-    #portal-column-content a[href]:after,
-    #portal-column-two a[href]:after {
-        content: "";
-    }
-
-    input {
-        display: inline;
     }
 }
