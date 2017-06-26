@@ -8,6 +8,7 @@
 ##parameters=table, autoid, REQUEST
 ##title=
 ##
+from zopra.core import zopraMessageFactory as _
 request = REQUEST
 tobj = context.tableHandler[table]
 
@@ -53,26 +54,32 @@ msg = context.actionBeforeEdit(table, entry, request) or ''
 if not context.doesWorkingCopies(table):
     # normal update entry
     done = tobj.updateEntry(entry, autoid, orig_entry = oldentry)
-    message = 'Eintrag gespeichert. %sInterne Id: %s' % (msg, autoid)
     # check translations
+    en_msg = ''
     if context.doesTranslations(table):
-        en_msg = ''
         # check if there are translations of this entry
         if oldentry.get('language') == context.lang_default and oldentry.get('hastranslation'):
             # updateTranslation also updates the working copy of the translation, if it exists
             translated = context.updateTranslation(table, entry)
             if translated:
-                en_msg = ' Die Nicht-Text-Felder der englischen Version wurde ebenfalls gespeichert.'
+                en_msg = _('zopra_edit_translation_updated',
+                            default = u'Non-text fields of the translated version have been saved additionally. ')
         # check if this is a translation (for msg only, action done already)
         elif oldentry.get('language') in context.lang_additional:
-            en_msg = ' Lediglich die Textfelder wurden uebernommen, da es sich um eine Sprachkopie handelt.'
-        if en_msg:
-            message = message + en_msg
+            en_msg = _('zopra_edit_translation_saved',
+                       default = u'Only the text fields have been saved (because this is a translation). ')
+    if en_msg:
+        en_msg = context.translate(en_msg)
+    message = _('zopra_edit_saved',
+                default = u'Entry has been updated. ${additional_message}${translation_message}Internal Id: ${internal_id}.',
+                mapping = {u'internal_id': autoid, u'additional_message': msg, u'translation_message': en_msg})
 
 elif entry.get('iscopyof'):
     # this already is a working copy, just save it
     done = tobj.updateEntry(entry, autoid, orig_entry = oldentry)
-    message='Arbeitskopie gespeichert. %sOriginal-Id: %s' % (msg, entry.get('iscopyof'))
+    message = _('zopra_edit_wc_saved',
+                default = u'Working copy has been updated. ${additional_message}Original internal Id: ${internal_id}.',
+                mapping = {u'internal_id': entry.get('iscopyof'), u'additional_message': msg})
 
 else:
     # create a working copy from oldentry (first creating a working copy with no changes for logging
@@ -80,18 +87,18 @@ else:
     oldentry['autoid'] = None
     autoid = tobj.addEntry(oldentry)
     oldentry['autoid'] = autoid
-
     # now update the new entry (which was prechecked and prepared above)
     # first change it to look like the working copy
     entry['iscopyof'] = entry['autoid']
     entry['autoid'] = autoid
     # update it, pass oldentry for diff-log
     done = tobj.updateEntry(entry, int(autoid), orig_entry = oldentry)
-    message = 'Arbeitskopie erzeugt. Original-Id: %s' % entry.get('iscopyof')
-
+    message = _('zopra_edit_wc_created',
+                default = u'Working copy created. ${additional_message}Original internal Id: ${internal_id}.',
+                mapping = {u'internal_id': entry.get('iscopyof'), u'additional_message': msg})
 if done == True:
-    context.plone_utils.addPortalMessage(message, 'info')
+    context.plone_utils.addPortalMessage(context.translate(message), 'info')
     return state.set(status='success', context=context)
 else:
-    context.plone_utils.addPortalMessage(done, 'info')
+    context.plone_utils.addPortalMessage(context.translate(message), 'info')
     return state.set(status='failure', context=context)

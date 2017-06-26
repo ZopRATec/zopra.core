@@ -17,7 +17,12 @@ from random     import randint
 import re
 from sets       import Set as set
 from types      import ListType, StringType
+from urllib import quote
 import json
+
+# Zope Imports
+from zope.component import getMultiAdapter
+
 #
 # ZopRA Imports
 #
@@ -65,6 +70,78 @@ class TemplateBaseManager(GenericManager):
         REQUEST.RESPONSE.redirect(parent.absolute_url())
 
 
+#
+# Plone 4.3 Integration for Social Links and Content Actions
+#
+
+    def social_links(self, context, REQUEST):
+        """\brief get the social links for the context"""
+        # TODO: tweak the social links and document actions to display correct titles (e.g. for sins)
+        # use special URL (with params) extracted from request instead of base url of the main Folder
+        real_url_part1 = REQUEST.get('URL')
+        real_url_part2 = REQUEST.get('QUERY_STRING')
+        if real_url_part2:
+            real_url = quote('%s?%s' % (real_url_part1, real_url_part2), safe='')
+            repl_url1 = quote(real_url_part1, safe='')
+            repl_url2 = quote(context.absolute_url(), safe='')
+        else:
+            # no query string -> no url replacement necessary
+            real_url = None
+        helper = getMultiAdapter((context, REQUEST), name=u'sl_helper')
+        if not helper:
+            return []
+        render_method = 'link'  # in original it's depending on Do-Not-Track-Setting; we force it anyway.
+        rendered = []
+        plugins = helper.plugins()
+        for plugin in plugins:
+            if plugin and getattr(plugin, render_method)():
+                view = context.restrictedTraverse(plugin.view())
+                html_generator = getattr(view, render_method, None)
+                if html_generator:
+                    html = html_generator()
+                    if real_url:
+                        # replace the url adding parts that are missing
+                        html = html.replace(repl_url1, real_url).replace(repl_url2, real_url)
+                    rendered.append({'id': plugin.id,
+                                     'html': html})
+        return rendered
+
+    def content_actions(self, context, REQUEST):
+        """\brief get the default actions for the context"""
+        context_state = getMultiAdapter((context, REQUEST), name=u'plone_context_state')
+        result = []
+        if context_state:
+            # prepare urls
+            real_url_part1 = REQUEST.get('URL')
+            real_url_part2 = REQUEST.get('QUERY_STRING')
+            if real_url_part2:
+                real_url = quote('%s?%s' % (real_url_part1, real_url_part2), safe='')
+                # longer version with template
+                repl_url1 = quote(real_url_part1, safe='')
+                # short version
+                repl_url2 = quote(context.absolute_url(), safe='')
+            else:
+                # no query string -> no url replacement necessary
+                real_url = None
+            # now get actions
+            actions = context_state.actions('document_actions')
+            for action in actions:
+                # replace the url adding parts that are missing
+                new_url = action['url']
+                if real_url:
+                    new_url = new_url.replace(repl_url1, real_url).replace(repl_url2, real_url)
+                # build new dict for the action
+                result.append({'id':          action['id'],
+                               'url':         new_url,
+                               'link_target': action['link_target'],
+                               'title':       action['title'],
+                               'description': action['description']})
+        return result
+
+
+#
+# Workflow Functions
+#
     def consistencyCheckTranslations(self, do = None):
         """Consistency Checker for translations"""
         special_fields = ['autoid', 'hastranslation', 'istranslationof', 'iscopyof', 'language']
@@ -115,6 +192,10 @@ class TemplateBaseManager(GenericManager):
     def getStateTransferInfo(self, table, entry):
         """\brief Overwrite for determining label and action for stateswitch button."""
         return {}
+
+#
+# security and permission functions
+#
 
 
     def getListOwnUsers(self, table):
@@ -174,6 +255,9 @@ class TemplateBaseManager(GenericManager):
 
         return perms
 
+#
+# Working Copy Functions
+#
 
     def doesWorkingCopies(self, table):
         """\brief """
@@ -239,6 +323,10 @@ class TemplateBaseManager(GenericManager):
     # the working copy machinery needs the deepcopy python func in scripts
     def deepcopy(self, obj):
         return deepcopy(obj)
+
+#
+# Translation Functions
+#
 
     def doesTranslations(self, table):
         """\brief """

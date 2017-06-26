@@ -14,7 +14,7 @@
                type="submit"
                name="form.button.Save"
                value="Save"
-                 i18n:domain="plone"
+                 i18n:domain="zopra"
                  i18n:attributes="value"
         />
 
@@ -64,7 +64,7 @@
                 class="standalone"
                 type="submit"
                 name="form.button.Confirm"
-                value="Unfreeze"
+                value="Release"
                  i18n:attributes="value"
                  i18n:domain="zopra"
         />
@@ -87,49 +87,65 @@
 
 </metal:block>
 
-<metal:block metal:define-macro="links_edit">
+<metal:block metal:define-macro="links_edit" i18n:domain="zopra">
     <div class="button-group expanded">
         <tal:block tal:condition="python: context.doesWorkingCopies(table) and entry.get('iscopyof') and user.has_role('ZopRAReviewer', here)">
-            <a class="button  small" tal:attributes="href python: context.absolute_url() + '/zopra_manager_show_log?entryid=%s&table=%s' % (entry['autoid'], table)">
-                Änderungen zeigen
+            <a class="button  small"
+               tal:attributes="href python: context.absolute_url() + '/zopra_manager_show_log?entryid=%s&table=%s' % (entry['autoid'], table)"
+               i18n:translate="zopra_links_edit_show_diff">
+                Show Changes
             </a>
         </tal:block>
         <tal:block tal:condition="not:origid|nothing">
-            <a class="button  small" tal:attributes="href python:'zopra_table_show_form?table=%s&autoid=%s' % (table, entry.get('autoid'))">
-                Zur Redaktionsansicht
+            <a class="button  small"
+               tal:attributes="href python:'zopra_table_show_form?table=%s&autoid=%s' % (table, entry.get('autoid'))"
+               i18n:translate="zopra_links_edit_show">
+                Editorial View
             </a>
         </tal:block>
         <tal:block tal:condition="python:hasattr(here, 'zopra_table_show_form_'+table)">
-            <a class="button  small" tal:attributes="href python:'zopra_table_show_form_%s?autoid=%s&force_showcopy=1' % (table, autoid)">
-                Zur Spezialansicht
+            <a class="button  small"
+               tal:attributes="href python:'zopra_table_show_form_%s?autoid=%s&force_showcopy=1' % (table, autoid)"
+               i18n:translate="zopra_links_edit_show_special">
+                Special View
             </a>
         </tal:block>
         <tal:block tal:condition="python: entry.get('hastranslation')">
-            <a class="button  small" tal:define="origs python: here.tableHandler[table].getEntryList(constraints={'istranslationof': entry.get('iscopyof') or entry.get('autoid')});
-                    origautoid python: origs and origs[0].get('autoid')"
-                     tal:condition="origautoid"
-                     tal:attributes="href python:'zopra_table_edit_form?table=%s&autoid=%s' % (table, origautoid)">
-                Zur Übersetzung
+            <a class="button  small"
+               tal:define="origs python: here.tableHandler[table].getEntryList(constraints={'istranslationof': entry.get('iscopyof') or entry.get('autoid')});
+                           origautoid python: origs and origs[0].get('autoid')"
+               tal:condition="origautoid"
+               tal:attributes="href python:'zopra_table_edit_form?table=%s&autoid=%s' % (table, origautoid)"
+               i18n:translate="zopra_links_edit_translation_edit">
+                Edit Translation
             </a>
         </tal:block>
         <tal:block tal:condition="python: entry.get('istranslationof')">
-            <a class="button  small" tal:attributes="href python:'zopra_table_edit_form?table=%s&autoid=%s' % (table, entry.get('istranslationof'))">
-                Zur Originalsprache
+            <a class="button  small"
+               tal:attributes="href python:'zopra_table_edit_form?table=%s&autoid=%s' % (table, entry.get('istranslationof'))"
+               i18n:translate="zopra_links_edit_original_language_edit">
+                Edit Original
             </a>
         </tal:block>
         <tal:block tal:condition="python: request.get('table') == 'studiengang'">
-            <a class="button  small" tal:attributes="href python:'/'.join(here.absolute_url().split('/')[:-2]) + '/qrcodeimage?url=http://tu-dresden.de/sins/stg/%s&filename=%s' % (autoid,'qr_'+str(autoid))">
-                QR-Code generieren
+            <a class="button  small"
+               tal:attributes="href python:'/'.join(here.absolute_url().split('/')[:-2]) + '/qrcodeimage?url=http://tu-dresden.de/sins/stg/%s&filename=%s' % (autoid,'qr_'+str(autoid))"
+               i18n:translate="zopra_links_edit_qrcode">
+                Generate QR-Code
             </a>
         </tal:block>
         <tal:block tal:condition="python: request.get('table') == 'veranstaltung'">
-            <a class="button  small" tal:attributes="href python: here.absolute_url() + '/integrale_export_veranstaltung?autoid=%s' % (autoid)">
-                LaTex exportieren
+            <a class="button  small"
+               tal:attributes="href python: here.absolute_url() + '/integrale_export_veranstaltung?autoid=%s' % (autoid)"
+               i18n:translate="zopra_links_edit_latex_export">
+                Export LaTex
             </a>
         </tal:block>
         <tal:block tal:condition="python: here.getPermissionInfo(table, 'table_create')">
-            <a class="button  small" tal:attributes="href python:'zopra_table_create_form?table=%s' % (table)">
-                Neuen Eintrag erstellen
+            <a class="button  small"
+               tal:attributes="href python:'zopra_table_create_form?table=%s' % (table)"
+               i18n:translate="zopra_links_edit_create_new">
+                New Entry
             </a>
         </tal:block>
     </div>
@@ -149,7 +165,7 @@
         <input class="standalone"
                type="submit"
                name="form.button.Cancel"
-               value="Cancel"
+               value="Back"
                  i18n:attributes="value"
         />
 
@@ -172,8 +188,7 @@
 </metal:block>
 
 <metal:block metal:define-macro="buttons_show">
-    <div class="formControlsZopRA"
-             tal:define="process_creation request/process_creation|nothing;">
+    <span class="formControlsZopRA">
 
         <input class="standalone"
                onclick="history.back(-1)"
@@ -193,7 +208,7 @@
                  i18n:domain="zopra"
                  tal:condition="request/origid|nothing"
         />
-    </div>
+    </span>
 </metal:block>
 
 <metal:block metal:define-macro="buttons_add">
@@ -212,7 +227,7 @@
                type="button"
                onclick="history.back(-1)"
                name="form.button.Cancel"
-               value="Cancel"
+               value="Back"
                  i18n:attributes="value"
                  tal:condition="not: request/origid|nothing"
         />
@@ -229,42 +244,51 @@
     </div>
 </metal:block>
 
-<metal:block metal:define-macro="links_show">
-    <div class="zopra_special_links">
+<metal:block metal:define-macro="links_show" i18n:domain="zopra">
+    <span class="zopra_special_links">
         <tal:block tal:condition="python:hasattr(here, 'zopra_table_show_form_'+table)">
-            <a tal:attributes="href python:'zopra_table_show_form_%s?autoid=%s&force_showcopy=1' % (table, autoid)">
-                Zur Spezialansicht
+            <a class="button"
+               tal:attributes="href python:'zopra_table_show_form_%s?autoid=%s&force_showcopy=1' % (table, autoid)"
+               i18n:translate="zopra_links_edit_show_special">
+                Special View
             </a>
         </tal:block>
         <tal:block tal:condition="python: entry.get('hastranslation')">
-            <a tal:define="origs python: here.tableHandler[table].getEntryList(constraints={'istranslationof': entry.get('iscopyof') or entry.get('autoid')});
-                    origautoid python: origs and origs[0].get('autoid')"
-                     tal:condition="origautoid"
-                     tal:attributes="href python:'zopra_table_show_form?table=%s&autoid=%s' % (table, origautoid)">
-                Zur Übersetzung
+            <a class="button"
+               tal:define="origs python: here.tableHandler[table].getEntryList(constraints={'istranslationof': entry.get('iscopyof') or entry.get('autoid')});
+                           origautoid python: origs and origs[0].get('autoid')"
+               tal:condition="origautoid"
+               tal:attributes="href python:'zopra_table_show_form?table=%s&autoid=%s' % (table, origautoid)"
+               i18n:translate="zopra_links_edit_translation_show">
+                Show Translation
             </a>
         </tal:block>
         <tal:block tal:condition="python: entry.get('istranslationof')">
-            <a tal:attributes="href python:'zopra_table_show_form?table=%s&autoid=%s' % (table, entry.get('istranslationof'))">
-                Zum Original
+            <a class="button"
+               tal:attributes="href python:'zopra_table_show_form?table=%s&autoid=%s' % (table, entry.get('istranslationof'))"
+               i18n:translate="zopra_links_edit_original_language_show">
+                Show Original
             </a>
         </tal:block>
         <tal:block tal:condition="python: len(request.get('autoidlist', []))<2">
             <tal:block tal:condition="python: 'edit' in here.getPermissionEntryInfo(table, entry)">
-                <a tal:attributes="href python:'zopra_table_edit_form?table=%s&autoid=%s' % (table, entry.get('autoid'))">
-                    Eintrag bearbeiten
+                <a class="button"
+                   tal:attributes="href python:'zopra_table_edit_form?table=%s&autoid=%s' % (table, entry.get('autoid'))"
+                   i18n:translate="zopra_links_edit_edit">
+                    Edit Entry
                 </a>
             </tal:block>
         </tal:block>
         <tal:block tal:condition="not:origid|nothing">
             <tal:block tal:condition="python: here.getPermissionInfo(table, 'table_create')">
-                <a tal:attributes="href python:'zopra_table_create_form?table=%s' % (table)"
-                        style="float: right">
-                    Neuen Eintrag erstellen
+                <a class="button"
+                   tal:attributes="href python:'zopra_table_create_form?table=%s' % (table)"
+                   i18n:translate="zopra_links_edit_create_new">
+                    New Entry
                 </a>
             </tal:block>
         </tal:block>
-    </div>
+    </span>
 </metal:block>
 
 </body>

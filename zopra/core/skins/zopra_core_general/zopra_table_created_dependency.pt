@@ -8,50 +8,37 @@
 
     </tal:comment>
 
-      <metal:javascriptslot fill-slot="javascript_head_slot">
-
-      </metal:javascriptslot>
-
-      <metal:css_slot fill-slot="css_slot">
-            <link rel="stylesheet" type="text/css" media="all"  tal:attributes="href string:${portal_url}/zopra.css" />
-            <link rel="stylesheet" type="text/css" media="all"  tal:attributes="href string:${portal_url}/zopra_edit.css" />
-      </metal:css_slot>
-
       <metal:main fill-slot="main"
                   tal:define="table request/table;
-                              isAnon context/@@plone_portal_state/anonymous;">
+                              isAnon context/@@plone_portal_state/anonymous;"
+                  >
             <tal:block tal:condition="isAnon">
                   <tal:block replace="context/raiseUnauthorized"></tal:block>
             </tal:block>
             <tal:block tal:define="tobj python: here.tableHandler[table];
                                    entry python: request.get('autoid') and tobj.getEntry(request.get('autoid')) or here.getDefaultCreateValues(table);">
-
-
-                  <h1 i18n:translate="" tal:content="python: 'Erstellung ' + tobj.getLabel()"></h1>
-                  <p>
-                      Der abhängige Eintrag für
-                    <span tal:content="tobj/getLabel"></span>
-                    <span tal:content="python: here.getLabelString(table, None, entry)"></span>
-                    wurde erstellt.
-                  </p>
-                  <p>Schliessen Sie dieses Fenster, um den neuen Eintrag in den Haupteintrag zu übernehmen.</p>
-                  <div class="formControlsZopRA">
+                <h1 class="documentFirstHeading" i18n:translate="zopra_create_heading">
+                    Create entry
+                    <span i18n:name="table" i18n:translate="" tal:content="python: tobj.getLabel()"></span>
+                </h1>
+                <p i18n:translate="zopra_created_dependency_message">
+                      The dependent entry
+                    <span i18n:name="table" tal:content="tobj/getLabel"></span>
+                    <span i18n:name="label" tal:content="python: here.getLabelString(table, None, entry)"></span>
+                    has been created.
+                </p>
+                <p i18n:translate="zopra_created_dependency_hint">Please close this window to reference this new entry from the main entry.</p>
+                <div class="formControlsZopRA">
                       <input class="standalone"
                            onclick="top.close()"
                            type="button"
                            name="form.button.Close"
                            value="Close"
                            i18n:attributes="value"
-                           i18n:domain="zopra"
-                    />
-                  </div>
-
+                      />
+                </div>
             </tal:block>
       </metal:main>
-
-      <!--<metal:column_two_slot fill-slot="column_two_slot">
-            <metal:block metal:use-macro="here/zopra_context_menu/macros/context_menu" />
-      </metal:column_two_slot>-->
 
       <metal:bottom fill-slot="bottom">
             <metal:block metal:use-macro="here/zopra_bottom/macros/bottom" />

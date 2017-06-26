@@ -51,7 +51,7 @@
             <th scope="col">Wert</th>
             <th scope="col"
                 tal:repeat="translation python: lobj.translations"
-                tal:content="python: 'Übersetzung '+translation">en</th>
+                tal:content="python: 'Uebersetzung '+translation">en</th>
             <th></th>
           </tr>
         </thead>
@@ -139,7 +139,7 @@
           <th>Wert</th>
           <th>Elternknoten</th>
           <th tal:repeat="translation python: lobj.translations"
-              tal:content="python: 'Übersetzung '+translation">en</th>
+              tal:content="python: 'Uebersetzung '+translation">en</th>
           <th>&nbsp;</th>
         </tr>
         <tr tal:repeat="entry entries">
@@ -213,13 +213,13 @@
           <input class="standalone"
                    type="submit"
                    name="form.button.Delete"
-                   value="Löschen"
+                   value="Delete"
                    i18n:attributes="value"
             />
           <input class="standalone"
                    type="submit"
                    name="form.button.Cancel"
-                   value="Zurück"
+                   value="Cancel"
                    i18n:attributes="value"
             />
           <input type="hidden" name="form.submitted" value="1" />

@@ -11,7 +11,7 @@
     <!-- Multiconfirmation of Working Copies (Listing) -->
     <tal:block tal:define="reviewers rev_roles|string:ZopRAReviewer;"
                tal:condition="python: user.has_role(reviewers, here)">
-      <h2 i18n:translate="">Freigabe</h2>
+      <h2 i18n:translate="zopra_release_heading">Release</h2>
       <div tal:repeat="table python:manager.tableHandler.keys()">
         <tal:block tal:define="tobj python: manager.tableHandler[table]"
                    tal:condition="python: manager.doesWorkingCopies(table)">

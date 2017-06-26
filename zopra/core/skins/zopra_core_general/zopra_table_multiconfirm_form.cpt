@@ -38,7 +38,7 @@
 
         <!-- Multiconfirmation of Working Copies -->
         <tal:block tal:condition="python: user.has_role(('ZopRAReviewer'), here)">
-          <h1><span i18n:translate="">Freigabe</span> <span tal:content="python: tobj.getLabel()"></span></h1>
+          <h1 class="documentFirstHeading"><span i18n:translate="zopra_release_heading">Release</span> <span tal:content="python: tobj.getLabel()"></span></h1>
           <tal:block>
               <div tal:define="entries python: here.getWorkingCopies(table)"
                    tal:condition="entries">
@@ -73,14 +73,15 @@
           <input class="standalone"
                  type="submit"
                  name="form.button.Confirm"
-                 value="Freigeben"
+                 value="Release"
                  i18n:attributes="value"
             />
           <input class="standalone"
                  onclick="history.back(-1)"
                  type="button"
                  name="form.button.Cancel"
-                 value="Zurück"
+                 value="Cancel"
+                 i18n:attributes="value"
             />
 
         </div>

@@ -10,7 +10,9 @@
 ##
 request = context.REQUEST
 if not edit_autoid:
-    return state.set(status='success', context=context , portal_status_message='Keine Aenderungen vorgenommen.')
+    message = u'Keine Änderungen vorgenommen.'
+    context.plone_utils.addPortalMessage(message, 'info')
+    return state.set(status='success', context=context)
 if not same_type(edit_autoid, []):
     edit_autoid = [edit_autoid]
 lobj = context.listHandler[listname]
@@ -20,6 +22,10 @@ for oneid in edit_autoid:
     done = True
 
 if done:
-    return state.set(status='success', context=context , portal_status_message='Eintraege gelöscht.')
+    message = u'Eintraege gelöscht.'
+    context.plone_utils.addPortalMessage(message, 'info')
+    return state.set(status='success', context=context)
 else:
-    return state.set(status='success', context=context, portal_status_message='Keine Änderungen vorgenommen.')
+    message = u'Keine Änderungen vorgenommen.'
+    context.plone_utils.addPortalMessage(message, 'info')
+    return state.set(status='success', context=context)

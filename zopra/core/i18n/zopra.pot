@@ -3,46 +3,512 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ZMOM 1.0\n"
-"POT-Creation-Date: 2010-05-06 14:11+0000\n"
+"POT-Creation-Date: 2017-06-26 17:27+0000\n"
 "PO-Revision-Date: 2010-05-06 14:11+0100\n"
 "Last-Translator: Peter Seifert <peter.seifert@zopra.de>\n"
 "Language-Team: ZMOM i18n <i18n@zopra.de>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Domain: zopra\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+"Language-Code: en\n"
+"Language-Name: English\n"
+"Preferred-Encodings: utf-8 latin1\n"
+"Domain: zopra\n"
 "Preferred-encodings: utf-8\n"
 
-# general zopra template translations
+#: ./skins/zopra_core_general/zopra_table_import_form.cpt:59
+msgid "Aktivieren Sie diese Option, wenn die Datei als tab-separierter Text formatiert ist."
+msgstr ""
 
+# Edit-tracking Cols
+msgid "Automatic No."
+msgstr ""
+
+#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:21
+msgid "Back"
+msgstr ""
+
+#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:75
+msgid "CVS-Datei"
+msgstr ""
+
+#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:85
+msgid "CVS-Encoding"
+msgstr ""
+
+#: ./skins/zopra_core_general/zopra_list_edit_form.cpt:219
+#: ./skins/zopra_core_general/zopra_table_deleteconfirm_form.cpt:113
+#: ./skins/zopra_core_general/zopra_table_import_form.cpt:79
+msgid "Cancel"
+msgstr ""
+
+#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:31
+#: ./skins/zopra_core_general/zopra_table_created_dependency.pt:32
+#: ./skins/zopra_core_general/zopra_table_deleteconfirm_form.cpt:122
+msgid "Close"
+msgstr ""
+
+#: ./skins/zopra_core_general/zopra_table_import_form.cpt:48
+msgid "Datei"
+msgstr ""
+
+#: ./skins/zopra_core_general/zopra_table_import_form.cpt:46
+msgid "Datei-Import"
+msgstr ""
+
+#: ./skins/zopra_core_general/zopra_list_edit_form.cpt:213
+#: ./skins/zopra_core_general/zopra_table_deleteconfirm_form.cpt:106
+msgid "Delete"
+msgstr ""
+
+#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:54
+msgid "Delete Workingcopy"
+msgstr ""
+
+#: ./skins/zopra_core_general/zopra_table_import_form.cpt:49
+msgid "Die Importdaten (z.B. aus Excel) als komma-separierter oder tabstopp-separierter Text (CSV)."
+msgstr ""
+
+#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:76
+msgid "Die Studiengangsdatei (excel) als mit einem Trennzeichen separierten Text. Das zu aktualisierende Attribut wird automatisch erkannt."
+msgstr ""
+
+#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:64
+msgid "Die Tabelle in welcher die Eintr&auml;ge importiert werden sollen."
+msgstr ""
+
+msgid "Entry Date"
+msgstr ""
+
+#: ./skins/zopra_core_general/zopra_list_edit_form.cpt:130
+msgid "Hierarchiedarstellung"
+msgstr ""
+
+#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:86
+msgid "In welchem Format wurde die CVS-Datei gespeichert, z.B.: macroman, latin1, utf8."
+msgstr ""
+
+msgid "Input required"
+msgstr ""
+
+# general zopra template translations
+msgid "Invalid input"
+msgstr ""
+
+#: ./skins/zopra_core_general/zopra_manager_main_form.pt:47
+msgid "Manager Overview"
+msgstr ""
+
+msgid "Redaktion"
+msgstr ""
+
+#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:63
+#: ./skins/zopra_core_general/zopra_table_multiconfirm_form.cpt:73
+msgid "Release"
+msgstr ""
+
+msgid "Required"
+msgstr ""
+
+#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:13
+msgid "Save"
+msgstr ""
+
+#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:96
+msgid "Standard-Trennzeichen, z.B.: Semikolon, Komma, Tabulator (\t)"
+msgstr ""
+
+#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:41
+msgid "Translate"
+msgstr ""
+
+#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:95
+msgid "Trennzeichen"
+msgstr ""
+
+#: ./skins/zopra_core_general/zopra_list_edit_form.cpt:207
+msgid "Update"
+msgstr ""
+
+#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:63
+msgid "Ziel-Tabelle"
+msgstr ""
+
+#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:60
+msgid "Zwei-Spalten-Tabellen-Import"
+msgstr ""
+
+#. Default: "Please choose, how often you want to replicate the following fields."
+#: ./skins/zopra_core_general/zopra_table_create_form.cpt:89
+msgid "create_repeat_hint"
+msgstr ""
+
+msgid "search"
+msgstr ""
+
+#. Default: "Chosen criteria:"
+#: ./skins/zopra_core_general/zopra_table_search_result.pt:80
+msgid "sins_sr_criteria"
+msgstr ""
+
+#: ./skins/zopra_core_general/zopra_table_import_form.cpt:58
+msgid "tab-separiertes Format"
+msgstr ""
+
+#. Default: "A new entry (${table}) has been created and referenced. A working copy for the main entry (${maintable} with the original Id ${internal_id}) has been created as well."
+#: ./skins/zopra_core_general/zopra_table_create.cpy:80
+msgid "zopra_create_dependent_create_wc_success"
+msgstr ""
+
+#. Default: "A new entry (${table}) has been created and referenced by the main entry (${maintable}"
+#: ./skins/zopra_core_general/zopra_table_create.cpy:102
+msgid "zopra_create_dependent_success"
+msgstr ""
+
+#. Default: "A new entry (${table}) has been created and referenced. The working copy for the main entry (${maintable} with the original Id ${internal_id}) has been updated."
+#: ./skins/zopra_core_general/zopra_table_create.cpy:92
+msgid "zopra_create_dependent_update_wc_success"
+msgstr ""
+
+#. Default: "Create entry ${table}"
+#: ./skins/zopra_core_general/zopra_table_create_form.cpt:38
+#: ./skins/zopra_core_general/zopra_table_created_dependency.pt:22
+msgid "zopra_create_heading"
+msgstr ""
+
+#. Default: "New entries have been created. ${additional_message}Internal Ids: ${internal_ids}."
+#: ./skins/zopra_core_general/zopra_table_create.cpy:120
+msgid "zopra_create_new_entries"
+msgstr ""
+
+#. Default: "New entry has been created. ${additional_message}Internal Id: ${internal_id}."
+#: ./skins/zopra_core_general/zopra_table_create.cpy:126
+msgid "zopra_create_new_entry"
+msgstr ""
+
+#. Default: "Please close this window to reference this new entry from the main entry."
+#: ./skins/zopra_core_general/zopra_table_created_dependency.pt:30
+msgid "zopra_created_dependency_hint"
+msgstr ""
+
+#. Default: "The dependent entry ${table} ${label} has been created."
+#: ./skins/zopra_core_general/zopra_table_created_dependency.pt:27
+msgid "zopra_created_dependency_message"
+msgstr ""
+
+#. Default: "A dependent entry (${table}) has been deleted. A working copy for the main entry (${maintable} with the original Id ${internal_id}) has been created."
+#: ./skins/zopra_core_general/zopra_table_delete.cpy:70
+msgid "zopra_delete_dependent_create_wc_success"
+msgstr ""
+
+#. Default: "A dependent entry (${table}) has been deleted. The reference from the main entry (${maintable} has been removed."
+#: ./skins/zopra_core_general/zopra_table_delete.cpy:92
+msgid "zopra_delete_dependent_success"
+msgstr ""
+
+#. Default: "A dependent entry (${table}) has been deleted. The working copy for the main entry (${maintable} with the original Id ${internal_id}) has been updated."
+#: ./skins/zopra_core_general/zopra_table_delete.cpy:81
+msgid "zopra_delete_dependent_update_wc_success"
+msgstr ""
+
+#. Default: "Error during deletion."
+#: ./skins/zopra_core_general/zopra_table_delete.cpy:110
+msgid "zopra_delete_failure"
+msgstr ""
+
+#. Default: "Deletion of ${table}"
+#: ./skins/zopra_core_general/zopra_table_deleted_dependency.pt:30
+msgid "zopra_delete_heading"
+msgstr ""
+
+#. Default: "Only editors with delete permission are allowed to delete entries. Aborted."
+#: ./skins/zopra_core_general/zopra_table_delete.cpy:19
+msgid "zopra_delete_permission_missing"
+msgstr ""
+
+#. Default: "Entry has been deleted."
+#: ./skins/zopra_core_general/zopra_table_delete.cpy:103
+msgid "zopra_delete_success"
+msgstr ""
+
+#. Default: "You are deleting a depdendent entry. The reference from the main entry (${maintable}) will be removed."
+#: ./skins/zopra_core_general/zopra_table_deleteconfirm_form.cpt:93
+msgid "zopra_deleteconfirm_dependent_hint"
+msgstr ""
+
+#. Default: "Delete ${entry_type} ${table} ${label}"
+#: ./skins/zopra_core_general/zopra_table_deleteconfirm_form.cpt:55
+msgid "zopra_deleteconfirm_heading"
+msgstr ""
+
+#. Default: "When deleting an entry, a working copy and all translations will be deleted automatically, if they exist."
+#: ./skins/zopra_core_general/zopra_table_deleteconfirm_form.cpt:80
+msgid "zopra_deleteconfirm_hint"
+msgstr ""
+
+#. Default: "When deleting a translation, the original entry will not be updated. If there is a working copy of the translation, it will be deleted as well."
+#: ./skins/zopra_core_general/zopra_table_deleteconfirm_form.cpt:83
+msgid "zopra_deleteconfirm_hint_translation"
+msgstr ""
+
+#. Default: "When deleting a working copy, the original entry will not be updated. The changes of the working copy will be lost."
+#: ./skins/zopra_core_general/zopra_table_deleteconfirm_form.cpt:77
+msgid "zopra_deleteconfirm_hint_wc"
+msgstr ""
+
+#. Default: "Close this window to update the display of the main entry."
+#: ./skins/zopra_core_general/zopra_table_deleted_dependency.pt:38
+msgid "zopra_deleted_dependency_hint"
+msgstr ""
+
+#. Default: "The dependent entry ${table} has been deleted."
+#: ./skins/zopra_core_general/zopra_table_deleted_dependency.pt:35
+msgid "zopra_deleted_dependency_message"
+msgstr ""
+
+#. Default: "Translation has been deleted."
+#: ./skins/zopra_core_general/zopra_table_delete.cpy:35
+msgid "zopra_deleted_translation"
+msgstr ""
+
+#. Default: "Working copy has been deleted."
+#: ./skins/zopra_core_general/zopra_table_delete.cpy:32
+msgid "zopra_deleted_workingcopy"
+msgstr ""
+
+#. Default: "Are you sure?"
+#: ./skins/zopra_core_general/zopra_table_deleteconfirm_form.cpt:101
+msgid "zopra_delteconfirm_confirm"
+msgstr ""
+
+#. Default: "Edit ${table} ${label} ${language}"
+#: ./skins/zopra_core_general/zopra_table_edit_form.cpt:56
+msgid "zopra_edit_heading"
+msgstr ""
+
+#. Default: "Language:"
+#: ./skins/zopra_core_general/zopra_table_edit_form.cpt:57
+msgid "zopra_edit_language"
+msgstr ""
+
+#. Default: "Entry has been updated. ${additional_message}${translation_message}Internal Id: ${internal_id}."
+#: ./skins/zopra_core_general/zopra_table_edit.cpy:73
+msgid "zopra_edit_saved"
+msgstr ""
+
+#. Default: "Only the text fields have been saved (because this is a translation). "
+#: ./skins/zopra_core_general/zopra_table_edit.cpy:69
+#: ./skins/zopra_core_general/zopra_table_editconfirm.cpy:93
+#: ./skins/zopra_core_general/zopra_table_multiconfirm.cpy:72
+msgid "zopra_edit_translation_saved"
+msgstr ""
+
+#. Default: "Non-text fields of the translated version have been saved additionally. "
+#: ./skins/zopra_core_general/zopra_table_edit.cpy:65
+#: ./skins/zopra_core_general/zopra_table_editconfirm.cpy:89
+#: ./skins/zopra_core_general/zopra_table_multiconfirm.cpy:68
+msgid "zopra_edit_translation_updated"
+msgstr ""
+
+#. Default: "Working copy created. ${additional_message}Original internal Id: ${internal_id}."
+#: ./skins/zopra_core_general/zopra_table_edit.cpy:96
+msgid "zopra_edit_wc_created"
+msgstr ""
+
+#. Default: "Working copy has been updated. ${additional_message}Original internal Id: ${internal_id}."
+#: ./skins/zopra_core_general/zopra_table_edit.cpy:80
+msgid "zopra_edit_wc_saved"
+msgstr ""
+
+#. Default: "Only working copies can be released. This entry is up-to-date. Release was cancelled."
+#: ./skins/zopra_core_general/zopra_table_editconfirm.cpy:40
+msgid "zopra_editconfirm_abort_no_copy"
+msgstr ""
+
+#. Default: "Original entry could not be found. Release was cancelled."
+#: ./skins/zopra_core_general/zopra_table_editconfirm.cpy:47
+msgid "zopra_editconfirm_abort_not_found"
+msgstr ""
+
+#. Default: "Entry has been released. ${additional_msg}Error during deletion of working copy. Internal Id: ${internal_id}."
+#: ./skins/zopra_core_general/zopra_table_editconfirm.cpy:103
+msgid "zopra_editconfirm_almost_success"
+msgstr ""
+
+#. Default: "Error during release: ${reason}"
+#: ./skins/zopra_core_general/zopra_table_editconfirm.cpy:108
+msgid "zopra_editconfirm_failure"
+msgstr ""
+
+#. Default: "Entry has been released. ${additional_msg}Internal Id: ${internal_id}."
+#: ./skins/zopra_core_general/zopra_table_editconfirm.cpy:98
+msgid "zopra_editconfirm_success"
+msgstr ""
+
+#. Default: "entry"
+#: ./skins/zopra_core_general/zopra_table_deleteconfirm_form.cpt:51
+msgid "zopra_entry"
+msgstr ""
+
+#. Default: "The requested entry was not found or no id was given."
+#: ./skins/zopra_core_general/zopra_testExistance.py:15
+msgid "zopra_entry_notfound"
+msgstr ""
+
+# general zopra template translations
 #: ./skins/zopra_core_general/zopra_widget_edit_display.pt
 msgid "zopra_for"
 msgstr ""
 
-#: ./skins/zopra_core_general/zopra_testExistance.py
-msgid "zopra_entry_notfound"
+#. Default: "New Entry"
+#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:145
+msgid "zopra_links_edit_create_new"
 msgstr ""
 
-# SINS template translations
-#./skins/zopra_sins/zopra_table_show_form_nice_studiengang.pt
-msgid "sins_stg_bewerb_deutsch_ein"
+#. Default: "Edit Entry"
+#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:275
+msgid "zopra_links_edit_edit"
 msgstr ""
 
-msgid "sins_stg_inlaender"
+#. Default: "Export LaTex"
+#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:138
+msgid "zopra_links_edit_latex_export"
 msgstr ""
 
-msgid "sins_stg_tip_inlaender"
+#. Default: "Edit Original"
+#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:124
+msgid "zopra_links_edit_original_language_edit"
 msgstr ""
 
-msgid "sins_stg_bewerb_aus"
+#. Default: "Show Original"
+#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:267
+msgid "zopra_links_edit_original_language_show"
 msgstr ""
 
-msgid "sins_stg_bewerb_auslaender_ein"
+#. Default: "Generate QR-Code"
+#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:131
+msgid "zopra_links_edit_qrcode"
 msgstr ""
 
-msgid "sins_stg_auslaender"
+#. Default: "Editorial View"
+#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:100
+msgid "zopra_links_edit_show"
 msgstr ""
 
-msgid "sins_stg_tip_auslaender"
+#. Default: "Show Changes"
+#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:93
+msgid "zopra_links_edit_show_diff"
 msgstr ""
+
+#. Default: "Special View"
+#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:107
+msgid "zopra_links_edit_show_special"
+msgstr ""
+
+#. Default: "Edit Translation"
+#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:114
+msgid "zopra_links_edit_translation_edit"
+msgstr ""
+
+#. Default: "Show Translation"
+#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:257
+msgid "zopra_links_edit_translation_show"
+msgstr ""
+
+#. Default: "Modules"
+#: ./skins/zopra_core_general/zopra_main_form.cpt:44
+msgid "zopra_main_modules"
+msgstr ""
+
+#. Default: "Only working copies can be released. The entry '${entry_label}' is up-to-date. Release was cancelled."
+#: ./skins/zopra_core_general/zopra_table_multiconfirm.cpy:19
+msgid "zopra_multiconfirm_abort_no_copy"
+msgstr ""
+
+#. Default: "Original entry '${entry_label}' could not be found. Release was cancelled."
+#: ./skins/zopra_core_general/zopra_table_multiconfirm.cpy:29
+msgid "zopra_multiconfirm_abort_not_found"
+msgstr ""
+
+#. Default: "Entry '${entry_label}' has been released. ${additional_msg}Error during deletion of working copy. Internal Id: ${internal_id}."
+#: ./skins/zopra_core_general/zopra_table_multiconfirm.cpy:84
+msgid "zopra_multiconfirm_almost_success"
+msgstr ""
+
+#. Default: "Error during release of entry '${entry_label}': ${reason}"
+#: ./skins/zopra_core_general/zopra_table_multiconfirm.cpy:89
+msgid "zopra_multiconfirm_failure"
+msgstr ""
+
+#. Default: "Entry '${entry_label}' has been released. ${additional_msg}Internal Id: ${internal_id}."
+#: ./skins/zopra_core_general/zopra_table_multiconfirm.cpy:80
+msgid "zopra_multiconfirm_success"
+msgstr ""
+
+#. Default: "Release"
+#: ./skins/zopra_core_general/zopra_table_multiconfirm_form.cpt:41
+#: ./skins/zopra_core_general/zopra_table_multiconfirm_listing.pt:14
+msgid "zopra_release_heading"
+msgstr ""
+
+#. Default: "View"
+#: ./skins/zopra_core_general/zopra_table_show_form.cpt:47
+msgid "zopra_show_heading"
+msgstr ""
+
+#. Default: "Pages:"
+#: ./skins/zopra_core_general/zopra_search_tools.pt:12
+msgid "zopra_sr_label_pages"
+msgstr ""
+
+#. Default: "back"
+#: ./skins/zopra_core_general/zopra_search_tools.pt:53
+msgid "zopra_sr_label_pages_before"
+msgstr ""
+
+#. Default: "first"
+#: ./skins/zopra_core_general/zopra_search_tools.pt:45
+msgid "zopra_sr_label_pages_first"
+msgstr ""
+
+#. Default: "last"
+#: ./skins/zopra_core_general/zopra_search_tools.pt:83
+msgid "zopra_sr_label_pages_last"
+msgstr ""
+
+#. Default: "next"
+#: ./skins/zopra_core_general/zopra_search_tools.pt:76
+msgid "zopra_sr_label_pages_next"
+msgstr ""
+
+#. Default: "translation"
+#: ./skins/zopra_core_general/zopra_table_deleteconfirm_form.cpt:52
+msgid "zopra_translation"
+msgstr ""
+
+#. Default: "Translation created. ${additional_message}Translation Id: ${translation_id}"
+#: ./skins/zopra_core_general/zopra_table_edittranslate.cpy:56
+msgid "zopra_translation_created"
+msgstr ""
+
+#. Default: "Translation exists already. The translation process has been cancelled."
+#: ./skins/zopra_core_general/zopra_table_edittranslate.cpy:63
+msgid "zopra_translation_exists"
+msgstr ""
+
+#. Default: "This table does not support translations. Translation process was cancelled."
+#: ./skins/zopra_core_general/zopra_table_edittranslate.cpy:15
+msgid "zopra_translation_not_supported"
+msgstr ""
+
+#. Default: "Original entry could not be found. Translation process was cancelled."
+#: ./skins/zopra_core_general/zopra_table_edittranslate.cpy:24
+msgid "zopra_translation_orig_not_found"
+msgstr ""
+
+#. Default: "working copy"
+#: ./skins/zopra_core_general/zopra_table_deleteconfirm_form.cpt:50
+msgid "zopra_workingcopy"
+msgstr ""
+

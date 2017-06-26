@@ -9,7 +9,9 @@
 ##title=
 ##
 if not new_value:
-    return state.set(status='success', context=context , portal_status_message='Keine Aenderungen vorgenommen.')
+    message = u'Keine Änderungen vorgenommen.'
+    context.plone_utils.addPortalMessage(message, 'info')
+    return state.set(status='success', context=context)
 lobj = context.listHandler[listname]
 request = context.REQUEST
 kwargs = {}
@@ -18,4 +20,6 @@ for translation in lobj.translations:
     if request.form.has_key(key):
         kwargs['value_'+translation] = request.form.get(key)
 lobj.addValue(new_value, '', new_rank, **kwargs)
-return state.set(status='success', context=context , portal_status_message='Eintrag angelegt.')
+message = u'Eintrag angelegt.'
+context.plone_utils.addPortalMessage(message, 'info')
+return state.set(status='success', context=context)
