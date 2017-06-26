@@ -761,19 +761,13 @@ class TemplateBaseManager(GenericManager):
         """\brief find all links in text starting with www or http and make them into real links"""
         # expression to find mailto and http/https urls, which will be made into real links
         expr = re.compile(r'((?:mailto\:|https?\://){1}\S+)\s*?(\[.*?\])')
-        # get the editorial urls
-        prop = self.portal_properties.site_properties
-        server_urls = prop.hasProperty('editorial_server_urls') and prop.editorial_server_urls or ['https://secure-redaktion.tu-dresden.de', 'https://sins-redaktion.tu-dresden.de', 'https://verw-redaktion.tu-dresden.de']
-        server_url = self.REQUEST.SERVER_URL
         # internal function for link replacement
         def apply(s):
             try:
                 # get url and possible label
                 url = s.group(1)
                 label = s.group(2)
-                # check the url, make it point to the active damain (for logged-in user)
-                if server_url in server_urls:
-                    url = url.replace('http://tu-dresden.de', server_url).replace('https://tu-dresden.de', server_url)
+
                 # use url as label, if no label is given
                 if not label or label == '[]':
                     label = url
