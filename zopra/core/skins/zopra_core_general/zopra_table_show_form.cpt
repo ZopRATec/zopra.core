@@ -43,9 +43,15 @@
         <div tal:define="dummy python: request.RESPONSE.redirect('require_login?came_from=' + here.absolute_url_path() +'/zopra_main_form')" />
       </tal:block>
 
-      <h1 i18n:translate="" tal:content="python: 'Ansicht ' + tobj.getLabel() + ' ' + here.getLabelString(table, autoid, entry)"></h1>
-      <metal:block metal:use-macro="here/zopra_button_link_bar/macros/links_show" />
-      <metal:block metal:use-macro="here/zopra_button_link_bar/macros/buttons_show" />
+      <h1 class="documentFirstHeading">
+          <span i18n:translate="zopra_show_heading">View</span>
+          <span tal:content="python: tobj.getLabel()">TabelleX</span>
+          <span tal:content="python: here.getLabelString(table, autoid, entry, lang = lang)">EintragY</span>
+      </h1>
+      <div>
+        <metal:block metal:use-macro="here/zopra_button_link_bar/macros/links_show" />
+        <metal:block metal:use-macro="here/zopra_button_link_bar/macros/buttons_show" />
+      </div>
 
       <tal:block tal:define="show_additional python: not here.doesTranslations(table) or entry.get('language') == 'de'"
                  tal:repeat="fieldset fieldsets">
@@ -125,9 +131,10 @@
 
      </fieldset>
      </tal:block>
+          <div>
           <metal:block metal:use-macro="here/zopra_button_link_bar/macros/links_show" />
           <metal:block metal:use-macro="here/zopra_button_link_bar/macros/buttons_show" />
-
+          </div>
         <input type="hidden" name="autoid" tal:attributes="value autoid" />
 
         <input type="hidden" name="form.submitted" value="1" />

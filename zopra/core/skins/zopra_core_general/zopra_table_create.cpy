@@ -79,7 +79,7 @@ if request.get('origtable') and request.get('origid') and request.get('origattri
             # create a fitting message
             message = _('zopra_create_dependent_create_wc_success',
                         default = u'A new entry (${table}) has been created and referenced. A working copy for the main entry (${maintable} with the original Id ${internal_id}) has been created as well.',
-                        mapping = {u'maintable': tmainobj.getLabel(), u'table': tobj.getLabel(), u'internal_id': orig.get('iscopyof')})
+                        mapping = {u'table': tmainobj.getLabel(), u'maintable': tobj.getLabel(), u'internal_id': orig.get('iscopyof')})
 
         else:
             # copy exists, we have it already (forceCopy was called above)
@@ -91,7 +91,7 @@ if request.get('origtable') and request.get('origid') and request.get('origattri
             # jump to referring entry
             message = _('zopra_create_dependent_update_wc_success',
                         default = u'A new entry (${table}) has been created and referenced. The working copy for the main entry (${maintable} with the original Id ${internal_id}) has been updated.',
-                        mapping = {u'maintable': tmainobj.getLabel(), u'table': tobj.getLabel(), u'internal_id': orig.get('iscopyof')})
+                        mapping = {u'table': tmainobj.getLabel(), u'maintable': tobj.getLabel(), u'internal_id': orig.get('iscopyof')})
     else:
         # directly add the ref (this does not create any log)
         mlobj.addMLRef(orig['autoid'], autoid)
@@ -101,10 +101,10 @@ if request.get('origtable') and request.get('origid') and request.get('origattri
         # message creation and ref
         message = _('zopra_create_dependent_success',
                         default = u'A new entry (${table}) has been created and referenced by the main entry (${maintable}',
-                        mapping = {u'maintable': tmainobj.getLabel(), u'table': tobj.getLabel()})
+                        mapping = {u'table': tmainobj.getLabel(), u'maintable': tobj.getLabel()})
     # set message
     if message:
-        context.plone_utils.addPortalMessage(message, 'info')
+        context.plone_utils.addPortalMessage(context.translate(message), 'info')
     # jump to message window stating the creation
     request.RESPONSE.redirect('zopra_table_created_dependency?table=%s&autoid=%s' % (table, autoid))
     return
@@ -118,13 +118,13 @@ if request.form.has_key('form.submitted'):
 if len(autoidlist) > 1:
     request.form['autoidlist'] = autoidlist
     message = _('zopra_create_new_entries',
-                default = u'New entries created with Ids ${internal_ids}. ${additional_message}',
+                default = u'New entries have been created. ${additional_message}Internal Ids: ${internal_ids}.',
                 mapping = {u'internal_ids': ', '.join(autoidlist), u'additional_message': msg})
-    context.plone_utils.addPortalMessage(message, 'info')
+    context.plone_utils.addPortalMessage(context.translate(message), 'info')
     return state.set(status='success', context=context)
 else:
     message = _('zopra_create_new_entry',
-                default = u'New entry created with Id ${internal_id}. ${additional_message}',
+                default = u'New entry has been created. ${additional_message}Internal Id: ${internal_id}.',
                 mapping = {u'internal_id': autoid, u'additional_message': msg})
-    context.plone_utils.addPortalMessage(message, 'info')
+    context.plone_utils.addPortalMessage(context.translate(message), 'info')
     return state.set(status='success', context=context)

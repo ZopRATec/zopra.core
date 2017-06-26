@@ -86,21 +86,22 @@ if done == True:
         # updateTranslation also updates the working copy of the translation, if it exists
         translated = context.updateTranslation(table, origentry)
         if translated:
-            en_msg = _('zopra_editconfirm_translation_okay', default = ' The non-textual fields of the translated version have also been updated.')
+            en_msg = _('zopra_edit_translation_updated',
+                       default = u'Non-text fields of the translated version have been saved additionally. ')
     # check if this is a translation (for msg only, action done already)
     elif origentry.get('language') in context.lang_additional:
-        en_msg = _('zopra_editconfirm_is_translation', default = ' Only the textual fields have been saved (because this is a translation).')
+        en_msg = _('zopra_edit_translation_saved', default = 'Only the text fields have been saved (because this is a translation). ')
 
     # delete copy without deleting anything else (except multilists)
     done = context.tableHandler[table].deleteEntry(int(autoid))
     if done == True:
         message = _('zopra_editconfirm_success',
-                    default = u'Entry has been released.${additional_msg} Internal Id: ${internal_id}',
+                    default = u'Entry has been released. ${additional_msg}Internal Id: ${internal_id}.',
                     mapping = {u'internal_id': origautoid, u'additional_msg': en_msg})
         status = 'success'
     else:
         message = _('zopra_editconfirm_almost_success',
-                    default = u'Entry has been released.${additional_msg} Error during deletion of working copy. Internal Id: ${internal_id}',
+                    default = u'Entry has been released. ${additional_msg}Error during deletion of working copy. Internal Id: ${internal_id}.',
                     mapping = {u'internal_id': origautoid, u'additional_msg': en_msg})
 
 else:

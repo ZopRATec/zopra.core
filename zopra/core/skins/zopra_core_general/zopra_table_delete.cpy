@@ -8,6 +8,7 @@
 ##parameters=table, del_autoid, offset = 0
 ##title=
 ##
+from zopra.core import zopraMessageFactory as _
 autoid = del_autoid
 request = context.REQUEST
 done = False
@@ -17,7 +18,7 @@ entry = context.tableHandler[table].getEntry(autoid)
 if not 'delete' in context.getPermissionEntryInfo(table, entry):
     message = _('zopra_delete_permission_missing',
                 default = u'Only editors with delete permission are allowed to delete entries. Aborted.')
-    context.plone_utils.addPortalMessage(message, 'info')
+    context.plone_utils.addPortalMessage(context.translate(message), 'info')
     return state.set(status='failure', context=context)
 
 origentry = context.zopra_forceOriginal(table, entry)
@@ -68,7 +69,7 @@ if done and request.get('origtable') and request.get('origid') and request.get('
             # create a fitting message
             message = _('zopra_delete_dependent_create_wc_success',
                         default = u'A dependent entry (${table}) has been deleted. A working copy for the main entry (${maintable} with the original Id ${internal_id}) has been created.',
-                        mapping = {u'maintable': tmainobj.getLabel(), u'table': tobj.getLabel(), u'internal_id': orig.get('iscopyof')})
+                        mapping = {u'table': tmainobj.getLabel(), u'maintable': tobj.getLabel(), u'internal_id': orig.get('iscopyof')})
         else:
             # copy exists, we have it already (forceCopy was called above)
             # directly remove the ref (this does not create any log)
@@ -79,7 +80,7 @@ if done and request.get('origtable') and request.get('origid') and request.get('
             # jump to referring entry
             message = _('zopra_delete_dependent_update_wc_success',
                         default = u'A dependent entry (${table}) has been deleted. The working copy for the main entry (${maintable} with the original Id ${internal_id}) has been updated.',
-                        mapping = {u'maintable': tmainobj.getLabel(), u'table': tobj.getLabel(), u'internal_id': orig.get('iscopyof')})
+                        mapping = {u'table': tmainobj.getLabel(), u'maintable': tobj.getLabel(), u'internal_id': orig.get('iscopyof')})
     else:
         # remove the deleted dependent entry from attr
         # directly remove the ref (this does not create any log)
@@ -90,22 +91,22 @@ if done and request.get('origtable') and request.get('origid') and request.get('
         # message deletion and deref
         message = _('zopra_delete_dependent_success',
                     default = u'A dependent entry (${table}) has been deleted. The reference from the main entry (${maintable} has been removed.',
-                    mapping = {u'maintable': tmainobj.getLabel(), u'table': tobj.getLabel()})
+                    mapping = {u'table': tmainobj.getLabel(), u'maintable': tobj.getLabel()})
     # set message
     if message:
-        context.plone_utils.addPortalMessage(message, 'info')
+        context.plone_utils.addPortalMessage(context.translate(message), 'info')
     # jump to message window stating the creation
     request.RESPONSE.redirect('zopra_table_deleted_dependency?table=%s&autoid=%s' % (table, autoid))
     return
 
 if done:
     message = special_message or _('zopra_delete_success', default = 'Entry has been deleted.')
-    context.plone_utils.addPortalMessage(message, 'info')
+    context.plone_utils.addPortalMessage(context.translate(message), 'info')
     if targetid:
         # jump to edit form of original
         request.RESPONSE.redirect('zopra_table_edit_form?table=%s&autoid=%s' % (table, targetid))
     return state.set(status = 'success', context = context)
 else:
     message = _('zopra_delete_failure', default = 'Error during deletion.')
-    context.plone_utils.addPortalMessage(message, 'info')
+    context.plone_utils.addPortalMessage(context.translate(message), 'info')
     return state.set(status = 'failure', context = context)

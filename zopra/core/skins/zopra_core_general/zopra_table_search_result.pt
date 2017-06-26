@@ -63,6 +63,7 @@
                      entries python: here.getEntryListProxy(table, count, offset, None, enriched_cons, order, orderdir);
                      coltypes python:context.getFilteredColumnDefs(table, edit_tracking = True, vis_only = False);
                      links python: context.getGenericConfig(table).get('links', []);
+                     global quotedcons string:;
                      ">
 
     <tal:block tal:condition="isAnon">
@@ -71,13 +72,9 @@
     <tal:block tal:condition="python: not listall and not listown">
         <tal:block replace="context/raiseUnauthorized"></tal:block>
     </tal:block>
-
+    <h1 i18n:translate="" tal:content="python: 'Suchergebnisse ' + tobj.getLabel()"></h1>
     <form id="search_result_form"
-          action="zopra_table_search_result" method="post"
-          tal:define="global quotedcons string:;">
-
-        <h1 i18n:translate="" tal:content="python: 'Suchergebnisse ' + tobj.getLabel()"></h1>
-
+          action="zopra_table_search_result" method="post">
         <!-- ausgewaehlte Kriterien (anhand originaler Constraints)-->
         <div tal:condition="cons">
             <h2 i18n:translate="sins_sr_criteria">Chosen criteria:</h2>
