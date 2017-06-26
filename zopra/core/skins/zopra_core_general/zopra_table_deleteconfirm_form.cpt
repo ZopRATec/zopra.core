@@ -88,7 +88,7 @@
             <tal:block tal:condition="origtable">
                 <div class="formHelp"
                      i18n:translate="zopra_deleteconfirm_dependent_hint"
-                     tal:define="maintobj context.tableHandler[origtable]">
+                     tal:define="maintobj python: context.tableHandler[origtable]">
                     You are deleting a depdendent entry. The reference from the main entry
                     (<span i18n:name="maintable" tal:content="python: maintobj.getLabel()"></span>)
                      will be removed.
