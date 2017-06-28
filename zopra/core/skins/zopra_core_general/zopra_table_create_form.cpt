@@ -55,29 +55,24 @@
                         Data fields
                     </legend>
                     <tal:block tal:define="sortables python: fieldset.get('sortables', []);
-                            fieldlist python: 'repeatfields' in fieldset.keys() and context.listdiff(fieldset['fields'], fieldset['repeatfields']) or fieldset['fields'];"
-                             tal:repeat="attr_name fieldlist">
-                        <tal:block tal:define="br br|nothing;
-                                global br python: br or attr_name == '<br>'"
-                                 tal:condition="python: attr_name != '<br>'">
-                            <tal:check tal:define="dummy python: not coltypes.get(attr_name) and here.zopra_raiser('Field not found: ' + attr_name)"></tal:check>
-                            <div class="row">
-                                <div class="contentSlot">
-                                    <div class="field"
-                                             tal:define="error python: errors.get(attr_name);
-                                                    attr_value python:request.get(attr_name, '') or entry.get(attr_name, '');
-                                                            field python:coltypes[attr_name];
-                                                                    attr_type python:field['TYPE'];
-                                                                            attr_sort python:attr_name in sortables;
-                                                                                    attr_notes python:{}"
-                                             tal:attributes="class python: 'field' + (error and ' error' or '')"
-                                             tal:condition="python: not field.get('INVIS')">
-                                        <metal:block metal:use-macro="here/zopra_widget_edit_display/macros/widget_selector" />
-                                    </div>
+                                           fieldlist python: 'repeatfields' in fieldset.keys() and context.listdiff(fieldset['fields'], fieldset['repeatfields']) or fieldset['fields'];"
+                               tal:repeat="attr_name fieldlist">
+                        <tal:check tal:define="dummy python: not coltypes.get(attr_name) and here.zopra_raiser('Field not found: ' + attr_name)"></tal:check>
+                        <div class="row">
+                            <div class="contentSlot">
+                                <div class="field"
+                                         tal:define="error python: errors.get(attr_name);
+                                                     attr_value python:request.get(attr_name, '') or entry.get(attr_name, '');
+                                                     field python:coltypes[attr_name];
+                                                     attr_type python:field['TYPE'];
+                                                     attr_sort python:attr_name in sortables;
+                                                     attr_notes python:{}"
+                                         tal:attributes="class python: 'field' + (error and ' error' or '')"
+                                         tal:condition="python: not field.get('INVIS')">
+                                    <metal:block metal:use-macro="here/zopra_widget_edit_display/macros/widget_selector" />
                                 </div>
                             </div>
-                            <tal:check tal:define="global br python:False"></tal:check>
-                        </tal:block>
+                        </div>
                     </tal:block>
                     <tal:repeatfields condition="python: 'repeatfields' in fieldset.keys()">
                         <div class="row">

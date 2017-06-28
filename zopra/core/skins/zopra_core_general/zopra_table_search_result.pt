@@ -60,7 +60,6 @@
                      links python: context.getGenericConfig(table).get('links', []);
                      global quotedcons string:;
                      ">
-
     <tal:block tal:condition="isAnon">
         <tal:block replace="context/raiseUnauthorized"></tal:block>
     </tal:block>
@@ -69,14 +68,14 @@
     </tal:block>
 <div class="row">
     <div class="contentSlot">
+        <h1 class="documentFirstHeading">
+                <span i18n:translate="zopra_search_results_heading">Search Results</span>
+                <span i18n:translate="" tal:content="python: tobj.getLabel()">TableX</span>
+        </h1>
         <form id="search_result_form zopra-form"
               action="string:${here/absolute_url}/${template/getId}" method="post"
               class="zopra-form"
               tal:define="global quotedcons string:;">
-            <h1 class="documentFirstHeading">
-                <span i18n:translate="zopra_search_results_heading">Search Results</span>
-                <span i18n:translate="" tal:content="python: tobj.getLabel()">TableX</span>
-            </h1>
             <tal:block tal:condition="python: context.filterRealSearchConstraints(cons)">
                 <!-- ausgewaehlte Kriterien (anhand originaler Constraints)-->
                 <div class="formatted">
@@ -104,7 +103,6 @@
                     </dl>
                 </div>
             </tal:block>
-            <metal:block metal:use-macro="here/zopra_button_link_bar/macros/buttons_search_result" />
             <!-- table cons set as hidden inputs for the form and added to quotedcons -->
             <tal:block tal:repeat="con python: cons.keys()">
                 <tal:def tal:define="field python: tobj.getField(con);
@@ -129,16 +127,16 @@
             <!-- Offset gets added to quotedcons later, just set the input for the form -->
             <input type="hidden" name="offset" id="offset" tal:attributes="value offset" />
             <tal:block tal:define="global quotedcons python: quotedcons + '&count=%s&%s' % (count, '&'.join(['sel_attr='+col for col in cols]))" />
-            <metal:block metal:use-macro="here/zopra_search_tools/macros/editorial_pagelinks" />
-            <div>
-                <span>Anzeige Einträge:</span>
+            <h2 class="zopra-count">
+                <span i18n:translate="zopra_search_result_result_range">Entries:</span>
                 <span tal:content="python: bool(entries) and str(offset + 1) or '0'">1</span>
                 <span>-</span>
                 <span tal:content="python:str(min(offset + count, rowcount))">10</span>
                 <span>/</span>
                 <span tal:content="rowcount">10</span>
-            </div>
-            <table class="draggable zopra-table" width="100%" id="result_tab" cellpadding="0" cellspacing="0">
+            </h2>
+            <metal:block metal:use-macro="here/zopra_search_tools/macros/editorial_pagelinks" />
+            <table class="border-inner table-scrollable draggable zopra-table" width="100%" id="result_tab" cellpadding="0" cellspacing="0">
                 <tr>
                     <th></th><th></th>
                     <th tal:condition="links"
@@ -152,37 +150,52 @@
                     <th></th>
                 </tr>
                 <tr tal:repeat="entry entries">
-                  <tal:block tal:define="permissions python: here.getPermissionEntryInfo(table, entry)">
-                    <td>
-                        <tal:block tal:condition="python: 'show' in permissions">
-                          <a tal:attributes="href python:here.absolute_url()+'/zopra_table_show_form?autoid=%s&table=%s' % (entry['autoid'], table)">anzeigen</a>
+                    <tal:block tal:define="permissions python: here.getPermissionEntryInfo(table, entry)">
+                        <td>
+                            <tal:block tal:condition="python: 'show' in permissions">
+                                <a class="icon-zopra-show"
+                                   tal:attributes="href python:here.absolute_url()+'/zopra_table_show_form?autoid=%s&table=%s' % (entry['autoid'], table)">
+                                    <span class="show-for-sr" i18n:translate="zopra_search_result_show">show</span>
+                                </a>
+                            </tal:block>
+                        </td>
+                        <td>
+                            <tal:block tal:condition="python: 'edit' in permissions">
+                                <a class="icon-zopra-edit"
+                                 tal:attributes="href python:here.absolute_url()+'/zopra_table_edit_form?autoid=%s&table=%s' % (entry['autoid'], table)">
+                                    <span class="show-for-sr" i18n:translate="zopra_search_result_edit">edit</span>
+                                </a>
+                            </tal:block>
+                        </td>
+                        <td tal:condition="links"
+                            tal:repeat="link links">
+                            <a tal:define="urlpart python: link.get('link') % entry.get(link.get('field'));
+                                           label link/label|nothing;
+                                           iconclass  link/iconclass|nothing;"
+                               tal:attributes="href python: context.absolute_url() + '/' + urlpart;
+                                               class iconclass">
+                               <span class="show-for-sr"
+                                     omit-tag="not:iconclass"
+                                     tal:content="label">
+                                   Link
+                               </span>
+                            </a>
+                        </td>
+                        <tal:block tal:repeat="attr_name cols">
+                            <td tal:define="attr_type python:coltypes.get(attr_name,{}).get('TYPE', 'string');
+                                            attr_value python:entry.get(attr_name);
+                                            attr_notes python: attr_type == 'multilist' and dict([[a,entry[a]] for a in entry.keys() if a.startswith(attr_name + 'notes') and entry[a]]) or {};">
+                                <metal:block metal:use-macro="here/zopra_widget_listing_display/macros/widget_selector" />
+                            </td>
                         </tal:block>
-                    </td>
-                    <td>
-                        <tal:block tal:condition="python: 'edit' in permissions">
-                          <a tal:attributes="href python:here.absolute_url()+'/zopra_table_edit_form?autoid=%s&table=%s' % (entry['autoid'], table)">bearbeiten</a>
-                        </tal:block>
-                    </td>
-                    <td tal:condition="links"
-                        tal:repeat="link links">
-                      <a tal:define="urlpart python: link.get('link') % entry.get(link.get('field'))"
-                         tal:content="link/label|nothing"
-                         tal:attributes="href python: context.absolute_url() + '/' + urlpart">Link</a>
-                    </td>
-                    <tal:block tal:repeat="attr_name cols">
-                        <td tal:define="attr_type python:coltypes.get(attr_name,{}).get('TYPE', 'string');
-                                        attr_value python:entry.get(attr_name);
-                                        attr_notes python: attr_type == 'multilist' and dict([[a,entry[a]] for a in entry.keys() if a.startswith(attr_name + 'notes') and entry[a]]) or {};">
-                            <metal:block metal:use-macro="here/zopra_widget_listing_display/macros/widget_selector" />
+                        <td>
+                            <a tal:condition="python: 'delete' in permissions"
+                               class="icon-zopra-delete"
+                               tal:attributes="href python:here.absolute_url()+'/zopra_table_deleteconfirm_form?del_autoid=%s&target_url=zopra_table_search_result&offset=%s&form.button.DelFromResult=1&%s' % (entry['autoid'], offset, quotedcons)">
+                                <span class="show-for-sr" i18n:translate="zopra_search_result_delete">delete</span>
+                            </a>
                         </td>
                     </tal:block>
-                    <td>
-                        <a tal:condition="python: 'delete' in permissions"
-                           tal:attributes="href python:here.absolute_url()+'/zopra_table_deleteconfirm_form?del_autoid=%s&target_url=zopra_table_search_result&offset=%s&form.button.DelFromResult=1&%s' % (entry['autoid'], offset, quotedcons)">
-                            löschen
-                        </a>
-                    </td>
-                  </tal:block>
                 </tr>
             </table>
             <metal:block metal:use-macro="here/zopra_search_tools/macros/editorial_pagelinks" />
@@ -190,9 +203,9 @@
                    tal:define="all_keys python: [(coltypes[key].get('LABEL'), key) for key in coltypes.keys()];
                                dummy python: all_keys.sort()">
                 <div class="result_options_subfield">
-                    <span>
-                        Anzuzeigende Spalten:
-                    </span>
+                    <h2 i18n:translate="zopra_search_result_cols">
+                        Visible Columns:
+                    </h2>
                     <select multiple="multiple" class="multi" name="sel_attr:list" size="8">
                         <tal:block tal:repeat="attr_tupel all_keys">
                             <option i18n:translate=""
@@ -207,9 +220,9 @@
                     </select>
                 </div>
                 <div class="result_options_subfield">
-                    <span>
-                        Sortierung:
-                    </span>
+                    <h2 i18n:translate="zopra_search_result_sorting">
+                        Order by:
+                    </h2>
                     <select name="sort_attr:list">
                         <tal:block tal:repeat="attr_tupel all_keys">
                             <option i18n:translate=""
@@ -224,22 +237,22 @@
                     </select>
                 </div>
                 <div class="result_options_subfield">
-                    <span>
-                        Anzahl:
-                    </span>
+                    <h2 i18n:translate="zopra_search_result_count">
+                        Number of entries:
+                    </h2>
                     <input type="text" name="count" tal:attributes="value count" />
                 </div>
-                <div class="result_options_subfield" style="margin-top: 15px;">
-                    <input class="context" type="submit" value="Anfordern" />
-                </div>
-                <div class="floatclearer"></div>
             </div>
-            <metal:block metal:use-macro="here/zopra_button_link_bar/macros/buttons_search_result" />
+            <div class="formControls">
+                <div class="formPanel">
+                    <metal:block metal:use-macro="here/zopra_button_link_bar/macros/buttons_search_result" />
+                </div>
+            </div>
         </form>
         <div class="result_options_field">
-            <span>
+            <h2 i18n:translate="zopra_search_result_export">
                 Export:
-            </span>
+            </h2>
             <div class="result_options_subfield" style="margin-top: 15px;">
                 <form id="export_as_csv" action="zopra_table_search_result_export_csv" method="post">
                     <input type="hidden" name="table:string" tal:attributes="value table" />
@@ -264,10 +277,13 @@
                                                                  value python:cons[cons_key]" />
                     </tal:else>
                     </tal:block>
-                    <input class="context" type="submit" value="CSV-Export" />
+                    <div class="formControls">
+                        <div class="formPanel">
+                            <input class="context" type="submit" value="CSV-Export" />
+                        </div>
+                    </div>
                 </form>
             </div>
-            <div class="floatclearer"></div>
         </div>
     </div>
 </div>

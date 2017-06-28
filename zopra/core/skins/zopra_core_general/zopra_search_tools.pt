@@ -23,7 +23,7 @@
         </div>
     </metal:block>
 
-    <!-- 
+    <!--
     new pageination used by ila
     Necessary form parameters:
     result_page = the page the pagelinks link to
@@ -37,50 +37,50 @@
              tal:define="url      python: '%s/%s' % (context.absolute_url(),result_page);
                          url      python: url + getparam + '&offset=';
                          pages    python: context.calculatePaginationPages(rowcount, count);
-                         
+
                          cur_page python: offset/count;">
             <span i18n:translate="zopra_sr_label_pages">Pages:</span>
-            
+
             <tal:block tal:condition="python: cur_page > 0">
-                <a class="pagelink" title="erste"  
+                <a class="pagelink" title="erste"
                        tal:define="thisurl python: url + str(0);"
                        tal:attributes="href thisurl;"
                        i18n:translate="zopra_sr_label_pages_first"
                        >first</a>
             </tal:block>
-            
+
             <tal:block tal:condition="python:cur_page > 0">
-            <a class="pagelink" title="eines zur&uuml;ck" 
+            <a class="pagelink" title="eines zur&uuml;ck"
                    tal:define="thisurl python: url + str(offset-count);"
                    tal:attributes="href thisurl;"
                    i18n:translate="zopra_sr_label_pages_before"
                    >back</a>
             </tal:block>
-            
-            <span 
+
+            <span
             tal:define="
             start python: max(0, cur_page - num_links);
             end python: min(cur_page + num_links+1, pages);"
             tal:repeat="page python: xrange(start,end)">
-            
+
                 <strong class="pagelink" tal:condition="python:cur_page == page" tal:content="python:page+1">
                 </strong>
-            
+
                 <a class="pagelink" tal:condition="python:cur_page != page" tal:define="thisurl python: url + str(page*count);"
                    tal:attributes="href thisurl;
                                    title python: 'Page ' + str(page + 1);"
                    tal:content="python: page + 1">pagenumber</a>
             </span>
-            
+
             <tal:block tal:condition="python:cur_page < pages-1">
-                <a class="pagelink" title="eines weiter"  
+                <a class="pagelink" title="eines weiter"
                       tal:define="thisurl python: url + str(offset+count);"
                       i18n:translate="zopra_sr_label_pages_next"
                        tal:attributes="href thisurl;">next</a>
             </tal:block>
-            
+
             <tal:block tal:condition="python: cur_page != pages-1">
-                <a class="pagelink" title="letzte"  
+                <a class="pagelink" title="letzte"
                       tal:define="thisurl python: url + str(count*(pages-1));"
                       i18n:translate="zopra_sr_label_pages_last"
                        tal:attributes="href thisurl;">last</a>
@@ -90,7 +90,7 @@
 
     <!-- pagelinks used by zopra editorial area -->
     <metal:block metal:define-macro="editorial_pagelinks">
-        <div id="pagelinks"
+        <div class="zopra-pagelinks"
              tal:define="url python: '%s/zopra_table_search_result?' % (here.absolute_url());
                          order python: same_type(order, []) and order or [order];
                          url python: url + quotedcons + '%s&offset=' % ''.join(['&sort_attr:list=%s' % oneorder for oneorder in order]);
@@ -99,7 +99,7 @@
             <span tal:repeat="page python: xrange(pages)">
                 <a tal:define="pageoffset python: page*count;
                            thisurl python: url + str(pageoffset);
-                           thisclass python: pageoffset == offset and 'selected_pagelink' or 'pagelink';
+                           thisclass python: pageoffset == offset and 'pagelink selected' or 'pagelink';
                            onclick string:$$('input#offset').val(${pageoffset});;$$('#search_result_form').submit();;return false;;;"
                    tal:attributes="href thisurl;
                                class thisclass;

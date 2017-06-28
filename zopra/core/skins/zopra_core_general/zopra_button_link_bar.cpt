@@ -1,5 +1,5 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
-         i18n:domain="plone">
+      i18n:domain="zopra">
 
 <body>
 <tal:comment tal:replace="nothing">
@@ -14,7 +14,6 @@
                type="submit"
                name="form.button.Save"
                value="Save"
-                 i18n:domain="zopra"
                  i18n:attributes="value"
         />
 
@@ -23,9 +22,8 @@
                type="button"
                name="form.button.Cancel"
                value="Back"
-                 i18n:attributes="value"
-                 i18n:domain="zopra"
-                 tal:condition="not: request/origid|nothing"
+               i18n:attributes="value"
+               tal:condition="not: request/origid|nothing"
         />
 
         <input class="standalone"
@@ -33,18 +31,16 @@
                type="button"
                name="form.button.Close"
                value="Close"
-                 i18n:attributes="value"
-                 i18n:domain="zopra"
-                 tal:condition="request/origid|nothing"
+               i18n:attributes="value"
+               tal:condition="request/origid|nothing"
         />
 
         <input tal:condition="python: context.doesTranslations(table) and not entry.get('istranslationof') and not entry.get('hastranslation')"
-                class="standalone"
-                type="submit"
-                name="form.button.Translate"
-                value="Translate"
-                 i18n:attributes="value"
-                 i18n:domain="zopra"
+               class="standalone"
+               type="submit"
+               name="form.button.Translate"
+               value="Translate"
+               i18n:attributes="value"
         />
         <tal:block tal:condition="python: context.doesWorkingCopies(table) and entry.get('iscopyof') and user.has_role(('ZopRAReviewer'), here)">
             <tal:block tal:condition="not: set_del_autoid|nothing">
@@ -55,29 +51,27 @@
                    type="submit"
                    name="form.button.CopyDelete"
                    value="Delete Workingcopy"
-                     i18n:attributes="value"
-                     i18n:domain="zopra"
+                   i18n:attributes="value"
             />
         </tal:block>
 
         <input tal:condition="python: context.doesWorkingCopies(table) and entry.get('iscopyof') and user.has_role(('ZopRAReviewer'), here)"
-                class="standalone"
-                type="submit"
-                name="form.button.Confirm"
-                value="Release"
-                 i18n:attributes="value"
-                 i18n:domain="zopra"
+               class="standalone"
+               type="submit"
+               name="form.button.Confirm"
+               value="Release"
+                i18n:attributes="value"
         />
 
         <tal:block tal:condition="python: context.doesWorkflows(table) and entry.get('state')">
             <tal:block tal:define="infos python: context.getStateTransferInfo(table, entry)">
                 <input tal:repeat="info infos"
-                        class="standalone"
-                        type="submit"
-                        name="form.button.ChangeWorkflowState"
-                         i18n:attributes="value"
-                         tal:attributes="value info/label;
-                        name python: 'form.button.ChangeWorkflowState' + str(repeat['info'].index + 1)"
+                       class="standalone"
+                       type="submit"
+                       name="form.button.ChangeWorkflowState"
+                        i18n:attributes="value"
+                        tal:attributes="value info/label;
+                                        name python: 'form.button.ChangeWorkflowState' + str(repeat['info'].index + 1)"
                 />
             </tal:block>
         </tal:block>
@@ -158,15 +152,14 @@
                type="submit"
                name="form.button.Search"
                value="Search"
-                 i18n:domain="plone"
-                 i18n:attributes="value"
+               i18n:attributes="value"
         />
 
         <input class="standalone"
                type="submit"
                name="form.button.Cancel"
                value="Back"
-                 i18n:attributes="value"
+               i18n:attributes="value"
         />
 
     </div>
@@ -174,16 +167,19 @@
 
 <metal:block metal:define-macro="buttons_search_result">
     <div class="formControlsZopRA">
-
+        <input class="context"
+               type="submit"
+               name="form.button.Configure"
+               value="Request"
+               i18n:attributes="value"
+        />
         <input class="standalone"
                onclick="history.back(-1)"
                type="button"
                name="form.button.Cancel"
                value="Back"
-                 i18n:attributes="value"
-                 i18n:domain="zopra"
+               i18n:attributes="value"
         />
-
     </div>
 </metal:block>
 
@@ -195,52 +191,44 @@
                type="button"
                name="form.button.Cancel"
                value="Back"
-                 i18n:attributes="value"
-                 i18n:domain="zopra"
-                 tal:condition="not: request/origid|nothing"
+               i18n:attributes="value"
+               tal:condition="not: request/origid|nothing"
         />
         <input class="standalone"
                onclick="top.close()"
                type="button"
                name="form.button.Close"
                value="Close"
-                 i18n:attributes="value"
-                 i18n:domain="zopra"
-                 tal:condition="request/origid|nothing"
+               i18n:attributes="value"
+               tal:condition="request/origid|nothing"
         />
     </span>
 </metal:block>
 
 <metal:block metal:define-macro="buttons_add">
-    <div class="formControlsZopRA"
-             tal:define="process_creation request/process_creation|nothing;">
-
+    <div class="formControlsZopRA">
         <input class="context"
                type="submit"
                name="form.button.Save"
                value="Save"
-                 i18n:domain="plone"
-                 i18n:attributes="value"
+               i18n:attributes="value"
         />
-
         <input class="standalone"
                type="button"
                onclick="history.back(-1)"
                name="form.button.Cancel"
                value="Back"
-                 i18n:attributes="value"
-                 tal:condition="not: request/origid|nothing"
+               i18n:attributes="value"
+               tal:condition="not: request/origid|nothing"
         />
         <input class="standalone"
                onclick="top.close()"
                type="button"
                name="form.button.Close"
                value="Close"
-                 i18n:attributes="value"
-                 i18n:domain="zopra"
-                 tal:condition="request/origid|nothing"
+               i18n:attributes="value"
+               tal:condition="request/origid|nothing"
         />
-
     </div>
 </metal:block>
 

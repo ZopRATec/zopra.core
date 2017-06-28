@@ -4,11 +4,6 @@ title=Main Form
 [security]
 View=0:Authenticated
 
-[validators]
-validators..importInvoice=erp_importCSV
-validators..selectInvoice=erp_releaseInvoice
-validators=
-
 [actions]
 action.success..importInvoice=traverse_to:string:zopra_main_form
 action.success..selectInvoice=traverse_to:string:zopra_main_form

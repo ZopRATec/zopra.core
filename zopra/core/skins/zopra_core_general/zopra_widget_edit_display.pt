@@ -13,8 +13,8 @@
 <metal:widget_label define-macro="widget_label">
     <tal:block tal:define="cur_field field|nothing"
                tal:condition="python: cur_field">
-        <label tal:attributes="for attr_name"  i18n:translate="">
-            <span tal:replace="python: cur_field['LABEL']"></span>
+        <label tal:attributes="for attr_name">
+            <span i18n:translate="" tal:replace="python: cur_field['LABEL']"></span>
             <span class="fieldRequired"
                   title="Required"
                      i18n:attributes="title"
@@ -24,17 +24,17 @@
                 *
             </span>
         </label>
-        <div tal:attributes="class python: 'formHelp' + (attr_type == 'memo' and ' formHelpShort' or '')"
+        <div class="formHelp"
                  tal:content="helpTexts/?attr_name |nothing">
             Hinweistext
         </div>
-        <div tal:condition="python: here.doesTranslations(table) and entry.get('hastranslation') and (attr_type == 'string' or attr_type == 'memo')"
-                class='formHelp'>Bitte denken Sie daran, bei Veränderungen gegebenenfalls die
-            englische
+        <div tal:condition="python: here.doesTranslations(table) and entry.get('hastranslation') and entry.get('language') == here.lang_default and (attr_type == 'string' or attr_type == 'memo')"
+             class="formHelp">
+            Bitte denken Sie daran, bei Veränderungen gegebenenfalls die
             Übersetzung anzupassen.
         </div>
-        <div tal:condition="error" tal:content="error" i18n:translate="">Validation error
-            output
+        <div tal:condition="error" tal:content="error" i18n:translate="">
+            Validation error output
         </div>
     </tal:block>
 </metal:widget_label>
@@ -92,18 +92,13 @@
                                name attr_name;
                                id attr_name"
         />
-        <div tal:condition="python: here.doesTranslations(table) and entry.get('hastranslation') and (attr_type == 'string' or attr_type == 'memo')"
-                class='formHelp'>Bitte denken Sie daran, bei Veränderungen gegebenenfalls die
-            englische
-            Übersetzung anzupassen.
-        </div>
         <div tal:condition="error" tal:content="error" i18n:translate="">Validation error
             output
         </div>
         <label tal:attributes="for attr_name" tal:content="python: field['LABEL']" i18n:translate="">
             Attribute Name
         </label>
-        <div tal:attributes="class python: 'formHelp' + (attr_type == 'memo' and ' formHelpShort' or '')"
+        <div class="formHelp"
                  tal:content="helpTexts/?attr_name |nothing">
             Hinweistext
         </div>

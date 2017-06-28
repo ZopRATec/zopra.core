@@ -39,14 +39,13 @@
                 <span tal:content="edit_lang"></span>)
             </span>
         </h1>
+        <metal:block metal:use-macro="here/zopra_button_link_bar/macros/links_show" />
         <form name="show_form"
               id="show_form"
               method="post"
               enctype="multipart/form-data"
               class="enableFormTabbing zopra-form"
               tal:attributes="action string:${here/absolute_url}/${template/getId}" >
-            <metal:block metal:use-macro="here/zopra_button_link_bar/macros/links_show" />
-            <metal:block metal:use-macro="here/zopra_button_link_bar/macros/buttons_show" />
             <tal:block tal:define="show_additional python: not here.doesTranslations(table) or entry.get('language') == 'de'"
                        tal:repeat="fieldset fieldsets">
                 <fieldset tal:define="title python: fieldset.get('label') or fieldset.get('id');
@@ -59,30 +58,26 @@
                     <legend i18n:translate="" tal:attributes="id python:fieldset.get('id') or fieldset.get('label')" tal:content="title">Data fields</legend>
                     <tal:block tal:define="sortables python: fieldset.get('sortables', [])"
                                tal:repeat="attr_name fieldset/fields">
-                        <tal:block tal:define="br br|nothing;
-                                             global br python: br or attr_name == '<br>'"
-                                 tal:condition="python: attr_name != '<br>'">
-                            <tal:check tal:define="dummy python: not coltypes.get(attr_name) and here.zopra_raiser('Field not found: ' + attr_name)"></tal:check>
-                            <div class="row">
-                                <div class="contentSlot">
-                                    <div class="field"
-                                         tal:define="attr_value python:entry.get(attr_name, '');
-                                                     field python:coltypes[attr_name];
-                                                     attr_type python:field['TYPE'];
-                                                     attr_sort python:attr_name in sortables;
-                                                     attr_notes python: attr_type == 'multilist' and dict([[a,entry[a]] for a in entry.keys() if a.startswith(attr_name + 'notes')]) or {};"
-                                         tal:condition="python: not coltypes.get(attr_name).get('INVIS')# and attr_name not in r_fields">
-                                        <label tal:attributes="for attr_name" tal:content="python: field['LABEL']" i18n:translate="">Attribute Name</label>
-                                        <div class="formHelp"
-                                             tal:content="helpTexts/?attr_name |nothing">
-                                          Hinweistext
-                                        </div>
-                                        <metal:block metal:use-macro="here/zopra_widget_show_display/macros/widget_selector" />
+
+                        <tal:check tal:define="dummy python: not coltypes.get(attr_name) and here.zopra_raiser('Field not found: ' + attr_name)"></tal:check>
+                        <div class="row">
+                            <div class="contentSlot">
+                                <div class="field"
+                                     tal:define="attr_value python:entry.get(attr_name, '');
+                                                 field python:coltypes[attr_name];
+                                                 attr_type python:field['TYPE'];
+                                                 attr_sort python:attr_name in sortables;
+                                                 attr_notes python: attr_type == 'multilist' and dict([[a,entry[a]] for a in entry.keys() if a.startswith(attr_name + 'notes')]) or {};"
+                                     tal:condition="python: not coltypes.get(attr_name).get('INVIS')# and attr_name not in r_fields">
+                                    <label tal:attributes="for attr_name" tal:content="python: field['LABEL']" i18n:translate="">Attribute Name</label>
+                                    <div class="formHelp formHelpSpecial"
+                                         tal:content="helpTexts/?attr_name|nothing">
+                                      Hinweistext
                                     </div>
+                                    <metal:block metal:use-macro="here/zopra_widget_show_display/macros/widget_selector" />
                                 </div>
                             </div>
-                            <tal:check tal:define="global br python:False"></tal:check>
-                        </tal:block>
+                        </div>
                     </tal:block>
                     <tal:block condition="python: request.get('autoidlist')"
                                repeat="entryid request/autoidlist">
@@ -116,8 +111,15 @@
                     </tal:additional>
                 </fieldset>
             </tal:block>
-            <metal:block metal:use-macro="here/zopra_button_link_bar/macros/links_show" />
-            <metal:block metal:use-macro="here/zopra_button_link_bar/macros/buttons_show" />
+            <div class="formControls">
+                <div class="formPanel">
+                    <div class="row">
+                        <div class="contentSlot">
+                            <metal:block metal:use-macro="here/zopra_button_link_bar/macros/buttons_show" />
+                        </div>
+                    </div>
+                </div>
+            </div>
             <input type="hidden" name="autoid" tal:attributes="value autoid" />
             <input type="hidden" name="form.submitted" value="1" />
             <input type="hidden" name="table" tal:attributes="value table" />

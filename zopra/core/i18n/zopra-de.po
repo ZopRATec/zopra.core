@@ -3,7 +3,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ZMOM 1.0\n"
-"POT-Creation-Date: 2017-06-26 18:26+0000\n"
+"POT-Creation-Date: 2017-06-28 15:21+0000\n"
 "PO-Revision-Date: 2010-05-06 14:11+0100\n"
 "Last-Translator: Peter Seifert <peter.seifert@zopra.de>\n"
 "Language-Team: ZMOM i18n <i18n@zopra.de>\n"
@@ -26,7 +26,7 @@ msgstr ""
 msgid "Automatic No."
 msgstr "Interne Id"
 
-#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:21
+#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:20
 msgid "Back"
 msgstr "Zurück"
 
@@ -45,7 +45,7 @@ msgid "Cancel"
 msgstr "Abbrechen"
 
 # buttons
-#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:31
+#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:29
 #: ./skins/zopra_core_general/zopra_table_created_dependency.pt:32
 #: ./skins/zopra_core_general/zopra_table_deleteconfirm_form.cpt:117
 msgid "Close"
@@ -64,7 +64,7 @@ msgstr ""
 msgid "Delete"
 msgstr "Löschen"
 
-#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:54
+#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:50
 msgid "Delete Workingcopy"
 msgstr "Arbeitskopie löschen"
 
@@ -102,10 +102,14 @@ msgstr "Ungültige Eingabe"
 msgid "Manager Overview"
 msgstr "Manager Überblick"
 
-#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:63
-#: ./skins/zopra_core_general/zopra_table_multiconfirm_form.cpt:58
+#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:58
+#: ./skins/zopra_core_general/zopra_table_multiconfirm_form.cpt:65
 msgid "Release"
 msgstr "Freigeben"
+
+#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:170
+msgid "Request"
+msgstr "Anfordern"
 
 msgid "Required"
 msgstr "Erforderlich"
@@ -114,11 +118,15 @@ msgstr "Erforderlich"
 msgid "Save"
 msgstr "Speichern"
 
+#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:151
+msgid "Search"
+msgstr "Suchen"
+
 #: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:90
 msgid "Standard-Trennzeichen, z.B.: Semikolon, Komma, Tabulator (\t)"
 msgstr ""
 
-#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:41
+#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:38
 msgid "Translate"
 msgstr "Übersetzen"
 
@@ -139,7 +147,7 @@ msgid "Zwei-Spalten-Tabellen-Import"
 msgstr ""
 
 #. Default: "Please choose, how often you want to replicate the following fields."
-#: ./skins/zopra_core_general/zopra_table_create_form.cpt:86
+#: ./skins/zopra_core_general/zopra_table_create_form.cpt:81
 msgid "create_repeat_hint"
 msgstr "Wählen Sie aus wie oft die folgenden Felder benötigt werden."
 
@@ -356,57 +364,57 @@ msgid "zopra_for"
 msgstr "für"
 
 #. Default: "New Entry"
-#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:145
+#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:139
 msgid "zopra_links_edit_create_new"
 msgstr "Neuer Eintrag"
 
 #. Default: "Edit Entry"
-#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:275
+#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:263
 msgid "zopra_links_edit_edit"
 msgstr "Eintrag bearbeiten"
 
 #. Default: "Export LaTex"
-#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:138
+#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:132
 msgid "zopra_links_edit_latex_export"
 msgstr "LaTex exportieren"
 
 #. Default: "Edit Original"
-#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:124
+#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:118
 msgid "zopra_links_edit_original_language_edit"
 msgstr "Zum Original"
 
 #. Default: "Show Original"
-#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:267
+#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:255
 msgid "zopra_links_edit_original_language_show"
 msgstr "Zum Original"
 
 #. Default: "Generate QR-Code"
-#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:131
+#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:125
 msgid "zopra_links_edit_qrcode"
 msgstr "QR-Code generieren"
 
 #. Default: "Editorial View"
-#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:100
+#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:94
 msgid "zopra_links_edit_show"
 msgstr "Zur Redaktionsansicht"
 
 #. Default: "Show Changes"
-#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:93
+#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:87
 msgid "zopra_links_edit_show_diff"
 msgstr "Änderungen zeigen"
 
 #. Default: "Special View"
-#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:107
+#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:101
 msgid "zopra_links_edit_show_special"
 msgstr "Zur Spezialansicht"
 
 #. Default: "Edit Translation"
-#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:114
+#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:108
 msgid "zopra_links_edit_translation_edit"
 msgstr "Zur Übersetzung"
 
 #. Default: "Show Translation"
-#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:257
+#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:245
 msgid "zopra_links_edit_translation_show"
 msgstr "Zur Übersetzung"
 
@@ -447,12 +455,57 @@ msgid "zopra_release_heading"
 msgstr "Freigabe"
 
 #. Default: "Chosen criteria:"
-#: ./skins/zopra_core_general/zopra_table_search_result.pt:83
+#: ./skins/zopra_core_general/zopra_table_search_result.pt:82
 msgid "zopra_search_criteria"
 msgstr "Ausgewählte Kriterien:"
 
+#. Default: "Search"
+#: ./skins/zopra_core_general/zopra_table_search_form.cpt:58
+msgid "zopra_search_heading"
+msgstr "Suche"
+
+#. Default: "Visible Columns:"
+#: ./skins/zopra_core_general/zopra_table_search_result.pt:206
+msgid "zopra_search_result_cols"
+msgstr "Anzuzeigende Spalten:"
+
+#. Default: "Number of entries:"
+#: ./skins/zopra_core_general/zopra_table_search_result.pt:240
+msgid "zopra_search_result_count"
+msgstr "Anzahl:"
+
+#. Default: "delete"
+#: ./skins/zopra_core_general/zopra_table_search_result.pt:195
+msgid "zopra_search_result_delete"
+msgstr "löschen"
+
+#. Default: "edit"
+#: ./skins/zopra_core_general/zopra_table_search_result.pt:166
+msgid "zopra_search_result_edit"
+msgstr "bearbeiten"
+
+#. Default: "Export:"
+#: ./skins/zopra_core_general/zopra_table_search_result.pt:253
+msgid "zopra_search_result_export"
+msgstr "Export:"
+
+#. Default: "Entries:"
+#: ./skins/zopra_core_general/zopra_table_search_result.pt:131
+msgid "zopra_search_result_result_range"
+msgstr "Anzeige Einträge:"
+
+#. Default: "show"
+#: ./skins/zopra_core_general/zopra_table_search_result.pt:158
+msgid "zopra_search_result_show"
+msgstr "anzeigen"
+
+#. Default: "Order by:"
+#: ./skins/zopra_core_general/zopra_table_search_result.pt:223
+msgid "zopra_search_result_sorting"
+msgstr "Sortierung:"
+
 #. Default: "Search Results"
-#: ./skins/zopra_core_general/zopra_table_search_result.pt:77
+#: ./skins/zopra_core_general/zopra_table_search_result.pt:72
 msgid "zopra_search_results_heading"
 msgstr "Suchergebnisse"
 

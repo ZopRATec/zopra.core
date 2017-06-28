@@ -19,8 +19,11 @@
                tal:condition="entries">
             <br />
             <h3 tal:content="python: tobj.getLabel()"></h3>
-            <a tal:attributes="href python: manager.absolute_url() + '/zopra_table_multiconfirm_form?table=' + table"><span style="color: red">*NEU*</span>Mehrfachfreigabe</a>
-            <table id="result_tab">
+            <a tal:attributes="href python: manager.absolute_url() + '/zopra_table_multiconfirm_form?table=' + table">
+                <span style="color: red">*NEU*</span>
+                <span>Mehrfachfreigabe</span>
+            </a>
+            <table id="result_tab" class="zopra-table">
               <tr>
                 <th>Name</th>
                 <th>Diff</th>
@@ -29,12 +32,17 @@
               <tr tal:repeat="entry entries">
                 <td tal:content="python: manager.getLabelString(table, None, entry)"></td>
                 <td>
-                  <tal:block content="python: ', '.join(manager.getDiffLabels(table, entry))">
-                  </tal:block>
-                  <a tal:attributes="href python: manager.absolute_url() + '/zopra_manager_show_log?entryid=%s&table=%s' % (entry['autoid'], table)">(Details)</a>
+                  <tal:block content="python: ', '.join(manager.getDiffLabels(table, entry))"></tal:block>
+                  <a class="icon-zopra-show"
+                     tal:attributes="href python: manager.absolute_url() + '/zopra_manager_show_log?entryid=%s&table=%s' % (entry['autoid'], table)">
+                     Details
+                  </a>
                 </td>
                 <td>
-                  <a tal:attributes="href python: manager.absolute_url() + '/zopra_table_edit_form?autoid=%s&table=%s' % (entry['autoid'], table)">&raquo;zur Freigabe</a>
+                  <a class="icon-zopra-release"
+                     tal:attributes="href python: manager.absolute_url() + '/zopra_table_edit_form?autoid=%s&table=%s' % (entry['autoid'], table)">
+                      zur Einzel&shy;freigabe
+                  </a>
                 </td>
               </tr>
             </table>

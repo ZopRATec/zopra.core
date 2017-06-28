@@ -3,7 +3,7 @@
 
 <body>
 <tal:comment tal:replace="nothing">
-
+unused special display for search pages with reduced functionality (only single select). OBSOLETE!
 </tal:comment>
 
 <metal:widget_selector define-macro="widget_selector">
@@ -35,7 +35,7 @@
   <input type="text"
          size="40"
          tal:attributes="value python: ('%.2f' % attr_value).replace('.', ',');
-		                 name attr_name; id attr_name"
+                         name attr_name; id attr_name"
     />
 </metal:widget_currency>
 
