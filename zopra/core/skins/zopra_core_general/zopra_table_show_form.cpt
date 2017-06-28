@@ -16,7 +16,7 @@
     <tal:block tal:define="errors options/state/getErrors;
                  table request/table;
                  tobj python: here.tableHandler[table];
-                 coltypes python:tobj.getColumnDefs();
+                 coltypes python:tobj.getColumnDefs(edit_tracking = True);
                  fieldsets python:here.getLayoutInfo(table, 'show');
                  autoid request/autoid;
                  entry python:tobj.getEntry(autoid);
