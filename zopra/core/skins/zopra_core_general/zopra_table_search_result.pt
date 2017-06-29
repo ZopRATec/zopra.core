@@ -141,7 +141,7 @@
                     <th></th><th></th>
                     <th tal:condition="links"
                         tal:repeat="link links">
-                      <span tal:content="link/label|nothing">Link</span>
+                      <span i18n:translate="" tal:content="structure link/label|nothing">Link</span>
                         </th>
                     <th tal:repeat="attr_name cols">
                         <span i18n:translate="" tal:replace="python: coltypes.get(attr_name, {}).get('LABEL','')">attributename</span>
@@ -175,8 +175,9 @@
                                tal:attributes="href python: context.absolute_url() + '/' + urlpart;
                                                class iconclass">
                                <span class="show-for-sr"
-                                     omit-tag="not:iconclass"
-                                     tal:content="label">
+                                     tal:omit-tag="not:iconclass"
+                                     tal:content="structure label"
+                                     i18n:translate="">
                                    Link
                                </span>
                             </a>
