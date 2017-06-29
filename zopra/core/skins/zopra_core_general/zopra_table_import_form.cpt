@@ -29,10 +29,10 @@
             method="post"
             enctype="multipart/form-data"
             tal:define="errors options/state/getErrors;
-                     table request/table;
-                     tobj python: here.tableHandler[table];
-                     coltypes python:tobj.getColumnDefs(True);
-                     cols python:coltypes.keys();"
+                        table request/table;
+                        tobj python: here.tableHandler[table];
+                        coltypes python:tobj.getColumnDefs(True);
+                        cols python:coltypes.keys();"
             tal:attributes="action string:${here/getId}/${template/getId}">
 
         <h1 i18n:translate="" tal:content="python: 'Import ' + tobj.getLabel()"></h1>
