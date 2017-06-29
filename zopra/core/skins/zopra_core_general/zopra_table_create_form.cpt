@@ -27,7 +27,7 @@
                            entry python: request.get('autoid') and tobj.getEntry(request.get('autoid')) or here.getDefaultCreateValues(table);
                            required python: here.getGenericConfig(table).get('required',[]);
                            create_permitted python: here.getPermissionInfo(table, 'table_create')">
-        <tal:block tal:condition="python: not created_permitted">
+        <tal:block tal:condition="python: not create_permitted">
             <tal:block replace="context/raiseUnauthorized"></tal:block>
         </tal:block>
         <h1 class="documentFirstHeading"
@@ -43,15 +43,17 @@
               tal:attributes="action string:${here/absolute_url}/${template/getId}" >
             <tal:block tal:define="show_additional python: not here.doesTranslations(table) or entry.get('language') == 'de'"
                      tal:repeat="fieldset fieldsets">
-                <fieldset id="addFieldset"
-                         tal:define="title python: fieldset.get('label') or fieldset.get('id');
-                                     add_macro python: 'additional_%s_%s' % (table, fieldset.get('id') or fieldset.get('label'));
+                <fieldset class="addFieldset"
+                         tal:define="id python: fieldset.get('id') or fieldset.get('label');
+                                     label python: fieldset.get('label') or fieldset.get('id');
+                                     add_macro python: 'additional_%s_%s' % (table, id);
                                      add_path python: 'zopra_table_create_additional_%s' % here.meta_type;
                                      add_check python: 'zopra_table_create_has_additional_%s' % here.meta_type;
-                                     add_checked python: exists(add_check) and getattr(here, add_check)(fieldset.get('id') or fieldset.get('label'), table, entry, request);
+                                     add_checked python: exists(add_check) and getattr(here, add_check)(id, table, entry, request);
                                      add_hascontent python: not exists(add_check) or add_checked"
-                         tal:condition="python: fieldset.get('fields') or (exists('here/?add_path/macros/?add_macro') and add_hascontent)">
-                    <legend i18n:translate="" tal:attributes="id python:fieldset.get('id') or fieldset.get('label')" tal:content="title">
+                         tal:condition="python: fieldset.get('fields') or (exists('here/?add_path/macros/?add_macro') and add_hascontent)"
+                         tal:attributes="id string:fieldset_${id}">
+                    <legend i18n:translate="" tal:content="label" i18n:translate="">
                         Data fields
                     </legend>
                     <tal:block tal:define="sortables python: fieldset.get('sortables', []);
@@ -74,7 +76,8 @@
                             </div>
                         </div>
                     </tal:block>
-                    <tal:repeatfields condition="python: 'repeatfields' in fieldset.keys()">
+                    <tal:repeatfields tal:define="the_start repeat/fieldset/start;"
+                                      condition="python: 'repeatfields' in fieldset.keys() and the_start">
                         <div class="row">
                             <div class="contentSlot">
                                 <div class="field">
@@ -106,7 +109,7 @@
                                                         clone.data('repeat-field-number', i);
                                                         clone.attr('id', 'repeatItem_' + i);
                                                         clone.css("display", "none");
-                                                        $('#addFieldset').append(clone);
+                                                        $($('.addFieldset')[0]).append(clone);
                                                         clone.slideDown("fast");
                                                     }
                                                 } else if (val < currentCount) {
