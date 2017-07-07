@@ -7,16 +7,12 @@
 </tal:comment>
 
 <metal:block metal:define-macro="buttons_edit">
-    <div class="formControlsZopRA"
-             tal:define="process_creation request/process_creation|nothing;">
-
         <input class="context"
                type="submit"
                name="form.button.Save"
                value="Save"
                  i18n:attributes="value"
         />
-
         <input class="standalone"
                onclick="history.back(-1)"
                type="button"
@@ -25,7 +21,6 @@
                i18n:attributes="value"
                tal:condition="not: request/origid|nothing"
         />
-
         <input class="standalone"
                onclick="top.close()"
                type="button"
@@ -34,7 +29,6 @@
                i18n:attributes="value"
                tal:condition="request/origid|nothing"
         />
-
         <input tal:condition="python: context.doesTranslations(table) and not entry.get('istranslationof') and not entry.get('hastranslation')"
                class="standalone"
                type="submit"
@@ -54,7 +48,6 @@
                    i18n:attributes="value"
             />
         </tal:block>
-
         <input tal:condition="python: context.doesWorkingCopies(table) and entry.get('iscopyof') and user.has_role(('ZopRAReviewer'), here)"
                class="standalone"
                type="submit"
@@ -62,7 +55,6 @@
                value="Release"
                 i18n:attributes="value"
         />
-
         <tal:block tal:condition="python: context.doesWorkflows(table) and entry.get('state')">
             <tal:block tal:define="infos python: context.getStateTransferInfo(table, entry)">
                 <input tal:repeat="info infos"
@@ -75,13 +67,9 @@
                 />
             </tal:block>
         </tal:block>
-
-    </div>
-
-
 </metal:block>
 
-<metal:block metal:define-macro="links_edit" i18n:domain="zopra">
+<metal:block metal:define-macro="links_edit">
     <div class="button-group">
         <tal:block tal:condition="python: context.doesWorkingCopies(table) and entry.get('iscopyof') and user.has_role('ZopRAReviewer', here)">
             <a class="button  small"
@@ -146,27 +134,21 @@
 </metal:block>
 
 <metal:block metal:define-macro="buttons_search">
-    <div class="formControlsZopRA">
-
         <input class="context"
                type="submit"
                name="form.button.Search"
                value="Search"
                i18n:attributes="value"
         />
-
         <input class="standalone"
                type="submit"
                name="form.button.Cancel"
                value="Back"
                i18n:attributes="value"
         />
-
-    </div>
 </metal:block>
 
 <metal:block metal:define-macro="buttons_search_result">
-    <div class="formControlsZopRA">
         <input class="context"
                type="submit"
                name="form.button.Configure"
@@ -180,33 +162,9 @@
                value="Back"
                i18n:attributes="value"
         />
-    </div>
-</metal:block>
-
-<metal:block metal:define-macro="buttons_show">
-    <span class="formControlsZopRA">
-
-        <input class="standalone"
-               onclick="history.back(-1)"
-               type="button"
-               name="form.button.Cancel"
-               value="Back"
-               i18n:attributes="value"
-               tal:condition="not: request/origid|nothing"
-        />
-        <input class="standalone"
-               onclick="top.close()"
-               type="button"
-               name="form.button.Close"
-               value="Close"
-               i18n:attributes="value"
-               tal:condition="request/origid|nothing"
-        />
-    </span>
 </metal:block>
 
 <metal:block metal:define-macro="buttons_add">
-    <div class="formControlsZopRA">
         <input class="context"
                type="submit"
                name="form.button.Save"
@@ -229,10 +187,28 @@
                i18n:attributes="value"
                tal:condition="request/origid|nothing"
         />
-    </div>
 </metal:block>
 
-<metal:block metal:define-macro="links_show" i18n:domain="zopra">
+<metal:block metal:define-macro="buttons_show">
+        <input class="standalone"
+               onclick="history.back(-1)"
+               type="button"
+               name="form.button.Cancel"
+               value="Back"
+               i18n:attributes="value"
+               tal:condition="not: request/origid|nothing"
+        />
+        <input class="standalone"
+               onclick="top.close()"
+               type="button"
+               name="form.button.Close"
+               value="Close"
+               i18n:attributes="value"
+               tal:condition="request/origid|nothing"
+        />
+</metal:block>
+
+<metal:block metal:define-macro="links_show">
     <div class="button-group">
         <tal:block tal:condition="python:hasattr(here, 'zopra_table_show_form_'+table)">
             <a class="button"
