@@ -52,8 +52,8 @@
                                      add_checked python: exists(add_check) and getattr(here, add_check)(id, table, entry, request);
                                      add_hascontent python: not exists(add_check) or add_checked"
                          tal:condition="python: fieldset.get('fields') or (exists('here/?add_path/macros/?add_macro') and add_hascontent)"
-                         tal:attributes="id string:fieldset_${id}">
-                    <legend i18n:translate="" tal:content="label" i18n:translate="">
+                         tal:attributes="id id">
+                    <legend i18n:translate="" tal:content="label">
                         Data fields
                     </legend>
                     <tal:block tal:define="sortables python: fieldset.get('sortables', []);
@@ -169,7 +169,7 @@
                 </fieldset>
             </tal:block>
 
-            <div class="formControls">
+            <div class="formControls formControlsZopRA">
                 <div class="formPanel">
                     <div class="row">
                         <div class="contentSlot">

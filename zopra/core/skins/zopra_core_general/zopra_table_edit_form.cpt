@@ -69,12 +69,14 @@
             <tal:block tal:define="show_additional python: not here.doesTranslations(table) or entry.get('language') == 'de'"
                      tal:repeat="fieldset fieldsets">
                 <fieldset tal:define="title python: fieldset.get('label') or fieldset.get('id');
-                                      add_macro python: 'additional_%s_%s' % (table, fieldset.get('id') or fieldset.get('label'));
+                                      id python: fieldset.get('id') or fieldset.get('label');
+                                      add_macro python: 'additional_%s_%s' % (table, id);
                                       add_path python: 'zopra_table_edit_additional_%s' % here.meta_type;
                                       add_check python: 'zopra_table_edit_has_additional_%s' % here.meta_type;
-                                      add_hascontent python: not hasattr(here, add_check) or getattr(here, add_check)(fieldset.get('id') or fieldset.get('label'), table, entry, request);"
-                          tal:condition="python: fieldset.get('fields') or (exists('here/?add_path/macros/?add_macro') and add_hascontent)">
-                    <legend i18n:translate="" tal:attributes="id python:fieldset.get('id') or fieldset.get('label')" tal:content="title">
+                                      add_hascontent python: not hasattr(here, add_check) or getattr(here, add_check)(id, table, entry, request);"
+                          tal:condition="python: fieldset.get('fields') or (exists('here/?add_path/macros/?add_macro') and add_hascontent)"
+                          tal:attributes="id id">
+                    <legend i18n:translate="" tal:content="title">
                         Data fields
                     </legend>
                     <tal:block tal:define="sortables python: fieldset.get('sortables', [])"
@@ -109,7 +111,7 @@
                     </tal:condition>
                 </fieldset>
             </tal:block>
-            <div class="formControls">
+            <div class="formControls formControlsZopRA">
                 <div class="formPanel">
                     <div class="row">
                         <div class="contentSlot">

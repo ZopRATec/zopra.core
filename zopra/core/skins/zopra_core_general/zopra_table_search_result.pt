@@ -73,9 +73,10 @@
                 <span i18n:translate="" tal:content="python: tobj.getLabel()">TableX</span>
         </h1>
         <form id="search_result_form zopra-form"
-              action="string:${here/absolute_url}/${template/getId}" method="post"
-              class="zopra-form"
-              tal:define="global quotedcons string:;">
+              tal:define="global quotedcons string:;"
+              tal:attributes="action string:${here/absolute_url}/${template/getId}"
+              method="post"
+              class="zopra-form">
             <tal:block tal:condition="python: context.filterRealSearchConstraints(cons)">
                 <!-- ausgewaehlte Kriterien (anhand originaler Constraints)-->
                 <div class="formatted">
@@ -215,7 +216,7 @@
                                     tal:attributes="value attr;
                                               selected python: attr in cols"
                                     tal:content="python: attr_tupel[0]">
-                                Attributname
+                                Attributename
                             </option>
                         </tal:block>
                     </select>
@@ -232,7 +233,7 @@
                                     tal:attributes="value attr;
                                                     selected python: attr == order[0]"
                                     tal:content="python: attr_tupel[0]">
-                                Attributname
+                                Attributename
                             </option>
                         </tal:block>
                     </select>
@@ -244,7 +245,7 @@
                     <input type="text" name="count" tal:attributes="value count" />
                 </div>
             </div>
-            <div class="formControls">
+            <div class="formControls fromControlsZopRA">
                 <div class="formPanel">
                     <metal:block metal:use-macro="here/zopra_button_link_bar/macros/buttons_search_result" />
                 </div>
@@ -278,7 +279,7 @@
                                                                  value python:cons[cons_key]" />
                     </tal:else>
                     </tal:block>
-                    <div class="formControls">
+                    <div class="formControls formControlsZopRA">
                         <div class="formPanel">
                             <input class="context" type="submit" value="CSV-Export" />
                         </div>

@@ -111,7 +111,7 @@
                     </tal:additional>
                 </fieldset>
             </tal:block>
-            <div class="formControls">
+            <div class="formControls formControlsZopRA">
                 <div class="formPanel">
                     <div class="row">
                         <div class="contentSlot">

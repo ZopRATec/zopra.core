@@ -104,7 +104,7 @@
                     </tal:condition>
                 </fieldset>
             </tal:block>
-            <div class="formControls">
+            <div class="formControls fromControlsZopRA">
                 <div class="formPanel">
                     <div class="row">
                         <div class="contentSlot">
