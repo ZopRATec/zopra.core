@@ -1,9 +1,8 @@
 <tal:comment replace="nothing">
-    Use this, when you want to load additional widgets via Ajax.
-    Additionally there will be posted the autoid (to check if there is a working copy).
+    Use this, when you want to load additional widgets via Ajax (on zopra_table_edit_form).
+    table and autoid need to be in the request (to check if there is a working copy).
     Response Content-type is text/plain to make diazo ignore the content.
 </tal:comment>
-
 <tal:block tal:define="dummy python:context.REQUEST.RESPONSE.setHeader('Content-type', 'text/plain')"></tal:block>
 <tal:if condition="python: int(request.get('checkCopy','0')) == 1">
     <tal:block define="
@@ -11,8 +10,7 @@
         autoid request/autoid;
         tobj python: here.tableHandler[table];
         origentry python: tobj.getEntry(autoid);
-        entry python: here.zopra_forceCopy(table, origentry);
-    ">
+        entry python: here.zopra_forceCopy(table, origentry);">
         <tal:block tal:replace="python:entry['autoid']"></tal:block>
     </tal:block>
 </tal:if>
@@ -23,7 +21,7 @@
         errors python: {};
         table request/table|nothing;
         autoid request/autoid|nothing;
-        label request/label|nothing;
+        macroname request/macroname|nothing;
         tobj python: here.tableHandler[table];
         coltypes python:tobj.getColumnDefs();
         origentry python: tobj.getEntry(autoid);
@@ -33,10 +31,9 @@
         autoid python: entry.get('autoid')#again to get copy;
         required python: here.getGenericConfig(table).get('required',[]);
         edit_lang python: here.doesTranslations(table) and entry.get('language');
-        portal_url here/portal_url;
-        ">
+        portal_url here/portal_url;">
         <tal:condition tal:condition="python: not here.doesTranslations(table) or entry.get('language') == 'de'">
-            <tal:additional tal:define="add_macro python: 'additional_%s_%s' % (table, label);
+            <tal:additional tal:define="add_macro python: 'additional_%s_%s' % (table, macroname);
                                         add_path python: 'zopra_table_edit_additional_%s' % here.meta_type;"
                             tal:condition="exists: here/?add_path/macros/?add_macro">
                 <metal:use metal:use-macro="here/?add_path/macros/?add_macro">
