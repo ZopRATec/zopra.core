@@ -39,3 +39,13 @@ msgstr ""
 
 msgid "Required"
 msgstr ""
+
+# stuff from widget_display-templates (auto-readout with i18ndude did not work):
+msgid "zopra_widget_search_and_concat"
+msgstr ""
+
+msgid "zopra_widget_search_bool"
+msgstr ""
+
+msgid "zopra_widget_search_bool_not"
+msgstr ""
