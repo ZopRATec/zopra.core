@@ -77,7 +77,7 @@ class ListHandler(Folder):
         for list_idx in tmp_obj.list:
             list_        = tmp_obj.list[list_idx]
             list_name    = list_.getName().encode('utf-8')
-            label        = list_.getLabel().encode('utf-8')
+            label        = list_.getLabel()
             translations = list_.getTranslations()
             translist    = []
             if translations:
@@ -130,7 +130,7 @@ class ListHandler(Folder):
                         lobj.notes = notes
 
                     if column.getNoteslabel():
-                        lobj.noteslabel = column.getNoteslabel().encode('utf-8')
+                        lobj.noteslabel = column.getNoteslabel()
 
                     if column.getLabelsearch():
                         lobj.labelsearch = True

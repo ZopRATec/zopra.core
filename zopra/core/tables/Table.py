@@ -157,7 +157,7 @@ class Table(SimpleItem, PropertyManager):
         self.treeTemplate = None
         self.ebase        = ebase
         self.do_cache     = True
-        self.label        = str(label)
+        self.label        = label
 
 
     def getManager(self):
