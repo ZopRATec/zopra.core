@@ -214,6 +214,10 @@
 </metal:widget_multilist>
 
 <metal:widget_hierarchylist define-macro="widget_hierarchylist">
+<tal:comment tal:replace="nothing">
+- this only allows selection of one node (any node on any level, but only one), value is always only one hidden field
+-> use GenericManager.getHierarchyListConfig(table, attribute) for the config and allow different settings
+</tal:comment>
     <metal:block metal:use-macro="python:path('here/zopra_widget_edit_display/macros/widget_label')" />
     <tal:block tal:define="lobj python:here.listHandler.getList(table, attr_name);
             entries python:lobj.getEntries();
@@ -235,10 +239,6 @@
                     <br/>
                 </div>
             </div>
-            <div class="loading">
-                <img tal:attributes="src string:${portal_url}/autoupdate-widget/loading.gif"  alt="Loading..."/>Bearbeite
-                ihre Anfrage. Bitte warten...
-            </div>
         </div>
     </tal:block>
 </metal:widget_hierarchylist>
@@ -250,21 +250,19 @@
 </tal:comment>
 
 <metal:block define-macro="widget_hierarchylist_select">
-    <metal:block metal:use-macro="python:path('here/zopra_widget_edit_display/macros/widget_label')" />
     <tal:block tal:define="items python:lobj.getEntriesByParent(parent);
-            hierarchy_list hierarchy_list|python:[];
-            onclick_function string:hierarchylist_select_option(%s,'${attr_name}','${table}',this);"
-             tal:condition="python:len(items)">
+                           hierarchy_list hierarchy_list|python:[];"
+               tal:condition="python:len(items)">
         <select class="single"
-                 tal:define = "itemname python:'hierarchylist_selection'"
-                 tal:attributes="name itemname">
-            <option tal:attributes="onclick python: onclick_function % ('\'\'')" value="0">-auswählen-</option>
+                name="hierarchylist_selection"
+                tal:attributes="onchange string:hierarchylist_select_option('${attr_name}','${table}',this);;;">
+            <option value="0" i18n:translate="zopra_widget_choose">-auswählen-</option>
             <tal:block tal:repeat="item items">
                 <option tal:content="item/value"
-                         tal:attributes="onclick python: onclick_function % item['autoid'];
-                                value item/autoid;
-                                selected python: item['autoid'] in hierarchy_list and 'selected' or nothing"
-                ></option>
+                        tal:attributes="value item/autoid;
+                                        selected python: item['autoid'] in hierarchy_list and 'selected' or nothing">
+                    one option
+                </option>
             </tal:block>
         </select>
     </tal:block>

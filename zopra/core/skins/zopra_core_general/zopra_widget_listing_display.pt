@@ -97,25 +97,19 @@
 </metal:widget_multilist>
 
 <metal:widget_hierarchylist define-macro="widget_hierarchylist">
-<!-- might need to add a tal-block for style=='line' that does not use ul/li -->
-        <ul tal:define="lobj python:here.listHandler.getList(table, attr_name);">
-            <tal:block tal:repeat="onevalue attr_value">
-                <!-- should catch the parent nodes here and display them too in one line with '>' as divider -->
-                <li>
-                    <tal:block tal:repeat="item_id python:lobj.getHierarchyListAncestors(onevalue)">
-                    <!-- filter out 0-->
-                        <tal:block tal:condition="python:item_id != 0">
-                            <!-- identation -->
-                            <span tal:define="number repeat/item_id/index;
-                                              indent python:'&nbsp;'*(number-1);"
-                                  tal:content="structure indent">
-                            </span>> <span tal:content="python:lobj.getValueByAutoid(item_id)">Value</span>
-                            <br/>
-                        </tal:block>
-                    </tal:block>
-                </li>
+    <ul tal:define="lobj python:here.listHandler.getList(table, attr_name);">
+        <li tal:repeat="onevalue attr_value">
+            <tal:block tal:repeat="item_id python:lobj.getHierarchyListAncestors(onevalue)[1:]">
+                <div tal:condition="python:item_id != 0">
+                    <span tal:define="number repeat/item_id/index;
+                                      indent python:'&nbsp;&nbsp;'*(number);"
+                          tal:content="structure indent">
+                    </span>
+                    <span tal:content="python: '> ' + lobj.getValueByAutoid(item_id)">value</span>
+                </div>
             </tal:block>
-        </ul>
+        </li>
+    </ul>
 </metal:widget_hierarchylist>
 
 </body>

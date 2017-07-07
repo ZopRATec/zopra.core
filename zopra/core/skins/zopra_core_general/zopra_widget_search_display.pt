@@ -137,47 +137,43 @@
 </metal:widget_multilist>
 
 <metal:widget_hierarchylist define-macro="widget_hierarchylist">
-<tal:comment tal:replace="nothing">
-    hierarchy list selection for one single value. This is not multivalued yet!
-
-    Original goal: user should be able to select a node (in form of a combobox-item) for each hierarchy to enable the
-    next combobox on-change -> Done
-    and select multiple leaf items via "Add"-Button (or simply on selection of a leaf?), all via JS. -> Not done.
-    The selected items are shown separately (with all their parent nodes in that form:
-    parenta > parentb > parentc > leaf1
-    parenta > parentb > parentd > leaf4
-    parente > parentf > leaf7
-    parentg > leaf9
-    -> not done.
-    There should be a way (checkbox?) to remove selected items again. -> not done
-    Double-Selection needs to be detected (and then nothing done). -> not done
-    The node-structure could be delivered by the hierarchy-list-object (look into HierarchyList) -> done
-</tal:comment>
-<tal:block tal:define="lobj python:here.listHandler.getList(table, attr_name);
-            entries python:lobj.getEntries();
-            global parent python:0;
-            global level python:0;
-            do_sort attr_sort|nothing;
-            dummy python: do_sort and entries.sort(key=lambda item: item['value']);">
+    <tal:comment tal:replace="nothing">
+Hierarchy list selection for one single value.
+TODO: make multivalued
+-> use GenericManager.getHierarchyListConfig(table, attribute) for the config
+It seems search already allows selecting one non-leaf-node and search for all leafs of the tree-part that starts with the chosen node.
+User should be able to select a node (in form of a combobox-item) for each hierarchy to enable the
+next combobox on-change.
+TODO: User can select multiple leaf items via "Add"-Button (or simply on selection of a leaf?), all via JS.
+TODO: The selected items are shown separately with all their parent nodes in that form:
+parenta > parentb > parentc > leaf1
+parenta > parentb > parentd > leaf4
+parente > parentf > leaf7
+parentg > leaf9
+TODO: There should be a way (checkbox?) to remove selected items again.
+TODO: Double-Selection needs to be detected (and then nothing done).
+    </tal:comment>
+    <tal:block tal:define="lobj python:here.listHandler.getList(table, attr_name);
+                entries python:lobj.getEntries();
+                global parent python:0;
+                global level python:0;
+                do_sort attr_sort|nothing;
+                dummy python: do_sort and entries.sort(key=lambda item: item['value']);">
         <script type="text/javascript" tal:attributes="src string:${portal_url}/hierarchylist.js"></script>
         <div tal:attributes="id python: 'hierarchylist_' + attr_name">
             <div class="container">
                 <input type="hidden" name="zopra_attr_present:list"
                          tal:attributes="value attr_name" />
-                    <input type="hidden"
-                        tal:attributes="value python:attr_value and attr_value[0] or nothing;
-                            name python:attr_name+':list';
-                            id attr_name;"
-                    />
-                            <div tal:define = "hierarchy_list python:lobj.getHierarchyListAncestors( attr_value and attr_value[0] or 0);"
+                <input type="hidden"
+                    tal:attributes="value python:attr_value and attr_value[0] or nothing;
+                        name python:attr_name+':list:int';
+                        id attr_name;"
+                />
+                <div tal:define = "hierarchy_list python:lobj.getHierarchyListAncestors( attr_value and attr_value[0] or 0);"
                      tal:repeat = "parent hierarchy_list">
-                <metal:block metal:use-macro="here/zopra_widget_edit_display/macros/widget_hierarchylist_select" />
-                <br/>
-            </div>
-            </div>
-            <div class="loading" style="visibility:collapse;">
-                <img tal:attributes="src string:${portal_url}/autoupdate-widget/loading.gif"  alt="Loading..."/>
-                Bearbeite ihre Anfrage. Bitte warten...
+                    <metal:block metal:use-macro="here/zopra_widget_edit_display/macros/widget_hierarchylist_select" />
+                    <br/>
+                </div>
             </div>
         </div>
     </tal:block>

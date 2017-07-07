@@ -111,52 +111,27 @@
                           dummy python: do_sort and not isinstance(textvalues, (unicode, str)) and textvalues.sort();
                           onestring python: isinstance(textvalues, (unicode, str)) and textvalues or '<br />'.join(textvalues or []);"
             tal:content="structure onestring">
-            Content
+            content
         </span>
     </tal:block>
 </metal:widget_multilist>
 
 <metal:widget_hierarchylist define-macro="widget_hierarchylist" tal:define="lobj python:here.listHandler.getList(table, attr_name);">
-<!-- might need to add a tal-block for style=='line' / style=='block' that does not use ul/li -->
-    <!--if it is a list -->
-    <tal:block tal:condition ="python: attr_value and len(attr_value) > 1">
-        <ul>
-            <tal:block tal:repeat="onevalue attr_value">
-                <!-- should catch the parent nodes here and display them too in one line with '>' as divider -->
-                <li>
-                    <tal:block tal:repeat="item_id python:lobj.getHierarchyListAncestors(onevalue)">
-                    <!-- filter out 0-->
-                        <tal:block tal:condition="python:item_id != 0">
-                            <!-- identation -->
-                            <span
-                                tal:define="number repeat/item_id/index;
-                                            indent python:'&nbsp;'*(number-1);"
-                                tal:content="structure indent">
-                            </span>> <span tal:content="python:lobj.getValueByAutoid(item_id)">Value</span>
-                            <br/>
-                        </tal:block>
-                    </tal:block>
-                </li>
-            </tal:block>
-        </ul>
-    </tal:block>
-    <!-- if it is a single value-->
-    <tal:block tal:condition ="python: not attr_value or len(attr_value) == 1">
-        <!-- should catch the parent nodes here and display them too in one line with '>' as divider -->
-        <tal:block tal:repeat="item_id python:lobj.getHierarchyListAncestors(attr_value[0])">
-        <!-- filter out 0-->
-            <tal:block tal:condition="python:item_id != 0">
-                <!-- identation -->
-                <span
-                    tal:define="number repeat/item_id/index;
-                                indent python:'&nbsp;'*(number-1);"
-                    tal:content="structure indent">
-                </span>> <span tal:content="python:lobj.getValueByAutoid(item_id)">Value</span>
-                <br/>
-            </tal:block>
-        </tal:block>
-    </tal:block>
-
+<tal:comment tal:replace="nothing">
+- might need to add a tal-block for style=='line' / style=='block' that does not use ul/li
+- display uses multiple lines per entry, could be simplified to "level0 > level1 > leaf1" per line
+</tal:comment>
+    <ul tal:condition ="python: attr_value">
+        <li tal:repeat="onevalue attr_value">
+            <div tal:repeat="item_id python:lobj.getHierarchyListAncestors(onevalue)[1:]">
+                <span tal:define="number repeat/item_id/index;
+                                  indent python:'&nbsp;&nbsp;'*(number);"
+                      tal:content="structure indent">
+                </span>
+                <span tal:content="python: '> ' + lobj.getValueByAutoid(item_id)">value</span>
+            </div>
+        </li>
+    </ul>
 </metal:widget_hierarchylist>
 
 </body>
