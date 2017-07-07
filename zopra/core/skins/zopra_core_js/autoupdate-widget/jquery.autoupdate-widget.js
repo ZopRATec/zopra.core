@@ -24,12 +24,12 @@
         var autoid = parseInt($("input[name='autoid']").val());
 
         if (load_once == false) { // register once
-            $("a.autoupdate_popup").live("click", function(e) {
+            $(this).on("click", "a.autoupdate_popup", function(e) {
                 var link = $(this);
                 var widget = $(this).parents('div.field');
-                // the fieldset is not the direct parent in the rendered version, but a super-parent, but it works anyway?
+                // the fieldset is not the direct parent in the rendered version, but a super-parent
                 var fieldset = widget.parents('fieldset');
-                var label = fieldset.children('legend').html();
+                var macroname = fieldset.attr('id');
                 var wnd = window.open("zopra_popup?url="+encodeURIComponent(link.attr('href')),"","width=910,height=500");
 
                 jQuery.fn.findAndSelf = function(selector) {
@@ -75,20 +75,17 @@
                                         type	: "GET",
                                         cache	: false,
                                         url		: "zopra_widget_ajax",
-                                        data	: { table: table,
-                                                    autoid: autoid,
-                                                    label: label },
+                                        data	: { table:     table,
+                                                    autoid:    autoid,
+                                                    macroname: macroname },
                                         success	: function(html) {
                                             var labelofWidget = widget.children("label").html();
                                              // since the macro returns potentially several widgets, we have to cut out the right one
-                                            var reduced2Widget = $(html).findAndSelf('div.field').filter(function() { return $(this).children('label').html() == labelofWidget; });
+                                            var reduced2WidgetChildren = $(html).findAndSelf('div.field').filter(function() { return $(this).children('label').html() == labelofWidget; }).children();
                                             // replace old widget with new once
-                                            var index = widget.index();
-                                            widget.replaceWith(reduced2Widget);
-                                            new_widget = fieldset.children().get(index);
-                                            // this seems too general. we need to use new_widget instead fieldset (or not do this at all?)
-                                            fieldset.find("a").addClass('autoupdate_popup');
-                                            widget = new_widget;
+                                            widget.empty().append(reduced2WidgetChildren);
+                                            // maybe we can just assume all links have been outfitted with autoupdate_popup and throw this away?
+                                            widget.find("a").addClass('autoupdate_popup');
                                         }
                                     });
 
