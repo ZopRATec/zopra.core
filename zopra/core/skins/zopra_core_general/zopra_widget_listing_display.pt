@@ -66,7 +66,7 @@
                         notes python: lobj.notes;">
             <tal:block tal:repeat="onevalue attr_value">
                 <li>
-                    <span tal:content="python:lobj.getValueByAutoid(onevalue)">Value</span>
+                    <span tal:content="python:lobj.getValueByAutoid(onevalue)">value</span>
                     <tal:block tal:condition="python: notes and selnotes"
                                tal:define="notesname python: attr_name + 'notes' + str(onevalue);">
                         <tal:block tal:condition="python: isinstance(notes, (unicode, str))">
@@ -74,11 +74,11 @@
                                               notesvalue python: notesobj.getValueByAutoid(selnotes.get(notesname));"
                                   tal:condition="notesvalue"
                                   tal:content="python: '(%s)' % notesvalue">
-                                Notesvalue
+                                notes value
                             </span>
                         </tal:block>
                         <tal:block tal:condition="python: isinstance(notes, bool) and selnotes.get(notesname)">
-                            (<span tal:content="python: selnotes.get(notesname)">Textfeld</span>)
+                            (<span tal:content="python: selnotes.get(notesname)">notes content</span>)
                         </tal:block>
                     </tal:block>
                 </li>

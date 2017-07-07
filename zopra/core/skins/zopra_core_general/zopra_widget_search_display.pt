@@ -54,32 +54,30 @@
                data-sfarp="*"
          tal:attributes="value attr_value; name python: attr_prefix + attr_name; id python: attr_prefix + attr_name;"
         />
-        </metal:widget_date>
+</metal:widget_date>
 
-        <metal:widget_bool define-macro="widget_bool">
-            hat/ist
-                <input type="checkbox"
-                       value="1"
-         tal:attributes="checked python:bool(attr_value) and attr_value == 1;
-        name python: attr_prefix + attr_name;
-        id python: attr_prefix + attr_name;
-        class python: attr_prefix + attr_name;"
-/>
-    hat/ist nicht
+<metal:widget_bool define-macro="widget_bool">
+    <span i18n:translate="zopra_widget_search_bool">hat/ist</span>
+    <input type="checkbox"
+           value="1"
+           tal:attributes="checked python:bool(attr_value) and attr_value == 1;
+                           name python: attr_prefix + attr_name;
+                           id python: attr_prefix + attr_name;
+                           class python: attr_prefix + attr_name;" />
+    <span i18n:translate="zopra_widget_search_bool_not">hat/ist nicht</span>
     <input type="checkbox"
            value="NULL"
-             tal:attributes="checked python:bool(attr_value) and attr_value == 'NULL';
-                    name python: attr_prefix + attr_name;
-            id python: attr_prefix + attr_name + 'not';
-            class python: attr_prefix + attr_name;"
-    />
+           tal:attributes="checked python:bool(attr_value) and attr_value == 'NULL';
+                           name python: attr_prefix + attr_name;
+                           id python: attr_prefix + attr_name + 'not';
+                           class python: attr_prefix + attr_name;" />
 </metal:widget_bool>
 
 <metal:widget_memo define-macro="widget_memo">
     <input type="text"
            size="40"
            data-sfarp="*"
-             tal:attributes="value attr_value; name python: attr_prefix + attr_name; id python: attr_prefix + attr_name"
+           tal:attributes="value attr_value; name python: attr_prefix + attr_name; id python: attr_prefix + attr_name"
     />
 </metal:widget_memo>
 
@@ -109,31 +107,31 @@
 </metal:widget_singlelist>
 
 <metal:widget_multilist define-macro="widget_multilist">
-<tal:block tal:define="lobj python:here.listHandler.getList(table, attr_name);
-        entries python:lobj.getEntries();
-        do_sort attr_sort|nothing;
-        dummy python: do_sort and entries.sort(key=lambda item: item['value']);
-        fromSinglelist fromSinglelist|nothing;">
-    <tal:block tal:condition="not: fromSinglelist">
-        UND verknüpft:
-        <input type="checkbox"
-               value="1"
-               tal:attributes="name python: attr_prefix + attr_name + '_AND';"/>
-    </tal:block>
-    <select multiple="multiple"
-             tal:attributes="name python:attr_name+':list'; id attr_name">
-        <tal:block tal:repeat="entry entries">
-            <tal:block condition="entry/value">
-                <option tal:attributes="value python: unicode(entry['autoid']);
-                                        selected python:unicode(entry['autoid']) in [unicode(val) for val in attr_value];
-                                        title python: entry['value']"
-                        tal:content="python: entry['value']">
-                    value
-                </option>
-            </tal:block>
+    <tal:block tal:define="lobj python:here.listHandler.getList(table, attr_name);
+                        entries python:lobj.getEntries();
+                        do_sort attr_sort|nothing;
+                        dummy python: do_sort and entries.sort(key=lambda item: item['value']);
+                        fromSinglelist fromSinglelist|nothing;">
+        <tal:block tal:condition="not: fromSinglelist">
+            <span i18n:translate="zopra_widget_search_and_concat">UND verknüpft:</span>
+            <input type="checkbox"
+                   value="1"
+                   tal:attributes="name python: attr_prefix + attr_name + '_AND';"/>
         </tal:block>
-    </select>
-</tal:block>
+        <select multiple="multiple"
+                 tal:attributes="name python:attr_name+':list'; id attr_name">
+            <tal:block tal:repeat="entry entries">
+                <tal:block condition="entry/value">
+                    <option tal:attributes="value python: unicode(entry['autoid']);
+                                            selected python:unicode(entry['autoid']) in [unicode(val) for val in attr_value];
+                                            title python: entry['value']"
+                            tal:content="python: entry['value']">
+                        value
+                    </option>
+                </tal:block>
+            </tal:block>
+        </select>
+    </tal:block>
 </metal:widget_multilist>
 
 <metal:widget_hierarchylist define-macro="widget_hierarchylist">
@@ -165,7 +163,7 @@ TODO: Double-Selection needs to be detected (and then nothing done).
                 <input type="hidden" name="zopra_attr_present:list"
                          tal:attributes="value attr_name" />
                 <input type="hidden"
-                    tal:attributes="value python:attr_value and attr_value[0] or nothing;
+                    tal:attributes="value python:attr_value and attr_value[0] or 0;
                         name python:attr_name+':list:int';
                         id attr_name;"
                 />

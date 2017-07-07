@@ -76,7 +76,7 @@
                         tmp python: do_sort and valstore.sort()">
             <tal:block tal:repeat="onepart valstore">
                 <li>
-                    <span tal:content="python:onepart[0]">Value</span>
+                    <span tal:content="python:onepart[0]">value</span>
                     <tal:block tal:condition="python: notes and selnotes"
                                tal:define="notesname python: attr_name + 'notes' + str(onepart[1]);">
                         <tal:block tal:condition="python: isinstance(notes, (unicode, str))">
@@ -84,11 +84,11 @@
                                               notesvalue python: notesobj.getValueByAutoid(selnotes.get(notesname), lang);"
                                   tal:condition="notesvalue"
                                   tal:content="python: '(%s)' % notesvalue">
-                                Notesvalue
+                                notes value
                             </span>
                         </tal:block>
                         <tal:block tal:condition="python: isinstance(notes, bool) and selnotes.get(notesname)">
-                            (<span tal:content="python: selnotes.get(notesname)">Textfeld</span>)
+                            (<span tal:content="python: selnotes.get(notesname)">notes content</span>)
                         </tal:block>
                     </tal:block>
                 </li>
@@ -102,7 +102,7 @@
                           concatenator concatenator|string:, ;
                           onestring python: isinstance(textvalues, (unicode, str)) and textvalues or concatenator.join(textvalues or []);"
               tal:content="onestring">
-            Content
+            content
         </span>
     </tal:block>
     <tal:block tal:condition="python: style == 'block'">
