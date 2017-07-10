@@ -521,7 +521,7 @@ class TemplateBaseManager(GenericManager):
 
     def getChangeDate(self, table, autoid):
         """get the last change / creation date of the entry with the given autoid"""
-        if not autoid:
+        if not autoid or not table:
             return None
         tobj = self.tableHandler[table]
         root = tobj.getTableNode()
