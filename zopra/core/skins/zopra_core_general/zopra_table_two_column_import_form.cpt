@@ -2,13 +2,12 @@
       lang="en-US"
       metal:use-macro="here/main_template/macros/master"
       i18n:domain="zopra">
-
-  <body>
+<body>
     <tal:comment tal:replace="nothing">
-
+        Two column import (admin only)
     </tal:comment>
 
-    <metal:javascriptslot fill-slot="javascript_head_slot">
+<metal:javascriptslot fill-slot="javascript_head_slot">
     <script language="javascript">
     <!--
         $(document).ready(function() {
@@ -24,101 +23,81 @@
         });
     -->
     </script>
+</metal:javascriptslot>
 
-    </metal:javascriptslot>
+<metal:topslot fill-slot="top_slot">
+    <tal:block tal:define="global isAnon context/@@plone_portal_state/anonymous;"></tal:block>
+</metal:topslot>
 
-      <metal:topslot fill-slot="top_slot">
-          <tal:block tal:define="global isAnon context/@@plone_portal_state/anonymous;"></tal:block>
-      </metal:topslot>
-
-    <metal:main fill-slot="main" tal:define="global importresult nothing;">
-
-      <tal:block tal:condition="isAnon">
+<metal:main fill-slot="main" tal:define="global importresult nothing;">
+    <tal:block tal:condition="isAnon">
         <tal:block replace="context/raiseUnauthorized"></tal:block>
-      </tal:block>
-
-      <ul>
+    </tal:block>
+    <ul>
         <tal:block repeat="error python:path('options/state/getErrors').keys()">
             <li tal:content="python:path('options/state/getErrors').get(error,'')"></li>
         </tal:block>
-      </ul>
-
-      <form name="import_form"
-            method="post"
-            enctype="multipart/form-data"
-            tal:define="errors options/state/getErrors;"
-            tal:attributes="action string:${here/getId}/${template/getId}">
-
+    </ul>
+    <form name="import_form"
+          method="post"
+          enctype="multipart/form-data"
+          tal:define="errors options/state/getErrors;"
+          tal:attributes="action string:${here/getId}/${template/getId}">
         <fieldset>
-
-          <legend i18n:translate="">Zwei-Spalten-Tabellen-Import</legend>
-
-          <div class="field">
-            <label for="table" i18n:translate="">Ziel-Tabelle</label>
-            <div class="formHelp" i18n:translate="">
-            Die Tabelle in welcher die Eintr&auml;ge importiert werden sollen.
-            </div>
-            <select size="1" name="table">
-                <tal:block repeat="tobj python:[here.app.infoapp.tableHandler[key] for key in here.app.infoapp.tableHandler.keys()]">
-                    <option tal:attributes="value tobj/getName;selected python:here.REQUEST.get('table','') == tobj.getName()" tal:content="string:${tobj/getName} (${tobj/getLabel})"> Table-ID</option>
-                </tal:block>
-            </select>
-          </div>
-
-          <div class="field">
-            <label for="file" i18n:translate="">CVS-Datei</label>
-            <div class="formHelp" i18n:translate="">
-                Die Studiengangsdatei (excel) als mit einem Trennzeichen separierten Text. Das zu aktualisierende Attribut wird automatisch erkannt.
+            <legend i18n:translate="zopra_twocol_import_heading">Two Column Import</legend>
+            <div class="field">
+                <label for="table" i18n:translate="zopra_twocol_import_target_label">target table</label>
+                <div class="formHelp" i18n:translate="zopra_twocol_import_target_help">
+                Die Tabelle in welcher die Eintr&auml;ge importiert werden sollen.
+                </div>
+                <select size="1" name="table">
+                    <tal:block repeat="tobj python:[here.app.infoapp.tableHandler[key] for key in here.app.infoapp.tableHandler.keys()]">
+                        <option tal:attributes="value tobj/getName;selected python:here.REQUEST.get('table','') == tobj.getName()" tal:content="string:${tobj/getName} (${tobj/getLabel})"> Table-ID</option>
+                    </tal:block>
+                </select>
             </div>
 
-            <input type="file" name="file" />
-
-          </div>
-
-          <div class="field">
-            <label for="table" i18n:translate="">CVS-Encoding</label>
-            <div class="formHelp" i18n:translate="">
-            In welchem Format wurde die CVS-Datei gespeichert, z.B.: macroman, latin1, utf8.
+            <div class="field">
+                <label for="file" i18n:translate="zopra_twocol_import_file_label">CVS file</label>
+                <div class="formHelp" i18n:translate="zopra_twocol_import_file_help">
+                    The import file (excel) as separated text (tab or semicolon/comma). First column is the autoid, second column is the attribute. The header must contain the attribute name.
+                </div>
+                <input type="file" name="file" />
             </div>
 
-            <input type="text" name="encoding:string:required" id="encoding" tal:attributes="value request/encoding|string:utf8"/>
-
-          </div>
-
-          <div class="field">
-            <label for="delim" i18n:translate="">Trennzeichen</label>
-            <div class="formHelp" i18n:translate="">
-                Standard-Trennzeichen, z.B.: Semikolon, Komma, Tabulator (\t)
+            <div class="field">
+                <label for="table" i18n:translate="zopra_twocol_import_encoding_label">Encoding</label>
+                <div class="formHelp" i18n:translate="encoding_help">
+                    The format of the import file, e.g.: macroman, latin1, utf8.
+                </div>
+                <input type="text" name="encoding:string:required" id="encoding" tal:attributes="value request/encoding|string:utf8"/>
             </div>
 
-            <input type="text" name="delim" tal:attributes="value request/delim|string:;;" />
-
-          </div>
+            <div class="field">
+                <label for="delim" i18n:translate="zopra_twocol_import_delimiter_label">Separator</label>
+                <div class="formHelp" i18n:translate="zopra_twocol_import_delimiter_help">
+                    The delimitor sign used to separate columns, e.g.: Semikolon (;), Komma (,), Tabulator (\t)
+                </div>
+                <input type="text" name="delim" tal:attributes="value request/delim|string:;;" />
+            </div>
         </fieldset>
 
-          <div class="formControls"
-               tal:define="process_creation request/process_creation|nothing;">
-
-            <input class="context"
-                   type="submit"
-                   name="form.button.Save"
-                   value="Save"
-                   i18n:domain="plone"
-                   i18n:attributes="value"
-            />
-
-            <input class="standalone"
-                   type="submit"
-                   name="form.button.Cancel"
-                   value="Cancel"
-                   i18n:attributes="value"
-            />
-
-          </div>
-
-          <input type="hidden" name="form.submitted" value="1" />
-      </form>
-    </metal:main>
-
+        <div class="formControls fromControlsZopRA">
+            <div class="contentPanel">
+                <input class="context"
+                       type="submit"
+                       name="form.button.Save"
+                       value="Save"
+                       i18n:attributes="value" />
+                <input class="context"
+                       type="submit"
+                       name="form.button.Cancel"
+                       value="Cancel"
+                       i18n:attributes="value" />
+            </div>
+        </div>
+        <input type="hidden" name="form.submitted" value="1" />
+    </form>
+</metal:main>
   </body>
 </html>

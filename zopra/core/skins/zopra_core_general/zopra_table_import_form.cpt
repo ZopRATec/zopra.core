@@ -2,92 +2,80 @@
       lang="en-US"
       metal:use-macro="here/main_template/macros/master"
       i18n:domain="zopra">
+<body>
+<tal:comment tal:replace="nothing">
+    Standard import form
+</tal:comment>
 
-  <body>
-    <tal:comment tal:replace="nothing">
+<metal:topslot fill-slot="top_slot">
+    <tal:block tal:define="global isAnon context/@@plone_portal_state/anonymous;"></tal:block>
+</metal:topslot>
 
-    </tal:comment>
+<metal:main fill-slot="main" tal:define="global importresult nothing;">
 
-    <metal:topslot fill-slot="top_slot">
-          <tal:block tal:define="global isAnon context/@@plone_portal_state/anonymous;"></tal:block>
-    </metal:topslot>
-
-    <metal:main fill-slot="main" tal:define="global importresult nothing;">
-
-      <tal:block tal:condition="isAnon">
+    <tal:block tal:condition="isAnon">
         <tal:block replace="context/raiseUnauthorized"></tal:block>
-      </tal:block>
+    </tal:block>
 
-      <tal:block tal:define="fhandle python: request.get('file');
-                             table request/table|nothing"
-                 tal:condition="fhandle">
+    <tal:block tal:define="fhandle python: request.get('file');
+                           table request/table|nothing"
+               tal:condition="fhandle">
         <tal:call tal:define="global importresult python: here.importTable(fhandle, table, request.get('tabs'))" />
-      </tal:block>
+    </tal:block>
 
-      <form name="import_form"
-            action="."
-            method="post"
-            enctype="multipart/form-data"
-            tal:define="errors options/state/getErrors;
-                        table request/table;
-                        tobj python: here.tableHandler[table];
-                        coltypes python:tobj.getColumnDefs(True);
-                        cols python:coltypes.keys();"
-            tal:attributes="action string:${here/getId}/${template/getId}">
-
-        <h1 i18n:translate="" tal:content="python: 'Import ' + tobj.getLabel()"></h1>
+    <form name="import_form"
+          action="."
+          method="post"
+          enctype="multipart/form-data"
+          tal:define="errors options/state/getErrors;
+                      table request/table;
+                      tobj python: here.tableHandler[table];
+                      coltypes python:tobj.getColumnDefs(True);
+                      cols python:coltypes.keys();"
+          tal:attributes="action string:${here/getId}/${template/getId}">
+        <h1>
+            <span i18n:translate="zopra_import_heading">Import</span>
+            <span tal:content="python: tobj.getLabel()">label</span>
+        </h1>
         <fieldset>
-
-          <legend i18n:translate="">Datei-Import</legend>
-          <div class="field">
-            <label for="file" i18n:translate="">Datei</label>
-            <div class="formHelp" i18n:translate="">
-                Die Importdaten (z.B. aus Excel) als komma-separierter oder tabstopp-separierter Text (CSV).
+            <legend i18n:translate="zopra_import_legend">File import</legend>
+            <div class="field">
+                <label for="file" i18n:translate="zopra_import_file_label">Datei</label>
+                <div class="formHelp" i18n:translate="zopra_import_file_help">
+                    The import data file (e.g. excel) as separated text (CSV) separated by semicolon/comma or tabstopp.
+                </div>
+                <input type="file" name="file" />
             </div>
 
-            <input type="file" name="file" />
-
-          </div>
-
-          <div class="field">
-            <label for="tabs" i18n:translate="">tab-separiertes Format</label>
-            <div class="formHelp" i18n:translate="">
-                Aktivieren Sie diese Option, wenn die Datei als tab-separierter Text formatiert ist.
+            <div class="field">
+                <label for="tabs" i18n:translate="zopra_import_tabseparated_label">tab-separated format</label>
+                <div class="formHelp" i18n:translate="zopra_import_tabseparated_help">
+                    Activate this option to indicate that the data file is in tab-separated format.
+                </div>
+                <input type="checkbox" name="tabs" value="1" />
             </div>
-
-            <input type="checkbox" name="tabs" value="1" />
-
-          </div>
         </fieldset>
-
-          <div class="formControls"
-               tal:define="process_creation request/process_creation|nothing;">
-
-            <input class="context"
-                   type="submit"
-                   name="form.button.Save"
-                   value="Save"
-                   i18n:domain="plone"
-                   i18n:attributes="value"
-            />
-
-            <input class="standalone"
-                   type="submit"
-                   name="form.button.Cancel"
-                   value="Cancel"
-                   i18n:attributes="value"
-            />
-
-          </div>
-          <div id="import result"
-               tal:condition="importresult" tal:content="structure python: importresult.replace('\n', '<br />')">
-            Import Result
-          </div>
-          <input type="hidden" name="form.submitted" value="1" />
-          <input type="hidden" name="table" tal:attributes="value table" />
-
-      </form>
-    </metal:main>
-
-  </body>
+        <div class="formControls formControlsZopRA">
+            <div class="formPanel">
+                <input class="context"
+                       type="submit"
+                       name="form.button.Save"
+                       value="Save"
+                       i18n:attributes="value" />
+                <input class="context"
+                       type="submit"
+                       name="form.button.Cancel"
+                       value="Cancel"
+                       i18n:attributes="value" />
+            </div>
+        </div>
+        <div id="import result"
+             tal:condition="importresult" tal:content="structure python: importresult.replace('\n', '<br />')">
+            Import result
+        </div>
+        <input type="hidden" name="form.submitted" value="1" />
+        <input type="hidden" name="table" tal:attributes="value table" />
+    </form>
+</metal:main>
+</body>
 </html>

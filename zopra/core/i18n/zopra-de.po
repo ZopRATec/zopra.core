@@ -3,7 +3,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ZMOM 1.0\n"
-"POT-Creation-Date: 2017-07-07 17:35+0000\n"
+"POT-Creation-Date: 2017-07-11 12:02+0000\n"
 "PO-Revision-Date: 2010-05-06 14:11+0100\n"
 "Last-Translator: Peter Seifert <peter.seifert@zopra.de>\n"
 "Language-Team: ZMOM i18n <i18n@zopra.de>\n"
@@ -17,10 +17,6 @@ msgstr ""
 "Domain: zopra\n"
 "X-Is-Fallback-For: de-at de-li de-lu de-ch de-de\n"
 
-#: ./skins/zopra_core_general/zopra_table_import_form.cpt:54
-msgid "Aktivieren Sie diese Option, wenn die Datei als tab-separierter Text formatiert ist."
-msgstr ""
-
 ##################### original translations ################################
 # Edit-tracking Cols
 msgid "Automatic No."
@@ -30,17 +26,9 @@ msgstr "Interne Id"
 msgid "Back"
 msgstr "Zurück"
 
-#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:69
-msgid "CVS-Datei"
-msgstr ""
-
-#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:79
-msgid "CVS-Encoding"
-msgstr ""
-
-#: ./skins/zopra_core_general/zopra_list_edit_form.cpt:216
+#: ./skins/zopra_core_general/zopra_list_edit_form.cpt:217
 #: ./skins/zopra_core_general/zopra_table_deleteconfirm_form.cpt:108
-#: ./skins/zopra_core_general/zopra_table_import_form.cpt:74
+#: ./skins/zopra_core_general/zopra_table_import_form.cpt:65
 msgid "Cancel"
 msgstr "Abbrechen"
 
@@ -51,15 +39,7 @@ msgstr "Abbrechen"
 msgid "Close"
 msgstr "Schliessen"
 
-#: ./skins/zopra_core_general/zopra_table_import_form.cpt:43
-msgid "Datei"
-msgstr ""
-
-#: ./skins/zopra_core_general/zopra_table_import_form.cpt:41
-msgid "Datei-Import"
-msgstr ""
-
-#: ./skins/zopra_core_general/zopra_list_edit_form.cpt:210
+#: ./skins/zopra_core_general/zopra_list_edit_form.cpt:211
 #: ./skins/zopra_core_general/zopra_table_deleteconfirm_form.cpt:101
 msgid "Delete"
 msgstr "Löschen"
@@ -68,24 +48,8 @@ msgstr "Löschen"
 msgid "Delete Workingcopy"
 msgstr "Arbeitskopie löschen"
 
-#: ./skins/zopra_core_general/zopra_table_import_form.cpt:44
-msgid "Die Importdaten (z.B. aus Excel) als komma-separierter oder tabstopp-separierter Text (CSV)."
-msgstr ""
-
-#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:70
-msgid "Die Studiengangsdatei (excel) als mit einem Trennzeichen separierten Text. Das zu aktualisierende Attribut wird automatisch erkannt."
-msgstr ""
-
-#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:58
-msgid "Die Tabelle in welcher die Eintr&auml;ge importiert werden sollen."
-msgstr ""
-
 msgid "Entry Date"
 msgstr "Eintragsdatum"
-
-#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:80
-msgid "In welchem Format wurde die CVS-Datei gespeichert, z.B.: macroman, latin1, utf8."
-msgstr ""
 
 msgid "Input required"
 msgstr "Eingabe erforderlich"
@@ -99,7 +63,7 @@ msgid "Manager Overview"
 msgstr "Manager Überblick"
 
 #: ./skins/zopra_core_general/zopra_button_link_bar.cpt:51
-#: ./skins/zopra_core_general/zopra_table_multiconfirm_form.cpt:65
+#: ./skins/zopra_core_general/zopra_table_multiconfirm_form.cpt:67
 msgid "Release"
 msgstr "Freigeben"
 
@@ -111,6 +75,8 @@ msgid "Required"
 msgstr "Erforderlich"
 
 #: ./skins/zopra_core_general/zopra_button_link_bar.cpt:10
+#: ./skins/zopra_core_general/zopra_table_import_form.cpt:60
+#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:87
 msgid "Save"
 msgstr "Speichern"
 
@@ -118,41 +84,26 @@ msgstr "Speichern"
 msgid "Search"
 msgstr "Suchen"
 
-#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:90
-msgid "Standard-Trennzeichen, z.B.: Semikolon, Komma, Tabulator (\t)"
-msgstr ""
-
 #: ./skins/zopra_core_general/zopra_button_link_bar.cpt:32
 msgid "Translate"
 msgstr "Übersetzen"
 
-#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:89
-msgid "Trennzeichen"
-msgstr ""
-
-#: ./skins/zopra_core_general/zopra_list_edit_form.cpt:204
+#: ./skins/zopra_core_general/zopra_list_edit_form.cpt:205
 msgid "Update"
-msgstr ""
-
-#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:57
-msgid "Ziel-Tabelle"
-msgstr ""
-
-#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:54
-msgid "Zwei-Spalten-Tabellen-Import"
-msgstr ""
+msgstr "Speichern"
 
 #. Default: "Please choose, how often you want to replicate the following fields."
 #: ./skins/zopra_core_general/zopra_table_create_form.cpt:84
 msgid "create_repeat_hint"
 msgstr "Wählen Sie aus wie oft die folgenden Felder benötigt werden."
 
+#. Default: "The format of the import file, e.g.: macroman, latin1, utf8."
+#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:70
+msgid "encoding_help"
+msgstr "Geben Sie das Format an, in dem die CVS-Datei gespeichert wurde, z.B.: macroman, latin1, utf8. Standardwert ist utf8."
+
 msgid "search"
 msgstr "Suchen"
-
-#: ./skins/zopra_core_general/zopra_table_import_form.cpt:53
-msgid "tab-separiertes Format"
-msgstr ""
 
 #. Default: "A new entry (${table}) has been created and referenced. A working copy for the main entry (${maintable} with the original Id ${internal_id}) has been created as well."
 #: ./skins/zopra_core_general/zopra_table_create.cpy:81
@@ -360,9 +311,40 @@ msgid "zopra_for"
 msgstr "für"
 
 #. Default: "Please correct the indicated errors."
+#: ./skins/zopra_core_general/zopra_table_two_column_import.cpy:25
 #: ./skins/zopra_core_general/zopra_validate_input.vpy:62
 msgid "zopra_form_errors"
 msgstr "Bitte korrigieren Sie die angezeigten Fehler."
+
+#. Default: "The import data file (e.g. excel) as separated text (CSV) separated by semicolon/comma or tabstopp."
+#: ./skins/zopra_core_general/zopra_table_import_form.cpt:44
+msgid "zopra_import_file_help"
+msgstr "Die Importdaten (z.B. aus Excel) als komma-separierter oder tabstopp-separierter Text (CSV)."
+
+#. Default: "Datei"
+#: ./skins/zopra_core_general/zopra_table_import_form.cpt:43
+msgid "zopra_import_file_label"
+msgstr "Datei"
+
+#. Default: "Import"
+#: ./skins/zopra_core_general/zopra_table_import_form.cpt:37
+msgid "zopra_import_heading"
+msgstr "Import"
+
+#. Default: "File import"
+#: ./skins/zopra_core_general/zopra_table_import_form.cpt:41
+msgid "zopra_import_legend"
+msgstr "Datei-Import"
+
+#. Default: "Activate this option to indicate that the data file is in tab-separated format."
+#: ./skins/zopra_core_general/zopra_table_import_form.cpt:52
+msgid "zopra_import_tabseparated_help"
+msgstr "Aktivieren Sie diese Option, wenn die Datei als tab-separierter Text formatiert ist."
+
+#. Default: "tab-separated format"
+#: ./skins/zopra_core_general/zopra_table_import_form.cpt:51
+msgid "zopra_import_tabseparated_label"
+msgstr "tab-separiertes Format"
 
 #. Default: "New Entry"
 #: ./skins/zopra_core_general/zopra_button_link_bar.cpt:127
@@ -484,6 +466,11 @@ msgstr "Fehler bei der Freigabe von Eintrag '${entry_label}': ${reason}"
 msgid "zopra_multiconfirm_success"
 msgstr "Eintrag '${entry_label}' wurde freigegeben.${additional_msg} Interne Id: ${internal_id}."
 
+#. Default: "Multi-release"
+#: ./skins/zopra_core_general/zopra_table_multiconfirm_listing.pt:25
+msgid "zopra_multirelease_label"
+msgstr "Mehrfachfreigabe"
+
 #. Default: "Popup: TUD - Editorial"
 #: ./skins/zopra_core_general/zopra_popup.pt:11
 msgid "zopra_popup_title"
@@ -494,11 +481,40 @@ msgstr "Popup: TUD - Redaktion"
 msgid "zopra_popup_working"
 msgstr "Bearbeite ihre Anfrage. Bitte warten..."
 
+#. Default: "Details"
+#: ./skins/zopra_core_general/zopra_table_multiconfirm_form.cpt:46
+#: ./skins/zopra_core_general/zopra_table_multiconfirm_listing.pt:40
+msgid "zopra_release_details"
+msgstr "Details"
+
+#. Default: "Diff"
+#: ./skins/zopra_core_general/zopra_table_multiconfirm_form.cpt:37
+#: ./skins/zopra_core_general/zopra_table_multiconfirm_listing.pt:31
+msgid "zopra_release_diff"
+msgstr "Unterschiede"
+
 #. Default: "Release"
 #: ./skins/zopra_core_general/zopra_table_multiconfirm_form.cpt:30
-#: ./skins/zopra_core_general/zopra_table_multiconfirm_listing.pt:14
+#: ./skins/zopra_core_general/zopra_table_multiconfirm_listing.pt:16
 msgid "zopra_release_heading"
 msgstr "Freigabe"
+
+#. Default: "Name"
+#: ./skins/zopra_core_general/zopra_table_multiconfirm_form.cpt:36
+#: ./skins/zopra_core_general/zopra_table_multiconfirm_listing.pt:30
+msgid "zopra_release_name"
+msgstr "Name"
+
+#. Default: "No working copies found."
+#: ./skins/zopra_core_general/zopra_table_multiconfirm_form.cpt:63
+msgid "zopra_release_no_copies"
+msgstr "Keine Arbeitskopien gefunden."
+
+#. Default: "Release"
+#: ./skins/zopra_core_general/zopra_table_multiconfirm_form.cpt:54
+#: ./skins/zopra_core_general/zopra_table_multiconfirm_listing.pt:47
+msgid "zopra_release_singlelink_label"
+msgstr "zur Einzel&shy;freigabe"
 
 #. Default: "Chosen criteria:"
 #: ./skins/zopra_core_general/zopra_table_search_result.pt:83
@@ -609,6 +625,96 @@ msgstr "Diese Tabelle unterstützt keine Übersetzungen. Der Übersetzungsprozes
 #: ./skins/zopra_core_general/zopra_table_edittranslate.cpy:24
 msgid "zopra_translation_orig_not_found"
 msgstr "Originaleintrag ist nicht auffindbar. Der Übersetzungsprozess wurde abgebrochen."
+
+#. Default: "CSV: '${attribute}' is not an attribute (or label of an attribute) of table '${table}'."
+#: ./skins/zopra_core_general/zopra_table_two_column_import.cpy:70
+msgid "zopra_twocol_import_attribute_error"
+msgstr "CSV: '${attribute}' ist kein Attribut (oder Titel eines Attributs) der Tabelle '${table}'."
+
+#. Default: "Autoid misssing on line ${line}."
+#: ./skins/zopra_core_general/zopra_table_two_column_import.cpy:88
+msgid "zopra_twocol_import_autoid_missing"
+msgstr "Autoid fehlt in Zeile ${line}."
+
+#. Default: "CVS: Delimiter scheint falsch oder nicht genügend Spalten vorhanden."
+#: ./skins/zopra_core_general/zopra_table_two_column_import.cpy:56
+msgid "zopra_twocol_import_content_error"
+msgstr "CVS: Delimiter scheint falsch oder nicht genügend Spalten vorhanden."
+
+#. Default: "Import of ${count} data sets for column ${attribute}:"
+#: ./skins/zopra_core_general/zopra_table_two_column_import.cpy:78
+msgid "zopra_twocol_import_count"
+msgstr "Import von ${count} Datensätzen in Spalte ${attribute}:"
+
+#. Default: "CVS: Fehler beim Verarbeiten (Error:  ${error})"
+#: ./skins/zopra_core_general/zopra_table_two_column_import.cpy:46
+msgid "zopra_twocol_import_cvs_error"
+msgstr "CVS: Fehler beim Verarbeiten (Error:  ${error})"
+
+#. Default: "The delimitor sign used to separate columns, e.g.: Semikolon (;), Komma (,), Tabulator (\t)"
+#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:78
+msgid "zopra_twocol_import_delimiter_help"
+msgstr "Das Trennzeichen (bitte als Zeichen eingeben) zur Trennung der Spalten, z.B.: Semikolon (;), Komma (,) oder Tabulator (\t)"
+
+#. Default: "Separator"
+#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:77
+msgid "zopra_twocol_import_delimiter_label"
+msgstr "Trennzeichen"
+
+#. Default: "Encoding"
+#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:69
+msgid "zopra_twocol_import_encoding_label"
+msgstr "Encoding"
+
+#. Default: "Entry not found for autoid ${autoid} on line ${line}"
+#: ./skins/zopra_core_general/zopra_table_two_column_import.cpy:94
+msgid "zopra_twocol_import_entry_missing"
+msgstr "Eintrag nicht gefunden für autoid ${autoid} in Zeile ${line}."
+
+#. Default: "- original entry (autoid: ${autoid})${wc}${tr}"
+#: ./skins/zopra_core_general/zopra_table_two_column_import.cpy:106
+msgid "zopra_twocol_import_entry_saved"
+msgstr "- Originaleintrag (Autoid: ${autoid})${wc}${tr}"
+
+#. Default: "The import file (excel) as separated text (tab or semicolon/comma). First column is the autoid, second column is the attribute. The header must contain the attribute name."
+#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:62
+msgid "zopra_twocol_import_file_help"
+msgstr "Die Importdatei (excel) als mit einem Trennzeichen separierten Text (tab oder Semikolon/Komma. Die erste Spalte enthält die Autoid, die zweite Spalte das zu aktualisierende Attribut. Die Kopfzeile muss den Namen (oder Titel) des Attributs beinhalten."
+
+#. Default: "CVS file"
+#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:61
+msgid "zopra_twocol_import_file_label"
+msgstr "CVS-Datei"
+
+#. Default: "Two Column Import"
+#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:47
+msgid "zopra_twocol_import_heading"
+msgstr "Zwei-Spalten-Import"
+
+#. Default: "${count} entries have been updated."
+#: ./skins/zopra_core_general/zopra_table_two_column_import.cpy:108
+msgid "zopra_twocol_import_success"
+msgstr "${count} Einträge wurden aktualisiert."
+
+#. Default: "Die Tabelle in welcher die Eintr&auml;ge importiert werden sollen."
+#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:50
+msgid "zopra_twocol_import_target_help"
+msgstr "Die Tabelle in welcher die Einträge importiert werden sollen."
+
+#. Default: "target table"
+#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:49
+msgid "zopra_twocol_import_target_label"
+msgstr "Zieltabelle"
+
+#. Default: " + translation copy"
+#: ./skins/zopra_core_general/zopra_table_two_column_import.cpy:105
+msgid "zopra_twocol_import_translation"
+msgstr " + Sprachkopie"
+
+#. Default: " + working copy"
+#: ./skins/zopra_core_general/zopra_table_two_column_import.cpy:103
+msgid "zopra_twocol_import_workingcopy"
+msgstr " + Arbeitskopie"
 
 # stuff from widget_display-templates (auto-readout with i18ndude did not work):
 msgid "zopra_widget_search_and_concat"
