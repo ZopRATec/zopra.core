@@ -241,7 +241,7 @@ class ListHandler(Folder):
         if column.getMap():
             map_  = column.getMap().encode('utf-8')
         if column.getLabel():
-            label = column.getLabel().encode('utf-8')
+            label = column.getLabel()
 
         if str(column.getInvisible()).upper() in ['1', 'T', 'TRUE', 'Y', 'YES']:
             invisible = True

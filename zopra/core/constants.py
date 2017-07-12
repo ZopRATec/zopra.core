@@ -108,17 +108,17 @@ class ZC:
 
 
     _edit_tracking_cols = { TCN_CREATOR: { COL_TYPE:    'singlelist',
-                                           COL_LABEL:   'Creator'},
+                                           COL_LABEL:   u'Creator'},
                             TCN_DATE:    { COL_TYPE:    'date',
-                                           COL_LABEL:   'Entry Date',
+                                           COL_LABEL:   u'Entry Date',
                                            COL_DEFAULT: 'now()'},
                             TCN_EDITOR:  { COL_TYPE:    'singlelist',
-                                           COL_LABEL:   'Last edited by'},
+                                           COL_LABEL:   u'Last edited by'},
                             TCN_EDATE:   { COL_TYPE:    'date',
-                                           COL_LABEL:   'Last edited on',
+                                           COL_LABEL:   u'Last edited on',
                                            COL_DEFAULT: 'now()'},
                             TCN_OWNER:   { COL_TYPE:    'singlelist',
-                                           COL_LABEL:   'Owner'},
+                                           COL_LABEL:   u'Owner'},
                             }
 
     ############################################################################
