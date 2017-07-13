@@ -28,7 +28,8 @@ from zope.component import getMultiAdapter
 #
 from zopra.core                         import ClassSecurityInfo, \
                                                getSecurityManager, \
-                                               ZC
+                                               ZC, \
+                                               zopraMessageFactory as _
 from zopra.core.CorePart                import MASK_SHOW
 from zopra.core.tools.GenericManager    import GenericManager
 
@@ -484,17 +485,41 @@ class TemplateBaseManager(GenericManager):
             fi.setOperator(fi.OR)
         return tobj.requestEntries(root, show_number, start_number, ignore_permissions = True)
 
+
+    def isHierarchyList(self, listname):
+        # check if a List with that name is referenced by a table attribute
+        hlists = []
+        for tablename in self.tableHandler.keys():
+            hlists.extend(self.listHandler.getLists(tablename, ['hierarchylist']))
+        for lobj in hlists:
+            if lobj.listname == listname:
+                return True
+        return False
+
+
     def handleHierarchyListOnSearch(self, table, cons):
-        """\brief Add to given branch item all his possible children"""
+        """\brief Add the subtree to a given node for all hierarchy lists of the table (all children of all levels below that node)"""
+        # TODO: use ZMOMGenericManager.getHierarchyListConfig to steer this behaviour
+        hlists = self.listHandler.getLists(table, ['hierarchylist'])
+        listnames = [hlist.listname for hlist in hlists]
         for key in cons:
-            if self.isHierarchyList(key):
+            if key in listnames:
                 selectList = []
                 for item in cons[key]:
                     selectList.append(item)
-                    selectList = selectList + self.listHandler.getList(table, key).getHierarchyListDescendants(item)
+                    selectList.extend(self.listHandler.getList(table, key).getHierarchyListDescendants(item))
                 cons[key] = selectList
 
-    def parseConstraintsForOutput(self, attr_value, attr_type):
+
+    def prepareHierarchylistDisplayEntries(self, entries):
+        """\brief sort the entries into a tree, add level key and return flattened and sorted list"""
+        # TODO: implement (where is this used anyway and what for?)
+        for entry in entries:
+            entry['level'] = 0
+        return entries
+
+
+    def prepareConstraintsForOutput(self, attr_value, attr_type):
         """\brief Search Param Visualisation preparation"""
         # general behaviour: this is called by the search result template to generate
         # nicer values for constraint display
@@ -510,13 +535,16 @@ class TemplateBaseManager(GenericManager):
             # check multilists, the search widget delivers [None] when item was selected and deselected
             return [value for value in attr_value if value]
         elif attr_value == 'NULL':
-            # Wert explizit auf NULL gesetzt (checkbox)
-            return 'falsch'
+            # value is explicitly NULL (except for checkboxes)
+            if attr_type != 'bool':
+                return _('zopra_widget_not_set', u'<not set>')
         elif attr_value == '_not_NULL':
-            # Wert auf wahr gesetzt (checkbox)
-            return 'gesetzt'
+            # value is explicitly not NULL (except for checkboxes)
+            if attr_type != 'bool':
+                return _('zopra_widget_set_any', u'<any value>')
         else:
             return attr_value
+        return attr_value
 
 
     def getChangeDate(self, table, autoid):
@@ -562,17 +590,6 @@ class TemplateBaseManager(GenericManager):
             # this is already utf-8, ascii-encoder raised an error
             value = value.decode('latin-1')
         return value
-
-
-    def isHierarchyList(self, listname):
-        # check if a List with that name is referenced by a table attribute
-        hlists = []
-        for tablename in self.tableHandler.keys():
-            hlists.extend(self.listHandler.getLists(tablename, ['hierarchylist']))
-        for lobj in hlists:
-            if lobj.listname == listname:
-                return True
-        return False
 
 
 #
@@ -813,7 +830,9 @@ class TemplateBaseManager(GenericManager):
         col_types = tobj.getColumnTypes()
         for col in col_types:
             if col_types[col] in ('float', 'currency'):
-                entry[col] = ('%s' % entry.get(col, '')).replace(',', '.')
+                # only convert if there is something to convert
+                if entry.get(col):
+                    entry[col] = ('%s' % entry.get(col, '')).replace(',', '.')
             # this removes empty list entries from the resulting entry for search
             # (where adding and removing a selection from a multilist results in an empty list being transmitted as search param)
             if search and col_types[col] in ('multilist', 'hierarchylist') and entry.get(col) == []:
@@ -829,16 +848,9 @@ class TemplateBaseManager(GenericManager):
                 return True
         return False
 
-
-    def prepareHierarchylistDisplayEntries(self, entries):
-        """\brief sort the entries into a tree, add level key and return flattened and sorted list"""
-        # TODO: implement
-        for entry in entries:
-            entry['level'] = 0
-        return entries
-
-
-    # disable basic Display Functions
+#
+# disable basic Display Functions
+#
     def infoForm(self, table, id, REQUEST):
         """\brief Returns html of the generic entry info page."""
         pass

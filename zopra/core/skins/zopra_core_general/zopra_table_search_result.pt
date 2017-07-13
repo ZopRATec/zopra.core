@@ -58,6 +58,7 @@
                      entries python: here.getEntryListProxy(table, count, offset, None, enriched_cons, order, orderdir);
                      coltypes python:context.getFilteredColumnDefs(table, edit_tracking = True, vis_only = False);
                      links python: context.getGenericConfig(table).get('links', []);
+                     has_real_constraints python: context.filterRealSearchConstraints(cons);
                      global quotedcons string:;
                      ">
     <tal:block tal:condition="isAnon">
@@ -69,7 +70,8 @@
 <div class="row">
     <div class="contentSlot">
         <h1 class="documentFirstHeading">
-                <span i18n:translate="zopra_search_results_heading">Search Results</span>
+                <span tal:condition="has_real_constraints" i18n:translate="zopra_search_results_heading">Search results</span>
+                <span tal:condition="not:has_real_constraints" i18n:translate="zopra_listing_heading">Entry listing</span>
                 <span i18n:translate="" tal:content="python: tobj.getLabel()">TableX</span>
         </h1>
         <form id="search_result_form zopra-form"
@@ -77,7 +79,7 @@
               tal:attributes="action string:${here/absolute_url}/${template/getId}"
               method="post"
               class="zopra-form">
-            <tal:block tal:condition="python: context.filterRealSearchConstraints(cons)">
+            <tal:block tal:condition="has_real_constraints">
                 <!-- ausgewaehlte Kriterien (anhand originaler Constraints)-->
                 <div class="formatted">
                     <h2 i18n:translate="zopra_search_criteria">Chosen criteria:</h2>
@@ -86,18 +88,18 @@
                                                 dummy python: con_list.sort();"
                                     tal:repeat="con con_list">
                             <tal:block tal:define="field python: tobj.getField(con);
-                                            value python: cons.get(con);"
-                                tal:condition="python: (not (len(con) > 4 and con[-4:] == '_AND')) and value != ''">
-                              <tal:block tal:define="attr_name con;
-                                                attr_type python:field.get('TYPE') or 'string';
-                                                attr_type python: attr_type == 'memo' and 'string' or attr_type;
-                                                attr_value python:context.parseConstraintsForOutput(cons.get(con), attr_type);
-                                                widget_style string:line;"
-                                         tal:condition="attr_value">
-                                <dt tal:content="python: field.get('LABEL') or lang == 'de' and 'Zusatzfeld' or 'Additional field'">Label</dt>
-                                <dd>
-                                  <metal:block metal:use-macro="here/zopra_widget_show_display/macros/widget_selector">Value</metal:block>
-                                </dd>
+                                                   value python: cons.get(con);"
+                                       tal:condition="python: (not (len(con) > 4 and con[-4:] == '_AND')) and value != ''">
+                                <tal:block tal:define="attr_name con;
+                                                       attr_type python:field.get('TYPE') or 'string';
+                                                       attr_type python: attr_type == 'memo' and 'string' or attr_type;
+                                                       attr_value python:context.prepareConstraintsForOutput(cons.get(con), attr_type);
+                                                       widget_style string:line;"
+                                           tal:condition="attr_value">
+                                    <dt tal:content="python: field.get('LABEL') or lang == 'de' and 'Zusatzfeld' or 'Additional field'">Label</dt>
+                                    <dd tal:define="display_constraints python: 1">
+                                        <metal:block metal:use-macro="here/zopra_widget_show_display/macros/widget_selector">Value</metal:block>
+                                    </dd>
                               </tal:block>
                             </tal:block>
                         </tal:repeat>
@@ -214,7 +216,7 @@
                                     tal:define="attr python: attr_tupel[1]"
                                     tal:condition="python: 1 or not coltypes[attr].get('INVIS')"
                                     tal:attributes="value attr;
-                                              selected python: attr in cols"
+                                                    selected python: attr in cols"
                                     tal:content="python: attr_tupel[0]">
                                 Attributename
                             </option>
