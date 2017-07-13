@@ -1,5 +1,5 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
-         i18n:domain="plone">
+         i18n:domain="zopra">
 
 <body>
 <tal:comment tal:replace="nothing">
@@ -13,7 +13,22 @@
     </tal:block>
 </metal:widget_selector>
 
+<metal:widget_search_any define-macro="widget_search_any">
+    <div class="checkboxes-group">
+        <input type="checkbox"
+               tal:define="orig_id python: attr_prefix + attr_name;
+                           new_id python: orig_id + 'All'"
+               tal:attributes="name new_id; id new_id; data-field orig_id;"
+               class="searchForAll" data-field="'+ field.id +'">
+        <label i18n:translate="zopra_search_widget_any"
+               tal:attributes="for python: attr_prefix + attr_name + 'All'">
+               Search for any content (non-empty) in this field.
+        </label>
+    </div>
+</metal:widget_search_any>
+
 <metal:widget_string define-macro="widget_string">
+    <metal:block metal:use-macro="here/zopra_widget_search_display/macros/widget_search_any" />
     <input type="text"
            size="40"
            data-sfarp="*"
@@ -22,6 +37,7 @@
 </metal:widget_string>
 
 <metal:widget_int define-macro="widget_int">
+    <metal:block metal:use-macro="here/zopra_widget_search_display/macros/widget_search_any" />
     <input type="text"
            size="40"
            data-sfarp="_not_NULL"
@@ -30,6 +46,7 @@
 </metal:widget_int>
 
 <metal:widget_float define-macro="widget_float">
+    <metal:block metal:use-macro="here/zopra_widget_search_display/macros/widget_search_any" />
     <input type="text"
            size="40"
            data-sfarp="_not_NULL"
@@ -39,6 +56,7 @@
 </metal:widget_float>
 
 <metal:widget_currency define-macro="widget_currency">
+    <metal:block metal:use-macro="here/zopra_widget_search_display/macros/widget_search_any" />
     <input type="text"
            class="numberinput"
            size="10"
@@ -49,31 +67,43 @@
 </metal:widget_currency>
 
 <metal:widget_date define-macro="widget_date">
-        <input type="text"
-               size="40"
-               data-sfarp="*"
-         tal:attributes="value attr_value; name python: attr_prefix + attr_name; id python: attr_prefix + attr_name;"
-        />
+    <metal:block metal:use-macro="here/zopra_widget_search_display/macros/widget_search_any" />
+    <input type="text"
+           size="40"
+           data-sfarp="*"
+           tal:attributes="value attr_value; name python: attr_prefix + attr_name; id python: attr_prefix + attr_name;"
+    />
 </metal:widget_date>
 
-<metal:widget_bool define-macro="widget_bool">
-    <span i18n:translate="zopra_widget_search_bool">hat/ist</span>
-    <input type="checkbox"
-           value="1"
-           tal:attributes="checked python:bool(attr_value) and attr_value == 1;
-                           name python: attr_prefix + attr_name;
-                           id python: attr_prefix + attr_name;
-                           class python: attr_prefix + attr_name;" />
-    <span i18n:translate="zopra_widget_search_bool_not">hat/ist nicht</span>
-    <input type="checkbox"
-           value="NULL"
-           tal:attributes="checked python:bool(attr_value) and attr_value == 'NULL';
-                           name python: attr_prefix + attr_name;
-                           id python: attr_prefix + attr_name + 'not';
-                           class python: attr_prefix + attr_name;" />
+<metal:widget_bool define-macro="widget_bool"
+                   tal:define="orig_id python: attr_prefix + attr_name;">
+    <div class="checkboxes-group">
+        <input type="checkbox"
+               value="1"
+               tal:attributes="checked python:bool(attr_value) and attr_value == 1;
+                               name orig_id;
+                               id orig_id;
+                               class orig_id;" />
+        <label i18n:translate="zopra_widget_search_bool"
+               tal:attributes="for orig_id">
+            has/is
+        </label>
+        &nbsp;
+        <input type="checkbox"
+               value="NULL"
+               tal:attributes="checked python:bool(attr_value) and attr_value == 'NULL';
+                               name orig_id;
+                               id python: orig_id + 'not';
+                               class orig_id;" />
+        <label i18n:translate="zopra_widget_search_bool_not"
+               tal:attributes="for python: orig_id + 'not'">
+            has/is not
+        </label>
+    </div>
 </metal:widget_bool>
 
 <metal:widget_memo define-macro="widget_memo">
+    <metal:block metal:use-macro="here/zopra_widget_search_display/macros/widget_search_any" />
     <input type="text"
            size="40"
            data-sfarp="*"
@@ -93,7 +123,7 @@
                             do_sort attr_sort|nothing;
                             dummy python: do_sort and entries.sort(key=lambda item: item['value']);"
                 tal:attributes="name python: attr_prefix + attr_name + ':list'; id python: attr_prefix + attr_name;"
-                multiple="multiple">
+                class="single">
             <tal:block tal:repeat="entry entries">
                 <option tal:attributes="value python: str(entry['autoid']);
                                         selected python: len(attr_value) > 0 and str(entry['autoid']) == str(attr_value[0]);
@@ -119,7 +149,8 @@
                    tal:attributes="name python: attr_prefix + attr_name + '_AND';"/>
         </tal:block>
         <select multiple="multiple"
-                 tal:attributes="name python:attr_name+':list'; id attr_name">
+                class="multi"
+                tal:attributes="name python:attr_name+':list'; id attr_name">
             <tal:block tal:repeat="entry entries">
                 <tal:block condition="entry/value">
                     <option tal:attributes="value python: unicode(entry['autoid']);

@@ -1,5 +1,5 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
-         i18n:domain="plone">
+         i18n:domain="zopra">
 
 <body>
 <tal:comment tal:replace="nothing">
@@ -31,8 +31,7 @@
         <div tal:condition="python: here.doesTranslations(table) and entry.get('hastranslation') and entry.get('language') == here.lang_default and (attr_type == 'string' or attr_type == 'memo')"
              class="formHelp"
              i18n:translate="zopra_widget_remember_translation">
-            Bitte denken Sie daran, bei Veränderungen gegebenenfalls die
-            Übersetzung anzupassen.
+            Please consider updating the translated entry as well.
         </div>
         <div tal:condition="error" tal:content="error" i18n:translate="">
             Validation error output
@@ -126,20 +125,20 @@
 <metal:widget_singlelist define-macro="widget_singlelist">
     <metal:block metal:use-macro="python:path('here/zopra_widget_edit_display/macros/widget_label')" />
     <select tal:define="lobj python:here.listHandler.getList(table, attr_name);
-            entries python:lobj.getEntries();
-            do_sort attr_sort|nothing;
-            dummy python: do_sort and entries.sort(key=lambda item: item['value']);"
-             tal:attributes="name attr_name; id attr_name;"
-                    class="single">
-                <option value="" i18n:translate="zopra_widget_choose">-auswählen-</option>
-                    <tal:block tal:repeat="entry entries">
-        <tal:block condition="entry/value">
-            <option tal:attributes="value python: unicode(entry['autoid']); selected python:unicode(entry['autoid']) == unicode(attr_value);"
-                     tal:content="python:entry['value']">
-                value
-            </option>
+                        entries python:lobj.getEntries();
+                        do_sort attr_sort|nothing;
+                        dummy python: do_sort and entries.sort(key=lambda item: item['value']);"
+            tal:attributes="name attr_name; id attr_name;"
+            class="single">
+        <option value="" i18n:translate="zopra_widget_choose">-choose-</option>
+        <tal:block tal:repeat="entry entries">
+            <tal:block condition="entry/value">
+                <option tal:attributes="value python: unicode(entry['autoid']); selected python:unicode(entry['autoid']) == unicode(attr_value);"
+                         tal:content="python:entry['value']">
+                    value
+                </option>
+            </tal:block>
         </tal:block>
-    </tal:block>
     </select>
 </metal:widget_singlelist>
 
@@ -153,13 +152,14 @@
             tmp_store python: {};">
         <input type="hidden" name="zopra_attr_present:list" tal:attributes="value attr_name" />
         <select multiple="multiple"
-                 tal:attributes="name python:attr_name+':list'; id attr_name">
+                class="multi"
+                tal:attributes="name python:attr_name+':list'; id attr_name">
             <tal:block tal:repeat="entry entries">
                 <tal:block condition="entry/value">
                     <option tal:define="bla python: tmp_store.update([(entry['autoid'], entry['value'])])"
                              tal:attributes="value python: unicode(entry['autoid']);
-                            selected python:unicode(entry['autoid']) in [unicode(val) for val in attr_value];
-                            title python: entry['value']"
+                                             selected python:unicode(entry['autoid']) in [unicode(val) for val in attr_value];
+                                             title python: entry['value']"
                              tal:content="python: entry['value']">
                         value
                     </option>
@@ -196,7 +196,7 @@
                             <select tal:define="lobj2 python:here.listHandler[notes];
                                                 entries2 python:lobj2.getEntries();"
                                     tal:attributes="name notesname; id notesname">
-                                <option value="NULL" i18n:translate="zopra_widget_choose">-auswählen-</option>
+                                <option value="NULL" i18n:translate="zopra_widget_choose">-choose-</option>
                                 <tal:block tal:repeat="entry2 entries2">
                                     <tal:block condition="entry2/value">
                                         <option tal:attributes="value python: unicode(entry2['autoid']); selected python:unicode(entry2['autoid']) == unicode(val);"
@@ -257,7 +257,7 @@
         <select class="single"
                 name="hierarchylist_selection"
                 tal:attributes="onchange string:hierarchylist_select_option('${attr_name}','${table}',this);;;">
-            <option value="0" i18n:translate="zopra_widget_choose">-auswählen-</option>
+            <option value="0" i18n:translate="zopra_widget_choose">-choose-</option>
             <tal:block tal:repeat="item items">
                 <option tal:content="item/value"
                         tal:attributes="value item/autoid;
