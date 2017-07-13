@@ -17,14 +17,6 @@
                               var id = this.id;
                               $("." + cls + ":not(#" + id + ")").attr("checked",false);
                         });
-
-                        $('form#search_form :input[type="text"]').each(function(i, field){
-                              var id = field.id + "All";
-                              var name = field.name + "All";
-                              if($(field).data('sfarp') != "")
-                                    $(field).before('Nach beliebigen Eintr&auml;gen in diesem Feld suchen:'+
-                                              '<input type="checkbox" name="' + name + '" id="' + id +'" class="searchForAll" data-field="'+ field.id +'"><br>');
-                        });
                         $('form#search_form').submit(function(){
                               $('form#search_form :input[type="checkbox"]:checked').each(function(i, field){
                                     var forField = $(field).data("field");
