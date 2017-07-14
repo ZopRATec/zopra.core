@@ -11,6 +11,11 @@ TCN_OWNER     = 'owner'
 
 class ZC:
 
+    # role names
+    ROLE_USER     = 'ZopRAAuthor'
+    ROLE_REVIEWER = 'ZopRAReviewer'
+    ROLE_ADMIN    = 'ZopRAAdmin'
+
     # edit_tracking
     TCN_AUTOID    = 'autoid'
     TCN_CREATOR   = 'creator'
