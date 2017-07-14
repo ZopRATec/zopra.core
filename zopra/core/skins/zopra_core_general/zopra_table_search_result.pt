@@ -81,17 +81,22 @@
               class="zopra-form">
             <tal:block tal:condition="has_real_constraints">
                 <!-- ausgewaehlte Kriterien (anhand originaler Constraints)-->
+                <tal:comment tal:replace="nothing">
+                    Subtables (ERP Invoice -> Position) constraints are displayed as "additional field",
+                    but should be displayed as "subtablename: attribute"
+                    need generic handling (to get the types right) based on searchTreeTemplate or similar
+                </tal:comment>
                 <div class="formatted">
                     <h2 i18n:translate="zopra_search_criteria">Chosen criteria:</h2>
                     <dl class="quick-info-list">
                         <tal:repeat tal:define="con_list python: cons.keys();
                                                 dummy python: con_list.sort();"
                                     tal:repeat="con con_list">
-                            <tal:block tal:define="field python: tobj.getField(con);
+                            <tal:block tal:define="field python: tobj.getField(con) or {};
                                                    value python: cons.get(con);"
                                        tal:condition="python: (not (len(con) > 4 and con[-4:] == '_AND')) and value != ''">
                                 <tal:block tal:define="attr_name con;
-                                                       attr_type python:field.get('TYPE') or 'string';
+                                                       attr_type python: field and field.get('TYPE') or 'string';
                                                        attr_type python: attr_type == 'memo' and 'string' or attr_type;
                                                        attr_value python:context.prepareConstraintsForOutput(cons.get(con), attr_type);
                                                        widget_style string:line;"
