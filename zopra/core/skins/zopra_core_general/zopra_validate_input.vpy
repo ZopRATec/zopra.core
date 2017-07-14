@@ -23,7 +23,7 @@ tobj = context.tableHandler[table]
 entry = context.getTableEntryFromRequest(table, REQUEST)
 
 # strange validation error fix:
-if not entry or (table == 'studiengang' and entry and not entry.get('name')):
+if REQUEST['PUBLISHED'].getId() == 'zopra_table_edit_form' and (not entry or (table == 'studiengang' and entry and not entry.get('name'))):
     logger = logging.getLogger("Plone")
     logger.info('VALIDATION-ERROR on edit_form: entry: %s' % entry)
     request = context.REQUEST
