@@ -48,8 +48,6 @@ class TemplateBaseManager(GenericManager):
     security = ClassSecurityInfo()
     security.declareObjectPublic()
 
-
-
     # languages v1
     _properties = GenericManager._properties + (
             {'id': 'lang_default',    'type': 'string',     'mode': 'w'},
