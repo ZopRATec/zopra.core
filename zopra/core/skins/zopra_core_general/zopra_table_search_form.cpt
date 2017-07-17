@@ -81,7 +81,7 @@
                                          tal:content="helpTexts/?attr_name |nothing">
                                         Hinweistext
                                     </div>
-                                    <div tal:condition="error" tal:content="error" i18n:domain="zopra" i18n:translate="">Validation error output</div>
+                                    <div tal:condition="error" tal:content="error"  class="fieldErrorBox" i18n:translate="">Validation error output</div>
                                     <metal:block metal:use-macro="here/zopra_widget_search_display/macros/widget_selector" />
                                 </div>
                             </div>

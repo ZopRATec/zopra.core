@@ -33,7 +33,7 @@
              i18n:translate="zopra_widget_remember_translation">
             Please consider updating the translated entry as well.
         </div>
-        <div tal:condition="error" tal:content="error" i18n:translate="">
+        <div tal:condition="error" tal:content="error" class="fieldErrorBox" i18n:translate="">
             Validation error output
         </div>
     </tal:block>
@@ -92,8 +92,8 @@
                                name attr_name;
                                id attr_name"
         />
-        <div tal:condition="error" tal:content="error" i18n:translate="">Validation error
-            output
+        <div tal:condition="error" tal:content="error" class="fieldErrorBox" i18n:translate="">
+            Validation error output
         </div>
         <label tal:attributes="for attr_name" tal:content="python: field['LABEL']" i18n:translate="">
             Attribute Name
