@@ -62,6 +62,6 @@ if state.getErrors():
     message = _('zopra_form_errors',
                 default = u'Please correct the indicated errors.')
     context.plone_utils.addPortalMessage(context.translate(message), 'info')
-    return state.set(status='failure')
+    return state.set(status='failure', context=context)
 else:
-    return state.set(status='success')
+    return state.set(status='success', context=context)
