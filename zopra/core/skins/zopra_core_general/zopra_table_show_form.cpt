@@ -57,8 +57,9 @@
                                       add_check python: 'zopra_table_show_has_additional_%s' % here.meta_type;
                                       add_hascontent python: not hasattr(here, add_check) or getattr(here, add_check)(fieldset.get('id') or fieldset.get('label'), table, entry, request);
                                       r_fields python: fieldset.get('repeatfields',[]);"
-                          tal:condition="python: fieldset.get('fields') or (exists('here/?add_path/macros/?add_macro') and add_hascontent)">
-                    <legend i18n:translate="" tal:attributes="id python:fieldset.get('id') or fieldset.get('label')" tal:content="title">Data fields</legend>
+                          tal:condition="python: fieldset.get('fields') or (exists('here/?add_path/macros/?add_macro') and add_hascontent)"
+                          tal:attributes="id python:fieldset.get('id') or fieldset.get('label')">
+                    <legend i18n:translate="" tal:content="title">Data fields</legend>
                     <tal:block tal:define="sortables python: fieldset.get('sortables', [])"
                                tal:repeat="attr_name fieldset/fields">
 

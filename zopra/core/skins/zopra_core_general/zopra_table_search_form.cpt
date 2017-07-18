@@ -62,8 +62,9 @@
                 <fieldset tal:define="title python: fieldset.get('label') or fieldset.get('id');
                                       add_macro python: 'additional_%s_%s' % (table, fieldset.get('id') or fieldset.get('label'));
                                       add_path python: 'zopra_table_search_additional_%s' % here.meta_type;"
-                          tal:condition="python: fieldset.get('fields') or exists('here/?add_path/macros/?add_macro')">
-                    <legend i18n:translate="" tal:attributes="id python:fieldset.get('id') or fieldset.get('label')" tal:content="title">Datenfelder</legend>
+                          tal:condition="python: fieldset.get('fields') or exists('here/?add_path/macros/?add_macro')"
+                          tal:attributes="id python:fieldset.get('id') or fieldset.get('label')">
+                    <legend i18n:translate="" tal:content="title">Datenfelder</legend>
                     <tal:block tal:define="sortables python: fieldset.get('sortables', [])"
                                tal:repeat="attr_name fieldset/fields">
                         <tal:check tal:define="dummy python: not coltypes.get(attr_name) and here.zopra_raiser('Field not found: ' + attr_name)"></tal:check>
