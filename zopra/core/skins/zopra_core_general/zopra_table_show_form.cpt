@@ -2,14 +2,17 @@
       lang="en-US"
       metal:use-macro="here/main_template/macros/master"
       i18n:domain="zopra">
+<body>
+<tal:comment tal:replace="nothing">
+    zopra show form (display entry)
+</tal:comment>
 
-  <body>
+<metal:javascriptslot fill-slot="javascript_head_slot">
+    <script type="text/javascript" tal:attributes="src string:${portal_url}/autoupdate-widget/jquery.autoupdate-widget.js"></script>
+</metal:javascriptslot>
 
-      <metal:topslot fill-slot="top_slot">
-          <tal:block tal:define="global isAnon context/@@plone_portal_state/anonymous;"></tal:block>
-      </metal:topslot>
-
-<metal:main fill-slot="main">
+<metal:main fill-slot="main"
+            tal:define="isAnon context/@@plone_portal_state/anonymous;">
     <tal:block tal:condition="isAnon">
       <tal:block replace="context/raiseUnauthorized"></tal:block>
     </tal:block>
@@ -127,5 +130,5 @@
     </tal:block>
 </metal:main>
 
-  </body>
+</body>
 </html>
