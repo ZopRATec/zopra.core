@@ -3,7 +3,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ZMOM 1.0\n"
-"POT-Creation-Date: 2017-07-13 14:13+0000\n"
+"POT-Creation-Date: 2017-07-18 13:02+0000\n"
 "PO-Revision-Date: 2010-05-06 14:11+0100\n"
 "Last-Translator: Peter Seifert <peter.seifert@zopra.de>\n"
 "Language-Team: ZMOM i18n <i18n@zopra.de>\n"
@@ -65,7 +65,7 @@ msgstr ""
 msgid "Release"
 msgstr ""
 
-#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:152
+#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:169
 msgid "Request"
 msgstr ""
 
@@ -79,7 +79,7 @@ msgstr ""
 msgid "Save"
 msgstr ""
 
-#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:137
+#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:154
 msgid "Search"
 msgstr ""
 
@@ -242,13 +242,13 @@ msgid "zopra_delteconfirm_confirm"
 msgstr ""
 
 #. Default: "Edit ${table} ${label} ${language}"
-#: ./skins/zopra_core_general/zopra_table_edit_form.cpt:57
+#: ./skins/zopra_core_general/zopra_table_edit_form.cpt:58
 msgid "zopra_edit_heading"
 msgstr ""
 
 #. Default: "Language:"
-#: ./skins/zopra_core_general/zopra_table_edit_form.cpt:58
-#: ./skins/zopra_core_general/zopra_table_show_form.cpt:38
+#: ./skins/zopra_core_general/zopra_table_edit_form.cpt:59
+#: ./skins/zopra_core_general/zopra_table_show_form.cpt:41
 msgid "zopra_edit_language"
 msgstr ""
 
@@ -317,7 +317,7 @@ msgid "zopra_entry_notfound"
 msgstr ""
 
 #. Default: "for"
-#: ./skins/zopra_core_general/zopra_widget_edit_display.pt:173
+#: ./skins/zopra_core_general/zopra_widget_edit_display.pt:174
 msgid "zopra_for"
 msgstr ""
 
@@ -358,12 +358,12 @@ msgid "zopra_import_tabseparated_label"
 msgstr ""
 
 #. Default: "New Entry"
-#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:127
+#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:128
 msgid "zopra_links_edit_create_new"
 msgstr ""
 
 #. Default: "Edit Entry"
-#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:239
+#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:256
 msgid "zopra_links_edit_edit"
 msgstr ""
 
@@ -372,13 +372,18 @@ msgstr ""
 msgid "zopra_links_edit_latex_export"
 msgstr ""
 
+#. Default: "Disable tabs"
+#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:137
+msgid "zopra_links_edit_no_tabs"
+msgstr ""
+
 #. Default: "Edit Original"
 #: ./skins/zopra_core_general/zopra_button_link_bar.cpt:106
 msgid "zopra_links_edit_original_language_edit"
 msgstr ""
 
 #. Default: "Show Original"
-#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:231
+#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:248
 msgid "zopra_links_edit_original_language_show"
 msgstr ""
 
@@ -402,13 +407,18 @@ msgstr ""
 msgid "zopra_links_edit_show_special"
 msgstr ""
 
+#. Default: "Enable tabs"
+#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:143
+msgid "zopra_links_edit_tabs"
+msgstr ""
+
 #. Default: "Edit Translation"
 #: ./skins/zopra_core_general/zopra_button_link_bar.cpt:96
 msgid "zopra_links_edit_translation_edit"
 msgstr ""
 
 #. Default: "Show Translation"
-#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:221
+#: ./skins/zopra_core_general/zopra_button_link_bar.cpt:238
 msgid "zopra_links_edit_translation_show"
 msgstr ""
 
@@ -453,7 +463,7 @@ msgid "zopra_lists_value"
 msgstr ""
 
 #. Default: "Modules"
-#: ./skins/zopra_core_general/zopra_main_form.cpt:37
+#: ./skins/zopra_core_general/zopra_main_form.cpt:36
 msgid "zopra_main_modules"
 msgstr ""
 
@@ -533,52 +543,52 @@ msgid "zopra_release_singlelink_label"
 msgstr ""
 
 #. Default: "Chosen criteria:"
-#: ./skins/zopra_core_general/zopra_table_search_result.pt:85
+#: ./skins/zopra_core_general/zopra_table_search_result.pt:90
 msgid "zopra_search_criteria"
 msgstr ""
 
 #. Default: "Search"
-#: ./skins/zopra_core_general/zopra_table_search_form.cpt:58
+#: ./skins/zopra_core_general/zopra_table_search_form.cpt:50
 msgid "zopra_search_heading"
 msgstr ""
 
 #. Default: "Visible Columns:"
-#: ./skins/zopra_core_general/zopra_table_search_result.pt:210
+#: ./skins/zopra_core_general/zopra_table_search_result.pt:215
 msgid "zopra_search_result_cols"
 msgstr ""
 
 #. Default: "Number of entries:"
-#: ./skins/zopra_core_general/zopra_table_search_result.pt:244
+#: ./skins/zopra_core_general/zopra_table_search_result.pt:249
 msgid "zopra_search_result_count"
 msgstr ""
 
 #. Default: "delete"
-#: ./skins/zopra_core_general/zopra_table_search_result.pt:199
+#: ./skins/zopra_core_general/zopra_table_search_result.pt:204
 msgid "zopra_search_result_delete"
 msgstr ""
 
 #. Default: "edit"
-#: ./skins/zopra_core_general/zopra_table_search_result.pt:169
+#: ./skins/zopra_core_general/zopra_table_search_result.pt:174
 msgid "zopra_search_result_edit"
 msgstr ""
 
 #. Default: "Export:"
-#: ./skins/zopra_core_general/zopra_table_search_result.pt:257
+#: ./skins/zopra_core_general/zopra_table_search_result.pt:262
 msgid "zopra_search_result_export"
 msgstr ""
 
 #. Default: "Entries:"
-#: ./skins/zopra_core_general/zopra_table_search_result.pt:134
+#: ./skins/zopra_core_general/zopra_table_search_result.pt:139
 msgid "zopra_search_result_result_range"
 msgstr ""
 
 #. Default: "show"
-#: ./skins/zopra_core_general/zopra_table_search_result.pt:161
+#: ./skins/zopra_core_general/zopra_table_search_result.pt:166
 msgid "zopra_search_result_show"
 msgstr ""
 
 #. Default: "Order by:"
-#: ./skins/zopra_core_general/zopra_table_search_result.pt:227
+#: ./skins/zopra_core_general/zopra_table_search_result.pt:232
 msgid "zopra_search_result_sorting"
 msgstr ""
 
@@ -588,12 +598,12 @@ msgid "zopra_search_results_heading"
 msgstr ""
 
 #. Default: "Search for any content (non-empty) in this field."
-#: ./skins/zopra_core_general/zopra_widget_search_display.pt:22
+#: ./skins/zopra_core_general/zopra_widget_search_display.pt:23
 msgid "zopra_search_widget_any"
 msgstr ""
 
 #. Default: "Details ${table} ${label} ${language}"
-#: ./skins/zopra_core_general/zopra_table_show_form.cpt:37
+#: ./skins/zopra_core_general/zopra_table_show_form.cpt:40
 msgid "zopra_show_heading"
 msgstr ""
 
@@ -748,7 +758,7 @@ msgid "zopra_widget_modal"
 msgstr ""
 
 #. Default: "<not set>"
-#: ./tools/TemplateBaseManager.py:516
+#: ./tools/TemplateBaseManager.py:538
 msgid "zopra_widget_not_set"
 msgstr ""
 
@@ -758,24 +768,24 @@ msgid "zopra_widget_remember_translation"
 msgstr ""
 
 #. Default: "UND verknüpft:"
-#: ./skins/zopra_core_general/zopra_widget_search_display.pt:143
+#: ./skins/zopra_core_general/zopra_widget_search_display.pt:146
 msgid "zopra_widget_search_and_concat"
 msgstr ""
 
 #. Default: "has/is"
-#: ./skins/zopra_core_general/zopra_widget_search_display.pt:85
-#: ./skins/zopra_core_general/zopra_widget_show_display.pt:47
+#: ./skins/zopra_core_general/zopra_widget_search_display.pt:87
+#: ./skins/zopra_core_general/zopra_widget_show_display.pt:48
 msgid "zopra_widget_search_bool"
 msgstr ""
 
 #. Default: "has/is not"
-#: ./skins/zopra_core_general/zopra_widget_search_display.pt:96
-#: ./skins/zopra_core_general/zopra_widget_show_display.pt:57
+#: ./skins/zopra_core_general/zopra_widget_search_display.pt:98
+#: ./skins/zopra_core_general/zopra_widget_show_display.pt:58
 msgid "zopra_widget_search_bool_not"
 msgstr ""
 
 #. Default: "<any value>"
-#: ./tools/TemplateBaseManager.py:520
+#: ./tools/TemplateBaseManager.py:542
 msgid "zopra_widget_set_any"
 msgstr ""
 
