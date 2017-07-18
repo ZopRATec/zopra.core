@@ -1,8 +1,8 @@
+<!DOCTYPE html>
+<html i18n:domain="zopra">
 <tal:comment replace="nothing">
     Opens an arbitrary page as popup, makes its representation simpler and add some behaviour by css- and js-injection.
 </tal:comment>
-<!DOCTYPE html>
-<html i18n:domain="zopra">
 <head tal:define="portal_url here/portal_url">
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 
