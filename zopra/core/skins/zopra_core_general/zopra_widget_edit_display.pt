@@ -108,7 +108,7 @@
 <metal:widget_memo define-macro="widget_memo">
     <metal:block metal:use-macro="python:path('here/zopra_widget_edit_display/macros/widget_label')" />
     <div data-sync data-has-reveal="true">
-        <a class="expand" tal:attributes="data-open string:reveal_${attr_name}"><span class="show-for-sr" i18n:translate="zopra_widget_modal">Click me for a modal text input panel</span></a>
+        <a class="expand" tal:attributes="data-open string:reveal_${attr_name}"><span class="show-for-sr" i18n:translate="zopra_widget_modal">Click here for a modal text input panel</span></a>
         <textarea cols="50" rows="5"
                  tal:attributes="name attr_name; id attr_name; data-sync-with string:#clone_${attr_name}"
                  tal:content="structure attr_value">value</textarea>
@@ -167,7 +167,7 @@
             </tal:block>
         </select>
         <div class="zopra-notes" tal:condition="notes">
-            <div tal:define="labelstr python: lobj.getNoteslabel() or isinstance(notes, bool) and here.translate('Details') or here.listHandler[notes].getLabel()"
+            <div tal:define="labelstr python: lobj.getNoteslabel() or isinstance(notes, bool) and here.translate('Details', domain='zopra') or here.listHandler[notes].getLabel()"
                  tal:condition="attr_value"
                  class="zopra-notesheader">
                 <span tal:content="labelstr">Label</span>

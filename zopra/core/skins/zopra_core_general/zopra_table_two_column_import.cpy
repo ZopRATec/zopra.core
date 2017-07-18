@@ -14,26 +14,30 @@ request = context.REQUEST
 
 # constants
 delim = unicode(delim,'unicode-escape')
-manager = context.app.infoapp
+manager = context
 tobj = manager.tableHandler[table]
 coltypes = tobj.getColumnDefs(True)
 cols = coltypes.keys()
+error_message = context.translate(_('zopra_form_errors', default = 'Please correct the indicated errors.'))
 # read data
 data = file.read()
 if len(data) == 0:
-    state.setError('', 'CVS: Keine CSV-Datei hochgeladen.', 'no_csv_file')
-    context.plone_utils.addPortalMessage(context.translate(_('zopra_form_errors', default = 'Please correct the indicated errors.')), 'info')
-    return state.set(status='failure',context=context)
+    message = _('zopra_twocol_import_no_csv', default = u'CSV: No file uploaded.')
+    state.setError('', manager.translate(message, domain = 'zopra'), 'no_csv_file')
+    context.plone_utils.addPortalMessage(error_message, 'info')
+    return state.set(status = 'failure',context = context)
 try:
     data = data.decode(encoding).encode('utf8')
 except UnicodeDecodeError, e:
-    state.setError('', 'CVS: Konnte Kodierung (%s) nicht anwenden (%s)' % (encoding, e), 'csv_parse_error_wrong_encoding')
-    context.plone_utils.addPortalMessage(context.translate(_('zopra_form_errors', default = 'Please correct the indicated errors.')), 'info')
+    message = _('zopra_twocol_import_encoding_error', default = u'CSV: Could not decode the file with the given encoding.')
+    state.setError('', manager.translate(message, domain = 'zopra'), 'csv_parse_error_wrong_encoding')
+    context.plone_utils.addPortalMessage(error_message, 'info')
     return state.set(status='failure',context=context)
 except LookupError, e:
-    state.setError('', 'CVS: Konnte Kodierung (%s) nicht finden' % (encoding), 'csv_parse_error_encoding_not_found')
-    context.plone_utils.addPortalMessage(context.translate(_('zopra_form_errors', default = 'Please correct the indicated errors.')), 'info')
-    return state.set(status='failure',context=context)
+    message = _('zopra_twocol_import_no_encoding', default = u'CSV: Unknown encoding.')
+    state.setError('', manager.translate(message, domain = 'zopra'), 'csv_parse_error_encoding_not_found')
+    context.plone_utils.addPortalMessage(error_message, 'info')
+    return state.set(status = 'failure',context = context)
 # parses simple two-column CSV
 # e.g.: header  :      "autoid", "attribute_name_or_label"
 #       content :           123, "abc"
@@ -44,19 +48,19 @@ try:
     parsedLines = manager.csv_read(lines, delim = delim)
 except Exception, e:
     error = _('zopra_twocol_import_cvs_error',
-              default = u'CVS: Fehler beim Verarbeiten (Error:  ${error})',
+              default = u'CSV: Error during CSV parsing (Error:  ${error})',
               mapping = {'error': unicode(e)})
-    state.setError('', context.translate(error), 'csv_parse_error')
-    context.plone_utils.addPortalMessage(context.translate(_('zopra_form_errors', default = 'Please correct the indicated errors.')), 'info')
+    state.setError('', context.translate(error, domain = 'zopra'), 'csv_parse_error')
+    context.plone_utils.addPortalMessage(error_message, 'info')
     return state.set(status='failure',context=context)
 # separate header / content
 header, content = parsedLines[:1][0], parsedLines[1:]
 # check that 2 cols are present
 if not len(header) > 1:
     error = _('zopra_twocol_import_content_error',
-              default = u'CVS: Delimiter scheint falsch oder nicht genügend Spalten vorhanden.')
+              default = u'CSV: Delimiter wrong or not enough columns found.')
     state.setError('', context.translate(error), 'csv_parse_error_header_too_short')
-    context.plone_utils.addPortalMessage(context.translate(_('zopra_form_errors', default = 'Please correct the indicated errors.')), 'info')
+    context.plone_utils.addPortalMessage(error_message, 'info')
     return state.set(status='failure',context=context)
 
 attribute = None
@@ -71,7 +75,7 @@ if attribute == None:
               default = u'CSV: \'${attribute}\' is not an attribute (or label of an attribute) of table \'${table}\'.',
               mapping = {'attribute': header[1], 'table': table})
     state.setError('', context.translate(error), 'csv_parse_error_head_attribute_not_found')
-    context.plone_utils.addPortalMessage(context.translate(_('zopra_form_errors', default = 'Please correct the indicated errors.')), 'info')
+    context.plone_utils.addPortalMessage(error_message, 'info')
     return state.set(status = 'failure', context = context)
 
 # construct new values
@@ -85,7 +89,7 @@ for index, c in enumerate(content):
     value = c[1]
     entry_diff = { 'autoid': autoid, attribute: value }
     if not autoid:
-        message = _('zopra_twocol_import_autoid_missing', u'Autoid misssing on line ${line}.', mapping = {'line': index + 1})
+        message = _('zopra_twocol_import_autoid_missing', u'Autoid missing on line ${line}.', mapping = {'line': index + 1})
         context.plone_utils.addPortalMessage(context.translate(message), 'info')
         continue
     # check entry exists

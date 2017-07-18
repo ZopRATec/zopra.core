@@ -48,7 +48,7 @@
             <div class="field">
                 <label for="table" i18n:translate="zopra_twocol_import_target_label">target table</label>
                 <div class="formHelp" i18n:translate="zopra_twocol_import_target_help">
-                Die Tabelle in welcher die Eintr&auml;ge importiert werden sollen.
+                    Select the table, for which you want to import an attribute.
                 </div>
                 <select size="1" name="table">
                     <tal:block repeat="tobj python:[here.app.infoapp.tableHandler[key] for key in here.app.infoapp.tableHandler.keys()]">
@@ -76,7 +76,7 @@
             <div class="field">
                 <label for="delim" i18n:translate="zopra_twocol_import_delimiter_label">Separator</label>
                 <div class="formHelp" i18n:translate="zopra_twocol_import_delimiter_help">
-                    The delimitor sign used to separate columns, e.g.: Semikolon (;), Komma (,), Tabulator (\t)
+                    The delimiter sign used to separate columns, e.g.: semicolon (;), comma (,), tabulator (\t)
                 </div>
                 <input type="text" name="delim" tal:attributes="value request/delim|string:;;" />
             </div>
