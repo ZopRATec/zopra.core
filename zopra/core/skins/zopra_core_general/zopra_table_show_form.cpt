@@ -88,7 +88,6 @@
                         <tal:block tal:define="rentry python: tobj.getEntry(entryid)"
                                    tal:repeat="attr_name r_fields">
                           <tal:check tal:define="dummy python: not coltypes.get(attr_name) and here.zopra_raiser('Field not found: ' + attr_name)"></tal:check>
-                          <div style="clear:both;"></div>
                           <div class="field"
                                tal:define="attr_value python:rentry.get(attr_name, '');
                                            field python:coltypes[attr_name];
@@ -100,7 +99,6 @@
                               Hinweistext
                             </div>
                             <metal:block metal:use-macro="here/zopra_widget_show_display/macros/widget_selector" />
-                            <div style="clear:both;"></div>
                           </div>
                         </tal:block>
                     </tal:block>

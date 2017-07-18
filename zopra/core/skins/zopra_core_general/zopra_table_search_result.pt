@@ -144,7 +144,7 @@
                 <span tal:content="rowcount">10</span>
             </h2>
             <metal:block metal:use-macro="here/zopra_search_tools/macros/editorial_pagelinks" />
-            <table class="table-scrollable draggable zopra-table" width="100%" id="result_tab" cellpadding="0" cellspacing="0">
+            <table class="table-scrollable draggable zopra-table" id="result_tab">
                 <tr>
                     <th></th><th></th>
                     <th tal:condition="links"
@@ -213,7 +213,7 @@
                                dummy python: all_keys.sort()">
                 <div class="result_options_subfield">
                     <h2 i18n:translate="zopra_search_result_cols">
-                        Visible Columns:
+                        Displayed columns:
                     </h2>
                     <select multiple="multiple" class="multi" name="sel_attr:list" size="8">
                         <tal:block tal:repeat="attr_tupel all_keys">
@@ -262,7 +262,7 @@
             <h2 i18n:translate="zopra_search_result_export">
                 Export:
             </h2>
-            <div class="result_options_subfield" style="margin-top: 15px;">
+            <div class="result_options_subfield">
                 <form id="export_as_csv" action="zopra_table_search_result_export_csv" method="post">
                     <input type="hidden" name="table:string" tal:attributes="value table" />
                     <span class="hidden" id="columnListContainer">
