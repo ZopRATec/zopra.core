@@ -15,13 +15,15 @@
     </tal:block>
 </tal:if>
 
-<tal:else condition="python: not request.get('checkCopy')">
+<tal:else condition="python: not request.get('checkCopy')" i18n:domain="zopra">
     <tal:block define="
         global lang here/portal_languages/getPreferredLanguage|here/language_used|here/Language|site_properties/default_language;
         errors python: {};
         table request/table|nothing;
         autoid request/autoid|nothing;
         macroname request/macroname|nothing;
+        formname request/form_id|string:;
+        target python: formname.replace('_form', '') or 'show';
         tobj python: here.tableHandler[table];
         coltypes python:tobj.getColumnDefs();
         origentry python: tobj.getEntry(autoid);
@@ -32,9 +34,10 @@
         required python: here.getGenericConfig(table).get('required',[]);
         edit_lang python: here.doesTranslations(table) and entry.get('language');
         portal_url here/portal_url;">
+        <div tal:content="lang"></div>
         <tal:condition tal:condition="python: not here.doesTranslations(table) or entry.get('language') == 'de'">
             <tal:additional tal:define="add_macro python: 'additional_%s_%s' % (table, macroname);
-                                        add_path python: 'zopra_table_edit_additional_%s' % here.meta_type;"
+                                        add_path python: 'zopra_table_%s_additional_%s' % (target, here.meta_type);"
                             tal:condition="exists: here/?add_path/macros/?add_macro">
                 <metal:use metal:use-macro="here/?add_path/macros/?add_macro">
                     Additional Fields
