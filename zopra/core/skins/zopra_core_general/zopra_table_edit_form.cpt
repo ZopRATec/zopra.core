@@ -5,7 +5,7 @@
 
 <body>
 <tal:comment tal:replace="nothing">
-
+    zopra edit form for entries
 </tal:comment>
 
 <metal:javascriptslot fill-slot="javascript_head_slot">
