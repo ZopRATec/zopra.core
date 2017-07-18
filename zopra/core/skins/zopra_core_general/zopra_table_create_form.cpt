@@ -109,7 +109,7 @@
                                                         clone.data('repeat-field-number', i);
                                                         clone.attr('id', 'repeatItem_' + i);
                                                         clone.css("display", "none");
-                                                        $($('.addFieldset')[0]).append(clone);
+                                                        $('.addFieldset').first().append(clone);
                                                         clone.slideDown("fast");
                                                     }
                                                 } else if (val < currentCount) {
@@ -131,8 +131,8 @@
                             </div>
                         </div>
                         <tal:repeat define="repeats request/repeats|nothing;
-                                                  repeats python: repeats and range(1,int(repeats)+1) or [1];
-                                                  sortables python: fieldset.get('sortables', [])"
+                                            repeats python: repeats and range(1,int(repeats)+1) or [1];
+                                            sortables python: fieldset.get('sortables', [])"
                                     repeat="field_num repeats">
                             <div class="repeatFields row"
                                      tal:attributes="data-repeat-field-number python: field_num and field_num or 1;
@@ -140,14 +140,14 @@
                                 <div class="contentSlot">
                                     <tal:fields repeat="attr_name fieldset/repeatfields">
                                         <div tal:define="error python: errors.get(attr_name);
-                                                attr_value python:request.get(attr_name, '') or entry.get(attr_name, '');
-                                                field python:coltypes[attr_name];
-                                                attr_type python:field['TYPE'];
-                                                attr_sort python:attr_name in sortables;
-                                                attr_notes python:{};
-                                                attr_name python: field_num-1 and attr_name+'_'+str(field_num) or attr_name"
-                                                 tal:attributes="class python: error and 'field error' or 'field'"
-                                                 tal:condition="python: not field.get('INVIS')">
+                                                         attr_value python:request.get(attr_name, '') or entry.get(attr_name, '');
+                                                         field python:coltypes[attr_name];
+                                                         attr_type python:field['TYPE'];
+                                                         attr_sort python:attr_name in sortables;
+                                                         attr_notes python:{};
+                                                         attr_name python: field_num-1 and attr_name+'_'+str(field_num) or attr_name"
+                                             tal:attributes="class python: error and 'field error' or 'field'"
+                                             tal:condition="python: not field.get('INVIS')">
                                             <metal:block metal:use-macro="here/zopra_widget_edit_display/macros/widget_selector" />
                                         </div>
                                     </tal:fields>

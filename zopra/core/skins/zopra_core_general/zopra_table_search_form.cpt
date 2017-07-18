@@ -57,8 +57,7 @@
               class="enableFormTabbing zopra-form"
               tal:attributes="action string:${here/absolute_url}/${template/getId}" >
 
-            <tal:block tal:define="show_additional python: True"
-                       tal:repeat="fieldset fieldsets">
+            <tal:block tal:repeat="fieldset fieldsets">
                 <fieldset tal:define="title python: fieldset.get('label') or fieldset.get('id');
                                       add_macro python: 'additional_%s_%s' % (table, fieldset.get('id') or fieldset.get('label'));
                                       add_path python: 'zopra_table_search_additional_%s' % here.meta_type;"
@@ -88,13 +87,11 @@
                             </div>
                         </div>
                     </tal:block>
-                    <tal:condition tal:condition="show_additional">
-                        <tal:additional tal:condition="exists: here/?add_path/macros/?add_macro">
-                            <metal:use metal:use-macro="here/?add_path/macros/?add_macro">
-                                Additional Fields
-                            </metal:use>
-                        </tal:additional>
-                    </tal:condition>
+                    <tal:additional tal:condition="exists: here/?add_path/macros/?add_macro">
+                        <metal:use metal:use-macro="here/?add_path/macros/?add_macro">
+                            Additional Fields
+                        </metal:use>
+                    </tal:additional>
                 </fieldset>
             </tal:block>
             <div class="formControls fromControlsZopRA">

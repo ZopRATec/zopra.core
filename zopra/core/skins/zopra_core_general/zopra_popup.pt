@@ -31,12 +31,6 @@
             '   hideIframeCallback();'+
             '});\n'+
             '<'+'/script>');
-            // Check now for new messages
-            /* TODO: remove this?
-            var message = $("#iframe").contents().find(".portalMessage > span");
-            if (message.length > 0)
-                message.append("<span style='color:red;'>Bitte schlie&szlig;en Sie dieses Fenster, wenn Sie mit der Aktion fertig sind. Sie k&ouml;nnen dann im Formular fortfahren. Bitte speichern Sie das Formular, falls noch weitere Felder bearbeitet werden.<"+"/span>");
-            */
             var form = $('#iframe').contents().find("form");
             if (form.length > 0) {
                 form.submit(function(event) {

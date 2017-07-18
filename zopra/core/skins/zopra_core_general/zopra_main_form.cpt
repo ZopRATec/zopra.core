@@ -1,62 +1,45 @@
-<tal:comment tal:replace="nothing">
-
-</tal:comment>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US"
       lang="en-US"
       metal:use-macro="here/main_template/macros/master"
       i18n:domain="zopra">
 <body>
-
-<metal:topslot fill-slot="top_slot">
-    <tal:block tal:define="
-                 global toLocalizedTime nocall:context/@@plone/toLocalizedTime;
-                 global portal_properties context/portal_properties;
-                 global site_properties context/portal_properties/site_properties;
-                 global portal context/@@plone_portal_state/portal;
-                 global isAnon context/@@plone_portal_state/anonymous;
-                 global member context/@@plone_portal_state/member;
-                 global mtool context/portal_membership;
-                 global wtool context/portal_workflow;
-                 global wf_state context/@@plone_context_state/workflow_state;
-                 global default_language context/@@plone_portal_state/default_language;">
-    </tal:block>
-</metal:topslot>
-
-<metal:main fill-slot="main">
-    <tal:block tal:condition="python: isAnon or not (user.has_role(('ZopRAAuthor', 'ZopRAReviewer', 'ZopRAAdmin'), here))">
-        <tal:block replace="context/raiseUnauthorized"></tal:block>
-    </tal:block>
-
-    <tal:block tal:define="zpath python: hasattr(here, 'zopra_path') and here.zopra_path or 'app/pm';
-                           pm python:here.path2ob(zpath);
-                           check python: pm or here.zopra_raiser('Product not found, check the zopra_path property or name your Product Manager pm.');
-                           all python:pm.getNaviManagerUrls(None, False);">
-        <div class="row">
-            <div class="contentSlot">
-                <h1 i18n:translate="zopra_main_modules" class="documentFirstHeading">Modules</h1>
-                <ul>
-                    <li tal:repeat="onemgr python:all.keys()">
-                        <a tal:attributes="href python:all[onemgr] + '/zopra_manager_main_form';"
-                           class="button"
-                           tal:content="onemgr">Link to manager</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-        <tal:block tal:repeat="onemgr python:all.keys()">
-          <div tal:define="manager python: getattr(here, all[onemgr].split('/')[-1]);
-                           tname python: 'zopra_manager_info_' + manager.getClassName()"
-               tal:condition="exists: here/?tname">
-            <metal:block metal:use-macro="here/?tname/macros/manager_info" />
-          </div>
+    <tal:comment tal:replace="nothing">
+        Main editorial entry point with info-part per manager.
+    </tal:comment>
+    <metal:main fill-slot="main"
+                tal:define="isAnon context/@@plone_portal_state/anonymous;">
+        <tal:block tal:condition="python: isAnon or not (user.has_role(('ZopRAAuthor', 'ZopRAReviewer', 'ZopRAAdmin'), here))">
+            <tal:block replace="context/raiseUnauthorized"></tal:block>
         </tal:block>
-        <div class="row" tal:condition="exists:here/anonymous_zopra_main_form">
-            <div class="contentSlot">
-                <a href="anonymous_zopra_main_form">Zurück zur Startseite</a>
+        <tal:block tal:define="zpath python: hasattr(here, 'zopra_path') and here.zopra_path or 'app/pm';
+                               pm python:here.path2ob(zpath);
+                               check python: pm or here.zopra_raiser('Product not found, check the zopra_path property or name your Product Manager pm.');
+                               all python:pm.getNaviManagerUrls(None, False);">
+            <div class="row">
+                <div class="contentSlot">
+                    <h1 i18n:translate="zopra_main_modules" class="documentFirstHeading">Modules</h1>
+                    <ul>
+                        <li tal:repeat="onemgr python:all.keys()">
+                            <a tal:attributes="href python:all[onemgr] + '/zopra_manager_main_form';"
+                               class="button"
+                               tal:content="onemgr">Link to manager</a>
+                        </li>
+                    </ul>
+                </div>
             </div>
-        </div>
-    </tal:block>
-</metal:main>
-
+            <tal:block tal:repeat="onemgr python:all.keys()">
+              <div tal:define="manager python: getattr(here, all[onemgr].split('/')[-1]);
+                               tname python: 'zopra_manager_info_' + manager.getClassName()"
+                   tal:condition="exists: here/?tname">
+                <metal:block metal:use-macro="here/?tname/macros/manager_info" />
+              </div>
+            </tal:block>
+            <div class="row" tal:condition="exists:here/anonymous_zopra_main_form">
+                <div class="contentSlot">
+                    <a href="anonymous_zopra_main_form" i18n:translate="zopra_back_to_start">Back to homepage</a>
+                </div>
+            </div>
+        </tal:block>
+    </metal:main>
 </body>
 </html>

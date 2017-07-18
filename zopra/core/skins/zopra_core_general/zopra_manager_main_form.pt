@@ -1,29 +1,13 @@
-<tal:comment tal:replace="nothing">
-
-</tal:comment>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US"
       lang="en-US"
       metal:use-macro="here/main_template/macros/master"
       i18n:domain="zopra">
-  <body>
-
-    <metal:topslot fill-slot="top_slot">
-        <tal:block tal:define="
-                 global toLocalizedTime nocall:context/@@plone/toLocalizedTime;
-                 global portal_properties context/portal_properties;
-                 global site_properties context/portal_properties/site_properties;
-                 global portal context/@@plone_portal_state/portal;
-                 global isAnon context/@@plone_portal_state/anonymous;
-                 global member context/@@plone_portal_state/member;
-                 global mtool context/portal_membership;
-                 global wtool context/portal_workflow;
-                 global wf_state context/@@plone_context_state/workflow_state;
-                 global default_language context/@@plone_portal_state/default_language;
-        ">
-        </tal:block>
-    </metal:topslot>
-
-    <metal:main fill-slot="main">
+<body>
+    <tal:comment tal:replace="nothing">
+        Main manager entry point (accessed from main_form).
+    </tal:comment>
+    <metal:main fill-slot="main"
+                tal:define="isAnon context/@@plone_portal_state/anonymous;">
         <tal:block tal:condition="isAnon">
             <tal:block replace="context/raiseUnauthorized"></tal:block>
         </tal:block>
@@ -31,134 +15,150 @@
                    tal:condition="exists: here/?targetname">
             <div tal:define="dummy python: request.RESPONSE.redirect(targetname)" />
         </tal:block>
-<div class="row">
-    <div class="contentSlot">
-        <h1 i18n:translate="">Manager Overview</h1>
-        <div class="zopra_overview_panel"
-             tal:define="tables python:here.tableHandler.keys();">
-            <tal:block tal:repeat="table tables">
-                <tal:block tal:define="table_visible python: here.getGenericConfig(table).get('visible', True);
-                                       tobj python: table_visible and here.tableHandler[table];">
-                    <fieldset tal:define="icon_url here/iconHandler/absolute_url;
-                                          link_url python:here.absolute_url()+'/zopra_table_action_selector?table=%s' % table;
-                                          index repeat/table/index;"
-                              tal:condition="table_visible"
-                              tal:attributes="class python:'zopra_table_actions' + ((index % 2) and ' floatclearer' or '')">
-                        <legend tal:content="python: tobj.getLabel()">Tablename</legend>
-                        <form method="post"
-                              tal:define="options python: here.getGenericConfig(table).get('show_table_options', {'create':1, 'search':1, 'list':1})"
-                              tal:attributes="action python:here.absolute_url()+'/zopra_table_action_selector'">
-
-                            <table border="0">
-                            <tr><td tal:condition="python: 'create' in options">
-                              <a class="no-icon"
-                                 title="Neuen Eintrag anlegen"
-                                 tal:define="name python:'f_'+table+'_intern_create';"
-                                 tal:attributes="href python: link_url + '&' + name + '=create'">
-                                <img class="action_image" width="92" height="50" alt="Anlegen"
-                                   tal:attributes="src python:icon_url + '/ZMOM_ziCreate.png'" />
-                              </a>
-                            </td><td tal:condition="python: 'search' in options">
-                              <a class="no-icon"
-                                 title="Einträge suchen"
-                                 tal:define="name python:'f_'+table+'_intern_search';"
-                                 tal:attributes="href python: link_url + '&' + name + '=search'">
-                                <img class="action_image" width="50" height="50" alt="Suchen"
-                                   tal:attributes="src python:icon_url + '/ZMOM_ziSearch.png'" />
-                              </a>
-                            </td><td tal:condition="python: 'list' in options">
-                              <a class="no-icon"
-                                 title="Alle Einträge anzeigen"
-                                 tal:define="name python:'f_'+table+'_intern_list';"
-                                 tal:attributes="href python: link_url + '&' + name + '=list'">
-                                <img class="action_image" width="51" height="50" alt="Auflisten"
-                                   tal:attributes="src python:icon_url + '/ZMOM_ziList.png'" />
-                              </a>
-                            </td><td tal:condition="python: 'import' in options">
-                              <a class="no-icon"
-                                 tal:define="name python:'f_'+table+'_intern_import';
-                                             default_url python: link_url + '&' + name + '=import';
-                                             import_data python: options.get('import');
-                                             import_target python: here.getMainFormImportData(import_data, default_url);
-                                             title python: import_target[0];
-                                             url   python: import_target[1];"
-                                 tal:attributes="href url; title title">
-                                <img class="action_image" width="51" height="50" alt=""
-                                   tal:attributes="src python:icon_url + '/ZMOM_ziImport.png'" />
-                              </a>
-                            </td><td tal:condition="python: 'export' in options">
-                              <a class="no-icon"
-                                 title="Export"
-                                 tal:define="name python:'f_'+table+'_intern_export';
-                                             default_url python: link_url + '&' + name + '=export';
-                                             export_data python: options.get('export');
-                                             export_target python: here.getMainFormExportData(export_data, default_url);
-                                             title python: export_target[0];
-                                             url   python: export_target[1];"
-                                 tal:attributes="href url; title title">
-                                <img class="action_image" width="51" height="50" alt=""
-                                   tal:attributes="src python:icon_url + '/ZMOM_ziExport.png'" />
-                              </a>
-                            </td></tr>
-                            <tr><td tal:condition="python: 'create' in options">
-                              <span class="" title="">Neu</span>
-                            </td><td tal:condition="python: 'search' in options">
-                              <span class="" title="">Suchen</span>
-                            </td><td tal:condition="python: 'list' in options">
-                              <span class="" title="">Liste</span>
-                            </td><td tal:condition="python: 'import' in options">
-                              <span class="" title="">Import</span>
-                            </td><td tal:condition="python: 'export' in options">
-                              <span class="" title="">Export</span>
-                            </td>
-                            </tr></table>
-                        </form>
+        <div class="row">
+            <div class="contentSlot">
+                <h1 i18n:translate="">Manager Overview</h1>
+                <div class="zopra_overview_panel"
+                     tal:define="tables python:here.tableHandler.keys();">
+                    <tal:block tal:repeat="table tables">
+                        <tal:block tal:define="table_visible python: here.getGenericConfig(table).get('visible', True);
+                                               tobj python: table_visible and here.tableHandler[table];">
+                            <fieldset tal:define="icon_url here/iconHandler/absolute_url;
+                                                  link_url python:here.absolute_url()+'/zopra_table_action_selector?table=%s' % table;
+                                                  index repeat/table/index;"
+                                      tal:condition="table_visible"
+                                      tal:attributes="class python:'zopra_table_actions' + ((index % 2) and ' floatclearer' or '')">
+                                <legend tal:content="python: tobj.getLabel()">Tablename</legend>
+                                <form method="post"
+                                      tal:define="options python: here.getGenericConfig(table).get('show_table_options', {'create':1, 'search':1, 'list':1})"
+                                      tal:attributes="action python:here.absolute_url()+'/zopra_table_action_selector'">
+                                    <table>
+                                        <tr>
+                                            <td tal:condition="python: 'create' in options">
+                                                <a class="no-icon"
+                                                   title="Neuen Eintrag anlegen"
+                                                   tal:define="name python:'f_'+table+'_intern_create';"
+                                                   tal:attributes="href python: link_url + '&' + name + '=create'">
+                                                    <img class="action_image" alt="Create"
+                                                         tal:attributes="src python:icon_url + '/ZMOM_ziCreate.png'"
+                                                         i18n:attributes="alt zopra_table_actions_new" />
+                                                </a>
+                                            </td><td tal:condition="python: 'search' in options">
+                                                <a class="no-icon"
+                                                   title="Einträge suchen"
+                                                   tal:define="name python:'f_'+table+'_intern_search';"
+                                                   tal:attributes="href python: link_url + '&' + name + '=search'">
+                                                    <img class="action_image" alt="Search"
+                                                         tal:attributes="src python:icon_url + '/ZMOM_ziSearch.png'"
+                                                         i18n:attributes="alt zopra_table_actions_search" />
+                                                </a>
+                                            </td>
+                                            <td tal:condition="python: 'list' in options">
+                                                <a class="no-icon"
+                                                   title="Alle Einträge anzeigen"
+                                                   tal:define="name python:'f_'+table+'_intern_list';"
+                                                   tal:attributes="href python: link_url + '&' + name + '=list'">
+                                                    <img class="action_image" alt="List"
+                                                         tal:attributes="src python:icon_url + '/ZMOM_ziList.png'"
+                                                         i18n:attributes="alt zopra_table_actions_list" />
+                                                </a>
+                                            </td>
+                                            <td tal:condition="python: 'import' in options">
+                                                <a class="no-icon"
+                                                   tal:define="name python:'f_'+table+'_intern_import';
+                                                               default_url python: link_url + '&' + name + '=import';
+                                                               import_data python: options.get('import');
+                                                               import_target python: here.getMainFormImportData(import_data, default_url);
+                                                               title python: import_target[0];
+                                                               url   python: import_target[1];"
+                                                   tal:attributes="href url; title title">
+                                                    <img class="action_image" alt="Import"
+                                                         tal:attributes="src python:icon_url + '/ZMOM_ziImport.png'"
+                                                         i18n:attributes="alt zopra_table_actions_import" />
+                                                </a>
+                                            </td>
+                                            <td tal:condition="python: 'export' in options">
+                                                <a class="no-icon"
+                                                   title="Export"
+                                                   tal:define="name python:'f_'+table+'_intern_export';
+                                                               default_url python: link_url + '&' + name + '=export';
+                                                               export_data python: options.get('export');
+                                                               export_target python: here.getMainFormExportData(export_data, default_url);
+                                                               title python: export_target[0];
+                                                               url   python: export_target[1];"
+                                                   tal:attributes="href url; title title">
+                                                    <img class="action_image" alt="Export"
+                                                         tal:attributes="src python:icon_url + '/ZMOM_ziExport.png'"
+                                                         i18n:attributes="alt zopra_table_actions_export" />
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td tal:condition="python: 'create' in options">
+                                              <span i18n:translate="zopra_table_actions_new">Create</span>
+                                            </td>
+                                            <td tal:condition="python: 'search' in options">
+                                              <span i18n:translate="zopra_table_actions_search">Search</span>
+                                            </td>
+                                            <td tal:condition="python: 'list' in options">
+                                              <span i18n:translate="zopra_table_actions_list">List</span>
+                                            </td>
+                                            <td tal:condition="python: 'import' in options">
+                                              <span i18n:translate="zopra_table_actions_import">Import</span>
+                                            </td>
+                                            <td tal:condition="python: 'export' in options">
+                                              <span i18n:translate="zopra_table_actions_export">Export</span>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </form>
+                            </fieldset>
+                        </tal:block>
+                    </tal:block>
+                </div>
+                <br class="floatclearer" />
+                <div class="zopra_overview_panel"
+                     tal:define="lists python:here.listHandler.keys();
+                                 permission python: here.getPermissionInfo('', 'list_edit')"
+                     tal:condition="permission">
+                    <fieldset class="zopra_list_actions"
+                              tal:define="global foundone python:False;
+                                          count python: len(lists)">
+                        <legend i18n:translate="zopra_main_editable_lists">Editable selection lists</legend>
+                        <div class="listing">
+                            <tal:block tal:repeat="listname python: lists[:count/2]">
+                                <div class="field"
+                                     tal:define="lobj python:here.listHandler[listname]"
+                                     tal:condition="python:lobj.noedit != True">
+                                  <a tal:define="global foundone python: foundone or not lobj.noedit;"
+                                     href=""
+                                     tal:attributes="href python:here.absolute_url()+'/zopra_list_edit_form?listname=' + listname;" tal:content="python: lobj.getLabel()">
+                                    Listname
+                                  </a>
+                                </div>
+                            </tal:block>
+                        </div>
+                        <div class="listing">
+                            <tal:block tal:repeat="listname python: lists[count/2:]">
+                                <div class="field"
+                                     tal:define="lobj python:here.listHandler[listname]"
+                                     tal:condition="python:lobj.noedit != True">
+                                  <a tal:define="global foundone python: foundone or not lobj.noedit;"
+                                     href=""
+                                     tal:attributes="href python:here.absolute_url()+'/zopra_list_edit_form?listname=' + listname;" tal:content="python: lobj.getLabel()">
+                                    Listname
+                                  </a>
+                                </div>
+                            </tal:block>
+                        </div>
+                        <div tal:condition="python: not foundone"
+                             i18n:translate="zopra_main_no_editable_lists">
+                            No editable selection lists found.
+                        </div>
                     </fieldset>
-                </tal:block>
-            </tal:block>
+                </div>
+            </div>
         </div>
-        <br class="floatclearer" />
-        <div class="zopra_overview_panel"
-             tal:define="lists python:here.listHandler.keys();
-                         permission python: here.getPermissionInfo('', 'list_edit')"
-             tal:condition="permission">
-            <fieldset class="zopra_list_actions"
-                      tal:define="global foundone python:False;
-                                  count python: len(lists)">
-                <legend>Editierbare Auswahllisten</legend>
-                <div style="float: left; margin: 5px; width: 200px">
-                    <tal:block tal:repeat="listname python: lists[:count/2]">
-                        <div class="field"
-                             tal:define="lobj python:here.listHandler[listname]"
-                             tal:condition="python:lobj.noedit != True">
-                          <a tal:define="global foundone python: foundone or not lobj.noedit;"
-                             href=""
-                             tal:attributes="href python:here.absolute_url()+'/zopra_list_edit_form?listname=' + listname;" tal:content="python: lobj.getLabel()">
-                            Listname
-                          </a>
-                        </div>
-                    </tal:block>
-                </div>
-                <div style="float: left; margin: 5px; width: 200px">
-                    <tal:block tal:repeat="listname python: lists[count/2:]">
-                        <div class="field"
-                             tal:define="lobj python:here.listHandler[listname]"
-                             tal:condition="python:lobj.noedit != True">
-                          <a tal:define="global foundone python: foundone or not lobj.noedit;"
-                             href=""
-                             tal:attributes="href python:here.absolute_url()+'/zopra_list_edit_form?listname=' + listname;" tal:content="python: lobj.getLabel()">
-                            Listname
-                          </a>
-                        </div>
-                    </tal:block>
-                </div>
-                <div tal:condition="python: not foundone">
-                    Keine editierbaren Listen gefunden.
-                </div>
-            </fieldset>
-        </div>
-    </div>
-</div>
     </metal:main>
   </body>
 </html>

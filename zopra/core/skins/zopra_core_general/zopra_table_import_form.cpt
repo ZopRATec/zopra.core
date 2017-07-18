@@ -4,23 +4,14 @@
       i18n:domain="zopra">
 <body>
 <tal:comment tal:replace="nothing">
-    Standard import form
+    Standard import form with result display (below)
 </tal:comment>
 
-<metal:topslot fill-slot="top_slot">
-    <tal:block tal:define="global isAnon context/@@plone_portal_state/anonymous;"></tal:block>
-</metal:topslot>
-
-<metal:main fill-slot="main" tal:define="global importresult nothing;">
+<metal:main fill-slot="main"
+            tal:define="isAnon context/@@plone_portal_state/anonymous;">
 
     <tal:block tal:condition="isAnon">
         <tal:block replace="context/raiseUnauthorized"></tal:block>
-    </tal:block>
-
-    <tal:block tal:define="fhandle python: request.get('file');
-                           table request/table|nothing"
-               tal:condition="fhandle">
-        <tal:call tal:define="global importresult python: here.importTable(fhandle, table, request.get('tabs'))" />
     </tal:block>
 
     <form name="import_form"
@@ -69,8 +60,13 @@
                        i18n:attributes="value" />
             </div>
         </div>
-        <div id="import result"
-             tal:condition="importresult" tal:content="structure python: importresult.replace('\n', '<br />')">
+        <div id="import_result"
+             tal:define="fhandle request/file|nothing;
+                         table request/table|nothing;
+                         tabs request/tabs|nothing;
+                         importresult python: fhandle and table and here.importTable(fhandle, table, tabs);"
+             tal:condition="importresult"
+             tal:content="structure python: importresult.replace('\n', '<br />')">
             Import result
         </div>
         <input type="hidden" name="form.submitted" value="1" />

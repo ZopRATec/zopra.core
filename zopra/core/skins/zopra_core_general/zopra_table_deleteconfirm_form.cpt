@@ -2,21 +2,16 @@
       lang="en-US"
       metal:use-macro="here/main_template/macros/master"
       i18n:domain="zopra">
-
-  <body>
+<body>
     <tal:comment tal:replace="nothing">
 
     </tal:comment>
 
-    <metal:topslot fill-slot="top_slot">
-        <tal:block tal:define="global isAnon context/@@plone_portal_state/anonymous;"></tal:block>
-    </metal:topslot>
-
-    <metal:main fill-slot="main">
+    <metal:main fill-slot="main"
+                tal:define="isAnon context/@@plone_portal_state/anonymous;">
         <tal:block tal:condition="isAnon">
             <tal:block replace="context/raiseUnauthorized"></tal:block>
         </tal:block>
-
         <form name="delete_form"
               method="post"
               enctype="multipart/form-data"
@@ -38,7 +33,6 @@
                          origid request/origid|nothing;
                          origtable request/origtable|nothing;"
               tal:attributes="action string:${here/getId}/${template/getId}">
-
             <h1 i18n:translate="zopra_deleteconfirm_heading">
                 Delete
                 <tal:block i18n:name="entry_type">
@@ -93,42 +87,35 @@
                 <input type="hidden" name="origattribute" tal:attributes="value request/origattribute" />
             </tal:block>
 
-            <span i18n:translate="zopra_delteconfirm_confirm">Are you sure?</span>
+            <p i18n:translate="zopra_delteconfirm_confirm">Are you sure?</p>
 
-            <div class="formControlsZopRA"
-                 tal:define="process_creation request/process_creation|nothing;">
-
-                <input class="context"
-                       type="submit"
-                       value="Delete"
-                       i18n:attributes="value"
-                       tal:attributes="name button"
-                />
-
-                <input class="standalone"
-                       onclick="history.back(-1)"
-                       type="button"
-                       name="form.button.Cancel"
-                       value="Cancel"
-                       i18n:attributes="value"
-                       tal:condition="not:origid"
-                />
-
-                <input class="standalone"
-                       onclick="top.close()"
-                       type="button"
-                       name="form.button.Cancel"
-                       value="Close"
-                       i18n:attributes="value"
-                       tal:condition="origid"
-                />
+            <div class="formControls formControlsZopRA">
+                <div class="formPanel">
+                    <input class="context"
+                           type="submit"
+                           value="Delete"
+                           i18n:attributes="value"
+                           tal:attributes="name button" />
+                    <input class="context"
+                           type="button"
+                           name="form.button.Cancel"
+                           value="Cancel"
+                           i18n:attributes="value"
+                           tal:condition="not:origid" />
+                    <input class="standalone"
+                           onclick="top.close()"
+                           type="button"
+                           name="form.button.Cancel"
+                           value="Close"
+                           i18n:attributes="value"
+                           tal:condition="origid" />
+                </div>
             </div>
             <input type="hidden" name="form.submitted" value="1" />
             <input type="hidden" name="table" tal:attributes="value table" />
             <input type="hidden" name="del_autoid:int" tal:attributes="value autoid" />
-
         </form>
     </metal:main>
 
-  </body>
+</body>
 </html>
