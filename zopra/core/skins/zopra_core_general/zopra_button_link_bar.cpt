@@ -123,12 +123,14 @@
                 Export LaTex
             </a>
         </tal:block>
-        <tal:block tal:condition="python: here.getPermissionInfo(table, 'table_create')">
-            <a class="button  small"
-               tal:attributes="href python:'zopra_table_create_form?table=%s' % (table)"
-               i18n:translate="zopra_links_edit_create_new">
-                New Entry
-            </a>
+        <tal:block tal:condition="not:origid|nothing">
+            <tal:block tal:condition="python: here.getPermissionInfo(table, 'table_create') and not here.getGenericConfig(table).get('dependent', False)">
+                <a class="button  small"
+                   tal:attributes="href python:'zopra_table_create_form?table=%s' % (table)"
+                   i18n:translate="zopra_links_edit_create_new">
+                    New Entry
+                </a>
+            </tal:block>
         </tal:block>
     </div>
 </metal:block>
@@ -171,7 +173,7 @@
                value="Save"
                i18n:attributes="value"
         />
-        <input class="standalone"
+        <input class="context"
                type="button"
                onclick="history.back(-1)"
                name="form.button.Cancel"
@@ -179,7 +181,7 @@
                i18n:attributes="value"
                tal:condition="not: request/origid|nothing"
         />
-        <input class="standalone"
+        <input class="context"
                onclick="top.close()"
                type="button"
                name="form.button.Close"
@@ -244,7 +246,7 @@
             </tal:block>
         </tal:block>
         <tal:block tal:condition="not:origid|nothing">
-            <tal:block tal:condition="python: here.getPermissionInfo(table, 'table_create')">
+            <tal:block tal:condition="python: here.getPermissionInfo(table, 'table_create') and not here.getGenericConfig(table).get('dependent', False)">
                 <a class="button"
                    tal:attributes="href python:'zopra_table_create_form?table=%s' % (table)"
                    i18n:translate="zopra_links_edit_create_new">
