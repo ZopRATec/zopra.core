@@ -135,6 +135,8 @@ class GenericManager(ManagerPart):
               show_fields   ([attrs])      - attributes for showList
               required      ([attrs])      - required attributes for new/edit
               importable    (True / False) - show in importForm for Import
+              show_table_options    ({'create':1, 'search':1, 'list':1, 'import': (<target>, <label>), ...}) - define options for generic table overview (on manager_main_form)
+              dependent     (True / False) - set to True to not show the create button on zopra_table_show_form / zopra_table_edit_form
         access via getGenericConfig(table)
     """
     _generic_config = {}
