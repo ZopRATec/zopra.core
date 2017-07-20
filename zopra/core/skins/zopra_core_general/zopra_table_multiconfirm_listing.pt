@@ -4,43 +4,58 @@
 
   <body>
     <tal:comment tal:replace="nothing">
-
+        Show a table of working copies (with edit / release options).
+        Macro works on all tables, that have working copies enabled and currently have active working copy entries.
+        Optional attribute: rev_roles (List of roles that are allowed to see the listing)
     </tal:comment>
 
 <metal:block define-macro="multiconfirm_listing">
     <!-- Multiconfirmation of Working Copies (Listing) -->
-    <tal:block tal:define="reviewers rev_roles|string:ZopRAReviewer;"
+    <tal:block tal:define="reviewers rev_roles|python:['ZopRAReviewer', 'ZopRAAdmin'];"
                tal:condition="python: user.has_role(reviewers, here)">
-      <h2 i18n:translate="zopra_release_heading">Release</h2>
-      <div tal:repeat="table python:manager.tableHandler.keys()">
-        <tal:block tal:define="tobj python: manager.tableHandler[table]"
-                   tal:condition="python: manager.doesWorkingCopies(table)">
-          <div tal:define="entries python: manager.getWorkingCopies(table)"
-               tal:condition="entries">
-            <br />
-            <h3 tal:content="python: tobj.getLabel()"></h3>
-            <a tal:attributes="href python: manager.absolute_url() + '/zopra_table_multiconfirm_form?table=' + table"><span style="color: red">*NEU*</span>Mehrfachfreigabe</a>
-            <table id="result_tab">
-              <tr>
-                <th>Name</th>
-                <th>Diff</th>
-                <th>Freigabe</th>
-              </tr>
-              <tr tal:repeat="entry entries">
-                <td tal:content="python: manager.getLabelString(table, None, entry)"></td>
-                <td>
-                  <tal:block content="python: ', '.join(manager.getDiffLabels(table, entry))">
-                  </tal:block>
-                  <a tal:attributes="href python: manager.absolute_url() + '/zopra_manager_show_log?entryid=%s&table=%s' % (entry['autoid'], table)">(Details)</a>
-                </td>
-                <td>
-                  <a tal:attributes="href python: manager.absolute_url() + '/zopra_table_edit_form?autoid=%s&table=%s' % (entry['autoid'], table)">&raquo;zur Freigabe</a>
-                </td>
-              </tr>
-            </table>
-          </div>
-        </tal:block>
-      </div>
+        <h2 i18n:translate="zopra_release_heading">Release</h2>
+        <div tal:repeat="table python:manager.tableHandler.keys()">
+            <tal:block tal:define="tobj python: manager.tableHandler[table]"
+                       tal:condition="python: manager.doesWorkingCopies(table)">
+                <div tal:define="entries python: manager.getWorkingCopies(table)"
+                     tal:condition="entries">
+                    <br />
+                    <h3 tal:content="python: tobj.getLabel()"></h3>
+                    <a tal:attributes="href python: manager.absolute_url() + '/zopra_table_multiconfirm_form?table=' + table">
+                        <span i18n:translate="zopra_multirelease_label">Multi-release</span>
+                    </a>
+                    <table id="result_tab" class="zopra-table">
+                        <thead>
+                            <tr>
+                                <th i18n:translate="zopra_release_name">Name</th>
+                                <th i18n:translate="zopra_release_diff">Diff</th>
+                                <th i18n:translate="zopra_release_heading">Release</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr tal:repeat="entry entries">
+                                <td tal:content="python: manager.getLabelString(table, None, entry)"></td>
+                                <td>
+                                    <tal:block content="python: ', '.join(manager.getDiffLabels(table, entry))"></tal:block>
+                                    <a class="icon-zopra-show"
+                                       i18n:translate="zopra_release_details"
+                                       tal:attributes="href python: manager.absolute_url() + '/zopra_manager_show_log?entryid=%s&table=%s' % (entry['autoid'], table)">
+                                       Details
+                                    </a>
+                                </td>
+                                <td>
+                                    <a class="icon-zopra-release"
+                                       tal:attributes="href python: manager.absolute_url() + '/zopra_table_edit_form?autoid=%s&table=%s' % (entry['autoid'], table)"
+                                       i18n:translate="zopra_release_singlelink_label">
+                                        Release
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </tal:block>
+        </div>
     </tal:block>
 </metal:block>
   </body>

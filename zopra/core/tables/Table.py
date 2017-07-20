@@ -157,7 +157,7 @@ class Table(SimpleItem, PropertyManager):
         self.treeTemplate = None
         self.ebase        = ebase
         self.do_cache     = True
-        self.label        = str(label)
+        self.label        = label
 
 
     def getManager(self):
@@ -428,7 +428,7 @@ class Table(SimpleItem, PropertyManager):
         # shortcut for ordinary autoid field
         if name == TCN_AUTOID:
             return { ZC.COL_TYPE:  'int',
-                     ZC.COL_LABEL: 'Automatic No.',
+                     ZC.COL_LABEL: u'Automatic No.',
                      ZC.COL_INVIS: True }
 
         # get field description from manager tables

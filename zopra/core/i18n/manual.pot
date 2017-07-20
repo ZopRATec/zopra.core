@@ -16,14 +16,8 @@ msgstr ""
 
 # general zopra template translations
 
-#: ./skins/zopra_core_general/zopra_widget_edit_display.pt
-msgid "zopra_for"
-msgstr ""
-
+# unclear where this comes from
 msgid "search"
-msgstr ""
-
-msgid "Redaktion"
 msgstr ""
 
 # Edit-tracking Cols
@@ -40,5 +34,6 @@ msgstr ""
 msgid "Input required"
 msgstr ""
 
-msgid "Required"
+# repeated special label for additional links on search result page
+msgid "copy"
 msgstr ""

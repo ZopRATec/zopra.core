@@ -22,7 +22,7 @@ from PyHtmlGUI.widgets.hgLabel       import hgLabel,       \
 #
 # ZopRA Imports
 #
-from zopra.core                     import HTML, Folder, ZM_PM, ZM_SCM
+from zopra.core                     import HTML, Folder, ZM_PM, ZM_SCM, ZC
 from zopra.core.dialogs             import getStdDialog,       \
                                            getStdZMOMDialog
 from zopra.core.elements.Buttons    import BTN_L_ADDITEM,  \
@@ -77,7 +77,7 @@ class ListHandler(Folder):
         for list_idx in tmp_obj.list:
             list_        = tmp_obj.list[list_idx]
             list_name    = list_.getName().encode('utf-8')
-            label        = list_.getLabel().encode('utf-8')
+            label        = list_.getLabel()
             translations = list_.getTranslations()
             translist    = []
             if translations:
@@ -130,7 +130,7 @@ class ListHandler(Folder):
                         lobj.notes = notes
 
                     if column.getNoteslabel():
-                        lobj.noteslabel = column.getNoteslabel().encode('utf-8')
+                        lobj.noteslabel = column.getNoteslabel()
 
                     if column.getLabelsearch():
                         lobj.labelsearch = True
@@ -141,6 +141,62 @@ class ListHandler(Folder):
                     # FIXME: check if this is necessary, only cols should be invisible, not the foreign lists
                     if column.getInvisible():
                         lobj.invisible = True
+        if not nocreate:
+            self.addListTableIndexes()
+
+
+    def addListTableIndexes(self):
+        """\brief add DB indexes for list tables and multi tables"""
+        # TODO: move SQL to Connector / Product
+        manager = self.getManager()
+        pm = manager.getManager(ZC.ZM_PM)
+        def mapname(lobj, mgr):
+            if lobj.map:
+                dbname = '%smulti%s' % ( mgr.getId(), lobj.map)
+            else:
+                dbname = '%smulti%s%s' % ( mgr.getId(), lobj.table, lobj.listname)
+            return dbname
+        counter1 = 0
+        counter2 = 0
+        tables = manager.tableHandler.keys()
+        # create index for multilists / hierarchylists on multi-table
+        for table in tables:
+            for lobj in manager.listHandler.getLists(table, ['multilist', 'hierarchylist']):
+                try:
+                    # add index to multitable for tableid
+                    name = mapname(lobj, manager)
+                    sql = "ALTER TABLE %s ADD INDEX idxmulti1_%s (tableid)" % (name, lobj.listname)
+                    pm.executeDBQuery(sql)
+                except Exception, ex:
+                    if str(ex).find('Duplicate key name') != -1:
+                        pass
+                    else:
+                        raise
+                try:
+                    # add index to multitable for listname column
+                    sql = "ALTER TABLE %s ADD INDEX idxmulti2_%s (%s)" % (name, lobj.listname, lobj.listname)
+                    pm.executeDBQuery(sql)
+                except Exception, ex:
+                    if str(ex).find('Duplicate key name') != -1:
+                        pass
+                    else:
+                        raise
+                counter1 += 1
+        # create indexes for all list tables
+        for onelist in manager.listHandler.keys():
+            lobj = manager.listHandler[onelist]
+            try:
+                # add index to listtable for value column
+                sql = "ALTER TABLE %s%s ADD INDEX idx_%s (value)" % (manager.id, lobj.listname, lobj.listname)
+                pm.executeDBQuery(sql)
+
+            except Exception, ex:
+                if str(ex).find('Duplicate key name') != -1:
+                    pass
+                else:
+                    raise
+            counter2 += 1
+        print 'created indexes (table-ref, list-ref) for %s multilists, , created indexes (value) for % lists' % (counter1, counter2)
 
 
     def getManager(self):
@@ -241,7 +297,7 @@ class ListHandler(Folder):
         if column.getMap():
             map_  = column.getMap().encode('utf-8')
         if column.getLabel():
-            label = column.getLabel().encode('utf-8')
+            label = column.getLabel()
 
         if str(column.getInvisible()).upper() in ['1', 'T', 'TRUE', 'Y', 'YES']:
             invisible = True

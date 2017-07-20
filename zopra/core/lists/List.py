@@ -291,10 +291,12 @@ class List(GenericList):
             # get from cache
             completelist = self.cache.values()
         else:
+            # search for value
             where = ''
             if value:
-                # search for value
-                value = value.replace('*', '%')
+                # *-search is allowed (using %), remove ' from value
+                # TODO: use checkType for sql check
+                value = value.replace('*', '%').replace("'", "")
                 where = " WHERE value like '%s'" % value
 
             sql = 'SELECT %s FROM %s%s%s;'
@@ -410,7 +412,7 @@ class List(GenericList):
                 entry  = val2entry.get(val, None)
 
                 if entry:
-                    # added rank == '' test to avoid empty rank which doesn't mach
+                    # added rank == '' test to avoid empty rank which doesn't match
                     if rank is None or rank == '' or entry.get(ZC.RANK) == rank:
                         autoid = entry.get(ZC.TCN_AUTOID)
 
@@ -426,6 +428,9 @@ class List(GenericList):
             for val in values:
                 autoid = None
                 if val is not None:
+                    # allow *-search, remove ' chars
+                    # TODO: use checkType
+                    val = val.replace('*', '%').replace("'", "")
                     result = mgr.getManager(ZC.ZM_PM).executeDBQuery(query_text % val)
 
                     if result:

@@ -8,12 +8,6 @@
 
 </tal:comment>
 
-<metal:css_slot fill-slot="css_slot">
-    <link rel="stylesheet" type="text/css" media="all"  tal:attributes="href string:${portal_url}/zopra.css" />
-    <link rel="stylesheet" type="text/css" media="all"  tal:attributes="href string:${portal_url}/zopra_edit.css" />
-    <link rel="stylesheet" type="text/css" media="print"  tal:attributes="href string:${portal_url}/sins_print.css" />
-</metal:css_slot>
-
 <metal:topslot fill-slot="top_slot">
     <tal:block tal:define="global isAnon context/@@plone_portal_state/anonymous;"></tal:block>
 </metal:topslot>
@@ -23,66 +17,67 @@
         <tal:block replace="context/raiseUnauthorized"></tal:block>
     </tal:block>
     <tal:block tal:define="errors options/state/getErrors;
-            tobj python: here.tableHandler[table];
-                    coltypes python:tobj.getColumnDefs();
-                            fieldsets python:here.getLayoutInfo(table, 'create');
-                                    helpTexts python: here.getHelpTexts(table);
-                                            origtable request/origtable|nothing;
-                                                    origid request/origid|nothing;
-                                                            origattribute request/origattribute|nothing;
-                                                                    entry python: request.get('autoid') and tobj.getEntry(request.get('autoid')) or here.getDefaultCreateValues(table);
-                                                                            required python: here.getGenericConfig(table).get('required',[]);">
+                           tobj python: here.tableHandler[table];
+                           coltypes python:tobj.getColumnDefs();
+                           fieldsets python:here.getLayoutInfo(table, 'create');
+                           helpTexts python: here.getHelpTexts(table);
+                           origtable request/origtable|nothing;
+                           origid request/origid|nothing;
+                           origattribute request/origattribute|nothing;
+                           entry python: request.get('autoid') and tobj.getEntry(request.get('autoid')) or here.getDefaultCreateValues(table);
+                           required python: here.getGenericConfig(table).get('required',[]);
+                           create_permitted python: here.getPermissionInfo(table, 'table_create')">
+        <tal:block tal:condition="python: not create_permitted">
+            <tal:block replace="context/raiseUnauthorized"></tal:block>
+        </tal:block>
         <h1 class="documentFirstHeading"
             i18n:translate="zopra_create_heading">
           Create entry
           <span i18n:name="table" i18n:translate="" tal:content="python: tobj.getLabel()"></span>
         </h1>
         <form name="edit_form"
-              action="."
+              id="edit_form"
               method="post"
               enctype="multipart/form-data"
               class="enableFormTabbing zopra-form"
-                 tal:attributes="action string:${here/getId}/${template/getId}" >
+              tal:attributes="action string:${here/absolute_url}/${template/getId}" >
             <tal:block tal:define="show_additional python: not here.doesTranslations(table) or entry.get('language') == 'de'"
                      tal:repeat="fieldset fieldsets">
-                <fieldset id="addFieldset"
-                         tal:define="add_macro python: 'additional_%s_%s' % (table, fieldset.get('label'));
-                                add_path python: 'zopra_table_create_additional_%s' % here.meta_type;
-                                        add_check python: 'zopra_table_create_has_additional_%s' % here.meta_type;
-                                                add_checked python: exists(add_check) and getattr(here, add_check)(table, entry, request);
-                                                        add_hascontent python: not exists(add_check) or add_checked"
-                         tal:condition="python: fieldset.get('fields') or (exists('here/?add_path/macros/?add_macro') and add_hascontent)">
-
-                    <legend i18n:translate="" tal:attributes="id python:fieldset.get('id') or fieldset.get('label')" tal:content="fieldset/label">
+                <fieldset class="addFieldset"
+                         tal:define="id python: fieldset.get('id') or fieldset.get('label');
+                                     label python: fieldset.get('label') or fieldset.get('id');
+                                     add_macro python: 'additional_%s_%s' % (table, id);
+                                     add_path python: 'zopra_table_create_additional_%s' % here.meta_type;
+                                     add_check python: 'zopra_table_create_has_additional_%s' % here.meta_type;
+                                     add_checked python: exists(add_check) and getattr(here, add_check)(id, table, entry, request);
+                                     add_hascontent python: not exists(add_check) or add_checked"
+                         tal:condition="python: fieldset.get('fields') or (exists('here/?add_path/macros/?add_macro') and add_hascontent)"
+                         tal:attributes="id id">
+                    <legend i18n:translate="" tal:content="label">
                         Data fields
                     </legend>
                     <tal:block tal:define="sortables python: fieldset.get('sortables', []);
-                            fieldlist python: 'repeatfields' in fieldset.keys() and context.listdiff(fieldset['fields'], fieldset['repeatfields']) or fieldset['fields'];"
-                             tal:repeat="attr_name fieldlist">
-                        <tal:block tal:define="br br|nothing;
-                                global br python: br or attr_name == '<br>'"
-                                 tal:condition="python: attr_name != '<br>'">
-
-                            <tal:check tal:define="dummy python: not coltypes.get(attr_name) and here.zopra_raiser('Field not found: ' + attr_name)"></tal:check>
-                            <div class="row">
-                                <div class="contentSlot">
-                                    <div class="field"
-                                             tal:define="error python: errors.get(attr_name);
-                                                    attr_value python:request.get(attr_name, '') or entry.get(attr_name, '');
-                                                            field python:coltypes[attr_name];
-                                                                    attr_type python:field['TYPE'];
-                                                                            attr_sort python:attr_name in sortables;
-                                                                                    attr_notes python:{}"
-                                             tal:attributes="class python: 'field' + (error and ' error' or '')"
-                                             tal:condition="python: not field.get('INVIS')">
-                                        <metal:block metal:use-macro="here/zopra_widget_edit_display/macros/widget_selector" />
-                                    </div>
+                                           fieldlist python: 'repeatfields' in fieldset.keys() and context.listdiff(fieldset['fields'], fieldset['repeatfields']) or fieldset['fields'];"
+                               tal:repeat="attr_name fieldlist">
+                        <tal:check tal:define="dummy python: not coltypes.get(attr_name) and here.zopra_raiser('Field not found: ' + attr_name)"></tal:check>
+                        <div class="row">
+                            <div class="contentSlot">
+                                <div class="field"
+                                         tal:define="error python: errors.get(attr_name);
+                                                     attr_value python:request.get(attr_name, '') or entry.get(attr_name, '');
+                                                     field python:coltypes[attr_name];
+                                                     attr_type python:field['TYPE'];
+                                                     attr_sort python:attr_name in sortables;
+                                                     attr_notes python:{}"
+                                         tal:attributes="class python: 'field' + (error and ' error' or '')"
+                                         tal:condition="python: not field.get('INVIS')">
+                                    <metal:block metal:use-macro="here/zopra_widget_edit_display/macros/widget_selector" />
                                 </div>
                             </div>
-                            <tal:check tal:define="global br python:False"></tal:check>
-                        </tal:block>
+                        </div>
                     </tal:block>
-                    <tal:repeatfields condition="python: 'repeatfields' in fieldset.keys()">
+                    <tal:repeatfields tal:define="the_start repeat/fieldset/start;"
+                                      condition="python: 'repeatfields' in fieldset.keys() and the_start">
                         <div class="row">
                             <div class="contentSlot">
                                 <div class="field">
@@ -114,7 +109,7 @@
                                                         clone.data('repeat-field-number', i);
                                                         clone.attr('id', 'repeatItem_' + i);
                                                         clone.css("display", "none");
-                                                        $('#addFieldset').append(clone);
+                                                        $('.addFieldset').first().append(clone);
                                                         clone.slideDown("fast");
                                                     }
                                                 } else if (val < currentCount) {
@@ -136,8 +131,8 @@
                             </div>
                         </div>
                         <tal:repeat define="repeats request/repeats|nothing;
-                                                  repeats python: repeats and range(1,int(repeats)+1) or [1];
-                                                  sortables python: fieldset.get('sortables', [])"
+                                            repeats python: repeats and range(1,int(repeats)+1) or [1];
+                                            sortables python: fieldset.get('sortables', [])"
                                     repeat="field_num repeats">
                             <div class="repeatFields row"
                                      tal:attributes="data-repeat-field-number python: field_num and field_num or 1;
@@ -145,14 +140,14 @@
                                 <div class="contentSlot">
                                     <tal:fields repeat="attr_name fieldset/repeatfields">
                                         <div tal:define="error python: errors.get(attr_name);
-                                                attr_value python:request.get(attr_name, '') or entry.get(attr_name, '');
-                                                field python:coltypes[attr_name];
-                                                attr_type python:field['TYPE'];
-                                                attr_sort python:attr_name in sortables;
-                                                attr_notes python:{};
-                                                attr_name python: field_num-1 and attr_name+'_'+str(field_num) or attr_name"
-                                                 tal:attributes="class python: error and 'field error' or 'field'"
-                                                 tal:condition="python: not field.get('INVIS')">
+                                                         attr_value python:request.get(attr_name, '') or entry.get(attr_name, '');
+                                                         field python:coltypes[attr_name];
+                                                         attr_type python:field['TYPE'];
+                                                         attr_sort python:attr_name in sortables;
+                                                         attr_notes python:{};
+                                                         attr_name python: field_num-1 and attr_name+'_'+str(field_num) or attr_name"
+                                             tal:attributes="class python: error and 'field error' or 'field'"
+                                             tal:condition="python: not field.get('INVIS')">
                                             <metal:block metal:use-macro="here/zopra_widget_edit_display/macros/widget_selector" />
                                         </div>
                                     </tal:fields>
@@ -174,7 +169,7 @@
                 </fieldset>
             </tal:block>
 
-            <div class="formControls">
+            <div class="formControls formControlsZopRA">
                 <div class="formPanel">
                     <div class="row">
                         <div class="contentSlot">
@@ -200,10 +195,6 @@
         </form>
     </tal:block>
 </metal:main>
-
-<metal:bottom fill-slot="bottom">
-    <metal:block metal:use-macro="here/zopra_bottom/macros/bottom" />
-</metal:bottom>
 
 </body>
 </html>

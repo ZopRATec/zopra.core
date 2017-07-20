@@ -8,6 +8,8 @@
 ##parameters=table=None, REQUEST=None, searching=False
 ##title=Validates the input fields
 ##
+# coding: utf-8
+from zopra.core import zopraMessageFactory as _
 # recheck the parameters
 if not REQUEST:
     REQUEST = context.REQUEST
@@ -21,10 +23,11 @@ tobj = context.tableHandler[table]
 entry = context.getTableEntryFromRequest(table, REQUEST)
 
 # strange validation error fix:
-if not entry or (table == 'studiengang' and entry and not entry.get('name')):
+if REQUEST['PUBLISHED'].getId() == 'zopra_table_edit_form' and (not entry or (table == 'studiengang' and entry and not entry.get('name'))):
     logger = logging.getLogger("Plone")
     logger.info('VALIDATION-ERROR on edit_form: entry: %s' % entry)
     request = context.REQUEST
+    logger.info(str(request))
     entry = context.getTableEntryFromRequest(table, REQUEST)
     if entry:
         logger.info('FOUND the real entry: %s' % entry)
@@ -56,7 +59,9 @@ for key in errors:
     state.setError(key, error[0], error[1])
 
 if state.getErrors():
-    context.plone_utils.addPortalMessage('Please correct the indicated errors.', 'info')
-    return state.set(status='failure')
+    message = _('zopra_form_errors',
+                default = u'Please correct the indicated errors.')
+    context.plone_utils.addPortalMessage(context.translate(message), 'info')
+    return state.set(status='failure', context=context)
 else:
-    return state.set(status='success')
+    return state.set(status='success', context=context)

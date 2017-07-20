@@ -7,97 +7,81 @@
 
     </tal:comment>
 
-    <metal:javascriptslot fill-slot="javascript_head_slot">
-
-    </metal:javascriptslot>
-
-    <metal:css_slot fill-slot="css_slot">
-        <link rel="stylesheet" type="text/css" media="all"  tal:attributes="href string:${portal_url}/zopra.css" />
-        <link rel="stylesheet" type="text/css" media="all"  tal:attributes="href string:${portal_url}/zopra_edit.css" />
-    </metal:css_slot>
-
     <metal:topslot fill-slot="top_slot">
-          <tal:block tal:define="global isAnon context/@@plone_portal_state/anonymous;"></tal:block>
+        <tal:block tal:define="global isAnon context/@@plone_portal_state/anonymous;"></tal:block>
     </metal:topslot>
 
     <metal:main fill-slot="main">
-
-      <tal:block tal:condition="python: isAnon or not (user.has_role(('ZopRAAuthor', 'ZopRAReviewer', 'ZopRAAdmin'), here))">
-        <tal:block replace="context/raiseUnauthorized"></tal:block>
-      </tal:block>
-
-      <form name="multiconfirm_form"
-            action="."
-            method="post"
-            enctype="multipart/form-data"
-            tal:define="errors options/state/getErrors;
-                     table request/table;
-                     tobj python: here.tableHandler[table];"
-            tal:condition="python: here.doesWorkingCopies(table)"
-            tal:attributes="action string:${here/getId}/${template/getId}">
-
-        <!-- Multiconfirmation of Working Copies -->
-        <tal:block tal:condition="python: user.has_role(('ZopRAReviewer'), here)">
-          <h1 class="documentFirstHeading"><span i18n:translate="zopra_release_heading">Release</span> <span tal:content="python: tobj.getLabel()"></span></h1>
-          <tal:block>
-              <div tal:define="entries python: here.getWorkingCopies(table)"
-                   tal:condition="entries">
-                <table id="result_tab">
-                  <tr>
-                      <th></th>
-                    <th>Name</th>
-                    <th>Diff</th>
-                    <th>Freigabe</th>
-                  </tr>
-                  <tr tal:repeat="entry entries">
-                      <td><input type="checkbox" name="confirm_ids:list:int"
-                               tal:attributes="value entry/autoid" /></td>
-                    <td tal:content="python: here.getLabelString(table, None, entry)"></td>
-                    <td>
-                      <tal:block content="python: ', '.join(here.getDiffLabels(table, entry))">
-                      </tal:block>
-                      <a target="_blank" tal:attributes="href python: here.absolute_url() + '/zopra_manager_show_log?entryid=%s&table=%s' % (entry['autoid'], table)">(Details)</a>
-                    </td>
-                    <td>
-                      <a tal:attributes="href python: here.absolute_url() + '/zopra_table_edit_form?autoid=%s&table=%s' % (entry['autoid'], table)">&raquo;zur Freigabe</a>
-                    </td>
-                  </tr>
-                  <tr tal:condition="not: entries"><td colspan="4">Keine Arbeitskopien gefunden.</td></tr>
-                </table>
-              </div>
-          </tal:block>
+        <tal:block tal:condition="python: isAnon or not (user.has_role(('ZopRAReviewer', 'ZopRAAdmin'), here))">
+            <tal:block replace="context/raiseUnauthorized"></tal:block>
         </tal:block>
-        <div class="formControlsZopRA"
-             tal:define="process_creation request/process_creation|nothing;">
 
-          <input class="standalone"
-                 type="submit"
-                 name="form.button.Confirm"
-                 value="Release"
-                 i18n:attributes="value"
-            />
-          <input class="standalone"
-                 onclick="history.back(-1)"
-                 type="button"
-                 name="form.button.Cancel"
-                 value="Cancel"
-                 i18n:attributes="value"
-            />
+        <form name="multiconfirm_form"
+              class="zopra-form"
+              method="post"
+              enctype="multipart/form-data"
+              tal:define="errors options/state/getErrors;
+                          table request/table;
+                          tobj python: here.tableHandler[table];"
+              tal:condition="python: here.doesWorkingCopies(table)"
+              tal:attributes="action string:${here/absolute_url}/${template/getId}">
 
-        </div>
-        <input type="hidden" name="form.submitted" value="1" />
-        <input type="hidden" name="table" tal:attributes="value table" />
-      </form>
+            <!-- Multiconfirmation of Working Copies -->
+            <h1 class="documentFirstHeading"><span i18n:translate="zopra_release_heading">Release</span> <span tal:content="python: tobj.getLabel()"></span></h1>
+            <tal:block tal:define="entries python: here.getWorkingCopies(table)">
+                <div tal:condition="entries">
+                    <table id="result_tab" class="zopra-table">
+                        <tr>
+                            <th></th>
+                            <th i18n:translate="zopra_release_name">Name</th>
+                            <th i18n:translate="zopra_release_diff">Diff</th>
+                            <th i18n:translate="zopra_release_heading">Release</th>
+                        </tr>
+                        <tr tal:repeat="entry entries">
+                            <td><input type="checkbox" name="confirm_ids:list:int"
+                                       tal:attributes="value entry/autoid" /></td>
+                            <td tal:content="python: here.getLabelString(table, None, entry)"></td>
+                            <td>
+                                <tal:block content="python: ', '.join(here.getDiffLabels(table, entry))"></tal:block>
+                                <a class="icon-zopra-show"
+                                   target="_blank"
+                                   i18n:translate="zopra_release_details"
+                                   tal:attributes="href python: here.absolute_url() + '/zopra_manager_show_log?entryid=%s&table=%s' % (entry['autoid'], table)">
+                                   Details
+                                </a>
+                            </td>
+                            <td>
+                              <a class="icon-zopra-release"
+                                 tal:attributes="href python: here.absolute_url() + '/zopra_table_edit_form?autoid=%s&table=%s' % (entry['autoid'], table)"
+                                 i18n:translate="zopra_release_singlelink_label">
+                                 Release
+                              </a>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div tal:condition="not:entries" i18n:translate="zopra_release_no_copies">No working copies found.</div>
+            </tal:block>
+
+            <div class="formControlsZopRA">
+                <input class="standalone"
+                       type="submit"
+                       name="form.button.Confirm"
+                       value="Release"
+                       i18n:attributes="value"
+                  />
+                <input class="standalone"
+                       onclick="history.back(-1)"
+                       type="button"
+                       name="form.button.Cancel"
+                       value="Cancel"
+                       i18n:attributes="value"
+                  />
+            </div>
+            <input type="hidden" name="form.submitted" value="1" />
+            <input type="hidden" name="table" tal:attributes="value table" />
+        </form>
     </metal:main>
 
-    <!--<metal:column_two_slot fill-slot="column_two_slot">
-      <metal:block metal:use-macro="here/zopra_context_menu/macros/context_menu" />
-    </metal:column_two_slot>-->
-
-    <metal:bottom fill-slot="bottom">
-      <metal:block metal:use-macro="here/zopra_bottom/macros/bottom" />
-    </metal:bottom>
-
   </body>
-
 </html>
