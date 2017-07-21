@@ -125,7 +125,7 @@
         </tal:block>
         <tal:block tal:condition="not:origid|nothing">
             <tal:block tal:condition="python: here.getPermissionInfo(table, 'table_create') and not here.getGenericConfig(table).get('dependent', False)">
-                <a class="button  small"
+                <a class="button small"
                    tal:attributes="href python:'zopra_table_create_form?table=%s' % (table)"
                    i18n:translate="zopra_links_edit_create_new">
                     New Entry

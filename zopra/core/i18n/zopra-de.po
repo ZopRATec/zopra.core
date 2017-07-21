@@ -620,7 +620,7 @@ msgstr "Nach beliebigen (nicht leeren) Einträgen in diesem Feld suchen."
 #. Default: "Details ${table} ${label} ${language}"
 #: ./skins/zopra_core_general/zopra_table_show_form.cpt:40
 msgid "zopra_show_heading"
-msgstr "Ansicht ${table} ${label}${language}"
+msgstr "Ansicht ${table} ${label} ${language}"
 
 #. Default: "Pages:"
 #: ./skins/zopra_core_general/zopra_search_tools.pt:12
