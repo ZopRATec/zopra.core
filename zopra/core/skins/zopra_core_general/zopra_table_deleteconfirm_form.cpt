@@ -97,7 +97,7 @@
                            i18n:attributes="value"
                            tal:attributes="name button" />
                     <input class="context"
-                           type="button"
+                           type="submit"
                            name="form.button.Cancel"
                            value="Cancel"
                            i18n:attributes="value"

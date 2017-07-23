@@ -68,7 +68,7 @@
             <div class="field">
                 <label for="table" i18n:translate="zopra_twocol_import_encoding_label">Encoding</label>
                 <div class="formHelp" i18n:translate="encoding_help">
-                    The format of the import file, e.g.: macroman, latin1, utf8.
+                    Specify the format of the import file, e.g.: macroman, latin1, utf8. Default is utf8.
                 </div>
                 <input type="text" name="encoding:string:required" id="encoding" tal:attributes="value request/encoding|string:utf8"/>
             </div>

@@ -535,11 +535,13 @@ class TemplateBaseManager(GenericManager):
         elif attr_value == 'NULL':
             # value is explicitly NULL (except for checkboxes)
             if attr_type != 'bool':
-                return _('zopra_widget_not_set', u'<not set>')
+                message = _('zopra_widget_not_set', default=u'<not set>')
+                return self.translate(message, domain="zopra")
         elif attr_value == '_not_NULL':
             # value is explicitly not NULL (except for checkboxes)
             if attr_type != 'bool':
-                return _('zopra_widget_set_any', u'<any value>')
+                message = _('zopra_widget_set_any', default=u'<any value>')
+                return self.translate(message, domain="zopra")
         else:
             return attr_value
         return attr_value

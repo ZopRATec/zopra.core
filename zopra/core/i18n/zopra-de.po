@@ -102,7 +102,7 @@ msgstr "kopieren"
 msgid "create_repeat_hint"
 msgstr "Wählen Sie aus wie oft die folgenden Felder benötigt werden."
 
-#. Default: "The format of the import file, e.g.: macroman, latin1, utf8."
+#. Default: "Specify the format of the import file, e.g.: macroman, latin1, utf8. Default is utf8."
 #: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:70
 msgid "encoding_help"
 msgstr "Geben Sie das Format an, in dem die CVS-Datei gespeichert wurde, z.B.: macroman, latin1, utf8. Standardwert ist utf8."
@@ -870,4 +870,3 @@ msgstr "<beliebiger Wert>"
 #: ./skins/zopra_core_general/zopra_table_deleteconfirm_form.cpt:39
 msgid "zopra_workingcopy"
 msgstr "Arbeitskopie"
-
