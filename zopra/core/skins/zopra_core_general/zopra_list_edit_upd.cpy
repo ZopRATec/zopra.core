@@ -8,10 +8,12 @@
 ##parameters=listname, edit_autoid=[]
 ##title=
 ##
+# coding: utf-8
+from zopra.core import zopraMessageFactory as _
 request = context.REQUEST
 if not edit_autoid:
-    message = u'Keine Änderungen vorgenommen.'
-    context.plone_utils.addPortalMessage(message, 'info')
+    message = _('zopra_list_edit_nothing', default = u'Nothing changed.')
+    context.plone_utils.addPortalMessage(context.translate(message), 'info')
     return state.set(status='success', context=context)
 if not same_type(edit_autoid, []):
     edit_autoid = [edit_autoid]
@@ -29,10 +31,10 @@ for oneid in edit_autoid:
     done = True
 
 if done:
-    message = u'Einträge gespeichert.'
-    context.plone_utils.addPortalMessage(message, 'info')
+    message = _('zopra_list_edit_saved', default = u'Saved entries.')
+    context.plone_utils.addPortalMessage(context.translate(message), 'info')
     return state.set(status='success', context=context)
 else:
-    message = u'Keine Änderungen vorgenommen.'
-    context.plone_utils.addPortalMessage(message, 'info')
+    message = _('zopra_list_edit_nothing', default = u'Nothing changed.')
+    context.plone_utils.addPortalMessage(context.translate(message), 'info')
     return state.set(status='success', context=context)

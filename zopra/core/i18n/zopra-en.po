@@ -3,7 +3,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ZMOM 1.0\n"
-"POT-Creation-Date: 2017-07-18 23:30+0000\n"
+"POT-Creation-Date: 2017-07-23 21:14+0000\n"
 "PO-Revision-Date: 2010-05-06 14:11+0100\n"
 "Last-Translator: Peter Seifert <peter.seifert@zopra.de>\n"
 "Language-Team: ZMOM i18n <i18n@zopra.de>\n"
@@ -426,6 +426,23 @@ msgstr ""
 msgid "zopra_links_edit_translation_show"
 msgstr ""
 
+#. Default: "Created entry."
+#: ./skins/zopra_core_general/zopra_list_edit_add.cpy:25
+msgid "zopra_list_edit_added"
+msgstr ""
+
+#. Default: "Nothing changed."
+#: ./skins/zopra_core_general/zopra_list_edit_add.cpy:14
+#: ./skins/zopra_core_general/zopra_list_edit_del.cpy:15
+#: ./skins/zopra_core_general/zopra_list_edit_upd.cpy:15
+msgid "zopra_list_edit_nothing"
+msgstr ""
+
+#. Default: "Saved entries."
+#: ./skins/zopra_core_general/zopra_list_edit_upd.cpy:34
+msgid "zopra_list_edit_saved"
+msgstr ""
+
 #. Default: "Entry listing"
 #: ./skins/zopra_core_general/zopra_table_search_result.pt:74
 msgid "zopra_listing_heading"
@@ -464,6 +481,11 @@ msgstr ""
 #. Default: "value"
 #: ./skins/zopra_core_general/zopra_list_edit_form.cpt:39
 msgid "zopra_lists_value"
+msgstr ""
+
+#. Default: "Deleted entries."
+#: ./skins/zopra_core_general/zopra_list_edit_del.cpy:27
+msgid "zopra_lsit_edit_deleted"
 msgstr ""
 
 #. Default: "Editable selection lists"
@@ -507,7 +529,7 @@ msgid "zopra_multiconfirm_success"
 msgstr ""
 
 #. Default: "Multi-release"
-#: ./skins/zopra_core_general/zopra_table_multiconfirm_listing.pt:25
+#: ./skins/zopra_core_general/zopra_table_multiconfirm_listing.pt:27
 msgid "zopra_multirelease_label"
 msgstr ""
 
@@ -523,25 +545,25 @@ msgstr ""
 
 #. Default: "Details"
 #: ./skins/zopra_core_general/zopra_table_multiconfirm_form.cpt:46
-#: ./skins/zopra_core_general/zopra_table_multiconfirm_listing.pt:40
+#: ./skins/zopra_core_general/zopra_table_multiconfirm_listing.pt:42
 msgid "zopra_release_details"
 msgstr ""
 
 #. Default: "Diff"
 #: ./skins/zopra_core_general/zopra_table_multiconfirm_form.cpt:37
-#: ./skins/zopra_core_general/zopra_table_multiconfirm_listing.pt:31
+#: ./skins/zopra_core_general/zopra_table_multiconfirm_listing.pt:33
 msgid "zopra_release_diff"
 msgstr ""
 
 #. Default: "Release"
 #: ./skins/zopra_core_general/zopra_table_multiconfirm_form.cpt:30
-#: ./skins/zopra_core_general/zopra_table_multiconfirm_listing.pt:16
+#: ./skins/zopra_core_general/zopra_table_multiconfirm_listing.pt:18
 msgid "zopra_release_heading"
 msgstr ""
 
 #. Default: "Name"
 #: ./skins/zopra_core_general/zopra_table_multiconfirm_form.cpt:36
-#: ./skins/zopra_core_general/zopra_table_multiconfirm_listing.pt:30
+#: ./skins/zopra_core_general/zopra_table_multiconfirm_listing.pt:32
 msgid "zopra_release_name"
 msgstr ""
 
@@ -552,7 +574,7 @@ msgstr ""
 
 #. Default: "Release"
 #: ./skins/zopra_core_general/zopra_table_multiconfirm_form.cpt:54
-#: ./skins/zopra_core_general/zopra_table_multiconfirm_listing.pt:47
+#: ./skins/zopra_core_general/zopra_table_multiconfirm_listing.pt:49
 msgid "zopra_release_singlelink_label"
 msgstr ""
 
@@ -823,7 +845,7 @@ msgstr ""
 
 # stuff from widget_display-templates (auto-readout with i18ndude did not work):
 #. Default: "AND-concatenated"
-#: ./skins/zopra_core_general/zopra_widget_search_display.pt:149
+#: ./skins/zopra_core_general/zopra_widget_search_display.pt:151
 msgid "zopra_widget_search_and_concat"
 msgstr ""
 
