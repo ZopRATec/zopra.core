@@ -63,7 +63,7 @@
                               end python: min(cur_page + num_links+1, pages);"
                   tal:repeat="page python: xrange(start,end)">
                 <a tal:define="thisurl python: url + str(page*count);
-                               thisclass python: pageoffset == offset and 'pagelink selected' or 'pagelink';"
+                               thisclass python: cur_page == page and 'pagelink selected' or 'pagelink';"
                    tal:attributes="href thisurl;
                                    class thisclass;"
                    tal:content="python: page + 1">pagenumber</a>
