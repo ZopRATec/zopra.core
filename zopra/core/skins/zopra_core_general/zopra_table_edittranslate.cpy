@@ -8,18 +8,23 @@
 ##parameters=table, autoid
 ##title=
 ##
+from zopra.core import zopraMessageFactory as _
 request = context.REQUEST
 
 if not context.doesTranslations(table):
-    message = 'Diese Tabelle unterstützt keine Übersetzungen. Übersetzung abgebrochen.'
-    return state.set(status='failure', context=context, portal_status_message=message)
+    message =  _('zopra_translation_not_supported',
+                 default = u'This table does not support translations. Translation process was cancelled.')
+    context.plone_utils.addPortalMessage(context.translate(message), 'info')
+    return state.set(status='failure', context=context)
 
 # for now, we just create an english version with all original values, if it does not exist and update the orginal entry (hastranslation)
 origentry = context.tableHandler[table].getEntry(autoid)
 
 if not origentry:
-    message = 'Originaleintrag nicht auffindbar, Übersetzung abgebrochen.'
-    return state.set(status='failure', context=context, portal_status_message=message)
+    message =  _('zopra_translation_orig_not_found',
+                 default = u'Original entry could not be found. Translation process was cancelled.')
+    context.plone_utils.addPortalMessage(context.translate(message), 'info')
+    return state.set(status='failure', context=context)
 
 if not origentry.get('hastranslation'):
     # use original entry if translating a working copy
@@ -48,10 +53,14 @@ if not origentry.get('hastranslation'):
     # overwrite in request for formcontroller traversal
     request.form['autoid'] = newautoid
     request.other['autoid'] = newautoid
-
-    message = 'Übersetzung erzeugt. Interne Id: %s' % (newautoid)
-    return state.set(status='success', context=context, portal_status_message=message)
+    message = _('zopra_translation_created',
+                default = u'Translation created. ${additional_message}Translation Id: ${translation_id}',
+                mapping = {u'translation_id': newautoid})
+    context.plone_utils.addPortalMessage(context.translate(message), 'info')
+    return state.set(status='success', context=context)
 
 else:
-    message = 'Übersetzung existiert bereits. Übersetzung abgebrochen.'
-    return state.set(status='failure', context=context, portal_status_message=message)
+    message = _('zopra_translation_exists',
+                default = u'Translation exists already. The translation process has been cancelled.')
+    context.plone_utils.addPortalMessage(context.translate(message), 'info')
+    return state.set(status='failure', context=context)

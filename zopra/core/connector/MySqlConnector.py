@@ -77,7 +77,7 @@ class MySqlConnector(SqlConnector):
         # raise ValueError(dir(self.conn.connection._v_database_connection))
 
     def escape_sql_name(self, name):
-        """ Escape SQL names (cols and tables), default: do nothing"""
+        """ Escape SQL names (cols and tables), overwritten to do escaping"""
         return "`%s`" % name
 
 

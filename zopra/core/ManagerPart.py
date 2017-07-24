@@ -1051,6 +1051,9 @@ class ManagerPart(CorePart, ManagerFinderMixin):
     def sendSecureMail(self, mto, mfrom, subject="", message="", mcc=None, mbcc=None, charset="utf-8"):
         """\brief Tries to send a email via the next available secure mail host."""
         mailHost = self.getObjByMetaType('Secure Mail Host')
+        if not mailHost:
+            # try normal Mail Host, that was unified with SMH (after Plone 2)
+            mailHost = self.getObjByMetaType('Mail Host')
         if mailHost:
             try:
                 mailHost.secureSend(message=message, mto=mto, mfrom=mfrom, subject=subject, mcc=mcc, mbcc=mbcc, charset=charset)

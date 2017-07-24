@@ -135,6 +135,8 @@ class GenericManager(ManagerPart):
               show_fields   ([attrs])      - attributes for showList
               required      ([attrs])      - required attributes for new/edit
               importable    (True / False) - show in importForm for Import
+              show_table_options    ({'create':1, 'search':1, 'list':1, 'import': (<target>, <label>), ...}) - define options for generic table overview (on manager_main_form)
+              dependent     (True / False) - set to True to not show the create button on zopra_table_show_form / zopra_table_edit_form
         access via getGenericConfig(table)
     """
     _generic_config = {}
@@ -733,6 +735,22 @@ class GenericManager(ManagerPart):
                 if column not in attrs:
                     attrs.append(column)
             return attrs
+
+
+    def getHierarchyListConfig(self, table, name):
+        """\brief Get a default config for hierarchylists. Overwrite for special settings."""
+        # TODO: right now, the Plone templates only allow working with the exact settings below, different combinations have not been implemented yet.
+        # multivalued: multiple values can be set on edit
+        # multisearch: search allows to select multiple (leaf)nodes
+        # nonleaf-search: search allows to select nodes, that are no leafs
+        # nonleaf-search-expand: search for all nodes/leafs below the chosen one (and the node itself), only applies when nonleaf-search is True
+        # nonleaf-edit: allow the autoid of a node as value, that is not a leaf node
+        return {'multivalued': False,
+                'multisearch': False,
+                'nonleaf-search': True,
+                'nonleaf-search-expand': True,
+                'nonleaf-edit': True,
+                }
 
 
     def getRequiredFields(self, table):

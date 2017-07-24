@@ -8,11 +8,6 @@
 
   <body>
 
-    <metal:css_slot fill-slot="css_slot">
-       <link rel="stylesheet" type="text/css" media="all" tal:attributes="href string:${portal_url}/zopra.css" />
-       <link rel="stylesheet" type="text/css" media="all" tal:attributes="href string:${portal_url}/zopra_edit.css" />
-    </metal:css_slot>
-
     <metal:javascriptslot fill-slot="javascript_head_slot">
         <script type="text/javascript" tal:attributes="src string:${portal_url}/dragtable.js"></script>
         <script language="javascript">
@@ -63,245 +58,245 @@
                      entries python: here.getEntryListProxy(table, count, offset, None, enriched_cons, order, orderdir);
                      coltypes python:context.getFilteredColumnDefs(table, edit_tracking = True, vis_only = False);
                      links python: context.getGenericConfig(table).get('links', []);
+                     has_real_constraints python: context.filterRealSearchConstraints(cons);
+                     global quotedcons string:;
                      ">
-
     <tal:block tal:condition="isAnon">
         <tal:block replace="context/raiseUnauthorized"></tal:block>
     </tal:block>
     <tal:block tal:condition="python: not listall and not listown">
         <tal:block replace="context/raiseUnauthorized"></tal:block>
     </tal:block>
-
-    <form id="search_result_form"
-          action="zopra_table_search_result" method="post"
-          tal:define="global quotedcons string:;">
-
-        <h1 i18n:translate="" tal:content="python: 'Suchergebnisse ' + tobj.getLabel()"></h1>
-
-        <!-- ausgewaehlte Kriterien (anhand originaler Constraints)-->
-        <div tal:condition="cons">
-            <h2 i18n:translate="sins_sr_criteria">Chosen criteria:</h2>
-            <table class="search_criteria">
-                <tal:block tal:define="con_list python: cons.keys();
-                                        dummy python: con_list.sort();"
-                            tal:repeat="con con_list">
-                    <tr tal:define="field python: tobj.getField(con);
-                                    value python: cons.get(con);"
-                        tal:condition="python: (not (len(con) > 4 and con[-4:] == '_AND')) and value != ''">
-                      <tal:block tal:define="attr_name con;
-                                        attr_type python:field.get('TYPE') or 'string';
-                                        attr_type python: attr_type == 'memo' and 'string' or attr_type;
-                                        attr_value python:context.parseConstraintsForOutput(cons.get(con), attr_type);
-                                        widget_style string:line;"
-                                 tal:condition="attr_value">
-                        <th tal:content="python: field.get('LABEL') or lang == 'de' and 'Zusatzfeld' or 'Additional field'">Label</th>
-                        <td>
-                          <metal:block metal:use-macro="here/zopra_widget_show_display/macros/widget_selector">Value</metal:block>
-                        </td>
-                      </tal:block>
-                    </tr>
-                </tal:block>
-            </table>
-        </div>
-        <br />
-
-        <metal:block metal:use-macro="here/zopra_button_link_bar/macros/buttons_search_result" />
-        <!-- table cons set as hidden inputs for the form and added to quotedcons -->
-        <tal:block tal:repeat="con python: cons.keys()">
-            <tal:def tal:define="field python: tobj.getField(con);
-                                 attr_type python: field and field.get('TYPE') or 'string'">
-                <tal:block tal:condition="python: attr_type in ['multilist', 'singlelist', 'hierarchylist']">
-                    <tal:block tal:repeat="oneval python: cons.get(con, [])">
-                    <input tal:define="global quotedcons python: oneval and (quotedcons + (quotedcons and '&' or '') + '%s=%s' % (con, oneval)) or quotedcons"
-                           tal:condition="python: oneval"
-                           type="hidden" tal:attributes="name python: con + ':list';
-                                                         value python: oneval" />
+<div class="row">
+    <div class="contentSlot">
+        <h1 class="documentFirstHeading">
+                <span tal:condition="has_real_constraints" i18n:translate="zopra_search_results_heading">Search results</span>
+                <span tal:condition="not:has_real_constraints" i18n:translate="zopra_listing_heading">Entry listing</span>
+                <span i18n:translate="" tal:content="python: tobj.getLabel()">TableX</span>
+        </h1>
+        <form id="search_result_form zopra-form"
+              tal:define="global quotedcons string:;"
+              tal:attributes="action string:${here/absolute_url}/${template/getId}"
+              method="post"
+              class="zopra-form">
+            <tal:block tal:condition="has_real_constraints">
+                <!-- ausgewaehlte Kriterien (anhand originaler Constraints)-->
+                <tal:comment tal:replace="nothing">
+                    Subtables (ERP Invoice -> Position) constraints are displayed as "additional field",
+                    but should be displayed as "subtablename: attribute"
+                    need generic handling (to get the types right) based on searchTreeTemplate or similar
+                </tal:comment>
+                <div class="formatted">
+                    <h2 i18n:translate="zopra_search_criteria">Chosen criteria:</h2>
+                    <dl class="quick-info-list">
+                        <tal:repeat tal:define="con_list python: cons.keys();
+                                                dummy python: con_list.sort();"
+                                    tal:repeat="con con_list">
+                            <tal:block tal:define="field python: tobj.getField(con) or {};
+                                                   value python: cons.get(con);"
+                                       tal:condition="python: (not (len(con) > 4 and con[-4:] == '_AND')) and value != ''">
+                                <tal:block tal:define="attr_name con;
+                                                       attr_type python: field and field.get('TYPE') or 'string';
+                                                       attr_type python: attr_type == 'memo' and 'string' or attr_type;
+                                                       attr_value python:context.prepareConstraintsForOutput(cons.get(con), attr_type);
+                                                       widget_style string:line;"
+                                           tal:condition="attr_value">
+                                    <dt tal:content="python: field.get('LABEL') or lang == 'de' and 'Zusatzfeld' or 'Additional field'">Label</dt>
+                                    <dd tal:define="display_constraints python: 1">
+                                        <metal:block metal:use-macro="here/zopra_widget_show_display/macros/widget_selector">Value</metal:block>
+                                    </dd>
+                              </tal:block>
+                            </tal:block>
+                        </tal:repeat>
+                    </dl>
+                </div>
+            </tal:block>
+            <!-- table cons set as hidden inputs for the form and added to quotedcons -->
+            <tal:block tal:repeat="con python: cons.keys()">
+                <tal:def tal:define="field python: tobj.getField(con);
+                                     attr_type python: field and field.get('TYPE') or 'string'">
+                    <tal:block tal:condition="python: attr_type in ['multilist', 'singlelist', 'hierarchylist']">
+                        <tal:block tal:repeat="oneval python: cons.get(con, [])">
+                        <input tal:define="global quotedcons python: oneval and (quotedcons + (quotedcons and '&' or '') + '%s=%s' % (con, oneval)) or quotedcons"
+                               tal:condition="python: oneval"
+                               type="hidden" tal:attributes="name python: con + ':list';
+                                                             value python: oneval" />
+                        </tal:block>
                     </tal:block>
-                </tal:block>
-                <tal:block tal:condition="python: attr_type not in ['multilist', 'singlelist', 'hierarchylist']">
-                    <input tal:define="global quotedcons python:  cons.get(con) and (quotedcons + (quotedcons and '&' or '') + '%s=%s' % (con, cons.get(con))) or quotedcons"
-                           tal:condition="python: cons.get(con)"
-                           type="hidden" tal:attributes="name con; value python: cons.get(con)" />
-                </tal:block>
-            </tal:def>
-        </tal:block>
-        <input tal:define="global quotedcons python: quotedcons + (quotedcons and '&' or '') + 'table=%s' % (table)"
-               type="hidden" name="table" tal:attributes="value table" />
-        <!-- Offset gets added to quotedcons later, just set the input for the form -->
-        <input type="hidden" name="offset" id="offset" tal:attributes="value offset" />
-
-        <tal:block tal:define="global quotedcons python: quotedcons + '&count=%s&%s' % (count, '&'.join(['sel_attr='+col for col in cols]))" />
-
-        <metal:block metal:use-macro="here/zopra_search_tools/macros/editorial_pagelinks" />
-        <div>
-            <span>Anzeige Einträge:</span>
-            <span tal:content="python: bool(entries) and str(offset + 1) or '0'">1</span>
-            <span>-</span>
-            <span tal:content="python:str(min(offset + count, rowcount))">10</span>
-            <span>/</span>
-            <span tal:content="rowcount">10</span>
-        </div>
-        <table class="draggable" width="100%" id="result_tab" cellpadding="0" cellspacing="0">
-            <tr>
-                <th></th><th></th>
-                <th tal:condition="links"
-                    tal:repeat="link links">
-                  <span tal:content="link/label|nothing">Link</span>
+                    <tal:block tal:condition="python: attr_type not in ['multilist', 'singlelist', 'hierarchylist']">
+                        <input tal:define="global quotedcons python:  cons.get(con) and (quotedcons + (quotedcons and '&' or '') + '%s=%s' % (con, cons.get(con))) or quotedcons"
+                               tal:condition="python: cons.get(con)"
+                               type="hidden" tal:attributes="name con; value python: cons.get(con)" />
+                    </tal:block>
+                </tal:def>
+            </tal:block>
+            <input tal:define="global quotedcons python: quotedcons + (quotedcons and '&' or '') + 'table=%s' % (table)"
+                   type="hidden" name="table" tal:attributes="value table" />
+            <!-- Offset gets added to quotedcons later, just set the input for the form -->
+            <input type="hidden" name="offset" id="offset" tal:attributes="value offset" />
+            <tal:block tal:define="global quotedcons python: quotedcons + '&count=%s&%s' % (count, '&'.join(['sel_attr='+col for col in cols]))" />
+            <h2 class="zopra-count">
+                <span i18n:translate="zopra_search_result_result_range">Entries:</span>
+                <span tal:content="python: bool(entries) and str(offset + 1) or '0'">1</span>
+                <span>-</span>
+                <span tal:content="python:str(min(offset + count, rowcount))">10</span>
+                <span>/</span>
+                <span tal:content="rowcount">10</span>
+            </h2>
+            <metal:block metal:use-macro="here/zopra_search_tools/macros/editorial_pagelinks" />
+            <table class="table-scrollable draggable zopra-table" id="result_tab">
+                <tr>
+                    <th></th><th></th>
+                    <th tal:condition="links"
+                        tal:repeat="link links">
+                      <span i18n:translate="" tal:content="structure link/label|nothing">Link</span>
+                        </th>
+                    <th tal:repeat="attr_name cols">
+                        <span i18n:translate="" tal:replace="python: coltypes.get(attr_name, {}).get('LABEL','')">attributename</span>
+                        <input type="hidden" class="copy2exportForm" tal:attributes="value attr_name" name="columnList:list" />
                     </th>
-                <th tal:repeat="attr_name cols">
-                    <span i18n:translate="" tal:replace="python: coltypes.get(attr_name, {}).get('LABEL','')">attributename</span>
-                    <input type="hidden" class="copy2exportForm" tal:attributes="value attr_name" name="columnList:list" />
-                </th>
-                <th></th>
-            </tr>
-            <tr tal:repeat="entry entries">
-              <tal:block tal:define="permissions python: here.getPermissionEntryInfo(table, entry)">
-                <td>
-                    <tal:block tal:condition="python: 'show' in permissions">
-                      <a tal:attributes="href python:here.absolute_url()+'/zopra_table_show_form?autoid=%s&table=%s' % (entry['autoid'], table)">anzeigen</a>
+                    <th></th>
+                </tr>
+                <tr tal:repeat="entry entries">
+                    <tal:block tal:define="permissions python: here.getPermissionEntryInfo(table, entry)">
+                        <td>
+                            <tal:block tal:condition="python: 'show' in permissions">
+                                <a class="icon-zopra-show"
+                                   tal:attributes="href python:here.absolute_url()+'/zopra_table_show_form?autoid=%s&table=%s' % (entry['autoid'], table)">
+                                    <span class="show-for-sr" i18n:translate="zopra_search_result_show">show</span>
+                                </a>
+                            </tal:block>
+                        </td>
+                        <td>
+                            <tal:block tal:condition="python: 'edit' in permissions">
+                                <a class="icon-zopra-edit"
+                                 tal:attributes="href python:here.absolute_url()+'/zopra_table_edit_form?autoid=%s&table=%s' % (entry['autoid'], table)">
+                                    <span class="show-for-sr" i18n:translate="zopra_search_result_edit">edit</span>
+                                </a>
+                            </tal:block>
+                        </td>
+                        <td tal:condition="links"
+                            tal:repeat="link links">
+                            <a tal:define="urlpart python: link.get('link') % entry.get(link.get('field'));
+                                           label link/label|nothing;
+                                           iconclass  link/iconclass|nothing;"
+                               tal:attributes="href python: context.absolute_url() + '/' + urlpart;
+                                               class iconclass">
+                               <span class="show-for-sr"
+                                     tal:omit-tag="not:iconclass"
+                                     tal:content="structure label"
+                                     i18n:translate="">
+                                   Link
+                               </span>
+                            </a>
+                        </td>
+                        <tal:block tal:repeat="attr_name cols">
+                            <td tal:define="attr_type python:coltypes.get(attr_name,{}).get('TYPE', 'string');
+                                            attr_value python:entry.get(attr_name);
+                                            attr_notes python: attr_type == 'multilist' and dict([[a,entry[a]] for a in entry.keys() if a.startswith(attr_name + 'notes') and entry[a]]) or {};">
+                                <metal:block metal:use-macro="here/zopra_widget_listing_display/macros/widget_selector" />
+                            </td>
+                        </tal:block>
+                        <td>
+                            <a tal:condition="python: 'delete' in permissions"
+                               class="icon-zopra-delete"
+                               tal:attributes="href python:here.absolute_url()+'/zopra_table_deleteconfirm_form?del_autoid=%s&target_url=zopra_table_search_result&offset=%s&form.button.DelFromResult=1&%s' % (entry['autoid'], offset, quotedcons)">
+                                <span class="show-for-sr" i18n:translate="zopra_search_result_delete">delete</span>
+                            </a>
+                        </td>
                     </tal:block>
-                </td>
-                <td>
-                    <tal:block tal:condition="python: 'edit' in permissions">
-                      <a tal:attributes="href python:here.absolute_url()+'/zopra_table_edit_form?autoid=%s&table=%s' % (entry['autoid'], table)">bearbeiten</a>
-                    </tal:block>
-                </td>
-                <td tal:condition="links"
-                    tal:repeat="link links">
-                  <a tal:define="urlpart python: link.get('link') % entry.get(link.get('field'))"
-                     tal:content="link/label|nothing"
-                     tal:attributes="href python: context.absolute_url() + '/' + urlpart">Link</a>
-                </td>
-                <tal:block tal:repeat="attr_name cols">
-                    <td tal:define="attr_type python:coltypes.get(attr_name,{}).get('TYPE', 'string');
-                                    attr_value python:entry.get(attr_name);
-                                    attr_notes python: attr_type == 'multilist' and dict([[a,entry[a]] for a in entry.keys() if a.startswith(attr_name + 'notes') and entry[a]]) or {};">
-                        <metal:block metal:use-macro="here/zopra_widget_listing_display/macros/widget_selector" />
-                    </td>
-                </tal:block>
-                <td>
-                    <a tal:condition="python: 'delete' in permissions"
-                       tal:attributes="href python:here.absolute_url()+'/zopra_table_deleteconfirm_form?del_autoid=%s&target_url=zopra_table_search_result&offset=%s&form.button.DelFromResult=1&%s' % (entry['autoid'], offset, quotedcons)">
-                        löschen
-                    </a>
-                </td>
-              </tal:block>
-            </tr>
-        </table>
-        <metal:block metal:use-macro="here/zopra_search_tools/macros/editorial_pagelinks" />
-
-        <div class="result_options_field"
-               tal:define="all_keys python: [(coltypes[key].get('LABEL'), key) for key in coltypes.keys()];
-                           dummy python: all_keys.sort()">
+                </tr>
+            </table>
+            <metal:block metal:use-macro="here/zopra_search_tools/macros/editorial_pagelinks" />
+            <div class="result_options_field"
+                   tal:define="all_keys python: [(coltypes[key].get('LABEL'), key) for key in coltypes.keys()];
+                               dummy python: all_keys.sort()">
+                <div class="result_options_subfield">
+                    <h2 i18n:translate="zopra_search_result_cols">
+                        Displayed columns:
+                    </h2>
+                    <select multiple="multiple" class="multi" name="sel_attr:list" size="8">
+                        <tal:block tal:repeat="attr_tupel all_keys">
+                            <option i18n:translate=""
+                                    tal:define="attr python: attr_tupel[1]"
+                                    tal:condition="python: 1 or not coltypes[attr].get('INVIS')"
+                                    tal:attributes="value attr;
+                                                    selected python: attr in cols"
+                                    tal:content="python: attr_tupel[0]">
+                                Attributename
+                            </option>
+                        </tal:block>
+                    </select>
+                </div>
+                <div class="result_options_subfield">
+                    <h2 i18n:translate="zopra_search_result_sorting">
+                        Order by:
+                    </h2>
+                    <select name="sort_attr:list">
+                        <tal:block tal:repeat="attr_tupel all_keys">
+                            <option i18n:translate=""
+                                    tal:define="attr python: attr_tupel[1]"
+                                    tal:condition="python: 1 or not coltypes[attr].get('INVIS')"
+                                    tal:attributes="value attr;
+                                                    selected python: attr == order[0]"
+                                    tal:content="python: attr_tupel[0]">
+                                Attributename
+                            </option>
+                        </tal:block>
+                    </select>
+                </div>
+                <div class="result_options_subfield">
+                    <h2 i18n:translate="zopra_search_result_count">
+                        Number of entries:
+                    </h2>
+                    <input type="text" name="count" tal:attributes="value count" />
+                </div>
+            </div>
+            <div class="formControls fromControlsZopRA">
+                <div class="formPanel">
+                    <metal:block metal:use-macro="here/zopra_button_link_bar/macros/buttons_search_result" />
+                </div>
+            </div>
+        </form>
+        <div class="result_options_field">
+            <h2 i18n:translate="zopra_search_result_export">
+                Export:
+            </h2>
             <div class="result_options_subfield">
-                <span>
-                    Anzuzeigende Spalten:
-                </span>
-                <select multiple="multiple" class="multi" name="sel_attr:list" size="8">
-                    <tal:block tal:repeat="attr_tupel all_keys">
-                        <option i18n:translate=""
-                                tal:define="attr python: attr_tupel[1]"
-                                tal:condition="python: 1 or not coltypes[attr].get('INVIS')"
-                                tal:attributes="value attr;
-                                          selected python: attr in cols"
-                                tal:content="python: attr_tupel[0]">
-                            Attributname
-                        </option>
+                <form id="export_as_csv" action="zopra_table_search_result_export_csv" method="post">
+                    <input type="hidden" name="table:string" tal:attributes="value table" />
+                    <span class="hidden" id="columnListContainer">
+                        <tal:block repeat="col cols">
+                            <input type="hidden" name="columnList:list" tal:attributes="value col" />
+                        </tal:block>
+                    </span>
+                    <tal:block repeat="ord order">
+                        <input type="hidden" name="order:list" tal:attributes="value ord" />
                     </tal:block>
-                </select>
-            </div>
-            <div class="result_options_subfield">
-                <span>
-                    Sortierung:
-                </span>
-                <select name="sort_attr:list">
-                    <tal:block tal:repeat="attr_tupel all_keys">
-                        <option i18n:translate=""
-                                tal:define="attr python: attr_tupel[1]"
-                                tal:condition="python: 1 or not coltypes[attr].get('INVIS')"
-                                tal:attributes="value attr;
-                                                selected python: attr == order[0]"
-                                tal:content="python: attr_tupel[0]">
-                            Attributname
-                        </option>
+                    <tal:block repeat="cons_key python:cons.keys()">
+                        <input type="hidden" name="cons_key:list" tal:attributes="value cons_key" />
+                    <tal:if condition="python:same_type(cons[cons_key], [])">
+                        <tal:block repeat="val python:cons[cons_key]">
+                            <input type="hidden" tal:attributes="name python:cons_key+'_values:list';
+                                                                             value val" />
+                        </tal:block>
+                    </tal:if>
+                    <tal:else condition="python:not same_type(cons[cons_key], [])">
+                            <input type="hidden" tal:attributes="name python:cons_key+'_values';
+                                                                 value python:cons[cons_key]" />
+                    </tal:else>
                     </tal:block>
-                </select>
+                    <div class="formControls formControlsZopRA">
+                        <div class="formPanel">
+                            <input class="context" type="submit" value="CSV-Export" />
+                        </div>
+                    </div>
+                </form>
             </div>
-            <div class="result_options_subfield">
-                <span>
-                    Anzahl:
-                </span>
-                <input type="text" name="count" tal:attributes="value count" />
-            </div>
-            <div class="result_options_subfield" style="margin-top: 15px;">
-                <input class="context" type="submit" value="Anfordern" />
-            </div>
-            <div class="floatclearer"></div>
         </div>
-
-
-        <metal:block metal:use-macro="here/zopra_button_link_bar/macros/buttons_search_result" />
-    </form>
-
-    <div class="result_options_field">
-        <span>
-            Export:
-        </span>
-        <div class="result_options_subfield" style="margin-top: 15px;">
-            <form id="export_as_csv" action="zopra_table_search_result_export_csv" method="post">
-                <input type="hidden" name="table:string" tal:attributes="value table" />
-                <span class="hidden" id="columnListContainer">
-                    <tal:block repeat="col cols">
-                        <input type="hidden" name="columnList:list" tal:attributes="value col" />
-                    </tal:block>
-                </span>
-                <tal:block repeat="ord order">
-                    <input type="hidden" name="order:list" tal:attributes="value ord" />
-                </tal:block>
-                <tal:block repeat="cons_key python:cons.keys()">
-                    <input type="hidden" name="cons_key:list" tal:attributes="value cons_key" />
-                <tal:if condition="python:same_type(cons[cons_key], [])">
-                    <tal:block repeat="val python:cons[cons_key]">
-                        <input type="hidden" tal:attributes="name python:cons_key+'_values:list';
-                                                                         value val" />
-                    </tal:block>
-                </tal:if>
-                <tal:else condition="python:not same_type(cons[cons_key], [])">
-                        <input type="hidden" tal:attributes="name python:cons_key+'_values';
-                                                             value python:cons[cons_key]" />
-                </tal:else>
-                </tal:block>
-                <input class="context" type="submit" value="CSV-Export" />
-            </form>
-        </div>
-        <div class="floatclearer"></div>
     </div>
-
-
+</div>
     </metal:main>
 
-    <metal:portal_message metal:fill-slot="portal_message">
-        <div class="portalMessage"
-                i18n:domain="sins"
-                tal:define="portal_message request/portal_status_message | nothing"
-                tal:condition="python:portal_message and user.has_role(['Authenticated'])">
-            <tal:block replace="structure here/info.gif" />
-            <span>
-                <strong tal:content="structure portal_message" i18n:domain="sins" i18n:translate="">
-                    message
-                </strong>
-            </span>
-        </div>
-    </metal:portal_message>
-
-    <!--<metal:column_two_slot fill-slot="column_two_slot">
-        <metal:block metal:use-macro="here/zopra_context_menu/macros/context_menu" />
-    </metal:column_two_slot>-->
-
-    <metal:bottom fill-slot="bottom">
-        <metal:block metal:use-macro="here/zopra_bottom/macros/bottom" />
-    </metal:bottom>
-
   </body>
-
 </html>

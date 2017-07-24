@@ -17,13 +17,19 @@ from random     import randint
 import re
 from sets       import Set as set
 from types      import ListType, StringType
+from urllib import quote
 import json
+
+# Zope Imports
+from zope.component import getMultiAdapter
+
 #
 # ZopRA Imports
 #
 from zopra.core                         import ClassSecurityInfo, \
                                                getSecurityManager, \
-                                               ZC
+                                               ZC, \
+                                               zopraMessageFactory as _
 from zopra.core.CorePart                import MASK_SHOW
 from zopra.core.tools.GenericManager    import GenericManager
 
@@ -41,8 +47,6 @@ class TemplateBaseManager(GenericManager):
 #
     security = ClassSecurityInfo()
     security.declareObjectPublic()
-
-
 
     # languages v1
     _properties = GenericManager._properties + (
@@ -65,6 +69,98 @@ class TemplateBaseManager(GenericManager):
         REQUEST.RESPONSE.redirect(parent.absolute_url())
 
 
+# configuration for main_form display (import / export)
+    def getMainFormImportData(self, import_data, default_url):
+        if isinstance(import_data, tuple):
+            title = import_data[1] or 'Import'
+            url = '{}/{}'.format(self.absolute_url(), import_data[0])
+        else:
+            title = 'Import'
+            url = default_url
+        return (title, url)
+
+    def getMainFormExportData(self, export_data, default_url):
+        if isinstance(export_data, tuple):
+            title = export_data[1] or 'Export'
+            url = '{}/{}'.format(self.absolute_url(), export_data[0])
+        else:
+            title = 'Export'
+            url = default_url
+        return (title, url)
+
+
+#
+# Plone 4.3 Integration for Social Links and Content Actions
+#
+
+    def social_links(self, context, REQUEST):
+        """\brief get the social links for the context"""
+        # TODO: tweak the social links and document actions to display correct titles (e.g. for sins)
+        # use special URL (with params) extracted from request instead of base url of the main Folder
+        real_url_part1 = REQUEST.get('URL')
+        real_url_part2 = REQUEST.get('QUERY_STRING')
+        if real_url_part2:
+            real_url = quote('%s?%s' % (real_url_part1, real_url_part2), safe='')
+            repl_url1 = quote(real_url_part1, safe='')
+            repl_url2 = quote(context.absolute_url(), safe='')
+        else:
+            # no query string -> no url replacement necessary
+            real_url = None
+        helper = getMultiAdapter((context, REQUEST), name=u'sl_helper')
+        if not helper:
+            return []
+        render_method = 'link'  # in original it's depending on Do-Not-Track-Setting; we force it anyway.
+        rendered = []
+        plugins = helper.plugins()
+        for plugin in plugins:
+            if plugin and getattr(plugin, render_method)():
+                view = context.restrictedTraverse(plugin.view())
+                html_generator = getattr(view, render_method, None)
+                if html_generator:
+                    html = html_generator()
+                    if real_url:
+                        # replace the url adding parts that are missing
+                        html = html.replace(repl_url1, real_url).replace(repl_url2, real_url)
+                    rendered.append({'id': plugin.id,
+                                     'html': html})
+        return rendered
+
+    def content_actions(self, context, REQUEST):
+        """\brief get the default actions for the context"""
+        context_state = getMultiAdapter((context, REQUEST), name=u'plone_context_state')
+        result = []
+        if context_state:
+            # prepare urls
+            real_url_part1 = REQUEST.get('URL')
+            real_url_part2 = REQUEST.get('QUERY_STRING')
+            if real_url_part2:
+                real_url = quote('%s?%s' % (real_url_part1, real_url_part2), safe='')
+                # longer version with template
+                repl_url1 = quote(real_url_part1, safe='')
+                # short version
+                repl_url2 = quote(context.absolute_url(), safe='')
+            else:
+                # no query string -> no url replacement necessary
+                real_url = None
+            # now get actions
+            actions = context_state.actions('document_actions')
+            for action in actions:
+                # replace the url adding parts that are missing
+                new_url = action['url']
+                if real_url:
+                    new_url = new_url.replace(repl_url1, real_url).replace(repl_url2, real_url)
+                # build new dict for the action
+                result.append({'id':          action['id'],
+                               'url':         new_url,
+                               'link_target': action['link_target'],
+                               'title':       action['title'],
+                               'description': action['description']})
+        return result
+
+
+#
+# Workflow Functions
+#
     def consistencyCheckTranslations(self, do = None):
         """Consistency Checker for translations"""
         special_fields = ['autoid', 'hastranslation', 'istranslationof', 'iscopyof', 'language']
@@ -115,6 +211,15 @@ class TemplateBaseManager(GenericManager):
     def getStateTransferInfo(self, table, entry):
         """\brief Overwrite for determining label and action for stateswitch button."""
         return {}
+
+#
+# security and permission functions
+#
+
+    def checkTablePermission(self, tablename):
+        """Table permission check for zopra_manager_main_form, when visibility is False"""
+        # default: False means False, leave it at that
+        return False
 
 
     def getListOwnUsers(self, table):
@@ -174,6 +279,9 @@ class TemplateBaseManager(GenericManager):
 
         return perms
 
+#
+# Working Copy Functions
+#
 
     def doesWorkingCopies(self, table):
         """\brief """
@@ -239,6 +347,10 @@ class TemplateBaseManager(GenericManager):
     # the working copy machinery needs the deepcopy python func in scripts
     def deepcopy(self, obj):
         return deepcopy(obj)
+
+#
+# Translation Functions
+#
 
     def doesTranslations(self, table):
         """\brief """
@@ -307,35 +419,6 @@ class TemplateBaseManager(GenericManager):
                 # use the original autoid and the change as entry_diff
                 self.updateWorkingCopy(table, {'autoid': autoid, 'hastranslation': 0})
 
-
-    def correctTranslationInfo(self):
-        """\brief update step for correcting translation info"""
-        # deleting language copies did not reset the hastranslation marker before, so we have to correct entries on db level
-        # attention: working copies are problematic and are left out. Better make sure there are non when using this function.
-        from zopra.core import ZC
-        done = []
-        pm = self.getManager(ZC.ZM_PM)
-        for table in self.tableHandler.getTableIDs():
-            if self.doesTranslations(table):
-                sql1 = 'SELECT istranslationof from {}{} where istranslationof != 0'.format(self.getId(), table)
-                res = pm.executeDBQuery(sql1)
-                origids = [row[0] for row in res]
-                if not origids:
-                    continue
-                idstring = ', '.join([str(orid) for orid in origids])
-                # exclude working copies:
-                wc = self.doesWorkingCopies(table)
-                sql2 = 'SELECT COUNT(*) FROM {}{} WHERE hastranslation > 0 AND autoid NOT IN ({})'.format(self.getId(), table, idstring)
-                if wc:
-                    sql2 = sql2 + ' AND iscopyof IS NULL'
-                res = pm.executeDBQuery(sql2)
-                done.append('Removed {} hastranslation markers for {}.'.format(res[0][0], table))
-                sql3 = 'UPDATE {}{} SET hastranslation = 0 WHERE hastranslation > 0 AND autoid NOT IN ({})'.format(self.getId(), table, idstring)
-                if wc:
-                    sql3 = sql3 + ' AND iscopyof IS NULL'
-                pm.executeDBQuery(sql3)
-        return '\n'.join(done)
-
 #
 # Table and Entry centered Functions
 #
@@ -400,17 +483,41 @@ class TemplateBaseManager(GenericManager):
             fi.setOperator(fi.OR)
         return tobj.requestEntries(root, show_number, start_number, ignore_permissions = True)
 
+
+    def isHierarchyList(self, listname):
+        # check if a List with that name is referenced by a table attribute
+        hlists = []
+        for tablename in self.tableHandler.keys():
+            hlists.extend(self.listHandler.getLists(tablename, ['hierarchylist']))
+        for lobj in hlists:
+            if lobj.listname == listname:
+                return True
+        return False
+
+
     def handleHierarchyListOnSearch(self, table, cons):
-        """\brief Add to given branch item all his possible children"""
+        """\brief Add the subtree to a given node for all hierarchy lists of the table (all children of all levels below that node)"""
+        # TODO: use ZMOMGenericManager.getHierarchyListConfig to steer this behaviour
+        hlists = self.listHandler.getLists(table, ['hierarchylist'])
+        listnames = [hlist.listname for hlist in hlists]
         for key in cons:
-            if self.isHierarchyList(key):
+            if key in listnames:
                 selectList = []
                 for item in cons[key]:
                     selectList.append(item)
-                    selectList = selectList + self.listHandler.getList(table, key).getHierarchyListDescendants(item)
+                    selectList.extend(self.listHandler.getList(table, key).getHierarchyListDescendants(item))
                 cons[key] = selectList
 
-    def parseConstraintsForOutput(self, attr_value, attr_type):
+
+    def prepareHierarchylistDisplayEntries(self, entries):
+        """\brief sort the entries into a tree, add level key and return flattened and sorted list"""
+        # TODO: implement (where is this used anyway and what for?)
+        for entry in entries:
+            entry['level'] = 0
+        return entries
+
+
+    def prepareConstraintsForOutput(self, attr_value, attr_type):
         """\brief Search Param Visualisation preparation"""
         # general behaviour: this is called by the search result template to generate
         # nicer values for constraint display
@@ -426,18 +533,23 @@ class TemplateBaseManager(GenericManager):
             # check multilists, the search widget delivers [None] when item was selected and deselected
             return [value for value in attr_value if value]
         elif attr_value == 'NULL':
-            # Wert explizit auf NULL gesetzt (checkbox)
-            return 'falsch'
+            # value is explicitly NULL (except for checkboxes)
+            if attr_type != 'bool':
+                message = _('zopra_widget_not_set', default=u'<not set>')
+                return self.translate(message, domain="zopra")
         elif attr_value == '_not_NULL':
-            # Wert auf wahr gesetzt (checkbox)
-            return 'gesetzt'
+            # value is explicitly not NULL (except for checkboxes)
+            if attr_type != 'bool':
+                message = _('zopra_widget_set_any', default=u'<any value>')
+                return self.translate(message, domain="zopra")
         else:
             return attr_value
+        return attr_value
 
 
     def getChangeDate(self, table, autoid):
         """get the last change / creation date of the entry with the given autoid"""
-        if not autoid:
+        if not autoid or not table:
             return None
         tobj = self.tableHandler[table]
         root = tobj.getTableNode()
@@ -478,17 +590,6 @@ class TemplateBaseManager(GenericManager):
             # this is already utf-8, ascii-encoder raised an error
             value = value.decode('latin-1')
         return value
-
-
-    def isHierarchyList(self, listname):
-        # check if a List with that name is referenced by a table attribute
-        hlists = []
-        for tablename in self.tableHandler.keys():
-            hlists.extend(self.listHandler.getLists(tablename, ['hierarchylist']))
-        for lobj in hlists:
-            if lobj.listname == listname:
-                return True
-        return False
 
 
 #
@@ -648,19 +749,13 @@ class TemplateBaseManager(GenericManager):
         """\brief find all links in text starting with www or http and make them into real links"""
         # expression to find mailto and http/https urls, which will be made into real links
         expr = re.compile(r'((?:mailto\:|https?\://){1}\S+)\s*?(\[.*?\])')
-        # get the editorial urls
-        prop = self.portal_properties.site_properties
-        server_urls = prop.hasProperty('editorial_server_urls') and prop.editorial_server_urls or ['https://secure-redaktion.tu-dresden.de', 'https://sins-redaktion.tu-dresden.de', 'https://verw-redaktion.tu-dresden.de']
-        server_url = self.REQUEST.SERVER_URL
         # internal function for link replacement
         def apply(s):
             try:
                 # get url and possible label
                 url = s.group(1)
                 label = s.group(2)
-                # check the url, make it point to the active damain (for logged-in user)
-                if server_url in server_urls:
-                    url = url.replace('http://tu-dresden.de', server_url).replace('https://tu-dresden.de', server_url)
+
                 # use url as label, if no label is given
                 if not label or label == '[]':
                     label = url
@@ -735,7 +830,9 @@ class TemplateBaseManager(GenericManager):
         col_types = tobj.getColumnTypes()
         for col in col_types:
             if col_types[col] in ('float', 'currency'):
-                entry[col] = ('%s' % entry.get(col, '')).replace(',', '.')
+                # only convert if there is something to convert
+                if entry.get(col):
+                    entry[col] = ('%s' % entry.get(col, '')).replace(',', '.')
             # this removes empty list entries from the resulting entry for search
             # (where adding and removing a selection from a multilist results in an empty list being transmitted as search param)
             if search and col_types[col] in ('multilist', 'hierarchylist') and entry.get(col) == []:
@@ -744,15 +841,16 @@ class TemplateBaseManager(GenericManager):
         return entry
 
 
-    def prepareHierarchylistDisplayEntries(self, entries):
-        """\brief sort the entries into a tree, add level key and return flattened and sorted list"""
-        # TODO: implement
-        for entry in entries:
-            entry['level'] = 0
-        return entries
+    def filterRealSearchConstraints(self, constraints):
+        """\brief check if there are any real constraints in the dictionary"""
+        for key in constraints:
+            if not key.endswith('_AND'):
+                return True
+        return False
 
-
-    # disable basic Display Functions
+#
+# disable basic Display Functions
+#
     def infoForm(self, table, id, REQUEST):
         """\brief Returns html of the generic entry info page."""
         pass

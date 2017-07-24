@@ -1,5 +1,5 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
-         i18n:domain="plone">
+         i18n:domain="zopra">
 
 <body>
 <tal:comment tal:replace="nothing">
@@ -13,8 +13,8 @@
 <metal:widget_label define-macro="widget_label">
     <tal:block tal:define="cur_field field|nothing"
                tal:condition="python: cur_field">
-        <label tal:attributes="for attr_name"  i18n:translate="">
-            <span tal:replace="python: cur_field['LABEL']"></span>
+        <label tal:attributes="for attr_name">
+            <span i18n:translate="" tal:replace="python: cur_field['LABEL']"></span>
             <span class="fieldRequired"
                   title="Required"
                      i18n:attributes="title"
@@ -24,17 +24,17 @@
                 *
             </span>
         </label>
-        <div tal:attributes="class python: 'formHelp' + (attr_type == 'memo' and ' formHelpShort' or '')"
+        <div class="formHelp"
                  tal:content="helpTexts/?attr_name |nothing">
             Hinweistext
         </div>
-        <div tal:condition="python: here.doesTranslations(table) and entry.get('hastranslation') and (attr_type == 'string' or attr_type == 'memo')"
-                class='formHelp'>Bitte denken Sie daran, bei Veränderungen gegebenenfalls die
-            englische
-            Übersetzung anzupassen.
+        <div tal:condition="python: here.doesTranslations(table) and entry.get('hastranslation') and entry.get('language') == here.lang_default and (attr_type == 'string' or attr_type == 'memo')"
+             class="formHelp"
+             i18n:translate="zopra_widget_remember_translation">
+            Please consider updating the translated entry as well.
         </div>
-        <div tal:condition="error" tal:content="error" i18n:translate="">Validation error
-            output
+        <div tal:condition="error" tal:content="error" class="fieldErrorBox" i18n:translate="">
+            Validation error output
         </div>
     </tal:block>
 </metal:widget_label>
@@ -92,20 +92,15 @@
                                name attr_name;
                                id attr_name"
         />
-        <div tal:condition="python: here.doesTranslations(table) and entry.get('hastranslation') and (attr_type == 'string' or attr_type == 'memo')"
-                class='formHelp'>Bitte denken Sie daran, bei Veränderungen gegebenenfalls die
-            englische
-            Übersetzung anzupassen.
-        </div>
-        <div tal:condition="error" tal:content="error" i18n:translate="">Validation error
-            output
+        <div tal:condition="error" tal:content="error" class="fieldErrorBox" i18n:translate="">
+            Validation error output
         </div>
         <label tal:attributes="for attr_name" tal:content="python: field['LABEL']" i18n:translate="">
             Attribute Name
         </label>
-        <div tal:attributes="class python: 'formHelp' + (attr_type == 'memo' and ' formHelpShort' or '')"
+        <div class="formHelp"
                  tal:content="helpTexts/?attr_name |nothing">
-            Hinweistext
+            Helptext
         </div>
     </div>
 </metal:widget_bool>
@@ -113,7 +108,7 @@
 <metal:widget_memo define-macro="widget_memo">
     <metal:block metal:use-macro="python:path('here/zopra_widget_edit_display/macros/widget_label')" />
     <div data-sync data-has-reveal="true">
-        <a class="expand" tal:attributes="data-open string:reveal_${attr_name}"><span class="show-for-sr">Click me for a modal</span></a>
+        <a class="expand" tal:attributes="data-open string:reveal_${attr_name}"><span class="show-for-sr" i18n:translate="zopra_widget_modal">Click here for a modal text input panel</span></a>
         <textarea cols="50" rows="5"
                  tal:attributes="name attr_name; id attr_name; data-sync-with string:#clone_${attr_name}"
                  tal:content="structure attr_value">value</textarea>
@@ -130,20 +125,20 @@
 <metal:widget_singlelist define-macro="widget_singlelist">
     <metal:block metal:use-macro="python:path('here/zopra_widget_edit_display/macros/widget_label')" />
     <select tal:define="lobj python:here.listHandler.getList(table, attr_name);
-            entries python:lobj.getEntries();
-            do_sort attr_sort|nothing;
-            dummy python: do_sort and entries.sort(key=lambda item: item['value']);"
-             tal:attributes="name attr_name; id attr_name;"
-                    class="single">
-                <option value="">-auswählen-</option>
-                    <tal:block tal:repeat="entry entries">
-        <tal:block condition="entry/value">
-            <option tal:attributes="value python: unicode(entry['autoid']); selected python:unicode(entry['autoid']) == unicode(attr_value);"
-                     tal:content="python:entry['value']">
-                value
-            </option>
+                        entries python:lobj.getEntries();
+                        do_sort attr_sort|nothing;
+                        dummy python: do_sort and entries.sort(key=lambda item: item['value']);"
+            tal:attributes="name attr_name; id attr_name;"
+            class="single">
+        <option value="" i18n:translate="zopra_widget_choose">-choose-</option>
+        <tal:block tal:repeat="entry entries">
+            <tal:block condition="entry/value">
+                <option tal:attributes="value python: unicode(entry['autoid']); selected python:unicode(entry['autoid']) == unicode(attr_value);"
+                         tal:content="python:entry['value']">
+                    value
+                </option>
+            </tal:block>
         </tal:block>
-    </tal:block>
     </select>
 </metal:widget_singlelist>
 
@@ -157,13 +152,14 @@
             tmp_store python: {};">
         <input type="hidden" name="zopra_attr_present:list" tal:attributes="value attr_name" />
         <select multiple="multiple"
-                 tal:attributes="name python:attr_name+':list'; id attr_name">
+                class="multi"
+                tal:attributes="name python:attr_name+':list'; id attr_name">
             <tal:block tal:repeat="entry entries">
                 <tal:block condition="entry/value">
                     <option tal:define="bla python: tmp_store.update([(entry['autoid'], entry['value'])])"
                              tal:attributes="value python: unicode(entry['autoid']);
-                            selected python:unicode(entry['autoid']) in [unicode(val) for val in attr_value];
-                            title python: entry['value']"
+                                             selected python:unicode(entry['autoid']) in [unicode(val) for val in attr_value];
+                                             title python: entry['value']"
                              tal:content="python: entry['value']">
                         value
                     </option>
@@ -171,7 +167,7 @@
             </tal:block>
         </select>
         <div class="zopra-notes" tal:condition="notes">
-            <div tal:define="labelstr python: lobj.getNoteslabel() or isinstance(notes, bool) and 'Detailangabe' or here.listHandler[notes].getLabel()"
+            <div tal:define="labelstr python: lobj.getNoteslabel() or isinstance(notes, bool) and here.translate('Details', domain='zopra') or here.listHandler[notes].getLabel()"
                  tal:condition="attr_value"
                  class="zopra-notesheader">
                 <span tal:content="labelstr">Label</span>
@@ -180,7 +176,7 @@
             <tal:block tal:repeat="selected attr_value">
                 <div class="row" tal:condition="python: selected and tmp_store.get(int(selected))" class="zopra_notesbody">
                     <div class="column small-12 medium-4">
-                        <label tal:attributes="for python: attr_name + 'notes' + unicode(selected)">
+                        <label tal:attributes="for python: attr_name + u'notes' + unicode(selected)">
                             <a tal:define="href python: lobj.isTableReference() and lobj.getManager().absolute_url() + '/zopra_table_show_form?table=%s&autoid=%s' % (lobj.foreign, selected) or nothing"
                                tal:attributes="href href; target python:href and '_blank' or nothing"
                                tal:omit-tag="not: href"
@@ -188,7 +184,7 @@
                                class="auto-link link-icon">Value</a>
                         </label>
                     </div>
-                    <div tal:define="notesname python: attr_name + 'notes' + unicode(selected);
+                    <div tal:define="notesname python: attr_name + u'notes' + unicode(selected);
                                      val python: attr_notes.get(notesname);"
                          class="column small-12 medium-8">
                         <tal:block tal:condition="python: isinstance(notes, bool)">
@@ -200,7 +196,7 @@
                             <select tal:define="lobj2 python:here.listHandler[notes];
                                                 entries2 python:lobj2.getEntries();"
                                     tal:attributes="name notesname; id notesname">
-                                <option value="NULL">-ausw&auml;hlen-</option>
+                                <option value="NULL" i18n:translate="zopra_widget_choose">-choose-</option>
                                 <tal:block tal:repeat="entry2 entries2">
                                     <tal:block condition="entry2/value">
                                         <option tal:attributes="value python: unicode(entry2['autoid']); selected python:unicode(entry2['autoid']) == unicode(val);"
@@ -219,6 +215,10 @@
 </metal:widget_multilist>
 
 <metal:widget_hierarchylist define-macro="widget_hierarchylist">
+<tal:comment tal:replace="nothing">
+- this only allows selection of one node (any node on any level, but only one), value is always only one hidden field
+-> use GenericManager.getHierarchyListConfig(table, attribute) for the config and allow different settings
+</tal:comment>
     <metal:block metal:use-macro="python:path('here/zopra_widget_edit_display/macros/widget_label')" />
     <tal:block tal:define="lobj python:here.listHandler.getList(table, attr_name);
             entries python:lobj.getEntries();
@@ -240,10 +240,6 @@
                     <br/>
                 </div>
             </div>
-            <div class="loading">
-                <img tal:attributes="src string:${portal_url}/autoupdate-widget/loading.gif"  alt="Loading..."/>Bearbeite
-                ihre Anfrage. Bitte warten...
-            </div>
         </div>
     </tal:block>
 </metal:widget_hierarchylist>
@@ -255,21 +251,19 @@
 </tal:comment>
 
 <metal:block define-macro="widget_hierarchylist_select">
-    <metal:block metal:use-macro="python:path('here/zopra_widget_edit_display/macros/widget_label')" />
     <tal:block tal:define="items python:lobj.getEntriesByParent(parent);
-            hierarchy_list hierarchy_list|python:[];
-            onclick_function string:hierarchylist_select_option(%s,'${attr_name}','${table}',this);"
-             tal:condition="python:len(items)">
+                           hierarchy_list hierarchy_list|python:[];"
+               tal:condition="python:len(items)">
         <select class="single"
-                 tal:define = "itemname python:'hierarchylist_selection'"
-                 tal:attributes="name itemname">
-            <option tal:attributes="onclick python: onclick_function % ('\'\'')" value="0">-auswählen-</option>
+                name="hierarchylist_selection"
+                tal:attributes="onchange string:hierarchylist_select_option('${attr_name}','${table}',this);;;">
+            <option value="0" i18n:translate="zopra_widget_choose">-choose-</option>
             <tal:block tal:repeat="item items">
                 <option tal:content="item/value"
-                         tal:attributes="onclick python: onclick_function % item['autoid'];
-                                value item/autoid;
-                                selected python: item['autoid'] in hierarchy_list and 'selected' or nothing"
-                ></option>
+                        tal:attributes="value item/autoid;
+                                        selected python: item['autoid'] in hierarchy_list and 'selected' or nothing">
+                    one option
+                </option>
             </tal:block>
         </select>
     </tal:block>

@@ -68,7 +68,7 @@ class TableHandler(Folder):
             #     ebase = True
 
             if table.getLabel():
-                label = table.getLabel().encode('utf-8')
+                label = table.getLabel()
 
             uniqueid = table.getUid().encode('utf-8')
             new_dict = {}
@@ -88,7 +88,7 @@ class TableHandler(Folder):
                    not new_type == 'hierarchylist':
                     new_dict[column_name] = {}
                     new_dict[column_name][COL_TYPE]  = column.getType().encode('utf-8')
-                    new_dict[column_name][COL_LABEL] = column.getLabel().encode('utf-8')
+                    new_dict[column_name][COL_LABEL] = column.getLabel()
                     new_dict[column_name][COL_INVIS] = invisible
 
             self.addTable( table_name,

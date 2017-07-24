@@ -11,6 +11,11 @@ TCN_OWNER     = 'owner'
 
 class ZC:
 
+    # role names
+    ROLE_USER     = 'ZopRAAuthor'
+    ROLE_REVIEWER = 'ZopRAReviewer'
+    ROLE_ADMIN    = 'ZopRAAdmin'
+
     # edit_tracking
     TCN_AUTOID    = 'autoid'
     TCN_CREATOR   = 'creator'
@@ -108,17 +113,17 @@ class ZC:
 
 
     _edit_tracking_cols = { TCN_CREATOR: { COL_TYPE:    'singlelist',
-                                           COL_LABEL:   'Creator'},
+                                           COL_LABEL:   u'Creator'},
                             TCN_DATE:    { COL_TYPE:    'date',
-                                           COL_LABEL:   'Entry Date',
+                                           COL_LABEL:   u'Entry Date',
                                            COL_DEFAULT: 'now()'},
                             TCN_EDITOR:  { COL_TYPE:    'singlelist',
-                                           COL_LABEL:   'Last edited by'},
+                                           COL_LABEL:   u'Last edited by'},
                             TCN_EDATE:   { COL_TYPE:    'date',
-                                           COL_LABEL:   'Last edited on',
+                                           COL_LABEL:   u'Last edited on',
                                            COL_DEFAULT: 'now()'},
                             TCN_OWNER:   { COL_TYPE:    'singlelist',
-                                           COL_LABEL:   'Owner'},
+                                           COL_LABEL:   u'Owner'},
                             }
 
     ############################################################################

@@ -45,7 +45,7 @@ class GenericList(SimpleItem):
         """\brief Constructs a GenericList.
         """
         self.listname = listname
-        self.label    = str(label) if label else ''
+        self.label    = label if label else u''
 
 
     def createTable(self):
@@ -185,9 +185,9 @@ class GenericList(SimpleItem):
                 vertical = True
             pattern = config['pattern']
             if config['maxlen'] > 0:
-                cbox = hgShortenedComboBox( name     = name, 
-                                            parent   = parent, 
-                                            pattern  = pattern, 
+                cbox = hgShortenedComboBox( name     = name,
+                                            parent   = parent,
+                                            pattern  = pattern,
                                             vertical = vertical )
 
                 cbox.setListLength(config['maxlen'])
@@ -197,9 +197,9 @@ class GenericList(SimpleItem):
                 else:
                     cbox.setListTolerance(10)
             else:
-                cbox = hgFilteredComboBox( name     = name, 
-                                           parent   = parent, 
-                                           pattern  = pattern, 
+                cbox = hgFilteredComboBox( name     = name,
+                                           parent   = parent,
+                                           pattern  = pattern,
                                            vertical = vertical )
         else:
             cbox = hgComboBox(name = name, parent = parent)

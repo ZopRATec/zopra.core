@@ -1,45 +1,26 @@
-        function hierarchylist_remove_levels(elem)
-		{
-			elem = elem.parentNode.parentNode.nextSibling;
-			while (elem!=null)
-		    {
-		    	rem_elem=elem
-		        elem=elem.nextSibling;
-		        rem_elem.remove();
-		    }
-		}
-		
-		function hierarchylist_select_option(parent,attr_name,table,elem)
-		{
-			//console.log("parent:"+parent);
-			var xmlhttp;
-			hierarchylist_remove_levels(elem);
-			
-			elem.action="";
-			$('div#hierarchylist_'+attr_name+' div.loading')[0].style="visibility:visible;";
-			
-			if (window.XMLHttpRequest)
-			{// code for IE7+, Firefox, Chrome, Opera, Safari
-				xmlhttp=new XMLHttpRequest();
-			}
-			else
-			{// code for IE6, IE5
-				xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-			}
-			xmlhttp.onreadystatechange=function()
-			{
-				if (xmlhttp.readyState==4 && xmlhttp.status==200)
-			    {
-			    	//console.log("response")
-			    	node = document.createElement('div');
-			    	node.innerHTML = xmlhttp.responseText;
-			    	$("div#hierarchylist_"+attr_name+" div.container")[0].appendChild(node);
-			    	document.getElementById(attr_name).value=parent;
-			    	elem.action="'hierarchylist_select_option("+parent+",'"+attr_name+"','"+table+"',this)'";
-			    	//console.log("action:"+elem.action)
-			    	$('div#hierarchylist_'+attr_name+' div.loading')[0].style="visibility:collapse;";
-			    }
-			}
-			xmlhttp.open("GET","zopra_widget_hierarchylist_helper?parent="+parent+"&attr_name="+attr_name+"&table="+table,true);
-			xmlhttp.send();
-		}
+function hierarchylist_select_option(attr_name, table, elem)
+{
+    var parentid = $(elem).val();
+    console.log("parent:"+parentid);
+    $(elem).parent('div').nextAll().remove();
+    if (parentid != 0) {
+        $.ajax({
+            type    : "GET",
+            cache   : false,
+            url     : "zopra_widget_hierarchylist_helper",
+            data    : { table:     table,
+                        parent:    parentid,
+                        attr_name: attr_name, },
+            success : function(html) {
+                var jq_html = $(html);
+                var selector = 'div.zopra-hierarchylist-addition';
+                var new_list = jq_html.find(selector).add(jq_html.filter(selector));
+                $("div#hierarchylist_"+attr_name+" div.container").append(new_list);
+                // set the value of the hidden value store
+                $("div#hierarchylist_"+attr_name+" input#"+attr_name).val(parentid);
+                // not sure what this was supposed to mean?
+                //elem.action="'hierarchylist_select_option("+parent+",'"+attr_name+"','"+table+"',this)'";
+            }
+        });
+    }
+}
