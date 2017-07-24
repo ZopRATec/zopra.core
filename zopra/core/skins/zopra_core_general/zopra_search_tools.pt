@@ -23,67 +23,68 @@
         </div>
     </metal:block>
 
-    <!--
-    new pageination used by ila
+    <tal:comment tal:replace="nothing">
+    New pageination used by ILA.
     Necessary form parameters:
     result_page = the page the pagelinks link to
     count = number of results per page
     offset = current offest
     getparam = additional get parameter that gets passed through
     tolerance = tolerance to the left and right pagelinks
-    -->
+    TODO: integrate with normal pagination, rename
+    </tal:comment>
     <metal:block metal:define-macro="pageination">
-        <div id="pagelinks"
+        <div class="zopra-pagelinks"
              tal:define="url      python: '%s/%s' % (context.absolute_url(),result_page);
                          url      python: url + getparam + '&offset=';
                          pages    python: context.calculatePaginationPages(rowcount, count);
-
                          cur_page python: offset/count;">
             <span i18n:translate="zopra_sr_label_pages">Pages:</span>
 
             <tal:block tal:condition="python: cur_page > 0">
-                <a class="pagelink" title="erste"
-                       tal:define="thisurl python: url + str(0);"
-                       tal:attributes="href thisurl;"
-                       i18n:translate="zopra_sr_label_pages_first"
-                       >first</a>
+                <a class="pagelink" title="first page"
+                   tal:define="thisurl python: url + str(0);"
+                   tal:attributes="href thisurl;"
+                   i18n:translate="zopra_sr_label_pages_first"
+                   i18n:attributes="title zopra_sr_label_pages_first_page">
+                    first
+                </a>
             </tal:block>
-
             <tal:block tal:condition="python:cur_page > 0">
-            <a class="pagelink" title="eines zur&uuml;ck"
+                <a class="pagelink" title="previous page"
                    tal:define="thisurl python: url + str(offset-count);"
                    tal:attributes="href thisurl;"
-                   i18n:translate="zopra_sr_label_pages_before"
-                   >back</a>
+                   i18n:translate="zopra_sr_label_pages_previous"
+                   i18n:attributes="title zopra_sr_label_pages_previous_page">
+                    previous
+                </a>
             </tal:block>
-
-            <span
-            tal:define="
-            start python: max(0, cur_page - num_links);
-            end python: min(cur_page + num_links+1, pages);"
-            tal:repeat="page python: xrange(start,end)">
-
-                <strong class="pagelink" tal:condition="python:cur_page == page" tal:content="python:page+1">
-                </strong>
-
-                <a class="pagelink" tal:condition="python:cur_page != page" tal:define="thisurl python: url + str(page*count);"
+            <span tal:define="start python: max(0, cur_page - num_links);
+                              end python: min(cur_page + num_links+1, pages);"
+                  tal:repeat="page python: xrange(start,end)">
+                <a tal:define="thisurl python: url + str(page*count);
+                               thisclass python: pageoffset == offset and 'pagelink selected' or 'pagelink';"
                    tal:attributes="href thisurl;
-                                   title python: 'Page ' + str(page + 1);"
+                                   class thisclass;"
                    tal:content="python: page + 1">pagenumber</a>
             </span>
-
             <tal:block tal:condition="python:cur_page < pages-1">
-                <a class="pagelink" title="eines weiter"
-                      tal:define="thisurl python: url + str(offset+count);"
-                      i18n:translate="zopra_sr_label_pages_next"
-                       tal:attributes="href thisurl;">next</a>
+                <a class="pagelink" title="next page"
+                   tal:define="thisurl python: url + str(offset+count);"
+                   tal:attributes="href thisurl;"
+                   i18n:translate="zopra_sr_label_pages_next"
+                   i18n:attributes="title zopra_sr_label_pages_next_page">
+                    next
+                </a>
             </tal:block>
-
             <tal:block tal:condition="python: cur_page != pages-1">
-                <a class="pagelink" title="letzte"
-                      tal:define="thisurl python: url + str(count*(pages-1));"
-                      i18n:translate="zopra_sr_label_pages_last"
-                       tal:attributes="href thisurl;">last</a>
+                <a class="pagelink" title="last page"
+                   tal:define="thisurl python: url + str(count*(pages-1));"
+                   tal:attributes="href thisurl;"
+                   i18n:translate="zopra_sr_label_pages_last"
+                   i18n:attributes="title zopra_sr_label_pages_last_page">
+                    last
+                </a>
             </tal:block>
         </div>
     </metal:block>
