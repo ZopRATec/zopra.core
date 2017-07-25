@@ -3,7 +3,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ZMOM 1.0\n"
-"POT-Creation-Date: 2017-07-23 21:14+0000\n"
+"POT-Creation-Date: 2017-07-24 13:24+0000\n"
 "PO-Revision-Date: 2010-05-06 14:11+0100\n"
 "Last-Translator: Peter Seifert <peter.seifert@zopra.de>\n"
 "Language-Team: ZMOM i18n <i18n@zopra.de>\n"
@@ -649,25 +649,45 @@ msgstr "Ansicht ${table} ${label}${language}"
 msgid "zopra_sr_label_pages"
 msgstr "Seiten:"
 
-#. Default: "back"
-#: ./skins/zopra_core_general/zopra_search_tools.pt:53
-msgid "zopra_sr_label_pages_before"
-msgstr "zurück"
-
 #. Default: "first"
 #: ./skins/zopra_core_general/zopra_search_tools.pt:45
 msgid "zopra_sr_label_pages_first"
 msgstr "erste"
 
+#. Default: "first page"
+#: ./skins/zopra_core_general/zopra_search_tools.pt:45
+msgid "zopra_sr_label_pages_first_page"
+msgstr "erste Seite"
+
 #. Default: "last"
-#: ./skins/zopra_core_general/zopra_search_tools.pt:83
+#: ./skins/zopra_core_general/zopra_search_tools.pt:81
 msgid "zopra_sr_label_pages_last"
 msgstr "letzte"
 
+#. Default: "last page"
+#: ./skins/zopra_core_general/zopra_search_tools.pt:81
+msgid "zopra_sr_label_pages_last_page"
+msgstr "letzte Seite"
+
 #. Default: "next"
-#: ./skins/zopra_core_general/zopra_search_tools.pt:76
+#: ./skins/zopra_core_general/zopra_search_tools.pt:72
 msgid "zopra_sr_label_pages_next"
-msgstr "weiter"
+msgstr "nächste"
+
+#. Default: "next page"
+#: ./skins/zopra_core_general/zopra_search_tools.pt:72
+msgid "zopra_sr_label_pages_next_page"
+msgstr "nächste Seite"
+
+#. Default: "previous"
+#: ./skins/zopra_core_general/zopra_search_tools.pt:54
+msgid "zopra_sr_label_pages_previous"
+msgstr "vorherige"
+
+#. Default: "previous page"
+#: ./skins/zopra_core_general/zopra_search_tools.pt:54
+msgid "zopra_sr_label_pages_previous_page"
+msgstr "vorherige Seite"
 
 #. Default: "Export"
 #: ./skins/zopra_core_general/zopra_manager_main_form.pt:90
@@ -862,7 +882,7 @@ msgid "zopra_widget_search_bool_not"
 msgstr "hat/ist nicht"
 
 #. Default: "<any value>"
-#: ./tools/TemplateBaseManager.py:542
+#: ./tools/TemplateBaseManager.py:543
 msgid "zopra_widget_set_any"
 msgstr "<beliebiger Wert>"
 
@@ -870,3 +890,4 @@ msgstr "<beliebiger Wert>"
 #: ./skins/zopra_core_general/zopra_table_deleteconfirm_form.cpt:39
 msgid "zopra_workingcopy"
 msgstr "Arbeitskopie"
+

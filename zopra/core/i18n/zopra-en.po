@@ -3,7 +3,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ZMOM 1.0\n"
-"POT-Creation-Date: 2017-07-23 21:14+0000\n"
+"POT-Creation-Date: 2017-07-24 13:24+0000\n"
 "PO-Revision-Date: 2010-05-06 14:11+0100\n"
 "Last-Translator: Peter Seifert <peter.seifert@zopra.de>\n"
 "Language-Team: ZMOM i18n <i18n@zopra.de>\n"
@@ -101,7 +101,7 @@ msgstr ""
 msgid "create_repeat_hint"
 msgstr ""
 
-#. Default: "The format of the import file, e.g.: macroman, latin1, utf8."
+#. Default: "Specify the format of the import file, e.g.: macroman, latin1, utf8. Default is utf8."
 #: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:70
 msgid "encoding_help"
 msgstr ""
@@ -648,25 +648,45 @@ msgstr ""
 msgid "zopra_sr_label_pages"
 msgstr "Pages:"
 
-#. Default: "back"
-#: ./skins/zopra_core_general/zopra_search_tools.pt:53
-msgid "zopra_sr_label_pages_before"
-msgstr "back"
-
 #. Default: "first"
 #: ./skins/zopra_core_general/zopra_search_tools.pt:45
 msgid "zopra_sr_label_pages_first"
 msgstr "first"
 
+#. Default: "first page"
+#: ./skins/zopra_core_general/zopra_search_tools.pt:45
+msgid "zopra_sr_label_pages_first_page"
+msgstr ""
+
 #. Default: "last"
-#: ./skins/zopra_core_general/zopra_search_tools.pt:83
+#: ./skins/zopra_core_general/zopra_search_tools.pt:81
 msgid "zopra_sr_label_pages_last"
 msgstr "last"
 
+#. Default: "last page"
+#: ./skins/zopra_core_general/zopra_search_tools.pt:81
+msgid "zopra_sr_label_pages_last_page"
+msgstr ""
+
 #. Default: "next"
-#: ./skins/zopra_core_general/zopra_search_tools.pt:76
+#: ./skins/zopra_core_general/zopra_search_tools.pt:72
 msgid "zopra_sr_label_pages_next"
 msgstr "next"
+
+#. Default: "next page"
+#: ./skins/zopra_core_general/zopra_search_tools.pt:72
+msgid "zopra_sr_label_pages_next_page"
+msgstr ""
+
+#. Default: "previous"
+#: ./skins/zopra_core_general/zopra_search_tools.pt:54
+msgid "zopra_sr_label_pages_previous"
+msgstr ""
+
+#. Default: "previous page"
+#: ./skins/zopra_core_general/zopra_search_tools.pt:54
+msgid "zopra_sr_label_pages_previous_page"
+msgstr ""
 
 #. Default: "Export"
 #: ./skins/zopra_core_general/zopra_manager_main_form.pt:90
@@ -862,7 +882,7 @@ msgid "zopra_widget_search_bool_not"
 msgstr ""
 
 #. Default: "<any value>"
-#: ./tools/TemplateBaseManager.py:542
+#: ./tools/TemplateBaseManager.py:543
 msgid "zopra_widget_set_any"
 msgstr ""
 
