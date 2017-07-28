@@ -269,6 +269,21 @@
                 </a>
             </tal:block>
         </tal:block>
+        <tal:block tal:define="notabs request/notabs|nothing"
+                   tal:condition="python: table in ['invoice', 'position', 'studiengang']">
+            <a class="button  small"
+               tal:condition="not:notabs"
+               tal:attributes="href python:'zopra_table_show_form?table=%s&autoid=%s&notabs=1' % (table, entry.get('autoid'))"
+               i18n:translate="zopra_links_edit_no_tabs">
+                Disable tabs
+            </a>
+            <a class="button  small"
+               tal:condition="notabs"
+               tal:attributes="href python:'zopra_table_show_form?table=%s&autoid=%s' % (table, entry.get('autoid'))"
+               i18n:translate="zopra_links_edit_tabs">
+                Enable tabs
+            </a>
+        </tal:block>
     </div>
 </metal:block>
 
