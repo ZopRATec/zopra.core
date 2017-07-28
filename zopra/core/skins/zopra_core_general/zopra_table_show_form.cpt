@@ -5,6 +5,8 @@
 <body>
 <tal:comment tal:replace="nothing">
     zopra show form (display entry)
+    TODO: remove the repeatfields-part, if that is not used (presumably not)
+    Changes: notabs - Button to disable tabs, notabs-Display also shows no helptexts (for print)
 </tal:comment>
 
 <metal:javascriptslot fill-slot="javascript_head_slot">
@@ -18,6 +20,7 @@
     </tal:block>
     <tal:block tal:define="errors options/state/getErrors;
                  table request/table;
+                 notabs request/notabs|nothing;
                  tobj python: here.tableHandler[table];
                  coltypes python:tobj.getColumnDefs(edit_tracking = True);
                  fieldsets python:here.getLayoutInfo(table, 'show');
@@ -48,7 +51,9 @@
               method="post"
               enctype="multipart/form-data"
               class="enableFormTabbing zopra-form"
-              tal:attributes="action string:${here/absolute_url}/${template/getId}" >
+              tal:attributes="action string:${here/absolute_url}/${template/getId};
+                              class python: notabs and 'disableFormTabbing zopra-form' or 'enableFormTabbing zopra-form'" >
+            <input type="hidden" tal:condition="notabs" name="notabs" value="1" />
             <tal:block tal:define="show_additional python: not here.doesTranslations(table) or entry.get('language') == 'de'"
                        tal:repeat="fieldset fieldsets">
                 <fieldset tal:define="title python: fieldset.get('label') or fieldset.get('id');
@@ -75,6 +80,7 @@
                                      tal:condition="python: not coltypes.get(attr_name).get('INVIS')# and attr_name not in r_fields">
                                     <label tal:attributes="for attr_name" tal:content="python: field['LABEL']" i18n:translate="">Attribute Name</label>
                                     <div class="formHelp formHelpSpecial"
+                                         tal:condition="not: notabs"
                                          tal:content="helpTexts/?attr_name|nothing">
                                       Hinweistext
                                     </div>
@@ -85,6 +91,9 @@
                     </tal:block>
                     <tal:block condition="python: request.get('autoidlist')"
                                repeat="entryid request/autoidlist">
+                        <tal:comment tal:replace="nothing">
+                            WTF? why do we try to display repeatfields? that is only an add-form-feature.
+                        </tal:comment>
                         <tal:block tal:define="rentry python: tobj.getEntry(entryid)"
                                    tal:repeat="attr_name r_fields">
                           <tal:check tal:define="dummy python: not coltypes.get(attr_name) and here.zopra_raiser('Field not found: ' + attr_name)"></tal:check>
