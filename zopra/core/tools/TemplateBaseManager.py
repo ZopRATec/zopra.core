@@ -89,6 +89,15 @@ class TemplateBaseManager(GenericManager):
         return (title, url)
 
 
+    # disable caching
+    def manage_afterAdd(self, item, container):
+        """\brief Disable Caching for managers running inside Plone."""
+        GenericManager.manage_afterAdd(self, item, container)
+
+        # disable caching for all tables
+        for table in self.tableHandler.keys():
+            self.tableHandler[table].manage_changeProperties(do_cache = False)
+
 #
 # Plone 4.3 Integration for Social Links and Content Actions
 #
