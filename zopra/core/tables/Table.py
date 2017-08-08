@@ -931,6 +931,9 @@ class Table(SimpleItem, PropertyManager):
                         value = dict([(unicode(c), None) for c in value if c]).keys()
 
                         value = ', '.join(value)
+                    # handle None, make empty string
+                    if value == None:
+                        value = u''
 
                     one_res = unicode(value)
                 # call an export preparation hook
