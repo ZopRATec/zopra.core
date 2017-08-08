@@ -7,9 +7,10 @@
 ##parameters=table,columnList,order,cons_key=[]
 ##title=
 ##
-
+import plone.api.portal
 request = context.REQUEST
 manager = context
+lang = plone.api.portal.get_current_language()
 
 encoding = 'latin1'       # default encoding
 delim = ';'             # default delimiter
@@ -28,27 +29,26 @@ for key in cons_key:
         cons[key] = 1
 
 try:
-  autoList = manager.tableHandler[table].getEntryAutoidList(constraints = cons, order = order)
+    autoList = manager.tableHandler[table].getEntryAutoidList(constraints = cons, order = order)
 
-  # list of csv-like entries
-  exportList = manager.tableHandler[table].exportCSV( columnList, autoList, flags, delim = ';', multilines = 'remove' )
+    # list of csv-like entries
+    exportList = manager.tableHandler[table].exportCSV( columnList, autoList, flags, delim = ';', multilines = 'remove' )
 
-  # replace the header with the human-readable labels
-  coltypes = manager.tableHandler[table].getColumnDefs()
-  exportList[0] = delim.join([ unicode(coltypes.get(a, {}).get('LABEL',''), 'utf8') for a in exportList[0].split(delim) ])
+    # replace the header with the human-readable labels
+    coltypes = manager.tableHandler[table].getColumnDefs(edit_tracking = True)
+    exportList[0] = delim.join([ manager.translate(coltypes.get(a, {}).get('LABEL',''), domain='zopra', target_language=lang) for a in exportList[0].split(delim) ])
 
-  # set proper encoding and replace null values
-  # FIXME: None-Replacement should be done in exportCSV, not afterwards
-  exportList2 = [ line.encode(encoding, 'replace').replace('None','') for line in exportList ]
+    # set proper encoding
+    exportList2 = [ line.encode(encoding, 'replace') for line in exportList ]
 
-  # set content-type
-  request.RESPONSE.setHeader('Content-Type', 'text/plain;;charset=%s' % encoding)
+    # set content-type
+    request.RESPONSE.setHeader('Content-Type', 'text/plain;;charset=%s' % encoding)
 
-  # set content-disposition to return a file
-  disp = 'attachement; filename="%s.csv"' % table
-  request.RESPONSE.setHeader( 'Content-disposition', disp)
+    # set content-disposition to return a file
+    disp = 'attachement; filename="%s.csv"' % table
+    request.RESPONSE.setHeader( 'Content-disposition', disp)
 
-  return "\n".join(exportList2)
+    return "\n".join(exportList2)
 
 except Exception, e:
     return "Fehler beim Export: " + str(e)
