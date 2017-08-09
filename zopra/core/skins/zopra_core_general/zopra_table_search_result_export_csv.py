@@ -4,13 +4,12 @@
 ##bind namespace=
 ##bind script=script
 ##bind subpath=traverse_subpath
-##parameters=table,columnList,order,cons_key=[]
+##parameters=table, columns, autoids, REQUEST=None
 ##title=
 ##
-import plone.api.portal
-request = context.REQUEST
+request = REQUEST
 manager = context
-lang = plone.api.portal.get_current_language()
+lang = manager.getCurrentLanguage()
 
 encoding = 'latin1'       # default encoding
 delim = ';'             # default delimiter
@@ -19,20 +18,11 @@ TE_LOOKUPDATA  = 0x0008 # resolve foreign keys
 
 flags = TE_WITHHEADER | TE_LOOKUPDATA
 
-# rebuild constraints from the lists cons_key and corresponding value fields
-cons = {}
-for key in cons_key:
-    cons[key] = request.get(key+'_values')
-    if cons[key] == 'False':                # converting string form values
-        cons[key] = 0
-    if cons[key] == 'True':
-        cons[key] = 1
 
 try:
-    autoList = manager.tableHandler[table].getEntryAutoidList(constraints = cons, order = order)
 
     # list of csv-like entries
-    exportList = manager.tableHandler[table].exportCSV( columnList, autoList, flags, delim = ';', multilines = 'remove' )
+    exportList = manager.tableHandler[table].exportCSV( columns, autoids, flags, delim = ';', multilines = 'remove' )
 
     # replace the header with the human-readable labels
     coltypes = manager.tableHandler[table].getColumnDefs(edit_tracking = True)
