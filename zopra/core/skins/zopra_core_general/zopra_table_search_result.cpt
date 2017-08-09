@@ -10,23 +10,6 @@
 
     <metal:javascriptslot fill-slot="javascript_head_slot">
         <script type="text/javascript" tal:attributes="src string:${portal_url}/dragtable.js"></script>
-        <script language="javascript">
-        <!--
-            $(document).ready(function() {
-
-                updateColumns = function updateColumnList() {
-                    var container = $('#columnListContainer');
-                    container.html('');
-                    $('.copy2exportForm').clone().removeClass('copy2exportForm').appendTo(container);
-                }
-
-                $('#export_as_csv').submit(updateColumns);
-                updateColumns();
-
-            });
-        -->
-        </script>
-
     </metal:javascriptslot>
 
     <metal:topslot fill-slot="top_slot">
@@ -52,9 +35,8 @@
                      rowcount python: here.getEntryListCountProxy(table, enriched_cons);
                      cols python: request.get('sel_attr') or here.getConfigShowFields(table) or ['autoid'];
                      cols python: here.reorderColsAccordingly(cols, here.getConfigShowFields(table) or ['autoid']);
-                     order python: request.get('sort_attr') or [cols[0]];
+                     order python: request.get('order') or [cols[0]];
                      orderdir python: [context.getGenericConfig(table).get('default_orderdir', 'asc')];
-                     quotedcons python: ''#context.quoteConstraints(constraints)#buggy -> string is build below;
                      entries python: here.getEntryListProxy(table, count, offset, None, enriched_cons, order, orderdir);
                      coltypes python:context.getFilteredColumnDefs(table, edit_tracking = True, vis_only = False);
                      links python: context.getGenericConfig(table).get('links', []);
@@ -153,7 +135,7 @@
                         </th>
                     <th tal:repeat="attr_name cols">
                         <span i18n:translate="" tal:replace="python: coltypes.get(attr_name, {}).get('LABEL','')">attributename</span>
-                        <input type="hidden" class="copy2exportForm" tal:attributes="value attr_name" name="columnList:list" />
+                        <input type="hidden" tal:attributes="value attr_name" name="columns:list" />
                     </th>
                     <th></th>
                 </tr>
@@ -232,7 +214,7 @@
                     <h2 i18n:translate="zopra_search_result_sorting">
                         Order by:
                     </h2>
-                    <select name="sort_attr:list">
+                    <select name="order:list">
                         <tal:block tal:repeat="attr_tupel all_keys">
                             <option i18n:translate=""
                                     tal:define="attr python: attr_tupel[1]"
@@ -257,43 +239,38 @@
                     <metal:block metal:use-macro="here/zopra_button_link_bar/macros/buttons_search_result" />
                 </div>
             </div>
-        </form>
-        <div class="result_options_field">
-            <h2 i18n:translate="zopra_search_result_export">
-                Export:
-            </h2>
-            <div class="result_options_subfield">
-                <form id="export_as_csv" action="zopra_table_search_result_export_csv" method="post">
-                    <input type="hidden" name="table:string" tal:attributes="value table" />
-                    <span class="hidden" id="columnListContainer">
-                        <tal:block repeat="col cols">
-                            <input type="hidden" name="columnList:list" tal:attributes="value col" />
-                        </tal:block>
-                    </span>
-                    <tal:block repeat="ord order">
-                        <input type="hidden" name="order:list" tal:attributes="value ord" />
-                    </tal:block>
+            <div class="result_options_field">
+                <h2 i18n:translate="zopra_search_result_export">
+                    Export:
+                </h2>
+                <div class="result_options_subfield"
+                     tal:define="buttons python: here.getGenericConfig(table).get('ownButtonActions') or []">
                     <tal:block repeat="cons_key python:cons.keys()">
                         <input type="hidden" name="cons_key:list" tal:attributes="value cons_key" />
-                    <tal:if condition="python:same_type(cons[cons_key], [])">
-                        <tal:block repeat="val python:cons[cons_key]">
-                            <input type="hidden" tal:attributes="name python:cons_key+'_values:list';
-                                                                             value val" />
-                        </tal:block>
-                    </tal:if>
-                    <tal:else condition="python:not same_type(cons[cons_key], [])">
-                            <input type="hidden" tal:attributes="name python:cons_key+'_values';
-                                                                 value python:cons[cons_key]" />
-                    </tal:else>
+                        <tal:if condition="python:same_type(cons[cons_key], [])">
+                            <tal:block repeat="val python:cons[cons_key]">
+                                <input type="hidden" tal:attributes="name python:cons_key+'_values:list';
+                                                                                 value val" />
+                            </tal:block>
+                        </tal:if>
+                        <tal:else condition="python:not same_type(cons[cons_key], [])">
+                                <input type="hidden" tal:attributes="name python:cons_key+'_values';
+                                                                     value python:cons[cons_key]" />
+                        </tal:else>
                     </tal:block>
                     <div class="formControls formControlsZopRA">
                         <div class="formPanel">
-                            <input class="context" type="submit" value="CSV-Export" />
+                            <input class="standalone" type="submit" name="form.button.Export" value="Standard Export (CSV)" i18n:attributes="value zopra_export_button_label" />
+                            <tal:block tal:repeat="button buttons">
+                                <input class="standalone" type="submit"
+                                       tal:attributes="name button/id|nothing; value button/label|nothing;" />
+                            </tal:block>
                         </div>
                     </div>
-                </form>
+                </div>
             </div>
-        </div>
+            <input type="hidden" name="form.submitted" value="1" />
+        </form>
     </div>
 </div>
     </metal:main>
