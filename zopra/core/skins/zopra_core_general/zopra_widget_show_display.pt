@@ -43,7 +43,7 @@
         <div class="checkboxes-group">
             <input type="checkbox"
                    disabled="disabled"
-                   tal:attributes="checked python:bool(attr_value) and attr_value == 1;
+                   tal:attributes="checked python:bool(attr_value) and attr_value == str(1);
                                    id attr_name;" />
             <label i18n:translate="zopra_widget_search_bool"
                    tal:attributes="for attr_name">

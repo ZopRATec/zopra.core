@@ -105,7 +105,7 @@
                                     <dd tal:define="display_constraints python: 1">
                                         <metal:block metal:use-macro="here/zopra_widget_show_display/macros/widget_selector">Value</metal:block>
                                     </dd>
-                              </tal:block>
+                                </tal:block>
                             </tal:block>
                         </tal:repeat>
                     </dl>
