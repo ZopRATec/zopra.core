@@ -45,7 +45,7 @@
                                                Details
                                             </a>
                                         </td>
-                                        <td>
+                                        <td class="text-center">
                                             <a class="icon-zopra-release"
                                                tal:attributes="href python: manager.absolute_url() + '/zopra_table_edit_form?autoid=%s&table=%s' % (entry['autoid'], table)"
                                                i18n:translate="zopra_release_singlelink_label">
