@@ -1,0 +1,10 @@
+[default]
+title=Search Result
+
+[security]
+View=0:Authenticated
+
+[actions]
+action.success..Configure=traverse_to:string:zopra_table_search_result
+action.success..Cancel=traverse_to:string:zopra_manager_main_form
+action.success=traverse_to:string:zopra_table_search_result_handler

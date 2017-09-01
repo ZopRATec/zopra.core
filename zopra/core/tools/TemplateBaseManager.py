@@ -57,6 +57,14 @@ class TemplateBaseManager(GenericManager):
     lang_additional =()
 
 
+    def getCurrentLanguage(self):
+        try:
+            import plone.api.portal
+            return plone.api.portal.get_current_language()
+        except:
+            return self.lang_default
+
+
     def startupConfig(self, REQUEST):
         """\brief Function called after creation by manageAddGeneric"""
         # add table constraints
