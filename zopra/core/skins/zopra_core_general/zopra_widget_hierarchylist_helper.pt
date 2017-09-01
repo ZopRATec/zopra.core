@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<tal:comment tal:replace="nothing">
-  This short html snippet gets called via ajax by the hierarchylist edit / search display widgets,
-  when an option is selected and loads the next level (i.e. another combobox)
-  The actual display creation is done in the widget_hiererchylist_select macro
-</tal:comment>
 <html i18n:domain="zopra">
+    <tal:comment tal:replace="nothing">
+        This short html snippet gets called via ajax by the hierarchylist edit / search display widgets,
+        when an option is selected and loads the next level (i.e. another combobox)
+        The actual display creation is done in the widget_hiererchylist_select macro
+    </tal:comment>
     <head>
         <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
     </head>
