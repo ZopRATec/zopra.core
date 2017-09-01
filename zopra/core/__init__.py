@@ -43,6 +43,8 @@ allow_module('zExceptions.Redirect')
 zopraMessageFactory = MessageFactory('zopra')
 # make import of MessageFactory possible from PythonScripts
 allow_module('zopra.core.zopraMessageFactory')
+# make import of plone.api.portal possible from PythonScripts (for getting current language)
+allow_module('plone.api.portal')
 #
 # Globally interesting Manager Name Constants
 #

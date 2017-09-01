@@ -195,6 +195,11 @@ class GenericManager(ManagerPart):
         return fields
 
 
+    def getCurrentLanguage(self):
+        """ Language default is en, overridden in TemplateBaseManager"""
+        return 'en'
+
+
     def doesTranslations(self, table):
         """ Translation indicator, should be overwritten to return True for
             tables that handle translations.
