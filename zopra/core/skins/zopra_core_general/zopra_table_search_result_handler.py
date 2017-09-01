@@ -1,4 +1,4 @@
-## Script (Python) "zopra_table_search_export_csv"
+## Script (Python) "zopra_table_search_result_handler"
 ##bind container=container
 ##bind context=context
 ##bind namespace=
