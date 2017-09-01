@@ -821,7 +821,7 @@ class Table(SimpleItem, PropertyManager):
 #
 
 
-    def exportTab(self, columnList = None, autoidList = None, flags = None, delim = '\t', multilines = 'replace'):
+    def exportTab(self, columnList = None, autoidList = None, flags = None, delim = u'\t', multilines = 'replace'):
         """\brief Exports a table from the database as tab separeted text file.
 
         \param tableName  The name of the table without manager prefix.
@@ -916,11 +916,11 @@ class Table(SimpleItem, PropertyManager):
 
                 if flags & TE_LOOKUPDATA and lookup_dict.get(col):
                     colobj = mgr.listHandler.getList(self.tablename, col)
-                    value = colobj.getValueByAutoid(entry.get(col, ''))
+                    value = colobj.getValueByAutoid(entry.get(col, u''))
 
                     if isinstance(value, ListType):
-                        value = ', '.join(value)
-
+                        value = u', '.join(value)
+                    # make sure it's unicode
                     one_res = unicode(value)
 
                 else:
@@ -930,28 +930,28 @@ class Table(SimpleItem, PropertyManager):
                         # flatten list (remove double, remove empty)
                         value = dict([(unicode(c), None) for c in value if c]).keys()
 
-                        value = ', '.join(value)
+                        value = u', '.join(value)
                     # handle None, make empty string
                     if value == None:
                         value = u''
-
+                    # absolutely make sure its a unicode object
                     one_res = unicode(value)
                 # call an export preparation hook
                 one_res = mgr.prepareFieldForExport(self.tablename, col, one_res, entry)
 
                 # remove carriage return to be on the safe side
-                one_res = one_res.replace('\r', '')
+                one_res = one_res.replace(u'\r', u'')
 
                 # check for special chars that induce escaping
-                if one_res.find(delim) != -1 or one_res.find('"') != -1 or one_res.find('\n') != -1:
-                    one_res = '"%s"' % one_res.replace('"', '""')
+                if one_res.find(delim) != -1 or one_res.find(u'"') != -1 or one_res.find(u'\n') != -1:
+                    one_res = u'"%s"' % one_res.replace(u'"', u'""')
 
                 # handle linebreaks
                 # third option is 'keep' -> do nothing
                 if multilines == 'remove':
-                    one_res.replace('\n\n', '\n').replace('\n', ' ')
+                    one_res.replace(u'\n\n', u'\n').replace(u'\n', u' ')
                 elif multilines == 'replace':
-                    one_res.replace('\n', '\\n')
+                    one_res.replace(u'\n', u'\\n')
 
                 new_result.append(one_res)
 

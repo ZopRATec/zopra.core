@@ -11,8 +11,8 @@ request = REQUEST
 manager = context
 lang = manager.getCurrentLanguage()
 
-encoding = 'latin1'       # default encoding
-delim = ';'             # default delimiter
+encoding = 'utf-8'       # default encoding
+delim = u';'             # default delimiter
 TE_WITHHEADER  = 0x0004 # include header
 TE_LOOKUPDATA  = 0x0008 # resolve foreign keys
 
@@ -22,7 +22,7 @@ flags = TE_WITHHEADER | TE_LOOKUPDATA
 try:
 
     # list of csv-like entries
-    exportList = manager.tableHandler[table].exportCSV( columns, autoids, flags, delim = ';', multilines = 'remove' )
+    exportList = manager.tableHandler[table].exportCSV( columns, autoids, flags, delim = u';', multilines = 'remove' )
 
     # replace the header with the human-readable labels
     coltypes = manager.tableHandler[table].getColumnDefs(edit_tracking = True)
@@ -38,6 +38,7 @@ try:
     disp = 'attachement; filename="%s.csv"' % table
     request.RESPONSE.setHeader( 'Content-disposition', disp)
 
+    # exportList2 are encoded strings, do not force unicode conversion
     return "\n".join(exportList2)
 
 except Exception, e:
