@@ -932,7 +932,7 @@ class Table(SimpleItem, PropertyManager):
 
                         value = u', '.join(value)
                     # handle None, make empty string
-                    if value == None:
+                    if value is None:
                         value = u''
                     # absolutely make sure its a unicode object
                     one_res = unicode(value)
