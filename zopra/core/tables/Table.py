@@ -821,7 +821,7 @@ class Table(SimpleItem, PropertyManager):
 #
 
 
-    def exportTab(self, columnList = None, autoidList = None, flags = None, delim = u'\t', multilines = 'replace'):
+    def exportTab(self, columnList = None, autoidList = None, flags = None, delim = u'\t', multilines = 'keep'):
         """\brief Exports a table from the database as tab separeted text file.
 
         \param tableName  The name of the table without manager prefix.
@@ -900,6 +900,11 @@ class Table(SimpleItem, PropertyManager):
         if flags & TE_WITHHEADER:
             export_list.append( delim.join(columnList) )
 
+        if multilines in ['remove', 'replace']:
+            multilist_joiner = u', '
+        else:
+            multilist_joiner = u'\r'
+
         # write data to temporary file
         for result in autoidList:
 
@@ -919,7 +924,7 @@ class Table(SimpleItem, PropertyManager):
                     value = colobj.getValueByAutoid(entry.get(col, u''))
 
                     if isinstance(value, ListType):
-                        value = u', '.join(value)
+                        value = multilist_joiner.join(value)
                     # make sure it's unicode
                     one_res = unicode(value)
 
@@ -929,8 +934,7 @@ class Table(SimpleItem, PropertyManager):
                     if isinstance(value, ListType):
                         # flatten list (remove double, remove empty)
                         value = dict([(unicode(c), None) for c in value if c]).keys()
-
-                        value = u', '.join(value)
+                        value = multilist_joiner.join(value)
                     # handle None, make empty string
                     if value is None:
                         value = u''
@@ -939,19 +943,20 @@ class Table(SimpleItem, PropertyManager):
                 # call an export preparation hook
                 one_res = mgr.prepareFieldForExport(self.tablename, col, one_res, entry)
 
-                # remove carriage return to be on the safe side
-                one_res = one_res.replace(u'\r', u'')
+                # handle newlines
+                if multilines == 'remove':
+                    # replace with space
+                    one_res = one_res.replace(u'\r\n', u' ').replace(u'\r', u' ').replace(u'\n', u'')
+                elif multilines == 'replace':
+                    # replace with an escaped linebreak char
+                    one_res = one_res.replace(u'\r\n', u'\n').replace(u'\r', u'\n').replace(u'\n', u'\\n')
+                else:
+                    # keep (but use \r for excel to except it)
+                    one_res = one_res.replace(u'\r\n', u'\r').replace(u'\n', u'\r')
 
                 # check for special chars that induce escaping
-                if one_res.find(delim) != -1 or one_res.find(u'"') != -1 or one_res.find(u'\n') != -1:
+                if one_res.find(delim) != -1 or one_res.find(u'"') != -1 or one_res.find(u'\n') != -1 or one_res.find(u'\r') != -1:
                     one_res = u'"%s"' % one_res.replace(u'"', u'""')
-
-                # handle linebreaks
-                # third option is 'keep' -> do nothing
-                if multilines == 'remove':
-                    one_res.replace(u'\n\n', u'\n').replace(u'\n', u' ')
-                elif multilines == 'replace':
-                    one_res.replace(u'\n', u'\\n')
 
                 new_result.append(one_res)
 
@@ -1150,7 +1155,7 @@ class Table(SimpleItem, PropertyManager):
 
         return export_list
 
-    def exportCSV(self, columnList = None, autoidList = None, flags = None, delim = ";", multilines = 'remove'):
+    def exportCSV(self, columnList = None, autoidList = None, flags = None, delim = ";", multilines = 'keep'):
         """ This method exports the database contents to csv. It's basically an
             adapter based on exportTab.
 
