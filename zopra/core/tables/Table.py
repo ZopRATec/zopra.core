@@ -951,7 +951,7 @@ class Table(SimpleItem, PropertyManager):
                     # replace with an escaped linebreak char
                     one_res = one_res.replace(u'\r\n', u'\n').replace(u'\r', u'\n').replace(u'\n', u'\\n')
                 else:
-                    # keep (but use \r for excel to except it)
+                    # keep (but use \r for excel to accept it)
                     one_res = one_res.replace(u'\r\n', u'\r').replace(u'\n', u'\r')
 
                 # check for special chars that induce escaping
