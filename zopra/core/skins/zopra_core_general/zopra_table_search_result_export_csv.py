@@ -18,28 +18,33 @@ TE_LOOKUPDATA  = 0x0008 # resolve foreign keys
 
 flags = TE_WITHHEADER | TE_LOOKUPDATA
 
+tobj = manager.tableHandler[table]
 
 try:
 
     # list of csv-like entries
-    exportList = manager.tableHandler[table].exportCSV( columns, autoids, flags, delim = u';', multilines = 'remove' )
+    exportList = tobj.exportCSV( columns, autoids, flags, delim = u';', multilines = 'keep' )
 
     # replace the header with the human-readable labels
-    coltypes = manager.tableHandler[table].getColumnDefs(edit_tracking = True)
+    coltypes = tobj.getColumnDefs(edit_tracking = True)
     exportList[0] = delim.join([ manager.translate(coltypes.get(a, {}).get('LABEL',''), domain='zopra', target_language=lang) for a in exportList[0].split(delim) ])
-
-    # set proper encoding
-    exportList2 = [ line.encode(encoding, 'replace') for line in exportList ]
 
     # set content-type
     request.RESPONSE.setHeader('Content-Type', 'text/plain;;charset=%s' % encoding)
 
+    tlabel = tobj.getLabel(lang)
+
     # set content-disposition to return a file
-    disp = 'attachement; filename="%s.csv"' % table
+    disp = 'attachement; filename="%s.csv"' % tlabel.encode(encoding)
     request.RESPONSE.setHeader( 'Content-disposition', disp)
 
-    # exportList2 are encoded strings, do not force unicode conversion
-    return "\n".join(exportList2)
+    # manually prepend BOM for utf-8 recognition in excel and encode the joined list
+    result = '\xef\xbb\xbf' + u'\n'.join(exportList).encode(encoding, 'replace')
+
+    # set length
+    request.RESPONSE.setHeader('content-length', len(result))
+
+    return result
 
 except Exception, e:
     return "Fehler beim Export: " + str(e)

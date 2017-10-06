@@ -197,7 +197,7 @@
                     <h2 i18n:translate="zopra_search_result_cols">
                         Displayed columns:
                     </h2>
-                    <select multiple="multiple" class="multi" name="sel_attr:list" size="8">
+                    <select multiple="multiple" class="multi" name="sel_attr:list" size="8" data-close-on-select="false">
                         <tal:block tal:repeat="attr_tupel all_keys">
                             <option i18n:translate=""
                                     tal:define="attr python: attr_tupel[1]"
