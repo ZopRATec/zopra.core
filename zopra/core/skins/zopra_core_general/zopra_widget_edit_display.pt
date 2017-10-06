@@ -153,6 +153,7 @@
         <input type="hidden" name="zopra_attr_present:list" tal:attributes="value attr_name" />
         <select multiple="multiple"
                 class="multi"
+                data-close-on-select="false"
                 tal:attributes="name python:attr_name+':list'; id attr_name">
             <tal:block tal:repeat="entry entries">
                 <tal:block condition="entry/value">
