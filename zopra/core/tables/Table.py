@@ -954,8 +954,15 @@ class Table(SimpleItem, PropertyManager):
                     # keep (but use \r for excel to accept it)
                     one_res = one_res.replace(u'\r\n', u'\r').replace(u'\n', u'\r')
 
+                # replace delim chars completely (old excels seem to ignore the escapeing
+                if one_res.find(delim) != -1:
+                    if delim == u';':
+                        del_rep = u','
+                    else:
+                        del_rep = u' '
+                    one_res = one_res.replace(delim, del_rep)
                 # check for special chars that induce escaping
-                if one_res.find(delim) != -1 or one_res.find(u'"') != -1 or one_res.find(u'\n') != -1 or one_res.find(u'\r') != -1:
+                if one_res.find(u'"') != -1 or one_res.find(u'\n') != -1 or one_res.find(u'\r') != -1:
                     one_res = u'"%s"' % one_res.replace(u'"', u'""')
 
                 new_result.append(one_res)
