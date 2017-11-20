@@ -121,7 +121,7 @@
                 tal:define="lobj python:here.listHandler.getList(table, attr_name);
                             entries python:lobj.getEntries();
                             do_sort attr_sort|nothing;
-                            dummy python: do_sort and entries.sort(key=lambda item: item['value']);"
+                            entries python: do_sort and here.sortListEntriesForDisplay(table, attr_name, entries) or entries;"
                 tal:attributes="name python: attr_prefix + attr_name + ':list'; id python: attr_prefix + attr_name;"
                 class="single">
             <tal:block tal:repeat="entry entries">
@@ -140,7 +140,7 @@
     <tal:block tal:define="lobj python:here.listHandler.getList(table, attr_name);
                         entries python:lobj.getEntries();
                         do_sort attr_sort|nothing;
-                        dummy python: do_sort and entries.sort(key=lambda item: item['value']);
+                        entries python: do_sort and here.sortListEntriesForDisplay(table, attr_name, entries) or entries;
                         fromSinglelist fromSinglelist|nothing;">
         <tal:block tal:condition="not: fromSinglelist">
             <div class="checkboxes-group"
@@ -192,7 +192,7 @@ TODO: Double-Selection needs to be detected (and then nothing done).
                 global parent python:0;
                 global level python:0;
                 do_sort attr_sort|nothing;
-                dummy python: do_sort and entries.sort(key=lambda item: item['value']);">
+                entries python: do_sort and here.sortListEntriesForDisplay(table, attr_name, entries) or entries;">
         <script type="text/javascript" tal:attributes="src string:${portal_url}/hierarchylist.js"></script>
         <div tal:attributes="id python: 'hierarchylist_' + attr_name">
             <div class="container">
