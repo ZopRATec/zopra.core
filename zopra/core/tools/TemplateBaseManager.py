@@ -534,6 +534,15 @@ class TemplateBaseManager(GenericManager):
         return entries
 
 
+    def sortListEntriesForDisplay(self, table, attr_name, entries):
+        """\brief sort list entries (for singlelist / multilist edit widget display), overwrite for custom sorting.
+                The attribute (attr_name) has to be listed in _generic_config in 'sortables', otherwise this method will not be called."""
+        # TODO: use rank as possible sorting field (reintroduce rank to the list edit form, how to indicate rank sorting?)
+        # TODO: make sure translations are sorted correctly (sort by value_en e.g.?)
+        # Default: sort normally
+        return sorted(entries, key=lambda item: item['value'])
+
+
     def prepareConstraintsForOutput(self, attr_value, attr_type):
         """\brief Search Param Visualisation preparation"""
         # general behaviour: this is called by the search result template to generate
