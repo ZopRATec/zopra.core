@@ -338,11 +338,18 @@ class Table(SimpleItem, PropertyManager):
             # value handling speedup (1ms per call) using izip and the dict constructor that works on a list of 2-tuples and map (for checking each value)
             # the complex expression works as follows: 1) check if y is some kind of DateTime/datetime object, then use the strftime method to convert it into a string
             #                                          2) otherwise use the original value, if it is not empty
-            #                                          3) empty values are expressed as empty strings if the field is not of type singlelist
-            #                                          4) empty singlelist fields are expressed as None (this part could not be achieved by boolean expressions, but by inner if)
-            check = lambda (x, y): (x, hasattr(y, 'strftime') and y.strftime('%d.%m.%Y') or y or ('' if (y is None and self.getField(x)[ZC.COL_TYPE] != 'singlelist') else None))
+            #                                          3) None values are expressed as empty strings if field is not of type singlelist
+            #                                          4) value of 0 is expressed as 0
+            #                                          5) None-valued singlelist fields are expressed as None 
+            #                                          6) everything else (other false values) is expressed as None
+            # 3 to 6 could not be achieved by boolean expressions, but by inner if
+            if self.tablename == 'fakultaet':
+                print result
+                print cols_list
+            check = lambda (x, y): (x, hasattr(y, 'strftime') and y.strftime('%d.%m.%Y') or y or ('' if (y is None and self.getField(x)[ZC.COL_TYPE] != 'singlelist') else (0 if y == 0 else None)))
             entry = dict(map(check, izip(cols_list, result)))
-
+            if self.tablename == 'fakultaet':
+                print map(check, izip(cols_list, result))
             # add multilist ids
             autoid = entry[TCN_AUTOID]
             # get all multilists for the table
