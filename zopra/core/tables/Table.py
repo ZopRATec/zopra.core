@@ -343,13 +343,8 @@ class Table(SimpleItem, PropertyManager):
             #                                          5) None-valued singlelist fields are expressed as None 
             #                                          6) everything else (other false values) is expressed as None
             # 3 to 6 could not be achieved by boolean expressions, but by inner if
-            if self.tablename == 'fakultaet':
-                print result
-                print cols_list
             check = lambda (x, y): (x, hasattr(y, 'strftime') and y.strftime('%d.%m.%Y') or y or ('' if (y is None and self.getField(x)[ZC.COL_TYPE] != 'singlelist') else (0 if y == 0 else None)))
             entry = dict(map(check, izip(cols_list, result)))
-            if self.tablename == 'fakultaet':
-                print map(check, izip(cols_list, result))
             # add multilist ids
             autoid = entry[TCN_AUTOID]
             # get all multilists for the table
