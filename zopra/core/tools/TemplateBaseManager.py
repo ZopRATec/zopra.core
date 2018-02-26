@@ -246,11 +246,10 @@ class TemplateBaseManager(GenericManager):
 
 
     def getPermissionInfo(self, table, permission):
-        """\brief Overwrite for special permission settings. Returns list of allowed roles."""
-        # Standarddefinition
+        """\brief Overwrite for special permission settings. Returns True, if user has one of the roles, that have the requested permission."""
+        # Default definition
         # permissions: list_edit, table_create, table_show, table_edit, table_list, table_delete, table_show_own, table_list_own, table_edit_own, table_delete_own
-        # "own" permissions are checked via userlogin field
-        # -> extra field for transition phase, later integrated into edit_tracking_fields
+        # for details on the "own"-permissions, see tud.zopra.erp
 
         # ZopRAAuthor can list_edit, table_show / table_edit / table_list
         # ZopRAReviewer can publish if publishing is active
