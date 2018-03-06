@@ -246,11 +246,10 @@ class TemplateBaseManager(GenericManager):
 
 
     def getPermissionInfo(self, table, permission):
-        """\brief Overwrite for special permission settings. Returns list of allowed roles."""
-        # Standarddefinition
+        """\brief Overwrite for special permission settings. Returns True, if user has one of the roles, that have the requested permission."""
+        # Default definition
         # permissions: list_edit, table_create, table_show, table_edit, table_list, table_delete, table_show_own, table_list_own, table_edit_own, table_delete_own
-        # "own" permissions are checked via userlogin field
-        # -> extra field for transition phase, later integrated into edit_tracking_fields
+        # for details on the "own"-permissions, see tud.zopra.erp
 
         # ZopRAAuthor can list_edit, table_show / table_edit / table_list
         # ZopRAReviewer can publish if publishing is active
@@ -762,13 +761,33 @@ class TemplateBaseManager(GenericManager):
 
     def getRelatedEntries(self, autoid, table, attribute, lang = None):
         """\brief get Entries of table that are connected to an entry of another
-                  table with autoid autoid via multilist named attribute (backref)"""
-        # FIXME: saving such an entry, you have to check the translations and their relations
-        # FIXME: Do you? could just jump to the translations every time you call it
-        # FIXED: return all entries for all languages, in template select only relevant languages
+                  table with autoid autoid via multilist named attribute (backref).
+                  If lang is given, the result list will be filtered to contain 
+                  1) only entries of that language (if it is the default language) or
+                  2) mixed entries of translations and originals (when no translation exists)."""
+        #  get list object
         lobj = self.listHandler.getList(table, attribute)
+        # get getEntry function of table
         getEntry = self.tableHandler[table].getEntry
-        return [getEntry(autoid, lang, ignore_permissions = True) for autoid in lobj.getMLRef(None, autoid)]
+        # use list comprehension to get the entries for all references in the multilist
+        res = [getEntry(otherid, ignore_permissions = True) for otherid in lobj.getMLRef(None, autoid)]
+        # if lang is given and table allows translations, check to remove the language copies or originals
+        if self.doesTranslations(table) and lang:
+            if lang == self.lang_default:
+                # in the default language, only the entries with that language are selected
+                res = [item for item in res if item['language'] == lang]
+            elif lang in self.lang_additional:
+                rem = []
+                for item in res:
+                    if item['language'] == lang:
+                        # set original for removal
+                        rem.append(item['istranslationof'])
+                    elif item['language'] != self.lang_default:
+                        # other language than default and lang, remove
+                        rem.append(item['autoid'])
+                # remove the marked entries, resulting in a list of tranlated entries and remaining non-translated originals
+                res = [item for item in res if item['autoid'] not in rem]
+        return res
 
 
     def prepareLinks(self, text):
