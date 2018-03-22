@@ -391,8 +391,8 @@ class TemplateBaseManager(GenericManager):
             # update the english entry
             tobj.updateEntry(eng, eng['autoid'])
             eng_diff['autoid'] = eng['autoid']
-
-            self.updateWorkingCopy(table, eng_diff)
+            if self.doesWorkingCopies(table):
+                self.updateWorkingCopy(table, eng_diff)
             return True
 
 
