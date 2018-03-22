@@ -52,7 +52,7 @@
                class="standalone"
                type="submit"
                name="form.button.Confirm"
-               value="Release"
+               value="Publish"
                 i18n:attributes="value"
         />
         <tal:block tal:condition="python: context.doesWorkflows(table) and entry.get('state')">

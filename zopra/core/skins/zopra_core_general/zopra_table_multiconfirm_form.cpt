@@ -27,7 +27,7 @@
               tal:attributes="action string:${here/absolute_url}/${template/getId}">
 
             <!-- Multiconfirmation of Working Copies -->
-            <h1 class="documentFirstHeading"><span i18n:translate="zopra_release_heading">Release</span> <span tal:content="python: tobj.getLabel()"></span></h1>
+            <h1 class="documentFirstHeading"><span i18n:translate="zopra_release_heading">Publish</span> <span tal:content="python: tobj.getLabel()"></span></h1>
             <tal:block tal:define="entries python: here.getWorkingCopies(table)">
                 <div tal:condition="entries">
                     <table id="result_tab" class="zopra-table">
@@ -35,7 +35,7 @@
                             <th></th>
                             <th i18n:translate="zopra_release_name">Name</th>
                             <th i18n:translate="zopra_release_diff">Diff</th>
-                            <th i18n:translate="zopra_release_heading">Release</th>
+                            <th i18n:translate="zopra_release_heading">Publish</th>
                         </tr>
                         <tr tal:repeat="entry entries">
                             <td><input type="checkbox" name="confirm_ids:list:int"
@@ -54,7 +54,7 @@
                               <a class="icon-zopra-release"
                                  tal:attributes="href python: here.absolute_url() + '/zopra_table_edit_form?autoid=%s&table=%s' % (entry['autoid'], table)"
                                  i18n:translate="zopra_release_singlelink_label">
-                                 Release
+                                 Publish
                               </a>
                             </td>
                         </tr>
@@ -67,7 +67,7 @@
                 <input class="standalone"
                        type="submit"
                        name="form.button.Confirm"
-                       value="Release"
+                       value="Publish"
                        i18n:attributes="value"
                   />
                 <input class="standalone"
