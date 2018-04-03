@@ -19,6 +19,12 @@
         provides      = "Products.GenericSetup.interfaces.EXTENSION"
         />
 
+    <genericsetup:upgradeDepends
+        source       = "1.0"
+        destination  = "1.1"
+        profile      = "zopra.core:default"
+        import_steps = "jsregistry" />
+
     <!-- not yet to retain backward compatibility
         <i18n:registerTranslations directory="locales" />
     -->
