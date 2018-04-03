@@ -6,7 +6,7 @@
 <head tal:define="portal_url here/portal_url">
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 
-    <script type="text/javascript" tal:attributes="src string:${portal_url}/++resource++plone.app.jquery.js"></script>
+    <script type="text/javascript" tal:attributes="src string:${portal_url}/jquery-1.12.4.min.js"></script>
     <link rel="stylesheet" type="text/css" tal:attributes="href string:${portal_url}/autoupdate-widget/jquery.autoupdate-widget.css" media="screen" />
     <title i18n:translate="zopra_popup_title">Popup: TUD - Editorial</title>
     <script language="javascript" tal:content="string:var portal_url = '${portal_url}';"/>
