@@ -22,6 +22,7 @@
     <genericsetup:upgradeDepends
         source       = "1.0"
         destination  = "1.1"
+        title        = "jquery upgrade"
         profile      = "zopra.core:default"
         import_steps = "jsregistry" />
 
