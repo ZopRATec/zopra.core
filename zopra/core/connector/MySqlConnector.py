@@ -252,28 +252,3 @@ class MySqlConnector(SqlConnector):
         self.query( ''.join(query_text) )
 
         return True
-
-
-    def simpleVal(self, col_dict, entry_dict):
-        """\brief validate the entry against the column definition"""
-        errors = {}
-        for colname in entry_dict:
-            if colname in col_dict:
-                field = col_dict[colname]
-            elif colname in _edit_tracking_cols:
-                field = _edit_tracking_cols[colname]
-            else:
-                # rest is ignored
-                continue
-
-            val = entry_dict.get(colname)
-
-            if field and val:
-                try:
-                    self.checkType( val,
-                                    field.get(ZC.COL_TYPE),
-                                    False,
-                                    field.get(ZC.COL_LABEL) )
-                except:
-                    errors[colname] = ('Invalid input', val)
-        return errors
