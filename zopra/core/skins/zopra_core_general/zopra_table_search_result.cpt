@@ -40,6 +40,7 @@
                      entries python: here.getEntryListProxy(table, count, offset, None, enriched_cons, order, orderdir);
                      coltypes python:context.getFilteredColumnDefs(table, edit_tracking = True, vis_only = False);
                      links python: context.getGenericConfig(table).get('links', []);
+                     specials python: context.getGenericConfig(table).get('specials', []);
                      has_real_constraints python: context.filterRealSearchConstraints(cons);
                      global quotedcons string:;
                      ">
@@ -137,6 +138,10 @@
                         <span i18n:translate="" tal:replace="python: coltypes.get(attr_name, {}).get('LABEL','')">attributename</span>
                         <input type="hidden" tal:attributes="value attr_name" name="columns:list" />
                     </th>
+                    <th tal:condition="specials"
+                        tal:repeat="special specials">
+                      <span i18n:translate="" tal:content="structure special/label|nothing">Sepcial Column Label</span>
+                    </th>
                     <th></th>
                 </tr>
                 <tr tal:repeat="entry entries">
@@ -179,6 +184,12 @@
                                 <metal:block metal:use-macro="here/zopra_widget_listing_display/macros/widget_selector" />
                             </td>
                         </tal:block>
+                        <td tal:condition="specials"
+                            tal:repeat="special specials">
+                            <tal:block tal:define="html_output python: special.get('function')(here, table, entry, lang);"
+                                       tal:content="structure html_output">
+                            </tal:block>
+                        </td>
                         <td>
                             <a tal:condition="python: 'delete' in permissions"
                                class="icon-zopra-delete"
