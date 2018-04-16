@@ -140,7 +140,7 @@
                     </th>
                     <th tal:condition="specials"
                         tal:repeat="special specials">
-                      <span i18n:translate="" tal:content="structure special/label|nothing">Sepcial Column Label</span>
+                      <span tal:content="special/label|nothing">Special Column Label</span>
                     </th>
                     <th></th>
                 </tr>
