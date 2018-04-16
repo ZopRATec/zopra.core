@@ -834,6 +834,29 @@ class Table(SimpleItem, PropertyManager):
         \param multilines remove|replace|keep for handling of linebreaks in attributes
         \param special_columns list of dicts containing label and function for special column definition
         """
+        def handleSpecialChars(valuestr):
+            # handle newlines
+            if multilines == 'remove':
+                # replace with space
+                valuestr = valuestr.replace(u'\r\n', u' ').replace(u'\r', u' ').replace(u'\n', u'')
+            elif multilines == 'replace':
+                # replace with an escaped linebreak char
+                valuestr = valuestr.replace(u'\r\n', u'\n').replace(u'\r', u'\n').replace(u'\n', u'\\n')
+            else:
+                # keep (but use \r for excel to accept it)
+                valuestr = valuestr.replace(u'\r\n', u'\r').replace(u'\n', u'\r')
+
+            # replace delim chars completely (old excels seem to ignore the escapeing
+            if valuestr.find(delim) != -1:
+                if delim == u';':
+                    del_rep = u','
+                else:
+                    del_rep = u' '
+                valuestr = valuestr.replace(delim, del_rep)
+            # check for special chars that induce escaping
+            if valuestr.find(u'"') != -1 or valuestr.find(u'\n') != -1 or valuestr.find(u'\r') != -1:
+                valuestr = u'"%s"' % valuestr.replace(u'"', u'""')
+            return valuestr
 
         # TODO: use temporary file to cache the results on harddisk
         mgr       = self.getManager()
@@ -950,33 +973,14 @@ class Table(SimpleItem, PropertyManager):
                 # call an export preparation hook
                 one_res = mgr.prepareFieldForExport(self.tablename, col, one_res, entry)
 
-                # handle newlines
-                if multilines == 'remove':
-                    # replace with space
-                    one_res = one_res.replace(u'\r\n', u' ').replace(u'\r', u' ').replace(u'\n', u'')
-                elif multilines == 'replace':
-                    # replace with an escaped linebreak char
-                    one_res = one_res.replace(u'\r\n', u'\n').replace(u'\r', u'\n').replace(u'\n', u'\\n')
-                else:
-                    # keep (but use \r for excel to accept it)
-                    one_res = one_res.replace(u'\r\n', u'\r').replace(u'\n', u'\r')
-
-                # replace delim chars completely (old excels seem to ignore the escapeing
-                if one_res.find(delim) != -1:
-                    if delim == u';':
-                        del_rep = u','
-                    else:
-                        del_rep = u' '
-                    one_res = one_res.replace(delim, del_rep)
-                # check for special chars that induce escaping
-                if one_res.find(u'"') != -1 or one_res.find(u'\n') != -1 or one_res.find(u'\r') != -1:
-                    one_res = u'"%s"' % one_res.replace(u'"', u'""')
+                one_res = handleSpecialChars(one_res)
 
                 new_result.append(one_res)
 
             for special in special_columns:
                 func = special['function']
                 content = func(mgr, self.tablename, entry, mgr.lang_default, html = False)
+                content = handleSpecialChars(content)
                 new_result.append(content)
 
             # build line
