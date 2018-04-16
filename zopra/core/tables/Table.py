@@ -823,7 +823,7 @@ class Table(SimpleItem, PropertyManager):
 #
 
 
-    def exportTab(self, columnList = None, autoidList = None, flags = None, delim = u'\t', multilines = 'keep'):
+    def exportTab(self, columnList = None, autoidList = None, flags = None, delim = u'\t', multilines = 'keep', special_columns = []):
         """\brief Exports a table from the database as tab separeted text file.
 
         \param tableName  The name of the table without manager prefix.
@@ -832,6 +832,7 @@ class Table(SimpleItem, PropertyManager):
         \param flags      Flags for common parameters.
         \param delim      Delimiter for attributes in one line
         \param multilines remove|replace|keep for handling of linebreaks in attributes
+        \param special_columns list of dicts containing label and function for special column definition
         """
 
         # TODO: use temporary file to cache the results on harddisk
@@ -846,6 +847,10 @@ class Table(SimpleItem, PropertyManager):
 
         m_product   = mgr.getManager(ZC.ZM_PM)
         export_list = []
+
+        special_list = []
+        if special_columns:
+            special_list = [spec['label'] for spec in special_columns]
 
         # check columnList
         for column in columnList:
@@ -900,7 +905,7 @@ class Table(SimpleItem, PropertyManager):
 
         # write header
         if flags & TE_WITHHEADER:
-            export_list.append( delim.join(columnList) )
+            export_list.append( delim.join(columnList + special_list) )
 
         if multilines in ['remove', 'replace']:
             multilist_joiner = u', '
@@ -968,6 +973,11 @@ class Table(SimpleItem, PropertyManager):
                     one_res = u'"%s"' % one_res.replace(u'"', u'""')
 
                 new_result.append(one_res)
+
+            for special in special_columns:
+                func = special['function']
+                content = func(mgr, self.tablename, entry, mgr.lang_default, html = False)
+                new_result.append(content)
 
             # build line
             line = delim.join(new_result)
@@ -1164,7 +1174,7 @@ class Table(SimpleItem, PropertyManager):
 
         return export_list
 
-    def exportCSV(self, columnList = None, autoidList = None, flags = None, delim = ";", multilines = 'keep'):
+    def exportCSV(self, columnList = None, autoidList = None, flags = None, delim = ";", multilines = 'keep', special_columns = []):
         """ This method exports the database contents to csv. It's basically an
             adapter based on exportTab.
 
@@ -1177,7 +1187,7 @@ class Table(SimpleItem, PropertyManager):
         # this only forwards to exportTab now, no extra handling necessary
         # TODO: exportTab should be renamed to exportCSV, exportCSV-code be
         #       moved here
-        return self.exportTab(columnList, autoidList, flags, delim, multilines)
+        return self.exportTab(columnList, autoidList, flags, delim, multilines, special_columns)
 
 
     def getFieldSelectionList(self):

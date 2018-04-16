@@ -21,13 +21,13 @@ flags = TE_WITHHEADER | TE_LOOKUPDATA
 tobj = manager.tableHandler[table]
 
 try:
-
+    specials = manager.getGenericConfig(table).get('specials', [])
     # list of csv-like entries
-    exportList = tobj.exportCSV( columns, autoids, flags, delim = u';', multilines = 'keep' )
+    exportList = tobj.exportCSV( columns, autoids, flags, delim = u';', multilines = 'keep', special_columns = specials )
 
     # replace the header with the human-readable labels
     coltypes = tobj.getColumnDefs(edit_tracking = True)
-    exportList[0] = delim.join([ manager.translate(coltypes.get(a, {}).get('LABEL',''), domain='zopra', target_language=lang) for a in exportList[0].split(delim) ])
+    exportList[0] = delim.join([ manager.translate(coltypes.get(a, {}).get('LABEL','') or a, domain='zopra', target_language=lang) for a in exportList[0].split(delim) ])
 
     # set content-type
     request.RESPONSE.setHeader('Content-Type', 'text/plain;;charset=%s' % encoding)
