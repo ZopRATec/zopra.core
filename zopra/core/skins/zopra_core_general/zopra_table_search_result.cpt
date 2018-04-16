@@ -186,7 +186,7 @@
                         </tal:block>
                         <td tal:condition="specials"
                             tal:repeat="special specials">
-                            <tal:block tal:define="html_output python: special.get('function')(here, table, entry, lang);"
+                            <tal:block tal:define="html_output python: special.get('function')(here, table, entry, lang, html = True);"
                                        tal:content="structure html_output">
                             </tal:block>
                         </td>
