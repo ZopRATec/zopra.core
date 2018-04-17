@@ -576,6 +576,10 @@ class TemplateBaseManager(GenericManager):
         """get the last change / creation date of the entry with the given autoid"""
         if not autoid or not table:
             return None
+        # additionally check for request and not being on search form
+        request = self.REQUEST
+        if request and request['PUBLISHED'].getId() == 'zopra_table_search_form':
+            return None
         tobj = self.tableHandler[table]
         root = tobj.getTableNode()
         root.setConstraints({'autoid': autoid})
