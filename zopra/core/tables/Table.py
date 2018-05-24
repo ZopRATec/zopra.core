@@ -955,8 +955,8 @@ class Table(SimpleItem, PropertyManager):
 
                     if isinstance(value, ListType):
                         value = multilist_joiner.join(value)
-                    # make sure it's unicode
-                    one_res = unicode(value)
+                    if value is None:
+                        value = u''
 
                 else:
                     value = entry.get(col, '')
@@ -977,6 +977,8 @@ class Table(SimpleItem, PropertyManager):
 
                 new_result.append(one_res)
 
+            # special columns
+            # TODO: add to xml export
             for special in special_columns:
                 func = special['function']
                 content = func(mgr, self.tablename, entry, mgr.lang_default, html = False)
