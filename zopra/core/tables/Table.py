@@ -823,7 +823,7 @@ class Table(SimpleItem, PropertyManager):
 #
 
 
-    def exportTab(self, columnList = None, autoidList = None, flags = None, delim = u'\t', multilines = 'keep'):
+    def exportTab(self, columnList = None, autoidList = None, flags = None, delim = u'\t', multilines = 'keep', special_columns = []):
         """\brief Exports a table from the database as tab separeted text file.
 
         \param tableName  The name of the table without manager prefix.
@@ -832,7 +832,31 @@ class Table(SimpleItem, PropertyManager):
         \param flags      Flags for common parameters.
         \param delim      Delimiter for attributes in one line
         \param multilines remove|replace|keep for handling of linebreaks in attributes
+        \param special_columns list of dicts containing label and function for special column definition
         """
+        def handleSpecialChars(valuestr):
+            # handle newlines
+            if multilines == 'remove':
+                # replace with space
+                valuestr = valuestr.replace(u'\r\n', u' ').replace(u'\r', u' ').replace(u'\n', u'')
+            elif multilines == 'replace':
+                # replace with an escaped linebreak char
+                valuestr = valuestr.replace(u'\r\n', u'\n').replace(u'\r', u'\n').replace(u'\n', u'\\n')
+            else:
+                # keep (but use \r for excel to accept it)
+                valuestr = valuestr.replace(u'\r\n', u'\r').replace(u'\n', u'\r')
+
+            # replace delim chars completely (old excels seem to ignore the escapeing
+            if valuestr.find(delim) != -1:
+                if delim == u';':
+                    del_rep = u','
+                else:
+                    del_rep = u' '
+                valuestr = valuestr.replace(delim, del_rep)
+            # check for special chars that induce escaping
+            if valuestr.find(u'"') != -1 or valuestr.find(u'\n') != -1 or valuestr.find(u'\r') != -1:
+                valuestr = u'"%s"' % valuestr.replace(u'"', u'""')
+            return valuestr
 
         # TODO: use temporary file to cache the results on harddisk
         mgr       = self.getManager()
@@ -846,6 +870,10 @@ class Table(SimpleItem, PropertyManager):
 
         m_product   = mgr.getManager(ZC.ZM_PM)
         export_list = []
+
+        special_list = []
+        if special_columns:
+            special_list = [spec['label'] for spec in special_columns]
 
         # check columnList
         for column in columnList:
@@ -900,7 +928,7 @@ class Table(SimpleItem, PropertyManager):
 
         # write header
         if flags & TE_WITHHEADER:
-            export_list.append( delim.join(columnList) )
+            export_list.append( delim.join(columnList + special_list) )
 
         if multilines in ['remove', 'replace']:
             multilist_joiner = u', '
@@ -927,8 +955,8 @@ class Table(SimpleItem, PropertyManager):
 
                     if isinstance(value, ListType):
                         value = multilist_joiner.join(value)
-                    # make sure it's unicode
-                    one_res = unicode(value)
+                    if value is None:
+                        value = u''
 
                 else:
                     value = entry.get(col, '')
@@ -945,29 +973,17 @@ class Table(SimpleItem, PropertyManager):
                 # call an export preparation hook
                 one_res = mgr.prepareFieldForExport(self.tablename, col, one_res, entry)
 
-                # handle newlines
-                if multilines == 'remove':
-                    # replace with space
-                    one_res = one_res.replace(u'\r\n', u' ').replace(u'\r', u' ').replace(u'\n', u'')
-                elif multilines == 'replace':
-                    # replace with an escaped linebreak char
-                    one_res = one_res.replace(u'\r\n', u'\n').replace(u'\r', u'\n').replace(u'\n', u'\\n')
-                else:
-                    # keep (but use \r for excel to accept it)
-                    one_res = one_res.replace(u'\r\n', u'\r').replace(u'\n', u'\r')
-
-                # replace delim chars completely (old excels seem to ignore the escapeing
-                if one_res.find(delim) != -1:
-                    if delim == u';':
-                        del_rep = u','
-                    else:
-                        del_rep = u' '
-                    one_res = one_res.replace(delim, del_rep)
-                # check for special chars that induce escaping
-                if one_res.find(u'"') != -1 or one_res.find(u'\n') != -1 or one_res.find(u'\r') != -1:
-                    one_res = u'"%s"' % one_res.replace(u'"', u'""')
+                one_res = handleSpecialChars(one_res)
 
                 new_result.append(one_res)
+
+            # special columns
+            # TODO: add to xml export
+            for special in special_columns:
+                func = special['function']
+                content = func(mgr, self.tablename, entry, mgr.lang_default, html = False)
+                content = handleSpecialChars(content)
+                new_result.append(content)
 
             # build line
             line = delim.join(new_result)
@@ -1164,7 +1180,7 @@ class Table(SimpleItem, PropertyManager):
 
         return export_list
 
-    def exportCSV(self, columnList = None, autoidList = None, flags = None, delim = ";", multilines = 'keep'):
+    def exportCSV(self, columnList = None, autoidList = None, flags = None, delim = ";", multilines = 'keep', special_columns = []):
         """ This method exports the database contents to csv. It's basically an
             adapter based on exportTab.
 
@@ -1177,7 +1193,7 @@ class Table(SimpleItem, PropertyManager):
         # this only forwards to exportTab now, no extra handling necessary
         # TODO: exportTab should be renamed to exportCSV, exportCSV-code be
         #       moved here
-        return self.exportTab(columnList, autoidList, flags, delim, multilines)
+        return self.exportTab(columnList, autoidList, flags, delim, multilines, special_columns)
 
 
     def getFieldSelectionList(self):
