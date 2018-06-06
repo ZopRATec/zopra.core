@@ -895,4 +895,3 @@ msgstr "<beliebiger Wert>"
 #: ./skins/zopra_core_general/zopra_table_deleteconfirm_form.cpt:39
 msgid "zopra_workingcopy"
 msgstr "Arbeitskopie"
-
