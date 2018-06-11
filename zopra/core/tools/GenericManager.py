@@ -132,8 +132,11 @@ class GenericManager(ManagerPart):
               basket_from   (True / False) - for newForm-BasketButton
               basket_active (True / False) - show basket at all
               visible       (True / False) - visible in zopra_manager_main_form
-              show_fields   ([attrs])      - attributes for showList
+              show_fields   ([attrs])      - attributes for search result listing (editorial)
               required      ([attrs])      - required attributes for new/edit
+              check_fields  ([{fieldname: function}] - call the module function for the field check when adding / editing an entry, function parameters are: attr_name, entry, mgr
+              links         ([{'label':'<label>', 'link': '...%s', 'field': '<fieldname>', 'iconclass': 'icon-xyz'}]) - use info to add a link column to search result listing (editorial), linking to the given url (enhanced by the content of the field with the given fieldname), using the given label and icon class [url needs exactly one %s, normally used with the autoid field]
+              specials      ([{'label': '<label>', fieldname: function}] - call the module function on every displayed entry in search result listing (editorial) to calculate the html content for a special column, label is used for table head, function parameters are: mgr, table, entry, lang, html
               importable    (True / False) - show in importForm for Import
               show_table_options    ({'create':1, 'search':1, 'list':1, 'import': (<target>, <label>), ...}) - define options for generic table overview (on manager_main_form)
               dependent     (True / False) - set to True to not show the create button on zopra_table_show_form / zopra_table_edit_form

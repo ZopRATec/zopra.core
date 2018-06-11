@@ -578,7 +578,7 @@ class TemplateBaseManager(GenericManager):
             return None
         # additionally check for request and not being on search form
         request = self.REQUEST
-        if request and request['PUBLISHED'].getId() == 'zopra_table_search_form':
+        if request and request.get('PUBLISHED') and request.get('PUBLISHED').getId() == 'zopra_table_search_form':
             return None
         tobj = self.tableHandler[table]
         root = tobj.getTableNode()
