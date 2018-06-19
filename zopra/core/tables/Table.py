@@ -957,7 +957,7 @@ class Table(SimpleItem, PropertyManager):
                         value = multilist_joiner.join(value)
                     if value is None:
                         value = u''
-
+                    one_res = value
                 else:
                     value = entry.get(col, '')
 
