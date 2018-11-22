@@ -182,7 +182,7 @@
                                tal:attributes="href href; target python:href and '_blank' or nothing"
                                tal:omit-tag="not: href"
                                tal:content="python: tmp_store.get(int(selected), '')"
-                               class="auto-link link-icon">Value</a>
+                               class="auto-link">Value</a>
                         </label>
                     </div>
                     <div tal:define="notesname python: attr_name + u'notes' + unicode(selected);
