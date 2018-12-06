@@ -69,7 +69,7 @@
                     but should be displayed as "subtablename: attribute"
                     need generic handling (to get the types right) based on searchTreeTemplate or similar
                 </tal:comment>
-                <div class="formatted">
+                <div class="formatted auto-link">
                     <h2 i18n:translate="zopra_search_criteria">Chosen criteria:</h2>
                     <dl class="quick-info-list">
                         <tal:repeat tal:define="con_list python: cons.keys();
