@@ -28,18 +28,21 @@ if REQUEST['PUBLISHED'].getId() == 'zopra_table_edit_form' and (not entry or (ta
     logger.info('VALIDATION-ERROR on edit_form: entry: %s' % entry)
     request = context.REQUEST
     logger.info(str(request))
-    entry = context.getTableEntryFromRequest(table, REQUEST)
+    entry = context.getTableEntryFromRequest(table, request)
     if entry:
         logger.info('FOUND the real entry: %s' % entry)
 
 required = []
-# translations can not be validated for required inputs (or could, but needed to be merged onto the real entry before validation)
+# translations are not validated for required inputs (because they save their text fields only)
 istranslationof = REQUEST.form.get('istranslationof')
 # search input cannot be validated for required inputs
 if not searching and not istranslationof:
     required = context.getGenericConfig(table).get('required', [])
 
+# validation is redirected via Table to tools.ZopRAProduct to connector.SQLConnector
+# when required is empty, only the type validation is done
 errors = tobj.validateEntry(entry, required)
+
 
 # special validators also do not work when searching or working on a copy
 if not searching and not istranslationof:
@@ -51,7 +54,6 @@ if not searching and not istranslationof:
         if res != True:
             if not res:
                 res = 'Invalid input'
-
             errors[check_field]=res, entry[check_field]
 
 for key in errors:

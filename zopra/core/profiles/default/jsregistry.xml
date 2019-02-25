@@ -3,6 +3,44 @@
     name="portal_javascripts"
     meta_type="JavaScripts Registry">
 
+    <!-- remove old jquery -->
+    <javascript
+        authenticated       = "False"
+        bundle              = "default"
+        cacheable           = "True"
+        compression         = ""
+        conditionalcomment  = ""
+        cookable            = "True"
+        enabled             = "False"
+        expression          = ""
+        id                  = "jquery-1.6.2.min.js"
+        inline              = "False" />
+
+    <!-- add jquery and libs -->
+    <javascript
+        authenticated       = "False"
+        bundle              = "default"
+        cacheable           = "True"
+        compression         = ""
+        conditionalcomment  = ""
+        cookable            = "True"
+        enabled             = "True"
+        expression          = ""
+        id                  = "jquery-1.12.4.min.js"
+        inline              = "False" />
+
+    <javascript
+        authenticated       = "False"
+        bundle              = "default"
+        cacheable           = "True"
+        compression         = ""
+        conditionalcomment  = ""
+        cookable            = "True"
+        enabled             = "True"
+        expression          = ""
+        id                  = "jquery-ui-1.8.16.custom.min.js"
+        inline              = "False" />
+
     <javascript
         authenticated       = "False"
         bundle              = "default"
@@ -14,7 +52,6 @@
         expression          = ""
         id                  = "jquery.lightbox-0.5.js"
         inline              = "False" />
-
 
     <javascript
         authenticated       = "False"
@@ -28,7 +65,6 @@
         id                  = "jquery.tablesorter.js"
         inline              = "False" />
 
-
     <javascript
         authenticated       = "False"
         bundle              = "default"
@@ -39,32 +75,6 @@
         enabled             = "True"
         expression          = ""
         id                  = "jquery.tablesorter.staticrow.min.js"
-        inline              = "False" />
-
-
-    <javascript
-        authenticated       = "False"
-        bundle              = "default"
-        cacheable           = "True"
-        compression         = ""
-        conditionalcomment  = ""
-        cookable            = "True"
-        enabled             = "True"
-        expression          = ""
-        id                  = "jquery-1.6.2.min.js"
-        inline              = "False" />
-
-
-    <javascript
-        authenticated       = "False"
-        bundle              = "default"
-        cacheable           = "True"
-        compression         = ""
-        conditionalcomment  = ""
-        cookable            = "True"
-        enabled             = "True"
-        expression          = ""
-        id                  = "jquery-ui-1.8.16.custom.min.js"
         inline              = "False" />
 
 </object>

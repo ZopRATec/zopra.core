@@ -659,6 +659,12 @@ class SqlConnector(SimpleItem):
                 field = col_dict[colname]
             elif colname in ZC._edit_tracking_cols:
                 field = ZC._edit_tracking_cols[colname]
+            elif colname == ZC.TCN_AUTOID:
+                # for search, autoid needs to be validated
+                # TODO: +1 for autoid in ZC._edit_tracking_cols
+                field = { ZC.COL_TYPE:  'int',
+                          ZC.COL_LABEL: u'Automatic No.',
+                          ZC.COL_INVIS: True }
             else:
                 # rest is ignored
                 continue

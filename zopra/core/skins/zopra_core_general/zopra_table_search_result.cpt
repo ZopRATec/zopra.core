@@ -40,6 +40,7 @@
                      entries python: here.getEntryListProxy(table, count, offset, None, enriched_cons, order, orderdir);
                      coltypes python:context.getFilteredColumnDefs(table, edit_tracking = True, vis_only = False);
                      links python: context.getGenericConfig(table).get('links', []);
+                     specials python: context.getGenericConfig(table).get('specials', []);
                      has_real_constraints python: context.filterRealSearchConstraints(cons);
                      global quotedcons string:;
                      ">
@@ -68,7 +69,7 @@
                     but should be displayed as "subtablename: attribute"
                     need generic handling (to get the types right) based on searchTreeTemplate or similar
                 </tal:comment>
-                <div class="formatted">
+                <div class="formatted auto-link">
                     <h2 i18n:translate="zopra_search_criteria">Chosen criteria:</h2>
                     <dl class="quick-info-list">
                         <tal:repeat tal:define="con_list python: cons.keys();
@@ -137,6 +138,10 @@
                         <span i18n:translate="" tal:replace="python: coltypes.get(attr_name, {}).get('LABEL','')">attributename</span>
                         <input type="hidden" tal:attributes="value attr_name" name="columns:list" />
                     </th>
+                    <th tal:condition="specials"
+                        tal:repeat="special specials">
+                      <span tal:content="special/label|nothing">Special Column Label</span>
+                    </th>
                     <th></th>
                 </tr>
                 <tr tal:repeat="entry entries">
@@ -179,6 +184,12 @@
                                 <metal:block metal:use-macro="here/zopra_widget_listing_display/macros/widget_selector" />
                             </td>
                         </tal:block>
+                        <td tal:condition="specials"
+                            tal:repeat="special specials">
+                            <tal:block tal:define="html_output python: special.get('function')(here, table, entry, lang, html = True);"
+                                       tal:content="structure html_output">
+                            </tal:block>
+                        </td>
                         <td>
                             <a tal:condition="python: 'delete' in permissions"
                                class="icon-zopra-delete"
