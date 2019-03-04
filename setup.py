@@ -28,6 +28,7 @@ setup( name                 = 'zopra.core',
            # -*- Extra requirements: -*-
            'importlib',# for the generic manager autoloader (because managers are no ContentTypes yet)
            'PyHtmlGUI',# ZopRA default display generation
+           'PyICU',# for linguistically better alphabetical sorting
        ],
        entry_points         = """
        # -*- Entry points: -*-
