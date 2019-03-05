@@ -19,6 +19,7 @@ from sets       import Set as set
 from types      import ListType, StringType
 from urllib import quote
 import json
+import icu
 
 # Zope Imports
 from zope.component import getMultiAdapter
@@ -749,6 +750,18 @@ class TemplateBaseManager(GenericManager):
     #def formatCurrency(self, value):
     #    """\brief Format value as currency with 1000er breaker points and one comma"""
     #    return re.sub("(\d)(?=(\d{3})+(?!\d))", r"\1.", ('%.2f' % value).replace('.', ','))
+
+
+    def alphabeticalSort(self, entries, key_value, lang):
+        """\brief sort a list of dictionaries alphabetical by one key value
+        """
+        # make sure language is supported
+        if not (lang == self.lang_default or lang in self.lang_additional):
+            # default is python alphanumerical sorting
+            return sorted(entries, key=lambda entry: entry[key_value])
+        # use the pretty icu sorting (language dependent)
+        collator = icu.Collator.createInstance(icu.Locale(lang)) # language=de, en
+        return sorted(entries, key=lambda entry: collator.getSortKey(entry[key_value]))
 
 
     def reorderColsAccordingly(self, cols, order):
