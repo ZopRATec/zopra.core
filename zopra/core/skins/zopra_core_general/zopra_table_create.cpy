@@ -5,7 +5,7 @@
 ##bind script=script
 ##bind state=state
 ##bind subpath=traverse_subpath
-##parameters=table
+##parameters=table, zopra_popup=None
 ##title=
 ##
 # coding: utf-8
@@ -107,7 +107,10 @@ if request.get('origtable') and request.get('origid') and request.get('origattri
     if message:
         context.plone_utils.addPortalMessage(context.translate(message), 'info')
     # jump to message window stating the creation
-    request.RESPONSE.redirect('zopra_table_created_dependency?table=%s&autoid=%s' % (table, autoid))
+    popup = ''
+    if zopra_popup:
+        popup = '&zopra_popup=1'
+    request.RESPONSE.redirect('zopra_table_created_dependency?table=%s&autoid=%s%s' % (table, autoid, popup))
     return
 
 # overwrite in request for formcontroller traversal

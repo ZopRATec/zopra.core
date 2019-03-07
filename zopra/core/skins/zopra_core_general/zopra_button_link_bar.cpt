@@ -78,9 +78,10 @@
                 Show Changes
             </a>
         </tal:block>
-        <tal:block tal:condition="not:origid|nothing">
+        <tal:block tal:define="paramstring python: request.get('origid') and '&origid=%s&origtable=%s&origattribute=%s' % (request.get('origid'), request.get('origtable'), request.get('origattribute')) or nothing;
+                               hrefstring python:'zopra_table_show_form?table=%s&autoid=%s%s' % (table, entry.get('autoid'), paramstring)">
             <a class="button  small"
-               tal:attributes="href python:'zopra_table_show_form?table=%s&autoid=%s' % (table, entry.get('autoid'))"
+               tal:attributes="href hrefstring"
                i18n:translate="zopra_links_edit_show">
                 Editorial View
             </a>
@@ -123,7 +124,7 @@
                 Export LaTex
             </a>
         </tal:block>
-        <tal:block tal:condition="not:origid|nothing">
+        <tal:block tal:condition="not:request/origid|nothing">
             <tal:block tal:condition="python: here.getPermissionInfo(table, 'table_create') and not here.getGenericConfig(table).get('dependent', False)">
                 <a class="button small"
                    tal:attributes="href python:'zopra_table_create_form?table=%s' % (table)"
@@ -134,18 +135,21 @@
         </tal:block>
         <tal:block tal:define="notabs request/notabs|nothing"
                    tal:condition="python: table in ['invoice', 'position', 'studiengang']">
-            <a class="button  small"
-               tal:condition="not:notabs"
-               tal:attributes="href python:'zopra_table_edit_form?table=%s&autoid=%s&notabs=1' % (table, entry.get('autoid'))"
-               i18n:translate="zopra_links_edit_no_tabs">
-                Disable tabs
-            </a>
-            <a class="button  small"
-               tal:condition="notabs"
-               tal:attributes="href python:'zopra_table_edit_form?table=%s&autoid=%s' % (table, entry.get('autoid'))"
-               i18n:translate="zopra_links_edit_tabs">
-                Enable tabs
-            </a>
+            <tal:block tal:define="paramstring python: request.get('origid') and '&origid=%s&origtable=%s&origattribute=%s' % (request.get('origid'), request.get('origtable'), request.get('origattribute')) or nothing;
+                                   hrefstring python:'zopra_table_edit_form?table=%s&autoid=%s%s' % (table, entry.get('autoid'), paramstring)">
+                <a class="button  small"
+                   tal:condition="not:notabs"
+                   tal:attributes="href python:hrefstring + '&notabs=1'"
+                   i18n:translate="zopra_links_edit_no_tabs">
+                    Disable tabs
+                </a>
+                <a class="button  small"
+                   tal:condition="notabs"
+                   tal:attributes="href hrefstring"
+                   i18n:translate="zopra_links_edit_tabs">
+                    Enable tabs
+                </a>
+            </tal:block>
         </tal:block>
     </div>
 </metal:block>
@@ -253,14 +257,17 @@
         </tal:block>
         <tal:block tal:condition="python: len(request.get('autoidlist', []))<2">
             <tal:block tal:condition="python: 'edit' in here.getPermissionEntryInfo(table, entry)">
-                <a class="button"
-                   tal:attributes="href python:'zopra_table_edit_form?table=%s&autoid=%s' % (table, entry.get('autoid'))"
-                   i18n:translate="zopra_links_edit_edit">
-                    Edit Entry
-                </a>
+                <tal:block tal:define="paramstring python: request.get('origid') and '&origid=%s&origtable=%s&origattribute=%s' % (request.get('origid'), request.get('origtable'), request.get('origattribute')) or nothing;
+                                   hrefstring python:'zopra_table_edit_form?table=%s&autoid=%s%s' % (table, entry.get('autoid'), paramstring)">
+                    <a class="button"
+                       tal:attributes="href hrefstring"
+                       i18n:translate="zopra_links_edit_edit">
+                        Edit Entry
+                    </a>
+                </tal:block>
             </tal:block>
         </tal:block>
-        <tal:block tal:condition="not:origid|nothing">
+        <tal:block tal:condition="not:request/origid|nothing">
             <tal:block tal:condition="python: here.getPermissionInfo(table, 'table_create') and not here.getGenericConfig(table).get('dependent', False)">
                 <a class="button"
                    tal:attributes="href python:'zopra_table_create_form?table=%s' % (table)"
@@ -271,18 +278,21 @@
         </tal:block>
         <tal:block tal:define="notabs request/notabs|nothing"
                    tal:condition="python: table in ['invoice', 'position', 'studiengang']">
-            <a class="button  small"
-               tal:condition="not:notabs"
-               tal:attributes="href python:'zopra_table_show_form?table=%s&autoid=%s&notabs=1' % (table, entry.get('autoid'))"
-               i18n:translate="zopra_links_edit_no_tabs">
-                Disable tabs
-            </a>
-            <a class="button  small"
-               tal:condition="notabs"
-               tal:attributes="href python:'zopra_table_show_form?table=%s&autoid=%s' % (table, entry.get('autoid'))"
-               i18n:translate="zopra_links_edit_tabs">
-                Enable tabs
-            </a>
+            <tal:block tal:define="paramstring python: request.get('origid') and '&origid=%s&origtable=%s&origattribute=%s' % (request.get('origid'), request.get('origtable'), request.get('origattribute')) or nothing;
+                                   hrefstring python:'zopra_table_show_form?table=%s&autoid=%s%s' % (table, entry.get('autoid'), paramstring)">
+                <a class="button  small"
+                   tal:condition="not:notabs"
+                   tal:attributes="href python:hrefstring + '&notabs=1'"
+                   i18n:translate="zopra_links_edit_no_tabs">
+                    Disable tabs
+                </a>
+                <a class="button  small"
+                   tal:condition="notabs"
+                   tal:attributes="href hrefstring"
+                   i18n:translate="zopra_links_edit_tabs">
+                    Enable tabs
+                </a>
+            </tal:block>
         </tal:block>
     </div>
 </metal:block>

@@ -31,7 +31,7 @@
                 var form = widget.parents('form');
                 var fieldset = widget.parents('fieldset');
                 var macroname = fieldset.attr('id');
-                var wnd = window.open("zopra_popup?url="+encodeURIComponent(link.attr('href')),"","width=910,height=500");
+                var wnd = window.open("zopra_popup?url="+encodeURIComponent(link.attr('href')+'&zopra_popup=1'),"","width=910,height=1000");
 
                 jQuery.fn.findAndSelf = function(selector) {
                     return this.find(selector).add(this.filter(selector));
