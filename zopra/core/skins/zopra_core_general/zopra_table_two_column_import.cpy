@@ -8,12 +8,14 @@
 ##parameters=table, file, encoding, delim
 ##title=
 ##
+from zopra.core import zopraMessageFactory as _
 import logging
 logger = logging.getLogger('import')
 request = context.REQUEST
 
 # constants
-delim = unicode(delim,'unicode-escape')
+# csv parser cannot operate on unicde, do not translate the delim
+#delim = unicode(delim,'unicode-escape')
 manager = context
 tobj = manager.tableHandler[table]
 coltypes = tobj.getColumnDefs(True)
