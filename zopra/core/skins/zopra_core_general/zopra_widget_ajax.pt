@@ -35,7 +35,6 @@
             required python: here.getGenericConfig(table).get('required',[]);
             edit_lang python: here.doesTranslations(table) and entry.get('language');
             portal_url here/portal_url;">
-            <div tal:content="lang"></div>
             <tal:condition tal:condition="python: not here.doesTranslations(table) or entry.get('language') == 'de'">
                 <tal:additional tal:define="add_macro python: 'additional_%s_%s' % (table, macroname);
                                             add_path python: 'zopra_table_%s_additional_%s' % (target, here.meta_type);"

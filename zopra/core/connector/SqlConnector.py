@@ -111,16 +111,22 @@ class SqlConnector(SimpleItem):
     def _getConnection(self):
         """ This method returns the correct connection object.
 
-        @result SQLConnector
+        @result SQLConnection
         """
-        return getattr(self, self.connection_id)()
+        # get DB adapter
+        zcon = getattr(self, self.connection_id)
+        # get connectionpool from Adapter
+        connection = zcon()
+        # connection is a pool representation of the database connection (per Thread) (for mysql)
+
+        return connection
 
 
     def query(self, query_text):
         """ This method executes a SQL query.
 
-        Note that this function sets the environment to german, european for
-        the date handling.
+        The implementation of this method returns the result of the query. 
+        It is abstract in SqlConnector baseclass (not implemented).
 
         @param query_text  - The argument \a query_text contains the complete
                              SQL query string.

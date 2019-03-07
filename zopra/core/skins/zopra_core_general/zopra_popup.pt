@@ -25,20 +25,19 @@
         });
 
         function siteLoaded() {
-            $("#iframe").contents().find("head").append('<link rel="stylesheet" type="text/css" media="all" href="' + portal_url + '/zopra_popup.css" '+'/>')
-            $("#iframe").contents().find("body").append('<script type="text/javascript">'+
-            '$($("#iframe")[0].contentWindow).unload(function(){'+
-            '   hideIframeCallback();'+
-            '});\n'+
-            '<'+'/script>');
+            //add iframe callback
+            $($("#iframe")[0].contentWindow).unload(function(){
+                hideIframeCallback();
+              });
+            // hide iframe on form submission
             var form = $('#iframe').contents().find("form");
             if (form.length > 0) {
                 form.submit(function(event) {
                     $("#iframe").hide();
                 });
             }
-
-            $("#iframe").ready(function() { // to be called after injected css has been applied
+            // make iframe visible when loading is finished
+            $("#iframe").ready(function() {
                 $("#iframe").css('display','inline');
             });
 

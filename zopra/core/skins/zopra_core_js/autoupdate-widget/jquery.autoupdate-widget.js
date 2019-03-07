@@ -31,7 +31,7 @@
                 var form = widget.parents('form');
                 var fieldset = widget.parents('fieldset');
                 var macroname = fieldset.attr('id');
-                var wnd = window.open("zopra_popup?url="+encodeURIComponent(link.attr('href')),"","width=910,height=500");
+                var wnd = window.open("zopra_popup?url="+encodeURIComponent(link.attr('href')+'&zopra_popup=1'),"","width=910,height=1000");
 
                 jQuery.fn.findAndSelf = function(selector) {
                     return this.find(selector).add(this.filter(selector));
@@ -69,9 +69,7 @@
                                         $(".zopra_special_links a[href*='"+autoid+"']").each(function() {
                                             this.href = this.href.replace(new RegExp(autoid, "g"), new_autoid);
                                         });
-
                                         autoid = new_autoid;
-
                                     }
                                     $.ajax({
                                         type	: "GET",
@@ -84,7 +82,7 @@
                                         success	: function(html) {
                                             var labelOfWidget = widget.children("label").html();
                                              // since the macro returns potentially several widgets, we have to cut out the right one
-                                            var reduced2WidgetChildren = $(html).findAndSelf('div.field').filter(function() { return $(this).children('label').html() == labelOfWidget; }).children();
+                                            var reduced2WidgetChildren = $($.trim(html)).findAndSelf('div.field').filter(function() { return $(this).children('label').html() == labelOfWidget; }).children();
                                             // replace old widget with new once
                                             widget.empty().append(reduced2WidgetChildren);
                                             // maybe we can just assume all links have been outfitted with autoupdate_popup and throw this away?
