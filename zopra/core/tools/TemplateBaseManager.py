@@ -474,8 +474,10 @@ class TemplateBaseManager(GenericManager):
             root.setConstraints(constraints)
         return tobj.requestEntryCount(root)
 
+
     def calculatePaginationPages(self, rowcount, count):
         return (rowcount + count - 1) / count
+
 
     def getEntryListProxy(self, table,
                       show_number    = None,
@@ -541,6 +543,14 @@ class TemplateBaseManager(GenericManager):
         # TODO: make sure translations are sorted correctly (sort by value_en e.g.?)
         # Default: sort normally
         return sorted(entries, key=lambda item: item['value'])
+
+
+    def prepareValuesForEdit(self, attr_name, field, entry, request, validation_errors):
+        """\brief Request data only supersedes the entry data when validation errors occured (to retain user input), after saving, the (potentially altered) entry data is used"""
+        if not validation_errors:
+            return entry.get(attr_name)
+        else:
+            return request.get(attr_name)
 
 
     def prepareConstraintsForOutput(self, attr_value, attr_type):

@@ -87,7 +87,7 @@
                             <div class="row">
                                 <div class="contentSlot">
                                     <div class="field"
-                                         tal:define="error python: errors.get(attr_name); attr_value python:request.get(attr_name, '') or entry.get(attr_name, ''); field python:coltypes[attr_name]; attr_type python:field['TYPE']; attr_sort python:attr_name in sortables; attr_notes python: attr_type == 'multilist' and dict([[a,entry[a]] for a in entry.keys() if a.startswith(attr_name + 'notes') and entry[a]]) or {}; fielddiff python: attr_name in diff or attr_notes and here.dictIntersect(attr_notes, diff)"
+                                         tal:define="error python: errors.get(attr_name); field python:coltypes[attr_name]; attr_value python: here.prepareValuesForEdit(attr_name, field, entry, request, errors); attr_type python:field['TYPE']; attr_sort python:attr_name in sortables; attr_notes python: attr_type == 'multilist' and dict([[a,entry[a]] for a in entry.keys() if a.startswith(attr_name + 'notes') and entry[a]]) or {}; fielddiff python: attr_name in diff or attr_notes and here.dictIntersect(attr_notes, diff)"
                                          tal:attributes="class python: 'field' + (error and ' error' or '') + (fielddiff and ' diff' or '')">
                                         <metal:block metal:use-macro="here/zopra_widget_edit_display/macros/widget_selector" />
                                     </div>
