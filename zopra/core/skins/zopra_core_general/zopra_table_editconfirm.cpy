@@ -96,12 +96,12 @@ if done == True:
     done = context.tableHandler[table].deleteEntry(int(autoid))
     if done == True:
         message = _('zopra_editconfirm_success',
-                    default = u'Entry has been published. ${additional_msg}Internal Id: ${internal_id}.',
+                    default = u'Entry has been published. ${additional_msg} Internal Id: ${internal_id}.',
                     mapping = {u'internal_id': origautoid, u'additional_msg': en_msg})
         status = 'success'
     else:
         message = _('zopra_editconfirm_almost_success',
-                    default = u'Entry has been published. ${additional_msg}Error during deletion of working copy. Internal Id: ${internal_id}.',
+                    default = u'Entry has been published. ${additional_msg} Error during deletion of working copy. Internal Id: ${internal_id}.',
                     mapping = {u'internal_id': origautoid, u'additional_msg': en_msg})
 
 else:
