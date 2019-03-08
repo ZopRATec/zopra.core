@@ -436,9 +436,19 @@ class TemplateBaseManager(GenericManager):
                 # use the original autoid and the change as entry_diff
                 self.updateWorkingCopy(table, {'autoid': autoid, 'hastranslation': 0})
 
+
+    def selectAdditionalLanguage(self, request):
+        """\brief Hook for the language switcher on the translation form."""
+        # for now, we only allow 1 additional language
+        if self.lang_additional:
+            return self.lang_additional[0]
+        else:
+            return None
+
 #
 # Table and Entry centered Functions
 #
+
 
     def getFilteredColumnDefs(self, table, vis_only = False, edit_tracking = False):
         """\brief Indirection to retrieve column defs, allows addition and removal before listing"""
