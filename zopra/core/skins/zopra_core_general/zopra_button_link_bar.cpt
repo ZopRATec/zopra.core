@@ -78,7 +78,7 @@
                 Show Changes
             </a>
         </tal:block>
-        <tal:block tal:define="paramstring python: request.get('origid') and '&origid=%s&origtable=%s&origattribute=%s' % (request.get('origid'), request.get('origtable'), request.get('origattribute')) or nothing;
+        <tal:block tal:define="paramstring python: request.get('origid') and '&origid=%s&origtable=%s&origattribute=%s' % (request.get('origid'), request.get('origtable'), request.get('origattribute')) or '';
                                hrefstring python:'zopra_table_show_form?table=%s&autoid=%s%s' % (table, entry.get('autoid'), paramstring)">
             <a class="button  small"
                tal:attributes="href hrefstring"
@@ -135,7 +135,7 @@
         </tal:block>
         <tal:block tal:define="notabs request/notabs|nothing"
                    tal:condition="python: table in ['invoice', 'position', 'studiengang']">
-            <tal:block tal:define="paramstring python: request.get('origid') and '&origid=%s&origtable=%s&origattribute=%s' % (request.get('origid'), request.get('origtable'), request.get('origattribute')) or nothing;
+            <tal:block tal:define="paramstring python: request.get('origid') and '&origid=%s&origtable=%s&origattribute=%s' % (request.get('origid'), request.get('origtable'), request.get('origattribute')) or '';
                                    hrefstring python:'zopra_table_edit_form?table=%s&autoid=%s%s' % (table, entry.get('autoid'), paramstring)">
                 <a class="button  small"
                    tal:condition="not:notabs"
@@ -257,7 +257,7 @@
         </tal:block>
         <tal:block tal:condition="python: len(request.get('autoidlist', []))<2">
             <tal:block tal:condition="python: 'edit' in here.getPermissionEntryInfo(table, entry)">
-                <tal:block tal:define="paramstring python: request.get('origid') and '&origid=%s&origtable=%s&origattribute=%s' % (request.get('origid'), request.get('origtable'), request.get('origattribute')) or nothing;
+                <tal:block tal:define="paramstring python: request.get('origid') and '&origid=%s&origtable=%s&origattribute=%s' % (request.get('origid'), request.get('origtable'), request.get('origattribute')) or '';
                                    hrefstring python:'zopra_table_edit_form?table=%s&autoid=%s%s' % (table, entry.get('autoid'), paramstring)">
                     <a class="button"
                        tal:attributes="href hrefstring"
@@ -278,7 +278,7 @@
         </tal:block>
         <tal:block tal:define="notabs request/notabs|nothing"
                    tal:condition="python: table in ['invoice', 'position', 'studiengang']">
-            <tal:block tal:define="paramstring python: request.get('origid') and '&origid=%s&origtable=%s&origattribute=%s' % (request.get('origid'), request.get('origtable'), request.get('origattribute')) or nothing;
+            <tal:block tal:define="paramstring python: request.get('origid') and '&origid=%s&origtable=%s&origattribute=%s' % (request.get('origid'), request.get('origtable'), request.get('origattribute')) or '';
                                    hrefstring python:'zopra_table_show_form?table=%s&autoid=%s%s' % (table, entry.get('autoid'), paramstring)">
                 <a class="button  small"
                    tal:condition="not:notabs"
