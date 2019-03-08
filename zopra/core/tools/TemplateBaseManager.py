@@ -560,7 +560,13 @@ class TemplateBaseManager(GenericManager):
         if not validation_errors:
             return entry.get(attr_name)
         else:
-            return request.get(attr_name)
+            val = request.get(attr_name)
+            if field['TYPE'] in ['multilist', 'hierarchylist']:
+                if not val:
+                    val = []
+                elif not isinstance(val, ListType):
+                    val = [val]
+            return val
 
 
     def prepareConstraintsForOutput(self, attr_value, attr_type):
