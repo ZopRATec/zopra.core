@@ -93,7 +93,7 @@
                                             widget.find("table.table-scrollable").wrap($("<div/>").addClass("scroll-wrapper").attr("style", "overflow-x: auto; overflow-y: hidden;"));
                                             // finally, let it double-scroll
                                             let $scrollWrapper = widget.find("div.scroll-wrapper");
-                                            if ($scrollWrapper.length > 0)
+                                            if (typeof($scrollWrapper.doubleScroll) === 'function') {
                                                 $scrollWrapper.doubleScroll({
                                                     scrollCss: {
                                                         'overflow-x': 'auto',
@@ -105,6 +105,7 @@
                                                     },
                                                     resetOnWindowResize: true // recompute the top ScrollBar requirements when the window is resized
                                                 });
+                                            }
                                         }
                                     });
                                 }
