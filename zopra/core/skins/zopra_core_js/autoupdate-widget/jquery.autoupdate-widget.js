@@ -31,7 +31,10 @@
                 var form = widget.parents('form');
                 var fieldset = widget.parents('fieldset');
                 var macroname = fieldset.attr('id');
-                var wnd = window.open("zopra_popup?url="+encodeURIComponent(link.attr('href')+'&zopra_popup=1'),"","width=910,height=1000");
+
+                // ensure that the popup fits into the users screen
+                var popupHeight = Math.min(screen.height - 100, 1000);
+                var wnd = window.open("zopra_popup?url="+encodeURIComponent(link.attr('href')),"","width=910,height=" + popupHeight);
 
                 jQuery.fn.findAndSelf = function(selector) {
                     return this.find(selector).add(this.filter(selector));
@@ -87,6 +90,23 @@
                                             widget.empty().append(reduced2WidgetChildren);
                                             // maybe we can just assume all links have been outfitted with autoupdate_popup and throw this away?
                                             widget.find("a").addClass('autoupdate_popup');
+                                            // if there is a table inside, we need to surround it with a scrollable div
+                                            widget.find("table.table-scrollable").wrap($("<div/>").addClass("scroll-wrapper").attr("style", "overflow-x: auto; overflow-y: hidden;"));
+                                            // finally, let it double-scroll
+                                            let $scrollWrapper = widget.find("div.scroll-wrapper");
+                                            if (typeof($scrollWrapper.doubleScroll) === 'function') {
+                                                $scrollWrapper.doubleScroll({
+                                                    scrollCss: {
+                                                        'overflow-x': 'auto',
+                                                        'overflow-y': 'hidden'
+                                                    },
+                                                    contentCss: {
+                                                        'overflow-x': 'auto',
+                                                        'overflow-y': 'hidden'
+                                                    },
+                                                    resetOnWindowResize: true // recompute the top ScrollBar requirements when the window is resized
+                                                });
+                                            }
                                         }
                                     });
                                 }
