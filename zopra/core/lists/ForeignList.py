@@ -1094,6 +1094,9 @@ class ForeignList(GenericList):
 
     def getValueByAutoid(self, autoid, lang=None):
         """\brief Returns the value from an specified list entry/entries."""
+        # additional check for None to avoid fetching foreign manager etc.
+        if autoid == None:
+            return ''
 
         # NOTE: do not handle lists recursivly since getting the
         #       manager is expensive
