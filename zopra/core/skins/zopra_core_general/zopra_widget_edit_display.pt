@@ -125,7 +125,7 @@
 <metal:widget_singlelist define-macro="widget_singlelist">
     <metal:block metal:use-macro="python:path('here/zopra_widget_edit_display/macros/widget_label')" />
     <select tal:define="lobj python:here.listHandler.getList(table, attr_name);
-                        entries python:lobj.getEntries();
+                        entries python:lobj.getEntries(lang=lang);
                         do_sort attr_sort|nothing;
                         entries python: do_sort and here.sortListEntriesForDisplay(table, attr_name, entries) or entries;"
             tal:attributes="name attr_name; id attr_name;"
@@ -145,7 +145,7 @@
 <metal:widget_multilist define-macro="widget_multilist">
     <metal:block metal:use-macro="python:path('here/zopra_widget_edit_display/macros/widget_label')" />
     <tal:block tal:define="lobj python:here.listHandler.getList(table, attr_name);
-            entries python:lobj.getEntries();
+            entries python:lobj.getEntries(lang=lang);
             do_sort attr_sort|nothing;
             entries python: do_sort and here.sortListEntriesForDisplay(table, attr_name, entries) or entries;
             notes attr_notes_override|nocall: lobj/notes;
