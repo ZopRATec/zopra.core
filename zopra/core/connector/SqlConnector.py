@@ -39,6 +39,11 @@ connectors = { 'Psycopg':  'PostgresConnector',
                'PoPy':     'PostgresConnector',
                'MySQL':    'MySqlConnector',  }
 
+# fallback on meta_type
+connectors_by_meta_type = {
+        'Z MySQL Database Connection': 'MySqlConnector',
+    }
+
 # why is string converted to COL_TEXT (text)? shouldn't this be VARCHAR(255)? does this harm database speed?
 
 
@@ -59,8 +64,16 @@ def getConnector(context, connector_id, connection_id):
     if not connection:
         connection = getattr(context.getParentNode(), connection_id)
 
+    # use database_type to know the correct connector
+    try:
+        dbtype = connection.database_type
+        name   = connectors.get(dbtype, 'SqlConnector')
+    except:
+        # fallback on meta_type
+        mtype = connection.meta_type
+        name   = connectors_by_meta_type.get(mtype, 'SqlConnector')
+
     # get the connector name, default is the base class
-    name           = connectors.get(connection.database_type, 'SqlConnector')
     conmod         = import_module('zopra.core.connector.%s' % name)
     connectorClass = getattr(conmod, name)
 
