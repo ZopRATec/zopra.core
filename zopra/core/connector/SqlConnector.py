@@ -108,15 +108,13 @@ class SqlConnector(SimpleItem):
 
 
     def __init__(self, id, connection_id):
-        """ Initialize the SQL Part
+        """ Initialize the Connector
 
         @param connection_id   The argument \a connection_id contains the id of
                                the connection object that should be used.
-        @param shared_connection_id The argument \a shared_connection_id
-                               contains as well a id to a connection object but
-                               for one that can handle queries system wide.
         """
-        SimpleItem.__init__(self, id, id)
+        self.id = id
+        self.title = id
         self.connection_id        = connection_id
         self.conn                 = None
 
