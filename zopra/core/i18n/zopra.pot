@@ -342,6 +342,16 @@ msgstr ""
 msgid "zopra_import_file_help"
 msgstr ""
 
+#. Default: "Select&hellip;"
+#: ./skins/zopra_core_general/zopra_table_import_form.cpt:43
+msgid "Select&hellip;"
+msgstr ""
+
+#. Default: "No file"
+#: ./skins/zopra_core_general/zopra_table_import_form.cpt:47
+msgid "no_file"
+msgstr ""
+
 #. Default: "Datei"
 #: ./skins/zopra_core_general/zopra_table_import_form.cpt:34
 msgid "zopra_import_file_label"
