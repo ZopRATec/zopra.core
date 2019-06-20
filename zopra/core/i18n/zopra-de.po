@@ -342,6 +342,16 @@ msgstr "Bitte korrigieren Sie die angezeigten Fehler."
 msgid "zopra_import_file_help"
 msgstr "Die Importdaten (z.B. aus Excel) als komma-separierter oder tabstopp-separierter Text (CSV)."
 
+#. Default: "Select&hellip;"
+#: ./skins/zopra_core_general/zopra_table_import_form.cpt:43
+msgid "Select&hellip;"
+msgstr "Auswählen&hellip;"
+
+#. Default: "No file"
+#: ./skins/zopra_core_general/zopra_table_import_form.cpt:47
+msgid "no_file"
+msgstr "Keine Datei"
+
 #. Default: "Datei"
 #: ./skins/zopra_core_general/zopra_table_import_form.cpt:34
 msgid "zopra_import_file_label"
