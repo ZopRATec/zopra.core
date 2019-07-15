@@ -870,7 +870,7 @@ class ManagerPart(CorePart, ManagerFinderMixin):
 
         # wildcard search check
         do_wilds = search and self.checkDefaultWildcardSearch(table)
-        typedefs = do_wilds and tobj.getColumnTypes()
+        typedefs = tobj.getColumnTypes()
 
         # handling without a session object
         for name in tobj.getMainColumnNames():
@@ -883,6 +883,13 @@ class ManagerPart(CorePart, ManagerFinderMixin):
                     # appear once but this check is needed for bool searches
                     # (true-checkbox / false-checkbox)
                     value = value[0]
+
+                # unicode conversion
+                if typedefs[name] in [ZC.ZCOL_STRING, ZC.ZCOL_MEMO]:
+                    try:
+                        value = value.decode('utf-8')
+                    except:
+                        pass
 
                 # wildcard search
                 if value and do_wilds and typedefs[name] in [ZC.ZCOL_STRING, ZC.ZCOL_MEMO, ZC.ZCOL_DATE]:
@@ -917,7 +924,12 @@ class ManagerPart(CorePart, ManagerFinderMixin):
                     name_notes     = name     + 'notes'
                     new_entry = []
                     for item in entry:
-                        if item and item != 'NULL':
+                        # unicode conversion
+                        try:
+                            item = item.decode('utf-8')
+                        except:
+                            pass
+                        if item and item != u'NULL':
                             try:
                                 new_entry.append(int(item))
                             except ValueError:
@@ -932,7 +944,13 @@ class ManagerPart(CorePart, ManagerFinderMixin):
                                 key = pre_name_notes + str(item)
                                 if REQUEST.get(key):
                                     key1 = name_notes + str(item)
-                                    descr_dict[key1] = REQUEST.get(key, '')
+                                    itemval = REQUEST.get(key, u'')
+                                    # unicode conversion
+                                    try:
+                                        itemval = itemval.decode('utf-8')
+                                    except:
+                                        pass
+                                    descr_dict[key1] = itemval
                     entry = new_entry
                 else:
                     # this should lead to correct empty multilists on edit
