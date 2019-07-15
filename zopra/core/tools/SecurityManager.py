@@ -857,7 +857,7 @@ class SecurityManager(GenericManager):
             uid = ddict.get(TCN_USERID)
             usr = lobj.getValueByAutoid(uid)
             if usr:
-                lab = '%s (%s)' % (lab, usr)
+                lab = u'%s (%s)' % (lab, usr)
         elif table == TN_GROUP:
             lab = ddict.get(TCN_NAME)
         elif table == TN_EBASE:
@@ -865,11 +865,11 @@ class SecurityManager(GenericManager):
         elif table == TN_ACCESS:
             lab = ddict.get(TCN_NAME)
         elif table == TN_ACL:
-            lab = '%s: %s' % (ddict.get(ZC.TCN_AUTOID), ddict.get(TCN_CONTENT))
+            lab = u'%s: %s' % (ddict.get(ZC.TCN_AUTOID), ddict.get(TCN_CONTENT))
         elif table == 'scope':
-            lab = ddict.get('name', 'No Name')
+            lab = ddict.get('name', u'No Name')
             if ddict.get('isdefault'):
-                lab += ' (Default)'
+                lab += u' (Default)'
         return lab
 
 
