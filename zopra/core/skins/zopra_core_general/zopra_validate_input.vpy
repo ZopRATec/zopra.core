@@ -43,8 +43,7 @@ if not searching and not istranslationof:
 # when required is empty, only the type validation is done
 errors = tobj.validateEntry(entry, required)
 
-
-# special validators also do not work when searching or working on a copy
+# special validators also do not work when searching or working on a translation copy
 if not searching and not istranslationof:
     check_fields = context.getGenericConfig(table).get('check_fields', {})
     for check_field in check_fields:

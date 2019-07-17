@@ -17,7 +17,7 @@ for autoid in confirm_ids:
     if not copyentry.get('iscopyof'):
         label = context.getLabelString(table, None, copyentry)
         message = _('zopra_multiconfirm_abort_no_copy',
-                    default = u"Only working copies can be released. The entry '${entry_label}' is up-to-date. Release was cancelled.",
+                    default = u"Only working copies can be published. The entry '${entry_label}' is up-to-date. Publishing was cancelled.",
                     mapping = {u'entry_label': label})
         context.plone_utils.addPortalMessage(context.translate(message), 'info')
         return state.set(status='failure', context=context)
@@ -27,7 +27,7 @@ for autoid in confirm_ids:
     if not origentry:
         label = context.getLabelString(table, None, copyentry)
         message = _('zopra_multiconfirm_abort_not_found',
-                    default = u"Original entry '${entry_label}' could not be found. Release was cancelled.",
+                    default = u"Original entry '${entry_label}' could not be found. Publishing was cancelled.",
                     mapping = {u'entry_label': label})
         context.plone_utils.addPortalMessage(message, 'info')
         return state.set(status='failure', context=context)
@@ -78,16 +78,16 @@ for autoid in confirm_ids:
         label = context.getLabelString(table, None, origentry)
         if done == True:
             message = _('zopra_multiconfirm_success',
-                        default = u"Entry '${entry_label}' has been released. ${additional_msg}Internal Id: ${internal_id}.",
+                        default = u"Entry '${entry_label}' has been published. ${additional_msg}Internal Id: ${internal_id}.",
                         mapping = {u'entry_label': label, u'internal_id': origautoid, u'additional_msg': en_msg})
         else:
             message = _('zopra_multiconfirm_almost_success',
-                        default = u"Entry '${entry_label}' has been released. ${additional_msg}Error during deletion of working copy. Internal Id: ${internal_id}.",
+                        default = u"Entry '${entry_label}' has been published. ${additional_msg}Error during deletion of working copy. Internal Id: ${internal_id}.",
                         mapping = {u'entry_label': label, u'internal_id': origautoid, u'additional_msg': en_msg})
         context.plone_utils.addPortalMessage(context.translate(message), 'info')
     else:
         message = _('zopra_multiconfirm_failure',
-                    default = u"Error during release of entry '${entry_label}': ${reason}",
+                    default = u"Error during publishing of entry '${entry_label}': ${reason}",
                     mapping = {u'entry_label': label, u'reason': done})
         context.plone_utils.addPortalMessage(context.translate(message), 'info')
 # there is only the success state, even if all confirm_ids ended up in error

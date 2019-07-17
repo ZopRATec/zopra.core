@@ -18,11 +18,12 @@ import types
 #
 # Zope Imports
 #
-from AccessControl          import ClassSecurityInfo, getSecurityManager
-from AccessControl          import allow_module
-from Globals                import DTMLFile, InitializeClass, HTML
-from zExceptions            import BadRequest
-from zope.i18nmessageid     import MessageFactory
+from AccessControl              import ClassSecurityInfo, getSecurityManager
+from AccessControl              import allow_module
+from App.special_dtml           import DTMLFile, HTML
+from AccessControl.class_init   import InitializeClass
+from zExceptions                import BadRequest
+from zope.i18nmessageid         import MessageFactory
 
 from OFS.DTMLDocument       import DTMLDocument
 from OFS.Folder             import Folder

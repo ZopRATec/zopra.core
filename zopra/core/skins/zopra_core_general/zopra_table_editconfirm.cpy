@@ -37,14 +37,14 @@ for attr in types.keys():
 
 # check iscopyof (working copy marker) on the db entry (origentry might not include this info)
 if not entry.get('iscopyof'):
-    message = _('zopra_editconfirm_abort_no_copy', default = u'Only working copies can be released. This entry is up-to-date. Release was cancelled.')
+    message = _('zopra_editconfirm_abort_no_copy', default = u'Only working copies can be published. This entry is up-to-date. Publishing was cancelled.')
     context.plone_utils.addPortalMessage(message, 'info')
     return state.set(status='failure', context=context)
 
 origentry = context.tableHandler[table].getEntry(entry.get('iscopyof'))
 
 if not origentry:
-    message = _('zopra_editconfirm_abort_not_found', default = u'Original entry could not be found. Release was cancelled.')
+    message = _('zopra_editconfirm_abort_not_found', default = u'Original entry could not be found. Publishing was cancelled.')
     context.plone_utils.addPortalMessage(message, 'info')
     return state.set(status='failure', context=context)
 
@@ -96,17 +96,17 @@ if done == True:
     done = context.tableHandler[table].deleteEntry(int(autoid))
     if done == True:
         message = _('zopra_editconfirm_success',
-                    default = u'Entry has been released. ${additional_msg}Internal Id: ${internal_id}.',
+                    default = u'Entry has been published. ${additional_msg} Internal Id: ${internal_id}.',
                     mapping = {u'internal_id': origautoid, u'additional_msg': en_msg})
         status = 'success'
     else:
         message = _('zopra_editconfirm_almost_success',
-                    default = u'Entry has been released. ${additional_msg}Error during deletion of working copy. Internal Id: ${internal_id}.',
+                    default = u'Entry has been published. ${additional_msg} Error during deletion of working copy. Internal Id: ${internal_id}.',
                     mapping = {u'internal_id': origautoid, u'additional_msg': en_msg})
 
 else:
     message = _('zopra_editconfirm_failure',
-                default = u'Error during release: ${reason}',
+                default = u'Error during publishing: ${reason}',
                 mapping = {u'reason': done})
 
 context.plone_utils.addPortalMessage(message, 'info')
