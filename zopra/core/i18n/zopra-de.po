@@ -3,7 +3,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ZMOM 1.0\n"
-"POT-Creation-Date: 2017-08-09 12:24+0000\n"
+"POT-Creation-Date: 2018-03-13 14:49+0000\n"
 "PO-Revision-Date: 2010-05-06 14:11+0100\n"
 "Last-Translator: Peter Seifert <peter.seifert@zopra.de>\n"
 "Language-Team: ZMOM i18n <i18n@zopra.de>\n"
@@ -64,7 +64,7 @@ msgstr "Manager Überblick"
 
 #: ./skins/zopra_core_general/zopra_button_link_bar.cpt:51
 #: ./skins/zopra_core_general/zopra_table_multiconfirm_form.cpt:67
-msgid "Release"
+msgid "Publish"
 msgstr "Freigeben"
 
 #: ./skins/zopra_core_general/zopra_button_link_bar.cpt:169
@@ -249,7 +249,7 @@ msgstr "Sind sie sicher?"
 #. Default: "Edit ${table} ${label} ${language}"
 #: ./skins/zopra_core_general/zopra_table_edit_form.cpt:58
 msgid "zopra_edit_heading"
-msgstr "Bearbeitung ${table} ${label}${language}"
+msgstr "Bearbeitung ${table} ${label} ${language}"
 
 #. Default: "Language:"
 #: ./skins/zopra_core_general/zopra_table_edit_form.cpt:59
@@ -257,10 +257,10 @@ msgstr "Bearbeitung ${table} ${label}${language}"
 msgid "zopra_edit_language"
 msgstr "Sprache:"
 
-#. Default: "Entry has been updated. ${additional_message}${translation_message}Internal Id: ${internal_id}."
+#. Default: "Entry has been updated. ${additional_message} ${translation_message} Internal Id: ${internal_id}."
 #: ./skins/zopra_core_general/zopra_table_edit.cpy:73
 msgid "zopra_edit_saved"
-msgstr "Eintrag wurde gespeichert. ${additional_message}${translation_message}Interne Id: ${internal_id}."
+msgstr "Eintrag wurde gespeichert. ${additional_message} ${translation_message} Interne Id: ${internal_id}."
 
 #. Default: "Only the text fields have been saved (because this is a translation). "
 #: ./skins/zopra_core_general/zopra_table_edit.cpy:69
@@ -276,40 +276,40 @@ msgstr "Nur die Textfelder wurden gespeichert, da es sich um eine Übersetzung h
 msgid "zopra_edit_translation_updated"
 msgstr "Nicht-Text-Felder der Übersetzung wurden zusätzlich aktualisiert. "
 
-#. Default: "Working copy created. ${additional_message}Original internal Id: ${internal_id}."
+#. Default: "Working copy created. ${additional_message} Original internal Id: ${internal_id}."
 #: ./skins/zopra_core_general/zopra_table_edit.cpy:96
 msgid "zopra_edit_wc_created"
-msgstr "Arbeitskopie wurde erstellt. ${additional_message}Interne Id des Originals: ${internal_id}."
+msgstr "Arbeitskopie wurde erstellt. ${additional_message} Interne Id des Originals: ${internal_id}."
 
-#. Default: "Working copy has been updated. ${additional_message}Original internal Id: ${internal_id}."
+#. Default: "Working copy has been updated. ${additional_message} Original internal Id: ${internal_id}."
 #: ./skins/zopra_core_general/zopra_table_edit.cpy:80
 msgid "zopra_edit_wc_saved"
-msgstr "Arbeitskopie wurde gespeichert. ${additional_message}Interne Id des Originals: ${internal_id}."
+msgstr "Arbeitskopie wurde gespeichert. ${additional_message} Interne Id des Originals: ${internal_id}."
 
-#. Default: "Only working copies can be released. This entry is up-to-date. Release was cancelled."
+#. Default: "Only working copies can be published. This entry is up-to-date. Publishing was cancelled."
 #: ./skins/zopra_core_general/zopra_table_editconfirm.cpy:40
 msgid "zopra_editconfirm_abort_no_copy"
 msgstr "Nur Arbeitskopien können freigegeben werden. Dieser Eintrag ist aktuell. Die Freigabe wird abgebrochen."
 
-#. Default: "Original entry could not be found. Release was cancelled."
+#. Default: "Original entry could not be found. Publishing was cancelled."
 #: ./skins/zopra_core_general/zopra_table_editconfirm.cpy:47
 msgid "zopra_editconfirm_abort_not_found"
 msgstr "Originaleintrag nicht auffindbar, Freigabe wurde abgebrochen."
 
-#. Default: "Entry has been released. ${additional_msg}Error during deletion of working copy. Internal Id: ${internal_id}."
+#. Default: "Entry has been published. ${additional_msg} Error during deletion of working copy. Internal Id: ${internal_id}."
 #: ./skins/zopra_core_general/zopra_table_editconfirm.cpy:103
 msgid "zopra_editconfirm_almost_success"
-msgstr "Eintrag wurde freigegeben. ${additional_msg}Fehler beim Löschen der Arbeitskopie. Interne Id: ${internal_id}."
+msgstr "Eintrag wurde freigegeben. ${additional_msg} Fehler beim Löschen der Arbeitskopie. Interne Id: ${internal_id}."
 
-#. Default: "Error during release: ${reason}"
+#. Default: "Error during publishing: ${reason}"
 #: ./skins/zopra_core_general/zopra_table_editconfirm.cpy:108
 msgid "zopra_editconfirm_failure"
 msgstr "Fehler bei der Freigabe: ${reason}"
 
-#. Default: "Entry has been released. ${additional_msg}Internal Id: ${internal_id}."
+#. Default: "Entry has been published. ${additional_msg} Internal Id: ${internal_id}."
 #: ./skins/zopra_core_general/zopra_table_editconfirm.cpy:98
 msgid "zopra_editconfirm_success"
-msgstr "Eintrag wurde freigegeben. ${additional_msg}Interne Id: ${internal_id}."
+msgstr "Eintrag wurde freigegeben. ${additional_msg} Interne Id: ${internal_id}."
 
 #. Default: "entry"
 #: ./skins/zopra_core_general/zopra_table_deleteconfirm_form.cpt:40
@@ -327,7 +327,7 @@ msgid "zopra_export_button_label"
 msgstr "Standard Export (CSV)"
 
 #. Default: "for"
-#: ./skins/zopra_core_general/zopra_widget_edit_display.pt:174
+#: ./skins/zopra_core_general/zopra_widget_edit_display.pt:175
 msgid "zopra_for"
 msgstr "für"
 
@@ -341,6 +341,16 @@ msgstr "Bitte korrigieren Sie die angezeigten Fehler."
 #: ./skins/zopra_core_general/zopra_table_import_form.cpt:35
 msgid "zopra_import_file_help"
 msgstr "Die Importdaten (z.B. aus Excel) als komma-separierter oder tabstopp-separierter Text (CSV)."
+
+#. Default: "Select&hellip;"
+#: ./skins/zopra_core_general/zopra_table_import_form.cpt:43
+msgid "Select&hellip;"
+msgstr "Auswählen&hellip;"
+
+#. Default: "No file"
+#: ./skins/zopra_core_general/zopra_table_import_form.cpt:47
+msgid "no_file"
+msgstr "Keine Datei"
 
 #. Default: "Datei"
 #: ./skins/zopra_core_general/zopra_table_import_form.cpt:34
@@ -509,32 +519,32 @@ msgstr "Module"
 msgid "zopra_main_no_editable_lists"
 msgstr "Es wurden keine editierbaren Auswahllisten gefunden."
 
-#. Default: "Only working copies can be released. The entry '${entry_label}' is up-to-date. Release was cancelled."
+#. Default: "Only working copies can be published. The entry '${entry_label}' is up-to-date. Publishing was cancelled."
 #: ./skins/zopra_core_general/zopra_table_multiconfirm.cpy:19
 msgid "zopra_multiconfirm_abort_no_copy"
 msgstr "Nur Arbeitskopien können freigegeben werden. Der Eintrag '${entry_label}' ist aktuell. Die Freigabe wird abgebrochen."
 
-#. Default: "Original entry '${entry_label}' could not be found. Release was cancelled."
+#. Default: "Original entry '${entry_label}' could not be found. Publishing was cancelled."
 #: ./skins/zopra_core_general/zopra_table_multiconfirm.cpy:29
 msgid "zopra_multiconfirm_abort_not_found"
 msgstr "Originaleintrag '${entry_label}' nicht auffindbar, Freigabe wurde abgebrochen."
 
-#. Default: "Entry '${entry_label}' has been released. ${additional_msg}Error during deletion of working copy. Internal Id: ${internal_id}."
+#. Default: "Entry '${entry_label}' has been published. ${additional_msg}Error during deletion of working copy. Internal Id: ${internal_id}."
 #: ./skins/zopra_core_general/zopra_table_multiconfirm.cpy:84
 msgid "zopra_multiconfirm_almost_success"
 msgstr "Eintrag '${entry_label}' wurde freigegeben. ${additional_msg}Fehler beim Löschen der Arbeitskopie. Interne Id: ${internal_id}."
 
-#. Default: "Error during release of entry '${entry_label}': ${reason}"
+#. Default: "Error during publishing of entry '${entry_label}': ${reason}"
 #: ./skins/zopra_core_general/zopra_table_multiconfirm.cpy:89
 msgid "zopra_multiconfirm_failure"
 msgstr "Fehler bei der Freigabe von Eintrag '${entry_label}': ${reason}"
 
-#. Default: "Entry '${entry_label}' has been released. ${additional_msg}Internal Id: ${internal_id}."
+#. Default: "Entry '${entry_label}' has been published. ${additional_msg}Internal Id: ${internal_id}."
 #: ./skins/zopra_core_general/zopra_table_multiconfirm.cpy:80
 msgid "zopra_multiconfirm_success"
 msgstr "Eintrag '${entry_label}' wurde freigegeben.${additional_msg} Interne Id: ${internal_id}."
 
-#. Default: "Multi-release"
+#. Default: "Multi-publishing"
 #: ./skins/zopra_core_general/zopra_table_multiconfirm_listing.pt:27
 msgid "zopra_multirelease_label"
 msgstr "Mehrfachfreigabe"
@@ -561,7 +571,7 @@ msgstr "Details"
 msgid "zopra_release_diff"
 msgstr "Unterschiede"
 
-#. Default: "Release"
+#. Default: "Publish"
 #: ./skins/zopra_core_general/zopra_table_multiconfirm_form.cpt:30
 #: ./skins/zopra_core_general/zopra_table_multiconfirm_listing.pt:18
 msgid "zopra_release_heading"
@@ -578,7 +588,7 @@ msgstr "Name"
 msgid "zopra_release_no_copies"
 msgstr "Keine Arbeitskopien gefunden."
 
-#. Default: "Release"
+#. Default: "Publish"
 #: ./skins/zopra_core_general/zopra_table_multiconfirm_form.cpt:54
 #: ./skins/zopra_core_general/zopra_table_multiconfirm_listing.pt:49
 msgid "zopra_release_singlelink_label"
@@ -860,7 +870,7 @@ msgid "zopra_widget_modal"
 msgstr "Klicken Sie hier, um ein vergrößertes Texteingabefeld zu erhalten."
 
 #. Default: "<not set>"
-#: ./tools/TemplateBaseManager.py:555
+#: ./tools/TemplateBaseManager.py:563
 msgid "zopra_widget_not_set"
 msgstr "<nicht gesetzt>"
 
@@ -887,7 +897,7 @@ msgid "zopra_widget_search_bool_not"
 msgstr "hat/ist nicht"
 
 #. Default: "<any value>"
-#: ./tools/TemplateBaseManager.py:560
+#: ./tools/TemplateBaseManager.py:568
 msgid "zopra_widget_set_any"
 msgstr "<beliebiger Wert>"
 

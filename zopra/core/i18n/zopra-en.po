@@ -3,7 +3,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ZMOM 1.0\n"
-"POT-Creation-Date: 2017-08-09 12:24+0000\n"
+"POT-Creation-Date: 2018-03-13 14:49+0000\n"
 "PO-Revision-Date: 2010-05-06 14:11+0100\n"
 "Last-Translator: Peter Seifert <peter.seifert@zopra.de>\n"
 "Language-Team: ZMOM i18n <i18n@zopra.de>\n"
@@ -63,7 +63,7 @@ msgstr ""
 
 #: ./skins/zopra_core_general/zopra_button_link_bar.cpt:51
 #: ./skins/zopra_core_general/zopra_table_multiconfirm_form.cpt:67
-msgid "Release"
+msgid "Publish"
 msgstr ""
 
 #: ./skins/zopra_core_general/zopra_button_link_bar.cpt:169
@@ -285,27 +285,27 @@ msgstr ""
 msgid "zopra_edit_wc_saved"
 msgstr ""
 
-#. Default: "Only working copies can be released. This entry is up-to-date. Release was cancelled."
+#. Default: "Only working copies can be published. This entry is up-to-date. Publishing was cancelled."
 #: ./skins/zopra_core_general/zopra_table_editconfirm.cpy:40
 msgid "zopra_editconfirm_abort_no_copy"
 msgstr ""
 
-#. Default: "Original entry could not be found. Release was cancelled."
+#. Default: "Original entry could not be found. Publishing was cancelled."
 #: ./skins/zopra_core_general/zopra_table_editconfirm.cpy:47
 msgid "zopra_editconfirm_abort_not_found"
 msgstr ""
 
-#. Default: "Entry has been released. ${additional_msg}Error during deletion of working copy. Internal Id: ${internal_id}."
+#. Default: "Entry has been published. ${additional_msg}Error during deletion of working copy. Internal Id: ${internal_id}."
 #: ./skins/zopra_core_general/zopra_table_editconfirm.cpy:103
 msgid "zopra_editconfirm_almost_success"
 msgstr ""
 
-#. Default: "Error during release: ${reason}"
+#. Default: "Error during publishing: ${reason}"
 #: ./skins/zopra_core_general/zopra_table_editconfirm.cpy:108
 msgid "zopra_editconfirm_failure"
 msgstr ""
 
-#. Default: "Entry has been released. ${additional_msg}Internal Id: ${internal_id}."
+#. Default: "Entry has been published. ${additional_msg}Internal Id: ${internal_id}."
 #: ./skins/zopra_core_general/zopra_table_editconfirm.cpy:98
 msgid "zopra_editconfirm_success"
 msgstr ""
@@ -326,7 +326,7 @@ msgid "zopra_export_button_label"
 msgstr ""
 
 #. Default: "for"
-#: ./skins/zopra_core_general/zopra_widget_edit_display.pt:174
+#: ./skins/zopra_core_general/zopra_widget_edit_display.pt:175
 msgid "zopra_for"
 msgstr "for"
 
@@ -508,32 +508,32 @@ msgstr ""
 msgid "zopra_main_no_editable_lists"
 msgstr ""
 
-#. Default: "Only working copies can be released. The entry '${entry_label}' is up-to-date. Release was cancelled."
+#. Default: "Only working copies can be published. The entry '${entry_label}' is up-to-date. Publishing was cancelled."
 #: ./skins/zopra_core_general/zopra_table_multiconfirm.cpy:19
 msgid "zopra_multiconfirm_abort_no_copy"
 msgstr ""
 
-#. Default: "Original entry '${entry_label}' could not be found. Release was cancelled."
+#. Default: "Original entry '${entry_label}' could not be found. Publishing was cancelled."
 #: ./skins/zopra_core_general/zopra_table_multiconfirm.cpy:29
 msgid "zopra_multiconfirm_abort_not_found"
 msgstr ""
 
-#. Default: "Entry '${entry_label}' has been released. ${additional_msg}Error during deletion of working copy. Internal Id: ${internal_id}."
+#. Default: "Entry '${entry_label}' has been published. ${additional_msg}Error during deletion of working copy. Internal Id: ${internal_id}."
 #: ./skins/zopra_core_general/zopra_table_multiconfirm.cpy:84
 msgid "zopra_multiconfirm_almost_success"
 msgstr ""
 
-#. Default: "Error during release of entry '${entry_label}': ${reason}"
+#. Default: "Error during publishing of entry '${entry_label}': ${reason}"
 #: ./skins/zopra_core_general/zopra_table_multiconfirm.cpy:89
 msgid "zopra_multiconfirm_failure"
 msgstr ""
 
-#. Default: "Entry '${entry_label}' has been released. ${additional_msg}Internal Id: ${internal_id}."
+#. Default: "Entry '${entry_label}' has been published. ${additional_msg}Internal Id: ${internal_id}."
 #: ./skins/zopra_core_general/zopra_table_multiconfirm.cpy:80
 msgid "zopra_multiconfirm_success"
 msgstr ""
 
-#. Default: "Multi-release"
+#. Default: "Multi-publishing"
 #: ./skins/zopra_core_general/zopra_table_multiconfirm_listing.pt:27
 msgid "zopra_multirelease_label"
 msgstr ""
@@ -560,7 +560,7 @@ msgstr ""
 msgid "zopra_release_diff"
 msgstr ""
 
-#. Default: "Release"
+#. Default: "Publish"
 #: ./skins/zopra_core_general/zopra_table_multiconfirm_form.cpt:30
 #: ./skins/zopra_core_general/zopra_table_multiconfirm_listing.pt:18
 msgid "zopra_release_heading"
@@ -577,7 +577,7 @@ msgstr ""
 msgid "zopra_release_no_copies"
 msgstr ""
 
-#. Default: "Release"
+#. Default: "Publish"
 #: ./skins/zopra_core_general/zopra_table_multiconfirm_form.cpt:54
 #: ./skins/zopra_core_general/zopra_table_multiconfirm_listing.pt:49
 msgid "zopra_release_singlelink_label"
@@ -859,7 +859,7 @@ msgid "zopra_widget_modal"
 msgstr ""
 
 #. Default: "<not set>"
-#: ./tools/TemplateBaseManager.py:555
+#: ./tools/TemplateBaseManager.py:563
 msgid "zopra_widget_not_set"
 msgstr ""
 
@@ -887,7 +887,7 @@ msgid "zopra_widget_search_bool_not"
 msgstr ""
 
 #. Default: "<any value>"
-#: ./tools/TemplateBaseManager.py:560
+#: ./tools/TemplateBaseManager.py:568
 msgid "zopra_widget_set_any"
 msgstr ""
 

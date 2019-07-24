@@ -26,41 +26,49 @@ if not origentry:
     context.plone_utils.addPortalMessage(context.translate(message), 'info')
     return state.set(status='failure', context=context)
 
-if not origentry.get('hastranslation'):
-    # use original entry if translating a working copy
-    origentry = context.zopra_forceOriginal(table, origentry)
-
-    # create translation
-    entry = {}
-    for key in origentry.keys():
-        entry[key] = origentry[key]
-
-    entry['istranslationof'] = origentry['autoid']
-    # TODO: what about other languages? hardwiring en is bad.
-    entry['language'] = 'en'
-    entry['iscopyof'] = 'NULL'
-
-    # save entry
-    entry['autoid'] = None
-    newautoid = context.tableHandler[table].addEntry(entry)
-
-    # update orginal entry
-    origentry['hastranslation'] = 1
-    # just to be safe, set lang_default in orig entry
-    origentry['language'] = context.lang_default
-    context.tableHandler[table].updateEntry(origentry, origentry['autoid'])
-
-    # overwrite in request for formcontroller traversal
-    request.form['autoid'] = newautoid
-    request.other['autoid'] = newautoid
-    message = _('zopra_translation_created',
-                default = u'Translation created. ${additional_message}Translation Id: ${translation_id}',
-                mapping = {u'translation_id': newautoid})
-    context.plone_utils.addPortalMessage(context.translate(message), 'info')
-    return state.set(status='success', context=context)
-
-else:
+if origentry.get('hastranslation'):
     message = _('zopra_translation_exists',
                 default = u'Translation exists already. The translation process has been cancelled.')
     context.plone_utils.addPortalMessage(context.translate(message), 'info')
     return state.set(status='failure', context=context)
+
+target_language = context.selectAdditionalLanguage(request)
+if not target_language:
+    message = _('zopra_translation_language_unknown',
+                default = u'Requested language unknown. The translation process has been cancelled.')
+    context.plone_utils.addPortalMessage(context.translate(message), 'info')
+    return state.set(status='failure', context=context)
+
+# use original entry if translating a working copy
+origentry = context.zopra_forceOriginal(table, origentry)
+
+# create translation
+entry = {}
+for key in origentry.keys():
+    entry[key] = origentry[key]
+
+entry['istranslationof'] = origentry['autoid']
+
+entry['language'] = target_language
+entry['iscopyof'] = 'NULL'
+
+# save entry
+entry['autoid'] = None
+
+# add to database
+newautoid = context.tableHandler[table].addEntry(entry)
+
+# update orginal entry
+origentry['hastranslation'] = 1
+# just to be safe, set lang_default in orig entry
+origentry['language'] = context.lang_default
+context.tableHandler[table].updateEntry(origentry, origentry['autoid'])
+
+# overwrite in request for formcontroller traversal
+request.form['autoid'] = newautoid
+request.other['autoid'] = newautoid
+message = _('zopra_translation_created',
+            default = u'Translation created. ${additional_message}Translation Id: ${translation_id}',
+            mapping = {u'translation_id': newautoid})
+context.plone_utils.addPortalMessage(context.translate(message), 'info')
+return state.set(status='success', context=context)

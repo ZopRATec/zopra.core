@@ -340,7 +340,7 @@ class Table(SimpleItem, PropertyManager):
             #                                          2) otherwise use the original value, if it is not empty
             #                                          3) None values are expressed as empty strings if field is not of type singlelist
             #                                          4) value of 0 is expressed as 0
-            #                                          5) None-valued singlelist fields are expressed as None 
+            #                                          5) None-valued singlelist fields are expressed as None
             #                                          6) everything else (other false values) is expressed as None
             # 3 to 6 could not be achieved by boolean expressions, but by inner if
             check = lambda (x, y): (x, hasattr(y, 'strftime') and y.strftime('%d.%m.%Y') or y or ('' if (y is None and self.getField(x)[ZC.COL_TYPE] != 'singlelist') else (0 if y == 0 else None)))
@@ -1728,7 +1728,7 @@ class Table(SimpleItem, PropertyManager):
         if TCN_CREATOR not in resdict:
             resdict[TCN_CREATOR] = ZC.ZCOL_SLIST
 
-        if TCN_CREATOR not in resdict:
+        if TCN_DATE not in resdict:
             resdict[TCN_DATE] = ZC.ZCOL_DATE
 
         # edit tracking col TCN_AUTOID is invis (most of the time)

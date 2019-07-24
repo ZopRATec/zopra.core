@@ -35,7 +35,17 @@
                 <div class="formHelp" i18n:translate="zopra_import_file_help">
                     The import data file (e.g. excel) as separated text (CSV) separated by semicolon/comma or tabstopp.
                 </div>
-                <input type="file" name="file" />
+                <label>
+                    <input type="file"
+                           size="30"
+                           name="file"
+                           id="file" />
+                    <span class="button">
+                        <i class="icon-upload"></i>
+                        <tal:translate i18n:translate="Select&hellip;">Select&hellip;</tal:translate>
+                    </span>
+                    <span class="filename" i18n:translate="no_file">No file</span>
+                </label>
             </div>
 
             <div class="field">

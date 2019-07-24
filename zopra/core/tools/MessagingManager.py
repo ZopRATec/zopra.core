@@ -359,28 +359,28 @@ class MessagingManager(GenericManager):
         label = ''
         
         if table == TN_GLOBAL:
-            label = ddict.get(TCN_SUBJECT, '&lt;No Subject&gt;')
+            label = ddict.get(TCN_SUBJECT, u'&lt;No Subject&gt;')
         elif table == TN_SENT:
-            label = ddict.get(TCN_SUBJECT, '&lt;No Subject&gt;')
+            label = ddict.get(TCN_SUBJECT, u'&lt;No Subject&gt;')
         elif table == TN_LOCAL:
-            label = ddict.get(TCN_SUBJECT, '&lt;No Subject&gt;')
+            label = ddict.get(TCN_SUBJECT, u'&lt;No Subject&gt;')
         elif table == TN_MUSER:
             lobj = self.listHandler.getList(TN_MUSER, TCN_SID)
             label = lobj.getValueByAutoid(ddict.get(TCN_SID))
         elif table == TN_FOLDER:
             label = ddict.get(TCN_FOLDERNAME, '')
         elif table == TN_THREAD:
-            label = ddict.get(TCN_SUBJECT, '&lt;No Subject&gt;')
+            label = ddict.get(TCN_SUBJECT, u'&lt;No Subject&gt;')
         elif table == TN_FILTER:
-            label = ddict.get(TCN_NAME, '&lt;No Name&gt;')
+            label = ddict.get(TCN_NAME, u'&lt;No Name&gt;')
         elif table == TN_RULEBLOCK:
-            label = 'Rule-block %s' % str(ddict[TCN_AUTOID])
+            label = u'Rule-block %s' % str(ddict[TCN_AUTOID])
         elif table == TN_RULE:
             if ddict.get(TCN_NOT):
-                label += 'not '
-            label += ddict[TCN_FIELD] + ' '
+                label += u'not '
+            label += ddict[TCN_FIELD] + u' '
             
-            label += ddict[TCN_PREDICATE] + ' '
+            label += ddict[TCN_PREDICATE] + u' '
 
             if ddict[TCN_FIELD] == TCN_LSENDER:
                 label += self.getLabelString(TN_MUSER, ddict[TCN_VALUE])

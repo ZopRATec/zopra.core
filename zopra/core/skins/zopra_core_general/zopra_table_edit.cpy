@@ -71,14 +71,14 @@ if not context.doesWorkingCopies(table):
     if en_msg:
         en_msg = context.translate(en_msg)
     message = _('zopra_edit_saved',
-                default = u'Entry has been updated. ${additional_message}${translation_message}Internal Id: ${internal_id}.',
+                default = u'Entry has been updated. ${additional_message} ${translation_message} Internal Id: ${internal_id}.',
                 mapping = {u'internal_id': autoid, u'additional_message': msg, u'translation_message': en_msg})
 
 elif entry.get('iscopyof'):
     # this already is a working copy, just save it
     done = tobj.updateEntry(entry, autoid, orig_entry = oldentry)
     message = _('zopra_edit_wc_saved',
-                default = u'Working copy has been updated. ${additional_message}Original internal Id: ${internal_id}.',
+                default = u'Working copy has been updated. ${additional_message} Original internal Id: ${internal_id}.',
                 mapping = {u'internal_id': entry.get('iscopyof'), u'additional_message': msg})
 
 else:
@@ -94,7 +94,7 @@ else:
     # update it, pass oldentry for diff-log
     done = tobj.updateEntry(entry, int(autoid), orig_entry = oldentry)
     message = _('zopra_edit_wc_created',
-                default = u'Working copy created. ${additional_message}Original internal Id: ${internal_id}.',
+                default = u'Working copy created. ${additional_message} Original internal Id: ${internal_id}.',
                 mapping = {u'internal_id': entry.get('iscopyof'), u'additional_message': msg})
 if done == True:
     context.plone_utils.addPortalMessage(context.translate(message), 'info')

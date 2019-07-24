@@ -1,4 +1,5 @@
 ###Plone###
+*.py.bak
 *.pyc
 *.pyo
 *.tmp*

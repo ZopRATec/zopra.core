@@ -229,7 +229,6 @@
                         <tal:block tal:repeat="attr_tupel all_keys">
                             <option i18n:translate=""
                                     tal:define="attr python: attr_tupel[1]"
-                                    tal:condition="python: 1 or not coltypes[attr].get('INVIS')"
                                     tal:attributes="value attr;
                                                     selected python: attr == order[0]"
                                     tal:content="python: attr_tupel[0]">
