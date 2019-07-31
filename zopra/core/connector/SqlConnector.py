@@ -39,6 +39,11 @@ connectors = { 'Psycopg':  'PostgresConnector',
                'PoPy':     'PostgresConnector',
                'MySQL':    'MySqlConnector',  }
 
+# fallback on meta_type
+connectors_by_meta_type = {
+        'Z MySQL Database Connection': 'MySqlConnector',
+    }
+
 # why is string converted to COL_TEXT (text)? shouldn't this be VARCHAR(255)? does this harm database speed?
 
 
@@ -59,8 +64,16 @@ def getConnector(context, connector_id, connection_id):
     if not connection:
         connection = getattr(context.getParentNode(), connection_id)
 
+    # use database_type to know the correct connector
+    try:
+        dbtype = connection.database_type
+        name   = connectors.get(dbtype, 'SqlConnector')
+    except:
+        # fallback on meta_type
+        mtype = connection.meta_type
+        name   = connectors_by_meta_type.get(mtype, 'SqlConnector')
+
     # get the connector name, default is the base class
-    name           = connectors.get(connection.database_type, 'SqlConnector')
     conmod         = import_module('zopra.core.connector.%s' % name)
     connectorClass = getattr(conmod, name)
 
@@ -95,15 +108,13 @@ class SqlConnector(SimpleItem):
 
 
     def __init__(self, id, connection_id):
-        """ Initialize the SQL Part
+        """ Initialize the Connector
 
         @param connection_id   The argument \a connection_id contains the id of
                                the connection object that should be used.
-        @param shared_connection_id The argument \a shared_connection_id
-                               contains as well a id to a connection object but
-                               for one that can handle queries system wide.
         """
-        SimpleItem.__init__(self, id, id)
+        self.id = id
+        self.title = id
         self.connection_id        = connection_id
         self.conn                 = None
 
@@ -111,16 +122,22 @@ class SqlConnector(SimpleItem):
     def _getConnection(self):
         """ This method returns the correct connection object.
 
-        @result SQLConnector
+        @result SQLConnection
         """
-        return getattr(self, self.connection_id)()
+        # get DB adapter
+        zcon = getattr(self, self.connection_id)
+        # get connectionpool from Adapter
+        connection = zcon()
+        # connection is a pool representation of the database connection (per Thread) (for mysql)
+
+        return connection
 
 
     def query(self, query_text):
         """ This method executes a SQL query.
 
-        Note that this function sets the environment to german, european for
-        the date handling.
+        The implementation of this method returns the result of the query. 
+        It is abstract in SqlConnector baseclass (not implemented).
 
         @param query_text  - The argument \a query_text contains the complete
                              SQL query string.

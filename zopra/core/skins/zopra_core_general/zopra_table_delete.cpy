@@ -5,7 +5,7 @@
 ##bind script=script
 ##bind state=state
 ##bind subpath=traverse_subpath
-##parameters=table, del_autoid, offset = 0
+##parameters=table, del_autoid, offset = 0, zopra_popup=None
 ##title=
 ##
 from zopra.core import zopraMessageFactory as _
@@ -95,14 +95,18 @@ if done and request.get('origtable') and request.get('origid') and request.get('
     # set message
     if message:
         context.plone_utils.addPortalMessage(context.translate(message), 'info')
-    # jump to message window stating the creation
-    request.RESPONSE.redirect('zopra_table_deleted_dependency?table=%s&autoid=%s' % (table, autoid))
+    # jump to message window stating the deletion
+    popup = ''
+    if zopra_popup:
+        popup = '&zopra_popup=1'
+    request.RESPONSE.redirect('zopra_table_deleted_dependency?table=%s&autoid=%s%s' % (table, autoid, popup))
     return
 
 if done:
     message = special_message or _('zopra_delete_success', default = 'Entry has been deleted.')
     context.plone_utils.addPortalMessage(context.translate(message), 'info')
-    if targetid:
+    # target has been identified and we are not in popup mode
+    if targetid and not zopra_popup:
         # jump to edit form of original
         request.RESPONSE.redirect('zopra_table_edit_form?table=%s&autoid=%s' % (table, targetid))
     return state.set(status = 'success', context = context)

@@ -58,23 +58,15 @@ class MySqlConnector(SqlConnector):
                               you have to set this argument to True.
                               Default is False.
         """
-
         if(isinstance(query_text, unicode)):
             query_text = query_text.encode("utf8")
 
         conn = self._getConnection()
-        # TODO: correct the data style handling
-        #       why here setDatestyle and not in _getConnection() ?
-        #       because in _getConnection it gets lost before the first query,
-        #       don't know why
-        # self.conn.query("set datestyle = 'german, european';")
-
         # added the param res_only to MySQLDA, to suppress the fetching of info into tmp, but that
         # somehow disturbs the transaction handling, so removed it again for now.
         # added parameter "0" for max_rows to avoid double "LIMIT"-spec
         return conn.query( query_text, 0 )[1]
-        # self.conn.connection().close()
-        # raise ValueError(dir(self.conn.connection._v_database_connection))
+
 
     def escape_sql_name(self, name):
         """ Escape SQL names (cols and tables), overwritten to do escaping"""

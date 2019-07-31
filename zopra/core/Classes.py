@@ -4,7 +4,7 @@
 #
 ###########################################################
 ## \file ZMOMClasses.py
-## \brief ZMOMClasses handles the xml-definition import 
+## \brief ZMOMClasses handles the xml-definition import
 ## (generated automatically).
 __revision__ = '0.1'
 
@@ -34,15 +34,15 @@ class Columnlist:
         self.collist = collist
 
     def storeXML(self, ioHandle, level = 0):
-        
+
         # keeps track of tab level depth
         tab  = ""
         tab += string.join( ([" "] * level * 4), "" )
-        
+
         # start generating xml
         tmp_string = []
-        if level == 0: 
-            ioHandle.write('<?xml version="1.0"?>\n') 
+        if level == 0:
+            ioHandle.write('<?xml version="1.0"?>\n')
             ioHandle.write("<!-- Creation date: %s -->\n" \
                              % strftime('%d.%m.%Y') )
         tmp_string.append(tab + "<Columnlist")
@@ -50,7 +50,7 @@ class Columnlist:
             tmp_string.append(' list="%s"' % self.collist)
         tmp_string.append("/>")
         ioHandle.write( string.join(tmp_string, "") + "\n" )
-        
+
 
 class Column:
     __classname__ = 'Column'
@@ -152,7 +152,7 @@ class Column:
         assert isinstance(notes, UnicodeType) or \
                isinstance(notes, StringType)
         self.notes = notes
-        
+
     def getNoteslabel(self):
         return self.noteslabel
 
@@ -169,7 +169,7 @@ class Column:
         assert isinstance(noconnect, UnicodeType) or \
                isinstance(noconnect, StringType)
         self.noconnect = noconnect
-        
+
     def getLabelsearch(self):
         return self.labelsearch
 
@@ -195,15 +195,15 @@ class Column:
         self.map = map
 
     def storeXML(self, ioHandle, level = 0):
-        
+
         # keeps track of tab level depth
         tab  = ""
         tab += string.join( ([" "] * level * 4), "" )
-        
+
         # start generating xml
         tmp_string = []
-        if level == 0: 
-            ioHandle.write('<?xml version="1.0"?>\n') 
+        if level == 0:
+            ioHandle.write('<?xml version="1.0"?>\n')
             ioHandle.write("<!-- Creation date: %s -->\n" \
                              % strftime('%d.%m.%Y') )
         tmp_string.append(tab + "<Column")
@@ -236,12 +236,12 @@ class Column:
         if self.labelsearch:
             tmp_string.append(' labelsearch="%s"' % self.labelsearch)
         if self.maxshown:
-            tmp_string.append(' maxshown="%s"' % self.maxshown)    
+            tmp_string.append(' maxshown="%s"' % self.maxshown)
         if self.map:
             tmp_string.append(' map="%s"' % self.map)
         tmp_string.append("/>")
         ioHandle.write( string.join(tmp_string, "") + "\n" )
-        
+
 class List:
     __classname__ = 'List'
 
@@ -303,15 +303,15 @@ class List:
         self.translations = translations
 
     def storeXML(self, ioHandle, level = 0):
-        
+
         # keeps track of tab level depth
         tab  = ""
         tab += string.join( ([" "] * level * 4), "" )
-        
+
         # start generating xml
         tmp_string = []
-        if level == 0: 
-            ioHandle.write('<?xml version="1.0"?>\n') 
+        if level == 0:
+            ioHandle.write('<?xml version="1.0"?>\n')
             ioHandle.write("<!-- Creation date: %s -->\n" \
                              % strftime('%d.%m.%Y') )
         tmp_string.append(tab + "<List")
@@ -361,15 +361,15 @@ class Constraints:
         self.foreignkey[key] = obj
 
     def storeXML(self, ioHandle, level = 0):
-        
+
         # keeps track of tab level depth
         tab  = ""
         tab += string.join( ([" "] * level * 4), "" )
-        
+
         # start generating xml
         tmp_string = []
-        if level == 0: 
-            ioHandle.write('<?xml version="1.0"?>\n') 
+        if level == 0:
+            ioHandle.write('<?xml version="1.0"?>\n')
             ioHandle.write("<!-- Creation date: %s -->\n" \
                               % strftime('%d.%m.%Y') )
         tmp_string.append(tab + "<Constraints")
@@ -475,15 +475,15 @@ class Table:
         self.uid = uid
 
     def storeXML(self, ioHandle, level = 0):
-        
+
         # keeps track of tab level depth
         tab  = ""
         tab += string.join( ([" "] * level * 4), "" )
-        
+
         # start generating xml
         tmp_string = []
-        if level == 0: 
-            ioHandle.write('<?xml version="1.0"?>\n') 
+        if level == 0:
+            ioHandle.write('<?xml version="1.0"?>\n')
             ioHandle.write("<!-- Creation date: %s -->\n" \
                               % strftime('%d.%m.%Y') )
         tmp_string.append(tab + "<Table")
@@ -521,7 +521,7 @@ class Table:
                 entry.storeXML(ioHandle, level + 1)
 
         ioHandle.write(tab + "</Table>\n")
-        
+
 
 class Tabledefinition:
     __classname__ = 'Tabledefinition'
@@ -545,15 +545,15 @@ class Tabledefinition:
         self.list[key] = obj
 
     def storeXML(self, ioHandle, level = 0):
-        
+
         # keeps track of tab level depth
         tab  = ""
         tab += string.join( ([" "] * level * 4), "" )
-        
+
         # start generating xml
         tmp_string = []
-        if level == 0: 
-            ioHandle.write('<?xml version="1.0"?>\n') 
+        if level == 0:
+            ioHandle.write('<?xml version="1.0"?>\n')
             ioHandle.write("<!-- Creation date: %s -->\n" \
                               % strftime('%d.%m.%Y') )
         tmp_string.append(tab + "<Tabledefinition")
@@ -574,7 +574,7 @@ class Tabledefinition:
                 entry.storeXML(ioHandle, level + 1)
 
         ioHandle.write(tab + "</Tabledefinition>\n")
-        
+
 
 class Icondefinitions:
     __classname__ = 'Icondefinitions'
@@ -590,15 +590,15 @@ class Icondefinitions:
         self.image[key] = obj
 
     def storeXML(self, ioHandle, level = 0):
-        
+
         # keeps track of tab level depth
         tab  = ""
         tab += string.join( ([" "] * level * 4), "" )
-        
+
         # start generating xml
         tmp_string = []
-        if level == 0: 
-            ioHandle.write('<?xml version="1.0"?>\n') 
+        if level == 0:
+            ioHandle.write('<?xml version="1.0"?>\n')
             ioHandle.write("<!-- Creation date: %s -->\n" \
                               % strftime('%d.%m.%Y') )
         tmp_string.append(tab + "<Icondefinitions")
@@ -612,28 +612,28 @@ class Icondefinitions:
                 entry.storeXML(ioHandle, level + 1)
 
         ioHandle.write(tab + "</Icondefinitions>\n")
-        
+
 
 class XMLHandler(ContentHandler):
 
     def __init__(self):
-        
+
         ContentHandler.__init__(self)
         self.tmpObjects = {}
         self.lvlElement = {}
         self.prevList   = []
         self.rootObject = None
         self.idCounter = 0
-    
+
     def getObjectTree(self):
         return self.rootObject
-    
+
     def incElementLevel(self, element):
         if not self.lvlElement.get(element):
             self.lvlElement[element]  = 0
         else:
             self.lvlElement[element] += 1
-        
+
     def decElementLevel(self, element):
         if not self.lvlElement.get(element):
             pass
@@ -641,9 +641,9 @@ class XMLHandler(ContentHandler):
             #                   for element %s.' % element)
         else:
             self.lvlElement[element] -= 1
-    
+
     def startElement(self, name, attrs):
-        if not name in ['Columnlist', 
+        if not name in ['Columnlist',
                         'Column',
                         'Table',
                         'List',
@@ -654,19 +654,19 @@ class XMLHandler(ContentHandler):
             return
 
         self.incElementLevel(name)
-        
-        tmpObject = None 
+
+        tmpObject = None
 
 
 
-        if name == 'Columnlist': 
+        if name == 'Columnlist':
             tmpObject = Columnlist(
                           )
-            
+
             if attrs.get('list'):
                 tmpObject.setList( attrs['list'] )
-            
-        if name == 'Column': 
+
+        if name == 'Column':
             tmpObject = Column(
                             attrs.get('name'),
                             attrs.get('type'),
@@ -698,20 +698,20 @@ class XMLHandler(ContentHandler):
 
             if attrs.get('notes'):
                 tmpObject.setNotes( attrs['notes'] )
-                
+
             if attrs.get('noteslabel'):
                 tmpObject.setNoteslabel( attrs['noteslabel'] )
-                
+
             if attrs.get('labelsearch'):
                 tmpObject.setLabelsearch( attrs['labelsearch'] )
-                
+
             if attrs.get('maxshown'):
                 tmpObject.setMaxshown( attrs['maxshown'] )
 
             if attrs.get('map'):
                 tmpObject.setMap( attrs['map'] )
 
-        if name == 'Table': 
+        if name == 'Table':
             tmpObject = Table(
                             attrs.get('name'),
                           )
@@ -728,7 +728,7 @@ class XMLHandler(ContentHandler):
             if attrs.get('uid'):
                 tmpObject.setUid( attrs['uid'] )
 
-        if name == 'List': 
+        if name == 'List':
             tmpObject = List(
                             attrs.get('name')
                            )
@@ -748,7 +748,7 @@ class XMLHandler(ContentHandler):
             if attrs.get('translations'):
                 tmpObject.setTranslations( attrs['translations'] )
 
-        if name == 'Image': 
+        if name == 'Image':
             tmpObject = ImageProperties(
                             attrs.get('src'),
                             attrs.get('title')
@@ -787,23 +787,23 @@ class XMLHandler(ContentHandler):
                 else:
                     tmpObject.setHeight( h )
 
-        if name == 'Tabledefinition': 
+        if name == 'Tabledefinition':
             tmpObject = Tabledefinition()
-            
-        if name == 'Constraints': 
+
+        if name == 'Constraints':
             tmpObject = Constraints()
-            
-        if name == 'Icondefinitions': 
+
+        if name == 'Icondefinitions':
             tmpObject = Icondefinitions()
 
 
         if tmpObject:
             self.prevList.append(tmpObject)
-            
-    
+
+
     def endElement(self, name):
         ## TODO: same always, implement simplier (python generator)
-        if not name in ['Columnlist', 
+        if not name in ['Columnlist',
                         'Column',
                         'Table',
                         'List',
@@ -812,36 +812,36 @@ class XMLHandler(ContentHandler):
                         'Constraints',
                         'Icondefinitions']:
             return
-        
+
         lenList = len(self.prevList)
         if lenList > 1:
             entry = self.prevList[lenList-1]
             self.idCounter += 1
             key = self.idCounter
             execString  = 'self.prevList[lenList-2].add'
-            execString += '%s(key, self.prevList[lenList-1])' % entry.__classname__ 
+            execString += '%s(key, self.prevList[lenList-1])' % entry.__classname__
             exec(execString)
         elif lenList == 1:
             self.rootObject = self.prevList[0]
         self.prevList = self.prevList[0:lenList-1]
-        
-        self.decElementLevel(name)             
-            
-    
+
+        self.decElementLevel(name)
+
+
 def main(args, filename = 'xmlLog'):
     """\brief main function."""
     inputFile  = open(filename + '.xml', 'r')
-    
+
     # xml handling
     xsHandler  = XMLHandler()
     saxParser = make_parser()
     saxParser.setContentHandler(xsHandler)
-    
+
     # parse file
-    saxParser.parse(inputFile)    
-    
+    saxParser.parse(inputFile)
+
     objTree = xsHandler.getObjectTree()
-    
+
     # close files
     inputFile.close()
 

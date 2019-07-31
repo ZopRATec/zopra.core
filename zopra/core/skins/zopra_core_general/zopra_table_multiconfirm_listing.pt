@@ -4,7 +4,7 @@
 
   <body>
     <tal:comment tal:replace="nothing">
-        Show a table of working copies (with edit / release options).
+        Show a table of working copies (with edit / publish options).
         Macro works on all tables, that have working copies enabled and currently have active working copy entries.
         Optional attribute: rev_roles (List of roles that are allowed to see the listing)
     </tal:comment>
@@ -15,7 +15,7 @@
                tal:condition="python: user.has_role(reviewers, here)">
         <div class="row">
             <div class="contentSlot">
-                <h2 i18n:translate="zopra_release_heading">Release</h2>
+                <h2 i18n:translate="zopra_release_heading">Publish</h2>
                 <div tal:repeat="table python:manager.tableHandler.keys()">
                     <tal:block tal:define="tobj python: manager.tableHandler[table]"
                                tal:condition="python: manager.doesWorkingCopies(table)">
@@ -24,14 +24,14 @@
                             <br />
                             <h3 tal:content="python: tobj.getLabel()"></h3>
                             <a tal:attributes="href python: manager.absolute_url() + '/zopra_table_multiconfirm_form?table=' + table">
-                                <span i18n:translate="zopra_multirelease_label">Multi-release</span>
+                                <span i18n:translate="zopra_multirelease_label">Multi-publishing</span>
                             </a>
                             <table id="result_tab" class="zopra-table">
                                 <thead>
                                     <tr>
                                         <th i18n:translate="zopra_release_name">Name</th>
                                         <th i18n:translate="zopra_release_diff">Diff</th>
-                                        <th i18n:translate="zopra_release_heading">Release</th>
+                                        <th i18n:translate="zopra_release_heading">Publish</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -49,7 +49,7 @@
                                             <a class="icon-zopra-release"
                                                tal:attributes="href python: manager.absolute_url() + '/zopra_table_edit_form?autoid=%s&table=%s' % (entry['autoid'], table)"
                                                i18n:translate="zopra_release_singlelink_label">
-                                                Release
+                                                Publish
                                             </a>
                                         </td>
                                     </tr>

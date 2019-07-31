@@ -8,6 +8,16 @@
 
 </tal:comment>
 
+<metal:javascriptslot fill-slot="javascript_head_slot">
+    <tal:block tal:condition="request/zopra_popup|nothing">
+        <script type="text/javascript" tal:attributes="src string:${portal_url}/zopra_popup.js"></script>
+    </tal:block>
+</metal:javascriptslot>
+
+<metal:styleslot fill-slot="style_slot" tal:condition="request/zopra_popup|nothing">
+    <link rel="stylesheet" type="text/css" media="all" tal:attributes="href python:portal_url + '/zopra_popup.css'">
+</metal:styleslot>
+
 <metal:topslot fill-slot="top_slot">
     <tal:block tal:define="global isAnon context/@@plone_portal_state/anonymous;"></tal:block>
 </metal:topslot>
@@ -41,6 +51,7 @@
               enctype="multipart/form-data"
               class="enableFormTabbing zopra-form"
               tal:attributes="action string:${here/absolute_url}/${template/getId}" >
+            <input type="hidden" tal:condition="request/zopra_popup|nothing" name="zopra_popup" value="1" />
             <tal:block tal:define="show_additional python: not here.doesTranslations(table) or entry.get('language') == 'de'"
                      tal:repeat="fieldset fieldsets">
                 <fieldset class="addFieldset"

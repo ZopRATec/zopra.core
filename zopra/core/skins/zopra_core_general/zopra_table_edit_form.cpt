@@ -9,19 +9,16 @@
 </tal:comment>
 
 <metal:javascriptslot fill-slot="javascript_head_slot">
-    <script language="javascript">
-        <!--
-        $(document).ready(function () {
-            //workflow buttons get disabled on form field change
-            $(".field input, .field select, .field textarea").change(function () {
-                $("input[name='form.button.ChangeWorkflowState1'], input[name='form.button.ChangeWorkflowState2'], input[name='form.button.ChangeWorkflowState3']")
-                        .attr("disabled", "disabled");
-            });
-        });
-        -->
-    </script>
+    <script type="text/javascript" tal:attributes="src string:${portal_url}/zopra_workflow.js"></script>
     <script type="text/javascript" tal:attributes="src string:${portal_url}/autoupdate-widget/jquery.autoupdate-widget.js"></script>
+    <tal:block tal:condition="request/zopra_popup|nothing">
+        <script type="text/javascript" tal:attributes="src string:${portal_url}/zopra_popup.js"></script>
+    </tal:block>
 </metal:javascriptslot>
+
+<metal:styleslot fill-slot="style_slot" tal:condition="request/zopra_popup|nothing">
+    <link rel="stylesheet" type="text/css" media="all" tal:attributes="href python:portal_url + '/zopra_popup.css'">
+</metal:styleslot>
 
 <metal:topslot fill-slot="top_slot">
     <tal:block tal:define="global isAnon context/@@plone_portal_state/anonymous;"></tal:block>
@@ -69,6 +66,7 @@
               tal:attributes="action string:${here/absolute_url}/${template/getId};
                               class python: notabs and 'disableFormTabbing zopra-form' or 'enableFormTabbing zopra-form'">
             <input type="hidden" tal:condition="notabs" name="notabs" value="1" />
+            <input type="hidden" tal:condition="request/zopra_popup|nothing" name="zopra_popup" value="1" />
             <tal:block tal:define="show_additional python: not here.doesTranslations(table) or entry.get('language') == 'de'"
                      tal:repeat="fieldset fieldsets">
                 <fieldset tal:define="title python: fieldset.get('label') or fieldset.get('id');
@@ -89,7 +87,7 @@
                             <div class="row">
                                 <div class="contentSlot">
                                     <div class="field"
-                                         tal:define="error python: errors.get(attr_name); attr_value python:request.get(attr_name, '') or entry.get(attr_name, ''); field python:coltypes[attr_name]; attr_type python:field['TYPE']; attr_sort python:attr_name in sortables; attr_notes python: attr_type == 'multilist' and dict([[a,entry[a]] for a in entry.keys() if a.startswith(attr_name + 'notes') and entry[a]]) or {}; fielddiff python: attr_name in diff or attr_notes and here.dictIntersect(attr_notes, diff)"
+                                         tal:define="error python: errors.get(attr_name); field python:coltypes[attr_name]; attr_value python: here.prepareValuesForEdit(attr_name, field, entry, request, errors); attr_type python:field['TYPE']; attr_sort python:attr_name in sortables; attr_notes python: attr_type == 'multilist' and dict([[a,entry[a]] for a in entry.keys() if a.startswith(attr_name + 'notes') and entry[a]]) or {}; fielddiff python: attr_name in diff or attr_notes and here.dictIntersect(attr_notes, diff)"
                                          tal:attributes="class python: 'field' + (error and ' error' or '') + (fielddiff and ' diff' or '')">
                                         <metal:block metal:use-macro="here/zopra_widget_edit_display/macros/widget_selector" />
                                     </div>
@@ -127,6 +125,8 @@
             <input type="hidden" name="table" tal:attributes="value table" />
             <input type="hidden" name="autoid" tal:attributes="value autoid" />
             <input type="hidden" name="origid" tal:condition="request/origid|nothing" tal:attributes="value request/origid" />
+            <input type="hidden" name="origtable" tal:condition="request/origtable|nothing" tal:attributes="value request/origtable" />
+            <input type="hidden" name="origattribute" tal:condition="request/origattribute|nothing" tal:attributes="value request/origattribute" />
         </form>
     </tal:block>
 </metal:main>
