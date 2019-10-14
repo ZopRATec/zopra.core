@@ -71,7 +71,7 @@
                 </tal:comment>
                 <div class="formatted auto-link">
                     <h2 i18n:translate="zopra_search_criteria">Chosen criteria:</h2>
-                    <dl class="quick-info-list">
+                    <dl class="quick-info-list short">
                         <tal:repeat tal:define="con_list python: cons.keys();
                                                 dummy python: con_list.sort();"
                                     tal:repeat="con con_list">
