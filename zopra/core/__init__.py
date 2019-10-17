@@ -252,7 +252,6 @@ def registerManager(context, managerClass):
                            permissions   = zopra_permissions,
                            legacy        = (getProductManager,),
                            )
-    print manager, 'registered'
 
 
 def initialize(context):
