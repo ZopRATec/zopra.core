@@ -30,6 +30,7 @@ setup( name                 = 'zopra.core',
            'PyHtmlGUI',# ZopRA default display generation
            'PyICU',# for linguistically better alphabetical sorting
        ],
+       extras_require={'test': ['plone.app.robotframework', 'Products.ZMySQLDA']},# Robot Tests with MySQL Adapter
        entry_points         = """
        # -*- Entry points: -*-
 

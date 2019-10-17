@@ -14,6 +14,7 @@ import inspect
 from importlib              import import_module
 import os
 import types
+import pkg_resources
 
 #
 # Zope Imports
@@ -36,6 +37,24 @@ from PyHtmlGUI              import E_PARAM_TYPE
 
 from zopra.core.constants   import ZC
 from zopra.core.interfaces  import IZopRAProduct, IZopRAManager
+
+# check for plone (Robot tests only run with plone, some functionality is removed when installing ZopRA as Plone Plugin)
+# use pkg_resources.parse_version(vstring) to compare Versions
+try:
+    PLONE_VERSION = pkg_resources.parse_version(pkg_resources.get_distribution('plone').version)
+    HAVE_PLONE = True
+except pkg_resources.DistributionNotFound:
+    PLONE_VERSION = pkg_resources.parse_version('0')
+    HAVE_PLONE = False
+
+# check for WebCMS (for WebCMS dependent subpackages using NavigationExtender, Byline, etc)
+# use pkg_resources.parse_version(vstring) to compare Versions
+try:
+    WEBCMS_VERSION = pkg_resources.parse_version(pkg_resources.get_distribution('tud.profiles.webcms').version)
+    HAVE_WEBCMS = True
+except pkg_resources.DistributionNotFound:
+    WEBCMS_VERSION = pkg_resources.parse_version('0')
+    HAVE_WEBCMS = False
 
 # allow redirects via raise
 allow_module('zExceptions.Redirect')
@@ -67,6 +86,7 @@ ZM_S_SGM    = 'SequencingManager'
 ZM_S_SNM    = 'SnpManager'
 ZM_CTM      = 'ContentManager'
 ZM_TEST     = 'TestManager'
+ZM_TEST2    = 'mgrTest'
 ZM_DEBUG    = 'DebugInfoManager'
 
 
@@ -84,6 +104,9 @@ zopra_permissions = ( (modifyPermission,  ('ZopRAAdmin', 'ZopRAAuthor', 'ZopRARe
 # via DTMLFile (automatic path handling / formatting)
 GENERIC_ADD_FORM         = DTMLFile( 'dtml/GenericAdd',        globals() )
 GENERIC_PRODUCT_ADD_FORM = DTMLFile( 'dtml/GenericProductAdd', globals() )
+
+# Testing Constants
+DBDA_ID = 'zmysqlconnection'
 
 
 def manage_addGeneric( dispatcher,
@@ -248,6 +271,7 @@ def initialize(context):
     from zopra.core.tools.SecurityManager       import SecurityManager
     from zopra.core.tools.TemplateBaseManager   import TemplateBaseManager
     from zopra.core.tools.TestManager           import TestManager
+    from zopra.core.tools.mgrTest               import mgrTest
 
     registerManager(context, ZopRAProduct)
     registerManager(context, ContactManager)
@@ -260,6 +284,7 @@ def initialize(context):
     registerManager(context, SecurityManager)
     registerManager(context, TemplateBaseManager)
     registerManager(context, TestManager)
+    registerManager(context, mgrTest)
 
 
 def getProductManager(context):
