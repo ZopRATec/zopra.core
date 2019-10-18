@@ -19,6 +19,7 @@ def setupTestSzenario(context):
     portal = context.getSite()
 
     tenv = ZopRATestEnvironmentMaker(logger, portal)
+    logger.info('Setting up ZopRA Test Environment')
     tenv.setup()
     
 

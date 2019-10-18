@@ -14,16 +14,8 @@ Library  Remote  ${PLONE_URL}/RobotRemote
 *** Variables ***
 
 ${DEFAULT_LANG}  en
-${SIZZLE2_REGISTERED}  ${FALSE}
 
 *** Keywords ***
-
-Register Sizzle2 Locator Strategy
-    Run Keyword If  ${SIZZLE2_REGISTERED} != ${TRUE}  Add Location Strategy  sizzle2  Sizzle2 Locator Strategy  True
-    Set Suite Variable  ${SIZZLE2_REGISTERED}  ${TRUE}
-
-
-
 
 #------------------------------------------------------------------------------
 # ZopRA Navigation
