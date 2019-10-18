@@ -17,6 +17,26 @@ ${DEFAULT_LANG}  en
 
 *** Keywords ***
 
+#
+# Setup / Teardown
+#
+
+# Suite setup to get ZOPRA_BASE global for every test
+Setup Suite
+    Open Test Browser
+    Set Window Size  1024  768
+    Enable Autologin As  ZopRAAdmin
+    Reload Page
+    ${ZOPRA_PATH} =  Get ZopRA Base Path
+    ${ZOPRA_BASE} =  ${PLONE_URL}${}${ZOPRA_PATH}
+    Set Suite Variable  ${ZOPRA_BASE}
+
+Teardown Suite
+    Close All Browsers
+
+Teardown Test
+    Capture Page Screenshot
+
 #------------------------------------------------------------------------------
 # ZopRA Navigation
 #------------------------------------------------------------------------------

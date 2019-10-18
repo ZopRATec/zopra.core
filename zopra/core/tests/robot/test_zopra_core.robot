@@ -8,22 +8,11 @@ Suite Teardown  Teardown Suite
 Test Teardown  Teardown Test
 
 *** Variables ***
-${ZOPRA_BASE} =  ${PLONE_URL}/zopra/app
+
 
 
 *** Keywords ***
 
-Setup Suite
-    Open Test Browser
-    Set Window Size  1024  768
-    Enable Autologin As  ZopRAAdmin
-    Reload Page
-
-Teardown Suite
-    Close All Browsers
-
-Teardown Test
-    Capture Page Screenshot
 
 *** Test Cases ***
 
