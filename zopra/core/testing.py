@@ -22,6 +22,8 @@ from Products.CMFCore.utils import getToolByName
 from zope.configuration import xmlconfig
 
 from zopra.core import HAVE_WEBCMS, DBDA_ID
+from zopra.core.tests import setupCoreSessions
+
 
 class Keywords(RemoteLibrary):
     
@@ -43,6 +45,7 @@ REMOTE_LIBRARY_BUNDLE_FIXTURE = RemoteLibraryLayer(
     name="RemoteLibraryBundle:RobotRemote"
 )
 
+
 class PlainZopraCoreLayer(PloneSandboxLayer):
     """Testing Layer for this add-on.
     """
@@ -58,6 +61,7 @@ class PlainZopraCoreLayer(PloneSandboxLayer):
         """
         # extra WEBCMS setUp (tud.profiles.webcms and all dependent things including content, addons and theme)
         if HAVE_WEBCMS:
+            setupCoreSessions(app)
             # Load ZCML
             import tud.profiles.webcms
             import tud.addons.webcms
@@ -146,6 +150,7 @@ class PlainZopraCoreLayer(PloneSandboxLayer):
 
         for table in tables:
             dbc.query('DROP TABLE {}'.format(table.encode('utf-8')))
+
 
 FIXTURE = PlainZopraCoreLayer()
 
