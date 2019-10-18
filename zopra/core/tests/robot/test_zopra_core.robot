@@ -28,11 +28,10 @@ Teardown Test
 *** Test Cases ***
 
 Test ZopRA Installation Is In Place
-    Pause
     Go To  ${ZOPRA_BASE}
-    Page Should Contain  css=h1.documentFirstHeading  Modules
+    Page Should Contain  Modules
 
 Test ZopRA Test Manager Start Page
     Go To  ${ZOPRA_BASE}
     Click Link  css=a.button  Test
-    Page Should Contain  css=h1.documentFirstHeading  Manager Overview
+    Page Should Contain  Manager Overview
