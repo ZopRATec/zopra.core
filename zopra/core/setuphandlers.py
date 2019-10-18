@@ -172,56 +172,29 @@ class ZopRATestEnvironmentMaker:
         """
         user_data = [
             {
-                'username': 'sgott',
-                'password': 'sgott',
-                'email': 'sgott@tu-dresden.de',
+                'username': 'user',
+                'password': 'user',
+                'email': 'user@tu-dresden.de',
                 'properties': {
-                    'fullname': "Sebastian Gottfried"
+                    'fullname': "User"
                 },
-                'roles': ('Member', 'Manager'),
+                'roles': ('ZopRAUser'),
             },
             {
-                'username': 'redakteur',
-                'password': 'redakteur',
-                'email': 'redakteur@tu-dresden.de',
-                'properties': {
-                    'fullname': "Redakteur"
-                },
-                'roles': (),
-            },
-            {
-                'username': 'chefredakteur',
-                'password': 'chefredakteur',
-                'email': 'chefredakteur@tu-dresden.de',
+                'username': 'reviewer',
+                'password': 'reviewer',
+                'email': 'reviewer@zopratec.de',
                 'properties': {
                     'fullname': "Chefredakteur"
                 },
-                'roles': (),
+                'roles': ('ZopRAUser', 'ZopRAReviewer'),
             },
             {
-                'username': 'testadmin',
-                'password': 'testadmin',
-                'email': 'testadmin@tu-dresden.de',
+                'username': 'zopraadmin',
+                'password': 'zopraadmin',
+                'email': 'zopraadmin@zopratec.de',
                 'properties': {
-                    'fullname': "Testadmin"
-                },
-                'roles': (),
-            },
-            {
-                'username': 'mzadmin',
-                'password': 'mzadmin',
-                'email': 'mzadmin@tu-dresden.de',
-                'properties': {
-                    'fullname': "MZ-Admin"
-                },
-                'roles': ('Member', 'Site Administrator'),
-            },
-            {
-                'username': 'hstudent',
-                'password': 'hstudent',
-                'email': 'hstudent@tu-dresden.de',
-                'properties': {
-                    'fullname': "Hans Student"
+                    'fullname': "ZopRAAdmin"
                 },
                 'roles': (),
             },
@@ -230,26 +203,3 @@ class ZopRATestEnvironmentMaker:
             user = plone.api.user.get(datum['username'])
             if user is None:
                 user = plone.api.user.create(**datum)
-        group_data = [
-            {
-                'groupname': 'Employees',
-                'title': 'Employees',
-                'roles': ('Member',),
-            },
-            {
-                'groupname': 'Students',
-                'title': 'Students',
-                'roles': (),
-            }
-        ]
-        for datum in group_data:
-            group = plone.api.group.get(groupname=datum['groupname'])
-            if group is None:
-                plone.api.group.create(**datum)
-        group_assignments = {
-            'Employees': ('sgott', 'redakteur', 'chefredakteur', 'testadmin', 'mzadmin'),
-            'Students': ('hstudent',),
-        }
-        for groupname, usernames in group_assignments.iteritems():
-            for username in usernames:
-                plone.api.group.add_user(groupname=groupname, username=username)
