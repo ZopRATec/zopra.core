@@ -4,7 +4,6 @@ Documentation  Keywords for WebCMS integration
 
 Library	 Collections
 Library	 String
-Library  zopra.core.tests.sizzle2_selector.Sizzle2Selector
 
 Resource  plone/app/robotframework/keywords.robot
 Resource  plone/app/robotframework/selenium.robot
