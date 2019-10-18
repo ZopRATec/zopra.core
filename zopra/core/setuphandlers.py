@@ -83,9 +83,9 @@ class ZopRATestEnvironmentMaker:
         """
         # add Section
         self.portal.invokeFactory('MainTopicSubsection', 'base')
-        base.setTitle({'en': 'Base'})
         base = self.portal['base']
-    
+        base.setTitle({'en': 'Base'})
+
         # add Subsection
         base.invokeFactory('Subsection', 'zopra')
         subsection = base['zopra']
