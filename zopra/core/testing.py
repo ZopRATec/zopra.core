@@ -21,7 +21,7 @@ from plone.app.robotframework.users import Users
 from Products.CMFCore.utils import getToolByName
 from zope.configuration import xmlconfig
 
-from zopra.core import DBDA_ID
+from zopra.core import HAVE_WEBCMS, DBDA_ID
 
 class Keywords(RemoteLibrary):
     ZOPRA_BASE = 'http://localhost/'
@@ -64,14 +64,24 @@ class PlainZopraCoreLayer(PloneSandboxLayer):
         :type portal: Products.CMFPlone.Portal.PloneSite
         :return:
         """
-        self.applyProfile(portal, 'zopra.core:default')
+        self.applyProfile(portal, 'zopra.core:test')
         # might not need this
         #wf_tool = getToolByName(portal, 'portal_workflow')
         #wf_tool.updateRoleMappings()
-        
-        
 
+    def tearDownPloneSite(self, portal):
+        """Tear down the Plone site.
 
+        Implementing this is optional. If the changes made during the
+        ``setUpPloneSite()`` method were confined to the ZODB and the global
+        component regsitry, those changes will be torn down automatically.
+        """
+        #if HAVE_WEBCMS:
+        #    zoprafolder = 'base/zopra/app'
+        #else:
+        zoprafolder = 'zopra/app'
+        zfobj = portal.unrestrictedTraverse(zoprafolder)
+        self.clearDatabase(zfobj)
 
     def clearDatabase(self, zoprafolder):
         """
