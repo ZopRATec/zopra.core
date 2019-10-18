@@ -46,7 +46,7 @@ REMOTE_LIBRARY_BUNDLE_FIXTURE = RemoteLibraryLayer(
 )
 
 
-class PlainZopraCoreLayer(PloneSandboxLayer):
+class ZopraCoreLayer(PloneSandboxLayer):
     """Testing Layer for this add-on.
     """
 
@@ -152,7 +152,7 @@ class PlainZopraCoreLayer(PloneSandboxLayer):
             dbc.query('DROP TABLE {}'.format(table.encode('utf-8')))
 
 
-FIXTURE = PlainZopraCoreLayer()
+FIXTURE = ZopraCoreLayer()
 
 ROBOT_TESTING = FunctionalTesting(
     bases=(REMOTE_LIBRARY_BUNDLE_FIXTURE,
