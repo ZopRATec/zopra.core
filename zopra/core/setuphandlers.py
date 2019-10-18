@@ -46,7 +46,7 @@ class ZopRATestEnvironmentMaker:
         zoprafolder.getParentNode().manage_addProperty('zopra_path', 'app/pm', 'string')
     
         # add the test manager
-        self.addManager(zoprafolder, DBDA_ID, 'zopra.core.tools.mgrTest', 'TestManager', 'mgrTest', 'Test Manager')
+        self.addManager(zoprafolder, DBDA_ID, 'zopra.core.tools.mgrTest', 'mgrTest', 'testapp', 'Test Manager')
 
     
     #
