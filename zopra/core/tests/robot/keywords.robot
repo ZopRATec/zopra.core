@@ -27,7 +27,7 @@ Setup Suite
     Enable Autologin As  ZopRAAdmin
     Reload Page
     ${ZOPRA_PATH} =  Get ZopRA Base Path
-    ${ZOPRA_BASE} =  ${PLONE_URL}${}${ZOPRA_PATH}
+    ${ZOPRA_BASE} =  Set Variable  ${PLONE_URL}${ZOPRA_PATH}
     Set Suite Variable  ${ZOPRA_BASE}
 
 Teardown Suite
