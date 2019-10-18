@@ -90,6 +90,7 @@ class PlainZopraCoreLayer(PloneSandboxLayer):
             z2.installProduct(app, 'tud.boxes.webcms')
             z2.installProduct(app, 'tud.addons.ckeditorplugins')
             z2.installProduct(app, 'Products.DateRecurringIndex')
+            z2.installProduct(app, 'tud.addons.redirect')
             z2.installProduct(app, 'tud.profiles.webcms')
 
         import zopra.core
