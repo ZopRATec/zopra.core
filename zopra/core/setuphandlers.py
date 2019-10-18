@@ -21,7 +21,7 @@ def setupTestSzenario(context):
     tenv = ZopRATestEnvironmentMaker(logger, portal)
     logger.info('Setting up ZopRA Test Environment')
     tenv.setup()
-    
+
 
 class ZopRATestEnvironmentMaker:
     """ Test Environment Setup via methods in a class so parts of it can be overwritten for the subpackages
@@ -48,7 +48,7 @@ class ZopRATestEnvironmentMaker:
         # add the test manager
         self.addManager(zoprafolder, DBDA_ID, 'zopra.core.tools.mgrTest', 'mgrTest', 'testapp', 'Test Manager')
 
-    
+
     #
     # Helper functions (overwrite for other zopra packages)
     #
@@ -68,7 +68,8 @@ class ZopRATestEnvironmentMaker:
         folder.manage_addFolder('app')
         # return the created folder
         return folder['app']
-    
+
+
     #
     # Helper functions (overwrite for other zopra packages)
     #
@@ -82,17 +83,20 @@ class ZopRATestEnvironmentMaker:
         """
         # add Section
         self.portal.invokeFactory('MainTopicSubsection', 'base')
+        base.setTitle({'en': 'Base'})
         base = self.portal['base']
     
         # add Subsection
         base.invokeFactory('Subsection', 'zopra')
         subsection = base['zopra']
+        subsection.setTitle({'en': 'ZopRA'})
         # add zope folder app
         subsection.manage_addFolder('app')
         
         # return the created folder
         return subsection['app']
-    
+
+
     def addDatabaseAdapter(self, zoprafolder):
         """Add zmysql object inside the zopra context to provide database access.
     
@@ -113,7 +117,8 @@ class ZopRATestEnvironmentMaker:
             msg = e.args[1] + "\n"
             msg += "Hint: You can define environment variables DB_SERVER, DB_USER, DB_PASSWORD and DB_NAME to configure your database connection."
             raise Exception(msg)
-    
+
+
     def addManager(self, zoprafolder, dbda_id, module_name, manager_classname, manager_id, manager_title):
         """Add the ZopRA Manager object to zoprafolder using the manage_addGeneric method from zopra.core.__init__. 
         Use module_name and manager_classname to identify your module and class. Reuse for installing all ZopRA Managers.
@@ -141,7 +146,8 @@ class ZopRATestEnvironmentMaker:
                                       ebase        = None,
                                       accessgroups = None,
                                       REQUEST      = None )
-    
+
+
     def addProductManager(self, zoprafolder, dbda_id, pm_id, pm_title):
         """
         
@@ -163,8 +169,8 @@ class ZopRATestEnvironmentMaker:
                                              nocreate     = 0,
                                              zopratype    = '',
                                              REQUEST      = None )
-    
-    
+
+
     def create_initial_users(self):
         """Creates initial users
     
