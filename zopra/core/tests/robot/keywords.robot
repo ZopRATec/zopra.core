@@ -24,7 +24,7 @@ ${DEFAULT_LANG}  en
 Setup Suite
     Open Test Browser
     Set Window Size  1024  768
-    Enable Autologin As  ZopRAAdmin
+    Enable Autologin As  ZopRAAdmin  Manager
     Reload Page
     ${ZOPRA_PATH} =  Get ZopRA Base Path
     ${ZOPRA_BASE} =  Set Variable  ${PLONE_URL}${ZOPRA_PATH}
