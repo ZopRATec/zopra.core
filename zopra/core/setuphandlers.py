@@ -34,10 +34,10 @@ class ZopRATestEnvironmentMaker:
     def setup(self):
         self.create_initial_users()
         # build zopra environment down to the app folder
-        #if HAVE_WEBCMS:
-        #    zoprafolder = self.buildWebCMSEnvironment()
-        #else:
-        zoprafolder = self.buildEnvironment()
+        if HAVE_WEBCMS:
+            zoprafolder = self.buildWebCMSEnvironment()
+        else:
+            zoprafolder = self.buildEnvironment()
         # add database Adapter
         self.addDatabaseAdapter(zoprafolder)
         # add the zopra Product

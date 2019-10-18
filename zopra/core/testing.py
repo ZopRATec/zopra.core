@@ -56,12 +56,49 @@ class PlainZopraCoreLayer(PloneSandboxLayer):
         :param configurationContext: ZCML configuration context
         :return:
         """
+        # extra WEBCMS setUp (tud.profiles.webcms and all dependent things including content, addons and theme)
+        if HAVE_WEBCMS:
+            # Load ZCML
+            import tud.profiles.webcms
+            import tud.addons.webcms
+            import tud.theme.webcms2
+            import tud.content.webcms
+            import tud.boxes.base
+            import tud.boxes.webcms
+            import tud.addons.ckeditorplugins
+            #import plone.app.event
+            
+            # Ensure that Event content type is set up properly.
+            #self.loadZCML(package=plone.app.event)
+            #self.loadZCML(package=plone.app.event.at)
+            #z2.installProduct(app, 'plone.app.event.at')
+    
+            # Ensure that all dependencies of tud.profiles.webcms are going to be loaded
+            self.loadZCML(name='testing.zcml', package=tud.profiles.webcms)
+            self.loadZCML(name='testing.zcml', package=tud.addons.webcms)
+            self.loadZCML(name='testing.zcml', package=tud.content.webcms)
+            self.loadZCML(name='testing.zcml', package=tud.boxes.base)
+            self.loadZCML(name='testing.zcml', package=tud.boxes.webcms)
+            self.loadZCML(name='testing.zcml', package=tud.addons.ckeditorplugins)
+            self.loadZCML(name='testing.zcml', package=tud.theme.webcms2)
+
+            z2.installProduct(app, 'raptus.multilanguagefields')
+            z2.installProduct(app, 'collective.workspace')
+            z2.installProduct(app, 'tud.addons.webcms')
+            z2.installProduct(app, 'tud.content.webcms')
+            z2.installProduct(app, 'tud.boxes.base')
+            z2.installProduct(app, 'tud.boxes.webcms')
+            z2.installProduct(app, 'tud.addons.ckeditorplugins')
+            z2.installProduct(app, 'Products.DateRecurringIndex')
+            z2.installProduct(app, 'tud.profiles.webcms')
+
         import zopra.core
 
         self.loadZCML(name='testing.zcml', package=zopra.core)
 
         z2.installProduct(app, 'zopra.core')
         z2.installProduct(app, 'Products.ZMySQLDA')
+
 
     def setUpPloneSite(self, portal):
         """Method to set up the Plone Site (installing products and applying Profiles)
@@ -70,10 +107,11 @@ class PlainZopraCoreLayer(PloneSandboxLayer):
         :type portal: Products.CMFPlone.Portal.PloneSite
         :return:
         """
+                # extra WEBCMS setUp (Content + Theme)
+        if HAVE_WEBCMS:
+            self.applyProfile(portal, 'tud.profiles.webcms:default')
         self.applyProfile(portal, 'zopra.core:test')
-        # might not need this
-        #wf_tool = getToolByName(portal, 'portal_workflow')
-        #wf_tool.updateRoleMappings()
+
 
     def tearDownPloneSite(self, portal):
         """Tear down the Plone site.
@@ -82,12 +120,13 @@ class PlainZopraCoreLayer(PloneSandboxLayer):
         ``setUpPloneSite()`` method were confined to the ZODB and the global
         component regsitry, those changes will be torn down automatically.
         """
-        #if HAVE_WEBCMS:
-        #    zoprafolder = 'base/zopra/app'
-        #else:
-        zoprafolder = 'zopra/app'
+        if HAVE_WEBCMS:
+            zoprafolder = 'base/zopra/app'
+        else:
+            zoprafolder = 'zopra/app'
         zfobj = portal.unrestrictedTraverse(zoprafolder)
         self.clearDatabase(zfobj)
+
 
     def clearDatabase(self, zoprafolder):
         """
