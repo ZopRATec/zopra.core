@@ -18,9 +18,9 @@ Test Teardown  Teardown Test
 
 Test ZopRA Installation Is In Place
     Go To  ${ZOPRA_BASE}
-    Page Should Contain  Modules
+    Wait Until Page Contains  Modules
 
 Test ZopRA Test Manager Start Page
     Go To  ${ZOPRA_BASE}
     Click Link  sizzle=a.button:contains('Test')
-    Page Should Contain  Manager Overview
+    Wait Until Page Contains  Manager Overview
