@@ -185,7 +185,7 @@ def registerManager(context, managerClass):
 
     # sanity check - we only handle class objects
     if not inspect.isclass(managerClass):
-        print "%s is not a class object" % managerClass.__class__
+        raise ValueError("%s is not a class object" % managerClass.__class__)
 
     # initialize class via Zope
     InitializeClass(managerClass)
@@ -207,9 +207,6 @@ def registerManager(context, managerClass):
         addForm = DTMLFile( dtml_file, globals() )
 
     else:
-
-        # generic form needed
-        print 'ZopRA Hint: Generic dtml used for %s' % managerClass
 
         # try to get name suggestions
         sid   = managerClass.suggest_id   if hasattr(managerClass, 'suggest_id')  else '<insert id>'
