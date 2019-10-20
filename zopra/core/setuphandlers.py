@@ -64,8 +64,10 @@ class ZopRATestEnvironmentMaker:
         self.portal.invokeFactory('Folder', 'zopra')
         folder = self.portal['zopra']
     
-        # add zope folder app
-        folder.manage_addFolder('app')
+        # add zope folder app via import and manage_addFolder direct call
+        from OFS.Folder import manage_addFolder
+        manage_addFolder( folder, 'app' )
+
         # return the created folder
         return folder['app']
 
@@ -90,9 +92,10 @@ class ZopRATestEnvironmentMaker:
         base.invokeFactory('Subsection', 'zopra')
         subsection = base['zopra']
         subsection.setTitle({'en': 'ZopRA'})
-        # add zope folder app
-        subsection.manage_addFolder('app')
-        
+        # add zope folder app via import and manage_addFolder direct call
+        from OFS.Folder import manage_addFolder
+        manage_addFolder( subsection, 'app' )
+
         # return the created folder
         return subsection['app']
 
