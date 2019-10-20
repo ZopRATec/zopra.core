@@ -27,11 +27,16 @@ class ZopRATestEnvironmentMaker:
     """ Test Environment Setup via methods in a class so parts of it can be overwritten for the subpackages
     
     """
+
     def __init__(self, logger, portal):
         self.logger = logger
         self.portal = portal
 
+
     def setup(self):
+        """ Main method calling all other methods.
+        
+        """
         self.create_initial_users()
         # build zopra environment down to the app folder
         if HAVE_WEBCMS:
@@ -49,21 +54,24 @@ class ZopRATestEnvironmentMaker:
         self.addManager(zoprafolder, DBDA_ID, 'zopra.core.tools.mgrTest', 'mgrTest', 'testapp', 'Test Manager')
 
 
-    #
-    # Helper functions (overwrite for other zopra packages)
-    #
     def buildEnvironment(self):
         """Create container structure down to the ZopRA container and the app folder inside. 
         Overwrite for special handling (applying interfaces or using special containers).
+        Resulting structure should be /base/zopra/app.
         
         :param portal: Plone Site
         :type portal: Products.CMFPlone.Portal.PloneSite
         :return:
         """
+        
+        # add plone folder ZopRATest
+        self.portal.invokeFactory('Folder', 'base')
+        folder = self.portal['zopra']
+        
         # add plone folder ZopRATest
         self.portal.invokeFactory('Folder', 'zopra')
         folder = self.portal['zopra']
-    
+
         # add zope folder app via import and manage_addFolder direct call
         from OFS.Folder import manage_addFolder
         manage_addFolder( folder, 'app' )
@@ -72,12 +80,10 @@ class ZopRATestEnvironmentMaker:
         return folder['app']
 
 
-    #
-    # Helper functions (overwrite for other zopra packages)
-    #
     def buildWebCMSEnvironment(self):
         """Create container structure down to the ZopRA container and the app folder inside. 
-        Overwrite for special handling (applying interfaces or using special containers).
+        Overwrite for special handling (applying interfaces or using special containers). 
+        Resulting structure should be /base/zopra/app.
         
         :param portal: Plone Site
         :type portal: Products.CMFPlone.Portal.PloneSite

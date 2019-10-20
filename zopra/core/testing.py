@@ -24,18 +24,9 @@ from zope.configuration import xmlconfig
 from zopra.core import HAVE_WEBCMS, DBDA_ID
 from zopra.core.tests import setupCoreSessions
 
-
+# preparation for keywords implemented in python
 class Keywords(RemoteLibrary):
-    
-    def get_zopra_base_path(self):
-        """
-        """
-        # super duper solution would look up zopra via interface or something equally fancy
-        # we just assume the paths that were used in setuphandler
-        if HAVE_WEBCMS:
-            return '/base/zopra/app'
-        else:
-            return 'zopra/app'
+    pass
 
 REMOTE_LIBRARY_BUNDLE_FIXTURE = RemoteLibraryLayer(
     bases=(PLONE_FIXTURE,),
