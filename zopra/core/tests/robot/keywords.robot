@@ -25,7 +25,7 @@ Setup Suite
     Open Test Browser
     Set Window Size  1024  768
     Enable Autologin As  ZopRAAdmin  Manager
-    Reload Pageh
+    Reload Page
     ${ZOPRA_BASE} =  ${PLONE_URL}/base/zopra/app
     Set Suite Variable  ${ZOPRA_BASE}
 
