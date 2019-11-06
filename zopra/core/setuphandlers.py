@@ -37,7 +37,7 @@ class ZopRATestEnvironmentMaker:
         """ Main method calling all other methods.
         
         """
-        self.create_initial_users()
+        self.createInitialUsers()
         # build zopra environment down to the app folder
         if HAVE_WEBCMS:
             zoprafolder = self.buildWebCMSEnvironment()
@@ -180,7 +180,7 @@ class ZopRATestEnvironmentMaker:
                                              REQUEST      = None )
 
 
-    def create_initial_users(self):
+    def createInitialUsers(self):
         """Creates initial users
     
         :return:
