@@ -1,5 +1,7 @@
 Robot Tests
 
+In order to run the tests, you need to install the "tests" extra, e.g. via buildout: eggs = zopra.core [tests]
+
 Resources:
 - zopra/core/tools/model/mgrTest.xml: the data model for the test manager
 - zopra/core/tools/mgrTest: test manager class, plain, based on TemplateBaseManager
