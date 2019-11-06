@@ -7,8 +7,7 @@ version = open(os.path.join("zopra", "core", "version.txt")).read().strip()
 setup( name                 = 'zopra.core',
        version              = version,
        description          = "ZopRATec's ZopRA middleware",
-       long_description     = open("README.txt").read() + "\n" +
-                              open(os.path.join("docs", "HISTORY.txt")).read(),
+       long_description     = open("README.md").read(),
        # Get more strings from http://www.python.org/pypi?%3Aaction=list_classifiers
        classifiers          = [
          "Programming Language :: Python",
