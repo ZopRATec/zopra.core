@@ -116,10 +116,7 @@ class ZopraCoreLayer(PloneSandboxLayer):
         ``setUpPloneSite()`` method were confined to the ZODB and the global
         component regsitry, those changes will be torn down automatically.
         """
-        if HAVE_WEBCMS:
-            zoprafolder = 'base/zopra/app'
-        else:
-            zoprafolder = 'zopra/app'
+        zoprafolder = 'base/zopra/app'
         zfobj = portal.unrestrictedTraverse(zoprafolder)
         self.clearDatabase(zfobj)
 
