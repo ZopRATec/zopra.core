@@ -43,16 +43,11 @@ Go To Editorial
     [Documentation] Click the Editorial Link in the Navigation
     # TODO
 
-Go To Manager Start Page
-    [Documentation] Open the given url
-    [Arguments]  ${manager_url}
-    Go To URL  ${manager_url}
-
 Go To Manager
     [Documentation] get the manager url and go there
     [Arguments]  ${manager_id}
     ${url} = Find Manager  ${manager_id}
-    Go To Manager Start Page  ${url}
+    Go To URL  ${url}
 
 Table Default Options Are Visible
     [Documentation] Check the default Options List, Search and New on the Manager start page
