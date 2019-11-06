@@ -66,10 +66,10 @@ class ZopRATestEnvironmentMaker:
         
         # add plone folder ZopRATest
         self.portal.invokeFactory('Folder', 'base')
-        folder = self.portal['base']
+        base = self.portal['base']
         
         # add plone folder ZopRATest
-        self.portal.invokeFactory('Folder', 'zopra')
+        base.invokeFactory('Folder', 'zopra')
         folder = self.portal['zopra']
 
         # add zope folder app via import and manage_addFolder direct call
