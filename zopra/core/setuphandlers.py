@@ -13,7 +13,7 @@ def setupTestSzenario(context):
     The file is found in profiles/default.
     """
 
-    if context.readDataFile('test.txt') is None:
+    if context.readDataFile('zopra.core-test.txt') is None:
         return
     logger = context.getLogger('zopra.core')
     portal = context.getSite()
