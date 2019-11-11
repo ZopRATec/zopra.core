@@ -5,14 +5,14 @@ Created on 7 Nov 2019
 @author: peterseifert
 '''
 
-import unittest
-from zopra.core.tests import getManager
+from zopra.core.tests import StandaloneTestCase
+from zopra.core.tools.mgrTest import mgrTest
 
-class TableTest(unittest.TestCase):
-    """Unittest Testcases for the tables.Table and tables.TableHandler classes"""
+class TableTest(StandaloneTestCase):
+    """Unittest Testcases for the tables.Table and tables.TableHandler classes (standalone, no db)"""
+
     def test_Table(self):
         from zopra.core.tools.mgrTest import mgrTest
-        mgrTest.getManager = getManager
         mgr = mgrTest('Testtitle', 'testid', 1, '')
         mgr.manage_afterAdd(None, None)
         table = mgr.tableHandler['test']
@@ -20,7 +20,6 @@ class TableTest(unittest.TestCase):
         
     def test_TableHandler(self):
         from zopra.core.tools.mgrTest import mgrTest
-        mgrTest.getManager = getManager
         mgr = mgrTest('Testtitle', 'testid', 1, '')
         mgr.manage_afterAdd(None, None)
         handler = mgr.tableHandler

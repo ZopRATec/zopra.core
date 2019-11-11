@@ -5,14 +5,13 @@ Created on 7 Nov 2019
 @author: peterseifert
 '''
 
-import unittest
-from zopra.core.tests import getManager
+from zopra.core.tests import StandaloneTestCase
 
-class TableNodeTest(unittest.TestCase):
-    """Unittest Testcases for the tables.TableNode.TableNode and tables.Filter.Filter classes"""
+class TableNodeTest(StandaloneTestCase):
+    """Unittest Testcases for the tables.TableNode.TableNode and tables.Filter.Filter classes (standalone, no db)"""
+
     def test_SingleTableNode(self):
         from zopra.core.tools.mgrTest import mgrTest
-        mgrTest.getManager = getManager
         mgr = mgrTest('Testtitle', 'testid', 1, '')
         mgr.manage_afterAdd(None, None)
         table = mgr.tableHandler['test']
