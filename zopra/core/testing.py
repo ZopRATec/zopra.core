@@ -1,12 +1,5 @@
-import os
-from MySQLdb import OperationalError
-from transaction import commit
-
 from plone.testing import z2
 from plone.app.testing import PLONE_FIXTURE
-from plone.app.testing import applyProfile
-from plone.app.testing import ploneSite
-from plone.app.testing import quickInstallProduct
 from plone.app.testing import FunctionalTesting
 from plone.app.testing import PloneSandboxLayer
 from plone.app.robotframework.remote import RemoteLibraryLayer, RemoteLibrary
@@ -18,8 +11,6 @@ from plone.app.robotframework.mailhost import MockMailHost
 from plone.app.robotframework.quickinstaller import QuickInstaller
 from plone.app.robotframework.server import Zope2ServerRemote
 from plone.app.robotframework.users import Users
-from Products.CMFCore.utils import getToolByName
-from zope.configuration import xmlconfig
 
 from zopra.core import HAVE_WEBCMS, DBDA_ID
 from zopra.core.tests import setupCoreSessions
@@ -61,12 +52,6 @@ class ZopraCoreLayer(PloneSandboxLayer):
             import tud.boxes.base
             import tud.boxes.webcms
             import tud.addons.ckeditorplugins
-            #import plone.app.event
-            
-            # Ensure that Event content type is set up properly.
-            #self.loadZCML(package=plone.app.event)
-            #self.loadZCML(package=plone.app.event.at)
-            #z2.installProduct(app, 'plone.app.event.at')
     
             # Ensure that all dependencies of tud.profiles.webcms are going to be loaded
             self.loadZCML(name='testing.zcml', package=tud.profiles.webcms)
@@ -103,7 +88,7 @@ class ZopraCoreLayer(PloneSandboxLayer):
         :type portal: Products.CMFPlone.Portal.PloneSite
         :return:
         """
-                # extra WEBCMS setUp (Content + Theme)
+        # extra WEBCMS setUp (Content + Theme)
         if HAVE_WEBCMS:
             self.applyProfile(portal, 'tud.profiles.webcms:default')
         self.applyProfile(portal, 'zopra.core:test')

@@ -6,11 +6,11 @@ Created on 7 Nov 2019
 '''
 
 import unittest
+from zopra.core.tools.TemplateBaseManager import TemplateBaseManager
 
 class TemplateBaseManagerTest(unittest.TestCase):
     """Unittest Testcases for the tools.TemplateBaseManager class"""
     def test_TemplateBaseManager(self):
-        from zopra.core.tools.TemplateBaseManager import TemplateBaseManager
         t = TemplateBaseManager('Testtitle', 'testid', nocreate=1, zopratype='')
         self.assertEqual(t.meta_type, 'TemplateBaseManager')
         self.assertEqual(t.title, 'Testtitle')

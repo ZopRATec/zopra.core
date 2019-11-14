@@ -6,12 +6,12 @@ Created on 7 Nov 2019
 '''
 
 from zopra.core.tests import StandaloneTestCase
+from zopra.core.tools.mgrTest import mgrTest
 
 class TestManagerTest(StandaloneTestCase):
     """Unittest Testcases for the mgrTest Testing class (standalone, no db)"""
 
     def test_mgrTest(self):
-        from zopra.core.tools.mgrTest import mgrTest
         mgr = mgrTest('Testtitle', 'testid', nocreate=1, zopratype='')
         mgr.manage_afterAdd(None, None)
         self.assertEqual(mgr.id, 'testid')

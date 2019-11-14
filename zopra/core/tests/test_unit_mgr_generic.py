@@ -6,11 +6,12 @@ Created on 7 Nov 2019
 '''
 
 import unittest
+from zopra.core.tools.GenericManager import GenericManager
 
 class GenericManagerTest(unittest.TestCase):
     """Unittest Testcases for the GenericManager class"""
     def test_GenericManager(self):
-        from zopra.core.tools.GenericManager import GenericManager
+
         t = GenericManager('Testtitle', 'testid', nocreate=1, zopratype='')
         self.assertEqual(t.meta_type, 'GenericManager')
         self.assertEqual(t.title, 'Testtitle')

@@ -20,7 +20,9 @@ def unfix_getManager(manager_class):
     if hasattr(mgrTest, 'old_getManager'):
         manager_class.getManager = manager_class.old_getManager
         del manager_class.old_getManager
-    
+
+#TODO: move the getManager override into a layer setUp (instead Testcase setUp)
+
 class StandaloneTestCase(unittest.TestCase):
     """Test Case for Standalone manager testing, overrides getManager to not lookup anything"""
 
