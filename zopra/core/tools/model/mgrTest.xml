@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<Tabledefinition>
+    <Table name="test" uid="116502799999">
+        <Column name="testid"          type="int"           label="Test No."/>
+        <Column name="astring"         type="string"        label="String"/>
+        <Column name="amemo"           type="memo"          label="Memo"/>
+        <Column name="acheckbox"       type="bool"          label="Boolean"/>
+        <Column name="adate"           type="date"          label="Date"/>
+        <Column name="afloat"          type="float"         label="Float"/>
+        <Column name="asinglelist"     type="singlelist"    label="SingleList"/>
+        <Column name="amultilist"      type="multilist"     label="MultiList" map="amultilist"/>
+        <Column name="ahierarchylist"  type="hierarchylist" label="HierarchyList"/>
+        <Column name="bsinglelist"     type="singlelist"    label="Foreign SingleList" function="amultilist()"/>
+        <Column name="bmultilist"      type="multilist"     label="Foreign MultiList"  function="asinglelist()" map="fmultilist"/>
+        <Column name="csinglelist"     type="singlelist"    label="Complex SingleList" manager="mgrTest" function="test(testid, astring)"/>
+        <Column name="cmultilist"      type="multilist"     label="Complex MultiList"  manager="mgrTest" function="test()" map="cmultilist"/>
+    </Table>
+    <List name="asinglelist"     label="SingleList"/>
+    <List name="amultilist"      label="MultiList"/>
+    <List name="ahierarchylist"  label="HierarchyList"/>
+</Tabledefinition>
