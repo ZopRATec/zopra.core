@@ -17,7 +17,7 @@
         </tal:block>
         <div class="row">
             <div class="contentSlot">
-                <h1 i18n:translate="">Manager Overview</h1>
+                <h1 i18n:translate="" class="documentFirstHeading">Manager Overview</h1>
                 <div class="zopra_overview_panel"
                      tal:define="tables python:here.tableHandler.keys();">
                     <tal:block tal:repeat="table tables">

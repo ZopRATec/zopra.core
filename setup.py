@@ -7,8 +7,7 @@ version = open(os.path.join("zopra", "core", "version.txt")).read().strip()
 setup( name                 = 'zopra.core',
        version              = version,
        description          = "ZopRATec's ZopRA middleware",
-       long_description     = open("README.txt").read() + "\n" +
-                              open(os.path.join("docs", "HISTORY.txt")).read(),
+       long_description     = open("README.md").read(),
        # Get more strings from http://www.python.org/pypi?%3Aaction=list_classifiers
        classifiers          = [
          "Programming Language :: Python",
@@ -30,6 +29,7 @@ setup( name                 = 'zopra.core',
            'PyHtmlGUI',# ZopRA default display generation
            'PyICU',# for linguistically better alphabetical sorting
        ],
+       extras_require={'test': ['plone.app.robotframework', 'Products.ZMySQLDA', 'plone.api']},# Robot Tests with MySQL Adapter
        entry_points         = """
        # -*- Entry points: -*-
 

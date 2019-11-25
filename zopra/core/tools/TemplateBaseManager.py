@@ -540,7 +540,9 @@ class TemplateBaseManager(GenericManager):
 
     def prepareHierarchylistDisplayEntries(self, entries):
         """\brief sort the entries into a tree, add level key and return flattened and sorted list"""
-        # TODO: implement (where is this used anyway and what for?)
+        # TODO: implement 
+        # this is used by zopra_list_edit_form
+        # TODO: further check why this exists
         for entry in entries:
             entry['level'] = 0
         return entries

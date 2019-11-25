@@ -29,7 +29,7 @@ from zope.interface                   import implements
 #
 # ZopRA Imports
 #
-from zopra.core import HTML, ClassSecurityInfo, getSecurityManager, modifyPermission, managePermission, ZM_PM, ZM_CM, ZC
+from zopra.core import HTML, ClassSecurityInfo, getSecurityManager, modifyPermission, managePermission, ZM_PM, ZM_CM, ZC, HAVE_PLONE
 
 from zopra.core.elements.Buttons import DLG_CUSTOM,      \
                                                    BTN_L_ADD,       \
@@ -209,36 +209,47 @@ class ZopRAProduct(ManagerPart):
         if not parent:
             return None
 
-        # standard_html_header DTMLDocument
-        self._createDTMLHelper('standard_html_header', parent)
+        # in plone, most of this is not needed
+        if HAVE_PLONE:
+            # use python script for redirect
+            content = "##title=Redirect to ZopRA Editorial\ncontext.REQUEST.RESPONSE.redirect(container.absolute_url() + '/zopra_main_form')"
+            parent.manage_addProduct['PythonScripts'].manage_addPythonScript('index_html')
+            script = parent['index_html']
+            script.write(content)
+            # set the properties for zopra_path in parent 
+            # for more complex setups, zopra_path also needs to be set in the parents parent (do so manually)
+            parent.manage_addProperty('zopra_path', self.getId(), 'string')
+        else:
+            # standard_html_header DTMLDocument
+            self._createDTMLHelper('standard_html_header', parent)
+    
+            # standard_html_footer DTMLDocument
+            self._createDTMLHelper('standard_html_footer', parent)
+    
+            # standard_html_footer DTMLDocument
+            self._createDTMLHelper('standard_error_message', parent)
+    
+            # standard_html_footer DTMLDocument
+            self._createDTMLHelper('unauthorized_html_header', parent)
+    
+            # standard_html_footer DTMLDocument
+            self._createDTMLHelper('unauthorized_html_footer', parent)
+    
+            # index_html DTMLDocument
+            content = '<dtml-call expr="RESPONSE.redirect(\'%s\')">'
+            content = content % self.virtual_url_path()
+            self._createDTMLHelper('index_html', parent, content)
 
-        # standard_html_footer DTMLDocument
-        self._createDTMLHelper('standard_html_footer', parent)
-
-        # standard_html_footer DTMLDocument
-        self._createDTMLHelper('standard_error_message', parent)
-
-        # standard_html_footer DTMLDocument
-        self._createDTMLHelper('unauthorized_html_header', parent)
-
-        # standard_html_footer DTMLDocument
-        self._createDTMLHelper('unauthorized_html_footer', parent)
-
-        # index_html DTMLDocument
-        content = '<dtml-call expr="RESPONSE.redirect(\'%s\')">'
-        content = content % self.virtual_url_path()
-        self._createDTMLHelper('index_html', parent, content)
-
-        # logged_out DTMLDocument
-        done = self._createDTMLHelper('logged_out', parent)
-        if done:
-            try:
-                obj = parent.logged_out
-                obj.manage_permission('View', ['Anonymous'], 1)
-            except:
-                # ignore
-                pass
-
+            # logged_out DTMLDocument
+            done = self._createDTMLHelper('logged_out', parent)
+            if done:
+                try:
+                    obj = parent.logged_out
+                    obj.manage_permission('View', ['Anonymous'], 1)
+                except:
+                    # ignore
+                    pass
+        # TODO: check why and for what this is needed
         # dirHome Property
         if 'dirHome' not in parent.propertyIds():
             dirHome = parent.virtual_url_path()
