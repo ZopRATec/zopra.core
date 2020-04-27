@@ -57,7 +57,7 @@
                 <span tal:condition="not:has_real_constraints" i18n:translate="zopra_listing_heading">Entry listing</span>
                 <span i18n:translate="" tal:content="python: tobj.getLabel()">TableX</span>
         </h1>
-        <form id="search_result_form zopra-form"
+        <form id="search_result_form"
               tal:define="global quotedcons string:;"
               tal:attributes="action string:${here/absolute_url}/${template/getId}"
               method="post"

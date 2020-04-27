@@ -234,7 +234,7 @@
                 <input type="hidden" name="zopra_attr_present:list"
                          tal:attributes="value attr_name" />
                 <input type="hidden"
-                         tal:attributes="value python:attr_value and attr_value[0] or nothing; name python:attr_name+':list:int'; id attr_name" />
+                         tal:attributes="value python:attr_value and attr_value[0] or 0; name python:attr_name+':list:int'; id attr_name" />
                 <div tal:define = "hierarchy_list python:lobj.getHierarchyListAncestors( attr_value and attr_value[0] or 0);"
                          tal:repeat = "parent hierarchy_list">
                     <metal:block metal:use-macro="here/zopra_widget_edit_display/macros/widget_hierarchylist_select" />

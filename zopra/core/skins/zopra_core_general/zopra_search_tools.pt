@@ -102,7 +102,7 @@
                 <a tal:define="pageoffset python: page*count;
                            thisurl python: url + str(pageoffset);
                            thisclass python: pageoffset == offset and 'pagelink selected' or 'pagelink';
-                           onclick string:$$('input#offset').val(${pageoffset});;$$('#search_result_form').submit();;return false;;;"
+                           onclick string:$$('input#offset').val(${pageoffset});;$$('#search_result_form button[&quot;submit&quot;]').first().submit();;return false;;;"
                    tal:attributes="href thisurl;
                                class thisclass;
                                onclick onclick;"
@@ -124,7 +124,7 @@
                 <a tal:define="pageoffset python: page*count;
                            thisurl python: url + str(pageoffset);
                            thisclass python: pageoffset == offset and 'selected_pagelink' or 'pagelink';
-                           onclick string:$$('input#offset').val(${pageoffset});;$$('#search_result_form').submit();;return false;;;"
+                           onclick string:$$('input#offset').val(${pageoffset});;$$('#search_result_form button[&quot;submit&quot;]').first().submit();;return false;;;"
                    tal:attributes="href thisurl;
                                class thisclass;
                                onclick onclick;"
