@@ -20,3 +20,7 @@
 
 ###Doxygen###
 /html
+
+###vs code###
+.vscode
+.history
