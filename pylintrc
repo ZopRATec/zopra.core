@@ -99,9 +99,6 @@ comment=no
 # Required attributes for module, separated by a comma
 required-attributes=
 
-# List of builtins function names that should not be used, separated by a comma
-bad-functions=map,filter,input
-
 # Good variable names which should always be accepted, separated by a comma
 good-names=i,j,k,ex,Run,_,REQUEST
 
@@ -229,7 +226,7 @@ notes=FIXME,XXX,TODO
 [SIMILARITIES]
 
 # Minimum lines number of a similarity.
-min-similarity-lines=8
+min-similarity-lines=4
 
 # Ignore comments when computing similarities.
 ignore-comments=yes
@@ -238,7 +235,7 @@ ignore-comments=yes
 ignore-docstrings=yes
 
 # Ignore imports when computing similarities.
-ignore-imports=no
+ignore-imports=yes
 
 
 [SPELLING]
