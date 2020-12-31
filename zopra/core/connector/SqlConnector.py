@@ -112,7 +112,6 @@ class SqlConnector(SimpleItem):
                     'currency':    ZC.COL_CURRENCY
                     }
 
-
     def __init__(self, id, connection_id):
         """ Initialize the Connector
 
@@ -142,7 +141,7 @@ class SqlConnector(SimpleItem):
     def query(self, query_text):
         """ This method executes a SQL query.
 
-        The implementation of this method returns the result of the query. 
+        The implementation of this method returns the result of the query.
         It is abstract in SqlConnector baseclass (not implemented).
 
         @param query_text  - The argument \a query_text contains the complete
@@ -430,7 +429,6 @@ class SqlConnector(SimpleItem):
 
         return ', '.join(cols_str)
 
-
     def testForTable(self, name):
         """ Test if the table already exists.
 
@@ -539,7 +537,7 @@ class SqlConnector(SimpleItem):
 
             # this needs to be here to allow autoid overwriting
             elif col == 'autoid':
-                col_type = 'int'
+                col_type = ZC.ZCOL_INT
             else:
                 raise ValueError('No ColType found')
 

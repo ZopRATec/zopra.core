@@ -56,7 +56,7 @@ class ZopraCoreLayer(PloneSandboxLayer):
             import tud.boxes.base
             import tud.boxes.webcms
             import tud.addons.ckeditorplugins
-    
+
             # Ensure that all dependencies of tud.profiles.webcms are going to be loaded
             self.loadZCML(name='testing.zcml', package=tud.profiles.webcms)
             self.loadZCML(name='testing.zcml', package=tud.addons.webcms)
@@ -83,6 +83,9 @@ class ZopraCoreLayer(PloneSandboxLayer):
 
         z2.installProduct(app, 'zopra.core')
         z2.installProduct(app, 'Products.ZMySQLDA')
+
+        from zopra.core.tests.mgrTest import mgrTest
+        registerManager(app, mgrTest)
 
 
     def setUpPloneSite(self, portal):

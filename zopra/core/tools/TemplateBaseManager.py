@@ -542,7 +542,7 @@ class TemplateBaseManager(GenericManager):
 
     def prepareHierarchylistDisplayEntries(self, entries):
         """\brief sort the entries into a tree, add level key and return flattened and sorted list"""
-        # TODO: implement 
+        # TODO: implement
         # this is used by zopra_list_edit_form
         # TODO: further check why this exists
         for entry in entries:
@@ -660,7 +660,7 @@ class TemplateBaseManager(GenericManager):
         """\brief Returns grouping information for layout"""
         # allow external scripts
         res = []
-        name = 'getLayoutInfo_%s' % (self._className)
+        name = 'getLayoutInfo_%s' % (self.getClassName())
         if hasattr(self, name):
             res = getattr(self, name)(table, action)
         if res:
@@ -684,7 +684,7 @@ class TemplateBaseManager(GenericManager):
         """\brief helptexts"""
         # allow external scripts
         res = {}
-        name = 'getHelpTexts_%s' % (self._className)
+        name = 'getHelpTexts_%s' % (self.getClassName())
         if hasattr(self, name):
             res = getattr(self, name)(table)
         if res:
@@ -809,7 +809,7 @@ class TemplateBaseManager(GenericManager):
     def getRelatedEntries(self, autoid, table, attribute, lang = None):
         """\brief get Entries of table that are connected to an entry of another
                   table with autoid autoid via multilist named attribute (backref).
-                  If lang is given, the result list will be filtered to contain 
+                  If lang is given, the result list will be filtered to contain
                   1) only entries of that language (if it is the default language) or
                   2) mixed entries of translations and originals (when no translation exists)."""
         #  get list object
@@ -921,13 +921,13 @@ class TemplateBaseManager(GenericManager):
         tobj = self.tableHandler[table]
         col_types = tobj.getColumnTypes()
         for col in col_types:
-            if col_types[col] in ('float', 'currency'):
+            if col_types[col] in (ZC.ZCOL_FLOAT, ZC.ZCOL_CURR):
                 # only convert if there is something to convert
                 if entry.get(col):
                     entry[col] = ('%s' % entry.get(col, '')).replace(',', '.')
             # this removes empty list entries from the resulting entry for search
             # (where adding and removing a selection from a multilist results in an empty list being transmitted as search param)
-            if search and col_types[col] in ('multilist', 'hierarchylist') and entry.get(col) == []:
+            if search and col_types[col] in (ZC.ZCOL_MLIST, ZC.ZCOL_HLIST) and entry.get(col) == []:
                 del entry[col]
 
         return entry

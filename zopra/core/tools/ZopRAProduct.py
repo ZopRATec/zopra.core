@@ -45,7 +45,7 @@ TCN_BACKUP  = 'backup'
 
 
 class ZopRAProduct(ManagerPart):
-    """\brief Product class
+    """Product class is based on ManagerPart directly.
     """
     _className   = ZM_PM
     _classType   = ManagerPart._classType + [_className]
@@ -60,42 +60,42 @@ class ZopRAProduct(ManagerPart):
     _edit_tracking_cols = ZC._edit_tracking_cols
 
     _manager_table_dict = { 'log': {
-                                'tabid':   { COL_TYPE: 'int8',
-                                            COL_LABEL: 'Table ID' },
-                                'action':  { COL_TYPE: 'string',
-                                             COL_LABEL: 'Action' },
-                                'entryid': { COL_TYPE: 'int',
-                                             COL_LABEL: 'Entry Autoid' },
-                                'backup':  { COL_TYPE: 'string',
-                                             COL_LABEL: 'Backup' },
-                                'username': { COL_TYPE: 'string',
-                                              COL_LABEL: 'Username' },
-                                'change_datetime': {COL_TYPE: 'string',
-                                            COL_LABEL: 'Change Datetime'},
-                                'entrydiff_before': {COL_TYPE: 'memo',
-                                            COL_LABEL: 'Entry before Change' },
-                                'entrydiff_after': {COL_TYPE: 'memo',
-                                            COL_LABEL: 'Entry after Change' }
+                                'tabid':   { ZC.COL_TYPE: 'int8',
+                                             ZC.COL_LABEL: 'Table ID' },
+                                'action':  { ZC.COL_TYPE: ZC.ZCOL_STRING,
+                                             ZC.COL_LABEL: 'Action' },
+                                'entryid': { ZC.COL_TYPE: ZC.ZCOL_INT,
+                                             ZC.COL_LABEL: 'Entry Autoid' },
+                                'backup':  { ZC.COL_TYPE: ZC.ZCOL_STRING,
+                                             ZC.COL_LABEL: 'Backup' },
+                                'username': { ZC.COL_TYPE: ZC.ZCOL_STRING,
+                                              ZC.COL_LABEL: 'Username' },
+                                'change_datetime': {ZC.COL_TYPE: ZC.ZCOL_STRING,
+                                            ZC.COL_LABEL: 'Change Datetime'},
+                                'entrydiff_before': {ZC.COL_TYPE: ZC.ZCOL_MEMO,
+                                            ZC.COL_LABEL: 'Entry before Change' },
+                                'entrydiff_after': {ZC.COL_TYPE: ZC.ZCOL_MEMO,
+                                            ZC.COL_LABEL: 'Entry after Change' }
                                     },
                             'children': {
-                                'id':     { COL_TYPE: 'string',
-                                            COL_LABEL: '' }
+                                'id':     { ZC.COL_TYPE: ZC.ZCOL_STRING,
+                                            ZC.COL_LABEL: '' }
                                     },
                             'config': {
-                                'config_str': { COL_TYPE: 'string',
-                                                COL_LABEL: ''},
-                                'key1':       { COL_TYPE: 'string',
-                                                COL_LABEL: ''},
-                                'value':      { COL_TYPE: 'string',
-                                                COL_LABEL: ''},
-                                'mgrtype':    { COL_TYPE: 'string',
-                                                COL_LABEL: ''},
-                                'mgrid':      { COL_TYPE: 'string',
-                                                COL_LABEL: ''},
-                                'parent':     { COL_TYPE: 'string',
-                                                COL_LABEL: ''},
-                                'notes':      { COL_TYPE: 'string',
-                                                COL_LABEL: ''}
+                                'config_str': { ZC.COL_TYPE: ZC.ZCOL_STRING,
+                                                ZC.COL_LABEL: ''},
+                                'key1':       { ZC.COL_TYPE: ZC.ZCOL_STRING,
+                                                ZC.COL_LABEL: ''},
+                                'value':      { ZC.COL_TYPE: ZC.ZCOL_STRING,
+                                                ZC.COL_LABEL: ''},
+                                'mgrtype':    { ZC.COL_TYPE: ZC.ZCOL_STRING,
+                                                ZC.COL_LABEL: ''},
+                                'mgrid':      { ZC.COL_TYPE: ZC.ZCOL_STRING,
+                                                ZC.COL_LABEL: ''},
+                                'parent':     { ZC.COL_TYPE: ZC.ZCOL_STRING,
+                                                ZC.COL_LABEL: ''},
+                                'notes':      { ZC.COL_TYPE: ZC.ZCOL_STRING,
+                                                ZC.COL_LABEL: ''}
                                     }
                             }
 
@@ -192,25 +192,25 @@ class ZopRAProduct(ManagerPart):
             parent.manage_addProduct['PythonScripts'].manage_addPythonScript('index_html')
             script = parent['index_html']
             script.write(content)
-            # set the properties for zopra_path in parent 
+            # set the properties for zopra_path in parent
             # for more complex setups, zopra_path also needs to be set in the parents parent (do so manually)
             parent.manage_addProperty('zopra_path', self.getId(), 'string')
         else:
             # standard_html_header DTMLDocument
             self._createDTMLHelper('standard_html_header', parent)
-    
+
             # standard_html_footer DTMLDocument
             self._createDTMLHelper('standard_html_footer', parent)
-    
+
             # standard_html_footer DTMLDocument
             self._createDTMLHelper('standard_error_message', parent)
-    
+
             # standard_html_footer DTMLDocument
             self._createDTMLHelper('unauthorized_html_header', parent)
-    
+
             # standard_html_footer DTMLDocument
             self._createDTMLHelper('unauthorized_html_footer', parent)
-    
+
             # index_html DTMLDocument
             content = '<dtml-call expr="RESPONSE.redirect(\'%s\')">'
             content = content % self.virtual_url_path()
@@ -357,9 +357,7 @@ class ZopRAProduct(ManagerPart):
 
             for obj in container.objectValues():
 
-                if hasattr(obj, '_classType') and \
-                   'ManagerPart' in obj.getClassType():
-
+                if IZopRAManager.providedBy(obj):
                     child_list.append(obj)
         return child_list
 

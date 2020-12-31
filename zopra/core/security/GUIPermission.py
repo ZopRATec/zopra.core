@@ -213,6 +213,4 @@ class GUIPermission(object):
 
         ztypes = self.enabled[tableid]
 
-        # TODO: Check if the first condition is really zopratype and not ztypes as it makes more 
-        #       sense. But original implementation says zopratype.
         return not zopratype or (isinstance(ztypes, ListType) and zopratype in ztypes)

@@ -8,13 +8,14 @@
 #    (at your option) any later version.                                   #
 ############################################################################
 
-from OFS.Folder                 import Folder
+from OFS.Folder import Folder
 
-from zopra.core                 import ZM_PM
-from zopra.core.CorePart        import COL_TYPE, COL_LABEL, COL_INVIS
-from zopra.core.interfaces      import IZopRAProduct, ISecurityManager, IZopRATable
-from zopra.core.utils           import getASTFromXML
-from zopra.core.tables.Table    import Table
+from zopra.core import ZM_PM
+from zopra.core.interfaces import ISecurityManager
+from zopra.core.interfaces import IZopRAProduct
+from zopra.core.interfaces import IZopRATable
+from zopra.core.tables.Table import Table
+from zopra.core.utils import getASTFromXML
 
 
 E_TABLE_EXPECTED = "A table object was expected but got %s."
@@ -87,9 +88,9 @@ class TableHandler(Folder):
                 if not new_type == 'multilist' and \
                    not new_type == 'hierarchylist':
                     new_dict[column_name] = {}
-                    new_dict[column_name][COL_TYPE]  = column.getType().encode('utf-8')
-                    new_dict[column_name][COL_LABEL] = column.getLabel()
-                    new_dict[column_name][COL_INVIS] = invisible
+                    new_dict[column_name][ZC.COL_TYPE]  = column.getType().encode('utf-8')
+                    new_dict[column_name][ZC.COL_LABEL] = column.getLabel()
+                    new_dict[column_name][ZC.COL_INVIS] = invisible
 
             self.addTable( table_name,
                            new_dict,
@@ -171,9 +172,9 @@ class TableHandler(Folder):
 
         if ebase:
             # add ACL column to tabledict
-            tabledict['acl'] = {COL_TYPE:   'int',
-                                COL_LABEL:  'EBaSe acl',
-                                COL_INVIS:  True }
+            tabledict['acl'] = {ZC.COL_TYPE:   'int',
+                                ZC.COL_LABEL:  'EBaSe acl',
+                                ZC.COL_INVIS:  True }
 
         if not nocreate and m_product:
             m_product.addTable( mgr.id + tablename, tabledict, log = log)

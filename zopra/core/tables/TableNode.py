@@ -44,7 +44,7 @@ class TablePrivate:
         """
         if not name:
             return {}
-        
+
         # shortcut for ordinary autoid field
         if name == 'autoid':
             return { ZC.COL_TYPE:  'int',
@@ -114,7 +114,7 @@ class TableNode(SimpleItem):
         assert isinstance(prefix, StringType), \
                E_PARAM_TYPE % ('prefix', 'StringType', prefix)
         assert isinstance(data, TablePrivate), \
-               E_PARAM_TYPE % ('data', 'TableNode', data)    
+               E_PARAM_TYPE % ('data', 'TableNode', data)
         self.data           = data
         self.prefix         = prefix
         self.children       = []
@@ -227,7 +227,7 @@ class TableNode(SimpleItem):
     def setConstraints(self, consdict):
         """\brief Stores matching constraints (including [DLG_CUSTOM+]prefix)
             from the dictionary, propagates it to its children and
-            invalidates itself if a constraint change happened 
+            invalidates itself if a constraint change happened
             (allows adding constraints without complete tree-invalidation)."""
 
         invalidChild = False

@@ -819,9 +819,12 @@ class XMLHandler(ContentHandler):
             entry = self.prevList[lenList-1]
             self.idCounter += 1
             key = self.idCounter
-            execString  = 'self.prevList[lenList-2].add'
-            execString += '%s(key, self.prevList[lenList-1])' % entry.__classname__
-            exec(execString)
+            # get object
+            obj = self.prevList[lenList-2]
+            # get add function from object
+            func = getattr(obj, 'add%s' % entry.__classname__)
+            # call add function
+            func(key, self.prevList[lenList-1])
         elif lenList == 1:
             self.rootObject = self.prevList[0]
         self.prevList = self.prevList[0:lenList-1]

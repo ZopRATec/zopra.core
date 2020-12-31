@@ -162,7 +162,7 @@ class MySqlConnector(SqlConnector):
 
             # this needs to be here to allow autoid overwriting
             elif col == 'autoid':
-                col_type = 'int'
+                col_type = ZC.ZCOL_INT
             else:
                 raise ValueError('No ColType found')
 

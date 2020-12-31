@@ -252,10 +252,7 @@ def checkTypeDeprecated(value, column_type, operator = False, label = None, do_r
 
 
 class Filter:
-    """\class Filter
-
-       \brief Provides Complex Structures for Where clause
-              for sql generating
+    """Provides Complex Structures for Where clause for sql generation
     """
 
     AND = 'AND'
@@ -354,7 +351,7 @@ class Filter:
                     field = tableData.getField(entry[:len(entry) - 7])
                 else:
                     field = self.template.get(entry[:len(entry) - 7])
-                if field.get(COL_TYPE) in ['int']:
+                if field.get(ZC.COL_TYPE) in ['int']:
                     tempcons[entry] = consdict[entry]
 
             # if not consdict[entry] has to be used to not end with
@@ -390,7 +387,7 @@ class Filter:
                 if field:
 
                     # build where clause for string lists
-                    if field.get(COL_TYPE) in ['string', 'memo'] and isinstance(consdict[pre + entry], ListType):
+                    if field.get(ZC.COL_TYPE) in ['string', 'memo'] and isinstance(consdict[pre + entry], ListType):
                         if pre + entry + '_AND' in consdict:
                             parent = Filter('AND')
                         else:
@@ -407,7 +404,7 @@ class Filter:
                         continue
 
                     # test AND-concatenated multi/hierarchy-lists ... done extra, continue here
-                    if field.get(COL_TYPE) == 'multilist' or field.get(COL_TYPE) == 'hierarchylist':
+                    if field.get(ZC.COL_TYPE) == 'multilist' or field.get(ZC.COL_TYPE) == 'hierarchylist':
                         # and-concat is handled in the TableNode for len > 1 -> continue
                         if consdict.get(pre + entry + '_AND'):
                             values = consdict.get(pre + entry)
@@ -533,7 +530,7 @@ class Filter:
                 ctype = self.template.get(cons)
             else:
                 field = tableData.getField(cons)
-                ctype = field.get(COL_TYPE)
+                ctype = field.get(ZC.COL_TYPE)
 
             # ignore entry with NOT_IN flag
             if len(cons) - 7 == cons.find('_NOT_IN') and cons[:len(cons) - 7] in self.constraints.keys():
