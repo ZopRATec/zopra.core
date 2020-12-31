@@ -4,8 +4,10 @@
 
 \section package The Package
 
-This section covers the creation of a new ZopRA package. 
-First you need to create an empty Subfolder in the ZMOM Package on your hard disk. The example package is called "Examples". To make this folder a module, you need to create an empty __init__.py file in the subfolder. 
+TODO: Workover zopra packaging and basic configuration
+
+This section covers the creation of a new ZopRA package.
+First you need to create an empty Subfolder in the ZMOM Package on your hard disk. The example package is called "Examples". To make this folder a module, you need to create an empty __init__.py file in the subfolder.
 The next step is to create a managers.py file in that folder looking like this, for the beginning:
 
 \code{.py}
@@ -26,7 +28,7 @@ package_list = ['AuditAndSecurity',
 
 All packages in the packages.py file will be loaded, when your Zope instance starts. The Tools package needs to be loaded as it contains the generic base class for your manager and the product manager, that will be explained later on. The AutidAndSecurity package contains managers for persons, users and security settings. They are not necessary in a template based environment, but are still intertwined with the core components which makes them mandatory for ZMOM to load.
 
-To make it work, you finally have to create the manager, that is referenced in the managers.py file. The manager is the central concept of ZMOM, collecting tables and lists and giving you access to them. The convention is that the manager class name needs to start with "mgr" (or end on "Manager", which is the old style). In our example, we create a file called mgrGeometry.py containing the mgrGeometry class. 
+To make it work, you finally have to create the manager, that is referenced in the managers.py file. The manager is the central concept of ZMOM, collecting tables and lists and giving you access to them. The convention is that the manager class name needs to start with "mgr" (or end on "Manager", which is the old style). In our example, we create a file called mgrGeometry.py containing the mgrGeometry class.
 
 To allow this manager class to be found and installed by ZopRA, you need the class itself with some basic attributes. To ease programming a new Manager, we provide a ZMOMGenericManager baseclass which has a lot of generic functions that will be helpful to set up your own manager. Your class needs to extend it.
 
@@ -50,7 +52,8 @@ Now you can restart your zope instance to load your new package. Congratulations
 \section manager The Manager
 Before you continue to install and test your manager  you need to configure the database model. This will help us to show you how easy and fast you can set up a specific scenario.
 
-\subsection database_model The Database Model    
+TODO: WORKOVER model and list types
+\subsection database_model The Database Model
 Edit the managers.py file again. In order to have tables with attributes, you need to add those to the xml configuration string.
 
 \code{.xml}
@@ -85,13 +88,13 @@ Additionally, ZopRA can deal with two complex extension types, singlelist and mu
 \code{.xml}
 <Table name="rectangle" label="Rectangle"
            uid="116497999950">
-  <Column name="point1" label="Point 1" type="singlelist" 
+  <Column name="point1" label="Point 1" type="singlelist"
           function="point(x, y, label)" />
-  <Column name="point2" label="Point 2" type="singlelist" 
+  <Column name="point2" label="Point 2" type="singlelist"
           function="point()" />
-  <Column name="point3" label="Point 3" type="singlelist" 
+  <Column name="point3" label="Point 3" type="singlelist"
           function="point()" />
-  <Column name="point4" label="Point 4" type="singlelist"             
+  <Column name="point4" label="Point 4" type="singlelist"
           function="point()" />
   <Column name="label" label="Label" type="string" />
 </Table>
@@ -121,7 +124,7 @@ If you view your folder now (using the view tab or by using its url directly), y
 
 We will follow that link later on to examine the editorial views of your tables.
 
-But before, you can now inspect your new manager. Inside the ZMI, click the installed manager (in the ZMI-listing of your folder). Inside, you will find subfolders called tableHandler and listHandler (and some others which are not of interest right now). 
+But before, you can now inspect your new manager. Inside the ZMI, click the installed manager (in the ZMI-listing of your folder). Inside, you will find subfolders called tableHandler and listHandler (and some others which are not of interest right now).
 
 \subsection tablehandler TableHandler
 The tableHandler of class TableHandler is a container for all tables, that you specified before. Each table is an item inside the handler and can be viewed by clicking on it. Inspect the management tabs for a table to get some info about it. The TableHandler is responsible for parsing the xml and creating the table objects. The SQL-handling (also for table creation) is done by the table objects themselves.
@@ -136,7 +139,7 @@ Go to the index_html for your editorial area to get access to the manager listin
 
 \image html manager_overview.png
 
-Each table is listed here with the generic functionality for creating new entries, searching entries or listing all entries. Below the table listing, you will find a link-list for all of the manager�s lists.  
+Each table is listed here with the generic functionality for creating new entries, searching entries or listing all entries. Below the table listing, you will find a link-list for all of the manager�s lists.
 
 First we need to add some values to the lists in order to be able to select them on entry creation. Click on one of the lists to get to the list management screen. Add some values using the form and submit it each time. You can also delete and update the existing values later on.
 
@@ -150,7 +153,7 @@ Fill in some values and save the entry. You will see the new entry and get a mes
 
 \image html new_entry_created.png
 
-Next, we will have a look on the search form. Click the search image for our table on the manager main form to get there. The interface is generated automatically and since we did not specify anything yet, all columns will be rendered. 
+Next, we will have a look on the search form. Click the search image for our table on the manager main form to get there. The interface is generated automatically and since we did not specify anything yet, all columns will be rendered.
 
 \image html search.png
 
@@ -158,11 +161,11 @@ Fill in a value to get exactly the entries you are looking for. Press the "Searc
 
 \image html search_results.png
 
-Each entry is represented by one line. You can use the "anzeigen"-Link to get a detailed display of the entry. Since we did not configure anything, all attributes of the table are used in the listing. We will change that later on to have a more compact list view. The "bearbeiten"-Link can be used to edit the entry and the "l�schen"-Link is used to delete it. Use the "anzeigen"-link to get to the view display of an entry. 
+Each entry is represented by one line. You can use the "anzeigen"-Link to get a detailed display of the entry. Since we did not configure anything, all attributes of the table are used in the listing. We will change that later on to have a more compact list view. The "bearbeiten"-Link can be used to edit the entry and the "l�schen"-Link is used to delete it. Use the "anzeigen"-link to get to the view display of an entry.
 
 \image html show_entry.png
 
-The heading says "Point 1". It is using the table�s label together with the entry�s label (which is the autoid as long as you didn�t overwrite the "getLabelString"-method). You can see that the different types of attributes are rendered differently. Strings will be shown on single lines while memo-attributes are displayed as blocks of text. Singlelists look like normal strings and multilists will be displayed as a list of values.  Push the edit-Button at the bottom of the page to get to the edit display. 
+The heading says "Point 1". It is using the table�s label together with the entry�s label (which is the autoid as long as you didn�t overwrite the "getLabelString"-method). You can see that the different types of attributes are rendered differently. Strings will be shown on single lines while memo-attributes are displayed as blocks of text. Singlelists look like normal strings and multilists will be displayed as a list of values.  Push the edit-Button at the bottom of the page to get to the edit display.
 
 \image html edit_entry.png
 
@@ -185,9 +188,9 @@ An example of the structure:
                                     'show_fields':   [ 'field_name1','field_name2'],
                                     'check_fields':  {'field_name1': check_funktion2_name,'field_name2': check_funktion2_name, }
                                    } }
-    
+
 \endcode
-    
+
 \subsection overwriting_getlablestring Overwriting "getLabelString"
 
 TODO
@@ -204,17 +207,17 @@ You can define the fields of a form for each table with the "getLayoutInfoHook".
 \code
     def getLayoutInfoHook(self, table, action):
         """\brief Returns grouping information for layout"""
-        
+
         tmp = {'arbeit': [
-                          {'label': 'Allgemeines', 
+                          {'label': 'Allgemeines',
                            'fields': [
                               'titel',
                               'jahr',
                               'studiengang',
-                              'arbeitstyp', 
+                              'arbeitstyp',
                               ]
                            },
-                          
+
                           {'label': 'Nomenklatur',
                            'fields':[
                               'nomenklatur',
@@ -224,9 +227,9 @@ You can define the fields of a form for each table with the "getLayoutInfoHook".
                               'alte_nomenklatur',
                               ]
                            },
-                          
+
                           {'label':'Standort',
-                           'fields': [                                      
+                           'fields': [
                               'land',
                               'bundesland',
                               'ort',
@@ -243,7 +246,7 @@ You can define the fields of a form for each table with the "getLayoutInfoHook".
                           {'label':'Sonstige Angaben',
                            'fields':[
                               'schlagworte',
-                              'anmerkung',                            
+                              'anmerkung',
                               ]
                            }
                             ]
@@ -261,7 +264,7 @@ Similar to the definition of an Form you have to add the function "getHelpTexts"
 \code
     def getHelpTexts(self, table):
         """\brief helptexts"""
-        tmp = {'arbeit': 
+        tmp = {'arbeit':
             {
                 'autoren':'Schreiben sie eine Zeile je Autor (Nachname, Vorname).',
                 'schlagworte':'eine Zeile je Schlagwort',
@@ -276,7 +279,7 @@ Similar to the definition of an Form you have to add the function "getHelpTexts"
 If you want fields to be Checked before saveing you can define checker functions within the "_generic_config" of your manager. Add the Key "check_fields" and set another dictionary as value. The keys of this dictionary are the fieldnames and the vale is an function.
 
 \code
-    _generic_config = { 'tablename': { 
+    _generic_config = { 'tablename': {
                                     'check_fields':  {'fieldname': check_function, }
                                    } }
 \endcode
@@ -297,12 +300,12 @@ You can sort a list simply by adding the "sortables" key within the dictionary t
 \code
     def getLayoutInfoHook(self, table, action):
         """\brief Returns grouping information for layout"""
-        
+
         tmp = {'arbeit': [
 
-                          
+
                           {'label':'Standort',
-                           'fields': [                                      
+                           'fields': [
                               'land',
                               'bundesland',
                               'ort',
@@ -361,16 +364,16 @@ one_entry python:  tobj.getEntry(1);
 same_entry python: mgr.getEntry(tablename, 1);
 \endcode
 
-The first statement returns all entries in the table "rectangle". The "getLabel"-method returns the label of the table. You can also use it to get the labels of each attribute of the table by calling it with an attribute name as parameter. To get a list of all columns, use the "getColumnDefs"-method. It returns a dictionary with the column names as keys and the column definition dictionary containing more info about each column as values. Since we only need the names, we use the "keys"-method of the dictionary to get the list of keys. 
+The first statement returns all entries in the table "rectangle". The "getLabel"-method returns the label of the table. You can also use it to get the labels of each attribute of the table by calling it with an attribute name as parameter. To get a list of all columns, use the "getColumnDefs"-method. It returns a dictionary with the column names as keys and the column definition dictionary containing more info about each column as values. Since we only need the names, we use the "keys"-method of the dictionary to get the list of keys.
 
-There are two ways to get one exact entry of a table identified by its autoid: You can request it directly from that table (line 4) or use a function in the manager to do the same for you, by giving it the tablename and autoid as parameters (line 5). The difference is that you can�t alter the ZMOMTable "getEntry"-method, but you can overwrite the manager�s "getEntry"-method. In this way, you are for example able to load related entries and store them inside you entry. Since all operations that are using the cache actually deliver copies instead of the cached entries, you do no need to worry about accidentally cached items, but you also cannot use the cache to store anything else then the plain entry. 
+There are two ways to get one exact entry of a table identified by its autoid: You can request it directly from that table (line 4) or use a function in the manager to do the same for you, by giving it the tablename and autoid as parameters (line 5). The difference is that you can�t alter the ZMOMTable "getEntry"-method, but you can overwrite the manager�s "getEntry"-method. In this way, you are for example able to load related entries and store them inside you entry. Since all operations that are using the cache actually deliver copies instead of the cached entries, you do no need to worry about accidentally cached items, but you also cannot use the cache to store anything else then the plain entry.
 
 The return value of the entry gathering functions like "getEntries" (see chapter 9) are lists of entries. Each entry is a dictionary. To display the label and all attributes of all entries, you could use a TAL-statement as follows (in combination with the previous define statements):
 
 \code{.html}
 <h1 tal:content="label">Label</h1>
 <div tal:repeat="entry entries">
-  <h2 tal:content="python: 
+  <h2 tal:content="python:
                    mgr.getLabelString(tablename, entry['autoid'])">
     Entry Label
   </h2>
@@ -397,7 +400,7 @@ with the parameters:
 
 * table tablename of your entry
 * descr_dict dictionary of your entry( "fieldname":value )
-* REQUEST the request object 
+* REQUEST the request object
 
 If you want to handle these events simply add the nessesary methods to your manager. You can then modify your entry by changeing the descr_dict
 
@@ -440,7 +443,7 @@ viewPermission   = 'View'
 managePermission = 'Manage ZopRA'
 \endcode
 
-How to use these permissions in your manager is explained in the next chapter. The "View"-permission is the basic permission for all content that someone is allowed to see. Normally, all visitors to your website automatically get the "View" permission via the "Anonymous" role. In order for a normal user to be able to add or edit entries in ZMOM, you need to give the "Modify ZopRA Content" permissions to the user. You could create a role, give the permissions to that role and give the role to all users, who need to use the manager. This is not good if you have thousands of users. The second way is to give the permissions to a role that already exists and all users have (for example, the "Member" role). To create a role, go to the security tab on your folder in the ZMI.  Scroll down to the "User defined roles" section at the bottom and create a role. 
+How to use these permissions in your manager is explained in the next chapter. The "View"-permission is the basic permission for all content that someone is allowed to see. Normally, all visitors to your website automatically get the "View" permission via the "Anonymous" role. In order for a normal user to be able to add or edit entries in ZMOM, you need to give the "Modify ZopRA Content" permissions to the user. You could create a role, give the permissions to that role and give the role to all users, who need to use the manager. This is not good if you have thousands of users. The second way is to give the permissions to a role that already exists and all users have (for example, the "Member" role). To create a role, go to the security tab on your folder in the ZMI.  Scroll down to the "User defined roles" section at the bottom and create a role.
 - Give permission to role
 - give the role to the user
 
