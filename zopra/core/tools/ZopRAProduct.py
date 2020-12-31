@@ -641,95 +641,9 @@ class ZopRAProduct(ManagerPart):
 
     security.declareProtected(modifyPermission, 'showEditFormConfig')
 
-    def showEditFormConfig(self, REQUEST = None):
-        """\brief Return the html source for configuration tasks."""
-        button = self.getPressedButton(REQUEST)
-
-        if button:
-            changedIds = self.getValueListFromRequest(REQUEST, 'entry')
-
-            if button == BTN_L_ADD:
-                indict = getSpecialField(REQUEST, DLG_CUSTOM)
-                self.addConfigParam(indict)
-
-            if button == BTN_L_UPDATE:
-                for autoid in changedIds:
-                    autoid = int(autoid)
-                    value = REQUEST.get('value' + str(autoid))
-                    oldentry = self.tableHandler['config'].getEntry(autoid)
-                    oldentry['value'] = value
-                    self.editConfigParam(oldentry)
-
-            if button == BTN_L_DELETE:
-                for changed_id in changedIds:
-                    changed_id = int(changed_id)
-                    self.delConfigParam(changed_id)
-
-        # interface building
-        mgrtype_list     = self.getAllManagers(True)
-        mgrid_list       = self.getAllManagers(False)
-        config_str_list  = ['exclude']
-        param_list       = self.getConfigParams()
-
-        # cb1=hgComboBox(name = DLG_CUSTOM+'config_str')
-        # for entry in config_str_list:
-        #     cb1.insertItem(entry,entry)
-        dummy = ForeignList('dummy')
-        cb1 = dummy.getSpecialWidget( DLG_CUSTOM + 'config_str',
-                                      entry_list    = config_str_list )
-
-        cb2 = dummy.getSpecialWidget( DLG_CUSTOM + 'mgrtype',
-                                      entry_list    = mgrtype_list,
-                                      with_novalue = True )
-
-        cb3 = dummy.getSpecialWidget( DLG_CUSTOM + 'mgrid',
-                                      entry_list    = mgrid_list,
-                                      with_novalue = True)
-
-        table = hgTable()
-        table[0, 4] = dlgLabel('Parameter')
-        table[0, 5] = dlgLabel('Managertype')
-        table[0, 6] = dlgLabel('ManagerId')
-        table[0, 7] = dlgLabel('Key')
-        table[0, 8] = dlgLabel('Value')
-        row = 2
-
-        for entry in param_list:
-            table[row, 1] = hgCheckBox('', entry.get('autoid'), name = 'entry')
-            table[row, 4] = entry.get('config_str')
-            table[row, 5] = entry.get('mgrtype')
-            table[row, 6] = entry.get('mgrid')
-            table[row, 7] = entry.get('key1')
-            table[row, 8] = hgTextEdit( entry.get('value'),
-                                        name = 'value' +
-                                        str(entry.get('autoid')) )
-            row += 1
-
-        row += 1
-        table[row, 4] = cb1
-        table[row, 5] = cb2
-        table[row, 6] = cb3
-        table[row, 7] = hgTextEdit(name = DLG_CUSTOM + 'key1')
-        table[row, 8] = hgTextEdit(name = DLG_CUSTOM + 'value')
-
-        #
-        # dialog
-        #
-        dlg  = getStdDialog('Edit Manager Configuration', 'showEditFormConfig')
-
-        dlg.add( hgNEWLINE )
-        dlg.add( '<center>' )
-        dlg.add( str(table) )
-        dlg.add( hgNEWLINE )
-        dlg.add( mpfAddButton )
-        dlg.add( hgSPACE )
-        dlg.add( mpfUpdateButton )
-        dlg.add( hgSPACE )
-        dlg.add( mpfDeleteButton )
-        dlg.add( '</center>' )
-        dlg.add( hgNEWLINE )
-        dlg.add( self.getBackButtonStr(REQUEST) )
-        return HTML( dlg.getHtml() )(self, None)
+    def showEditFormConfig(self, REQUEST=None):
+        """Return the html source for configuration tasks."""
+        return 'Legacy: Not implemented.'
 
 #
 # public managing
@@ -737,70 +651,10 @@ class ZopRAProduct(ManagerPart):
     security.declareProtected(modifyPermission, '_index_html')
 
     def _index_html(self, REQUEST, parent):
-        """\brief Returns the html source for the manager specific part of
+        """Returns the html source for the manager specific part of
                   the index_html.
         """
-        perm = self.getGUIPermission()
-        if REQUEST and REQUEST.SESSION.get('zopratype'):
-            ztype = REQUEST.SESSION.get('zopratype')
-        else:
-            ztype = None
-
-        if perm.hasMinimumRole(perm.SC_VISITOR):
-
-            tab = hgTable(parent = parent)
-            tab[0, 0] = dlgLabel('<b>Manager</b>')
-            tab[1, 0] = hgSPACE
-            row = 2
-
-            alllist = self.getNaviManagerUrls(ztype, perm.hasRole(perm.SC_ADMIN))
-
-            keylist = alllist.keys()
-            keylist.sort()
-            bg_color = ssiDLG_SHADE.background().color()
-            for key in keylist:
-                label = hgLabel(key, alllist.get(key), tab)
-
-                tab[row, 0] = label
-                tab.setCellNoWrap(row + 2, 0)
-
-                if not row % 2:
-                    tab.setCellBackgroundColor(row, 0, bg_color)
-
-                row += 1
-
-            # when enableSimplePage is set (subclass overwrite), we show a Link to the main page,
-            # which gets overwritten to display a user page with a link to an admin-page, that redirects here
-            # TODO: straighten out this link and overwrite - mess (simplePage / adminPage)
-            if hasattr(self, 'enableSimplePage'):
-                tab[row, 0] = hgSPACE
-                row        += 1
-                tab[row, 0] = hgLabel( 'Plain Page',
-                                       self.absolute_url())
-                row        += 1
-
-            if row > 2:
-                tab.setColAlignment(0, "center")
-
-            else:
-                tab[row, 0] = hgLabel('<h3>No installed managers found.</h3>')
-                row        += 1
-
-            if perm.hasRole(perm.SC_ADMIN):
-
-                tab[row,     0] = hgNEWLINE
-                tab[row + 1, 0] = hgNEWLINE
-                row            += 2
-
-                tab[row, 0] = hgLabel('Edit Configuration',
-                                      '%s/showEditFormConfig' % self.absolute_url())
-
-            return tab
-
-        else:
-            return hgLabel("""<h3>Your authorization level does not allow you
-                                to view this resource.<h3>""")
-
+        return 'Legacy: Not implemented.'
 
     security.declareProtected(managePermission, 'viewForm')
 
