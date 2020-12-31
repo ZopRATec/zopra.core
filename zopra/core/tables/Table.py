@@ -1830,25 +1830,6 @@ class Table(SimpleItem, PropertyManager):
     # Statistics
     #
     ##########################################################################
-    QT_COUNT     = """SELECT count(*) FROM %s"""
-    QT_COUNT_DMY = """SELECT count(*) AS count,
-                             date_part('year',  entrydate) AS year,
-                             date_part('month', entrydate) AS month,
-                             date_part('day',   entrydate) AS day
-                      FROM %s
-                      GROUP BY year, month, day
-                      ORDER BY year, month, day"""
-    QT_COUNT_MY  = """SELECT count(*) AS count,
-                             date_part('year',  entrydate) AS year,
-                             date_part('month', entrydate) AS month
-                      FROM %s
-                      GROUP BY year, month
-                      ORDER BY year, month"""
-    QT_COUNT_Y   = """SELECT count(*) AS count,
-                             date_part('year', entrydate)  AS year
-                      FROM %s
-                      GROUP BY year
-                      ORDER BY year"""
 
     def getStatistic(self):
         """ Returns a dictionary that contains some statistic about the usage of
@@ -1864,10 +1845,12 @@ class Table(SimpleItem, PropertyManager):
         manager    = self.getManager()
         execQuery  = manager.getManager(ZC.ZM_PM).executeDBQuery
         table      = manager.id + self.tablename
-        return { 'rowCount':       execQuery( self.QT_COUNT     % table ),
-                 'entriesInDay':   execQuery( self.QT_COUNT_DMY % table ),
-                 'entriesInMonth': execQuery( self.QT_COUNT_MY  % table ),
-                 'entriesInYear':  execQuery( self.QT_COUNT_Y   % table ) }
+        connector = manager.getManager(ZC.ZM_PM).connector
+
+        return { 'rowCount':       execQuery( connector.QT_COUNT     % table ),
+                 'entriesInDay':   execQuery( connector.QT_COUNT_DMY % table ),
+                 'entriesInMonth': execQuery( connector.QT_COUNT_MY  % table ),
+                 'entriesInYear':  execQuery( connector.QT_COUNT_Y   % table ) }
 
 
     ##########################################################################

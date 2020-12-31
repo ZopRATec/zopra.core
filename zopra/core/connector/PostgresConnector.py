@@ -337,3 +337,24 @@ class PostgresConnector(SqlConnector):
 
         # TODO: shared test for other sharing managers
         self.query( 'DROP FUNCTION %s(%s);' % (name, param) )
+
+    # some special queries for table statistics (overridden for date_part)
+    QT_COUNT     = """SELECT count(*) FROM %s"""
+    QT_COUNT_DMY = """SELECT count(*) AS count,
+                             date_part('year',  entrydate) AS year,
+                             date_part('month', entrydate) AS month,
+                             date_part('day',   entrydate) AS day
+                      FROM %s
+                      GROUP BY year, month, day
+                      ORDER BY year, month, day"""
+    QT_COUNT_MY  = """SELECT count(*) AS count,
+                             date_part('year',  entrydate) AS year,
+                             date_part('month', entrydate) AS month
+                      FROM %s
+                      GROUP BY year, month
+                      ORDER BY year, month"""
+    QT_COUNT_Y   = """SELECT count(*) AS count,
+                             date_part('year', entrydate)  AS year
+                      FROM %s
+                      GROUP BY year
+                      ORDER BY year"""
