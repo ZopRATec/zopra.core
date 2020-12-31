@@ -587,9 +587,9 @@ class ZopRAProduct(ManagerPart):
         test2 = indict.get('mgrid')
         if test1 and test2:
             if self.getManager(test1).getId() != test2:
-                raise ValueError(self.getErrorDialog(
+                raise ValueError(
                          'Managertype and Id do not match, please select ' +
-                         'only one of both or matching values.')
+                         'only one of both or matching values.'
                         )
         indict['notes']     = None
         indict['parent']    = None
@@ -958,7 +958,7 @@ class ZopRAProduct(ManagerPart):
 
             return HTML(dlg.getHtml())(self, REQUEST)
         else:
-            self.displayError('Insufficient privileges to access this function', 'Access Denied')
+            raise ValueError('Access Denied: Insufficient privileges to access this function')
 
 
     security.declareProtected(managePermission, 'updateVersion')

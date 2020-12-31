@@ -145,8 +145,7 @@ class TableNode(SimpleItem):
         if not ownMgr:
             if not zopratype:
                 errstr = 'Manager not found and no zopratype available.'
-                err    = mgr.getErrorDialog(errstr)
-                raise ValueError(err)
+                raise ValueError(errstr)
             ownMgr = mgr.getHierarchyDownManager( self.mgrType,
                                                   obj_id    = self.mgrId,
                                                   zopratype = zopratype )
@@ -619,7 +618,7 @@ class TableNode(SimpleItem):
                 if xlist in self.order:
                     if listobj.isFunctionReference():
                         msg = 'Sorting results by %s is not possible.' % self.order
-                        raise ValueError(self.mgr.getErrorDialog(msg))
+                        raise ValueError(msg)
 
                     else:
                         # function lists and table-reference lists without col def should

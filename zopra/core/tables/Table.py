@@ -199,8 +199,7 @@ class Table(SimpleItem, PropertyManager):
         mgr = self.getManager()
 
         if len(idvalue) != len(idfield):
-            raise ValueError(
-                mgr.getErrorDialog('Internal Error. Lists do not match.') )
+            raise ValueError('Internal Error. Lists do not match.')
 
         wherepart = []
 
@@ -332,7 +331,7 @@ class Table(SimpleItem, PropertyManager):
                     # more than one result
                     msg = "More than one entry with the same index id %s in table %s"
                     msg = msg % ( entry_id, self.tablename )
-                    raise ValueError( mgr.getErrorDialog(msg) )
+                    raise ValueError(msg)
 
                 result = results[0]
 
@@ -497,8 +496,7 @@ class Table(SimpleItem, PropertyManager):
             if len(results) > 1:
                 errstr = 'getEntryAutoid got id which is not unique: %s %s'
                 errstr = errstr % (idfield, entry_id)
-                err    = mgr.getErrorDialog(errstr)
-                raise ValueError(err)
+                raise ValueError(errstr)
             else:
                 return results[0][0]
 
@@ -590,8 +588,7 @@ class Table(SimpleItem, PropertyManager):
 
             missing = ', '.join(missing)
             error   = 'Field%s %s required.' % ( plural, missing )
-            dialog  = mgr.getErrorDialog( error )
-            raise ValueError( dialog )
+            raise ValueError( error )
 
         # TODO: check insert permission
 
@@ -710,8 +707,7 @@ class Table(SimpleItem, PropertyManager):
                     plural = ''
                 missing = ', '.join(missing)
                 error   = 'Field%s %s required.' % ( plural, missing )
-                dialog  = mgr.getErrorDialog( error )
-                raise ValueError( dialog )
+                raise ValueError( error )
 
             # get autoid if necessary
 
@@ -886,7 +882,7 @@ class Table(SimpleItem, PropertyManager):
             if not self.getField(column):
                 message = 'Column [%s] not found in table [%s]' % ( column,
                                                                     tableName )
-                raise RuntimeError( mgr.getErrorDialog( message ) )
+                raise RuntimeError(message)
 
         if not columnList:
             # use all cols
@@ -1028,7 +1024,7 @@ class Table(SimpleItem, PropertyManager):
             if not self.getField(column):
                 message = 'Column [%s] not found in table [%s]' % ( column,
                                                                     tableName )
-                raise RuntimeError( mgr.getErrorDialog( message ) )
+                raise RuntimeError(message)
 
         if not columnList:
             # use all columns
