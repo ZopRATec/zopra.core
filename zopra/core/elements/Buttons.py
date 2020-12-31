@@ -233,28 +233,3 @@ def getSpecialField(REQUEST = None, fieldType = DLG_CUSTOM):
 
                 field_dict[key[length:]] = REQUEST[key]
     return field_dict
-
-
-def getBackButtonStr(REQUEST = None):
-    """\brief Returns a back button string.
-
-    The function tries to keep track of how often a user should go back to a
-    specific site. But it only works if the function gets a REQUEST object.
-
-    \n
-    \return back button string.
-    """
-    btn_key   = '_go'
-    btn_label = ' Back '
-    if REQUEST:
-        if btn_key in REQUEST:
-            go_value = int(REQUEST[btn_key]) - 1
-        else:
-            go_value = -1
-        btn_go = hgPushButton(btn_label)
-        btn_go.setFunction('history.go(%s)' % go_value, True)
-        return btn_go + hgProperty(btn_key, go_value)
-
-    btn_go = hgPushButton(btn_label)
-    btn_go.setFunction('history.back()', True)
-    return btn_go.getHtml()

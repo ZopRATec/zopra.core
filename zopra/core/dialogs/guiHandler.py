@@ -165,48 +165,6 @@ class guiHandler(object):
             for child in widget.children():
                 self._processEvents( child, form )
 
-
-    ##########################################################################
-    #
-    # Static Methods
-    #
-    ##########################################################################
-    @staticmethod
-    def getBackButtonStr(REQUEST = None, prop = True):
-        """\brief Returns a back button string.
-
-        The function tries to keep track of how often a user should go back to a
-        specific site. But it only works if the function gets a REQUEST object.
-
-        \n
-        \return back button string.
-        """
-        if not REQUEST:
-            btn_go = hgPushButton(' Back ')
-            btn_go.setFunction('history.back()', True)
-            return btn_go.getHtml()
-
-        if REQUEST.has_key('go'):
-            number  = REQUEST['go']
-
-            if isinstance(number, ListType):
-                number = number[0]
-
-            back_go = int(number) - 1
-
-        else:
-            back_go -= 1
-
-        btn_go = hgPushButton(' Back ')
-        btn_go.setFunction('history.go(%s)' % back_go, True)
-        retstr = btn_go.getHtml()
-
-        if prop:
-            retstr += hgProperty('go', back_go)
-
-        return retstr
-
-
     ##########################################################################
     #
     # Instance Methods
