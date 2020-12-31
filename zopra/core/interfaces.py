@@ -1,5 +1,5 @@
-from zope.interface import Interface
 from OFS.interfaces import IFolder
+from zope.interface import Interface
 
 
 class IAddOnInstalled(Interface):
@@ -33,6 +33,9 @@ class IZopRAManager(IFolder):
 
         @result string - class name (self.__class__.__name__)
         """
+
+    def getClassType(self):
+        """This method returns a list of the class names of all ancestors and the current class"""
 
 
 class IZopRAProduct(IZopRAManager):
