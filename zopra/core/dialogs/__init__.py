@@ -1,37 +1,12 @@
-from PyHtmlGUI.kernel.hgWidget                  import hgWidget
-from PyHtmlGUI.dialogs.hgDialog                 import hgDialog
-from PyHtmlGUI.dialogs.hgFormlessDialogLayout   import hgFormlessDialogLayout
-from PyHtmlGUI.widgets.hgLabel                  import hgNEWLINE, hgProperty
-from PyHtmlGUI.widgets.hgPushButton             import hgPushButton
-
-from zopra.core                                 import HTML
-
-from zopra.core.dialogs.Dialog                  import Dialog
-from zopra.core.elements.Styles.Default         import ssiA,         \
-                                                       ssiA_VISITED, \
-                                                       ssiDLG_NOBORDER
-from zopra.core.widgets                         import getBackButtonStr
-from PyHtmlGUI.kernel.hgGridLayout              import hgGridLayout
-
-#
-# some dialog handling constants
-#
-DLG_NEW    = 1
-DLG_SHOW   = 2
-DLG_EDIT   = 3
-DLG_SEARCH = 4
-DLG_DELETE = 5
-DLG_IMPORT = 6
-DLG_LIST   = 7
-
-DLG_TYPES = [DLG_SHOW, DLG_EDIT, DLG_NEW, DLG_DELETE, DLG_IMPORT, DLG_LIST]
+from PyHtmlGUI.dialogs.hgDialog import hgDialog
+from PyHtmlGUI.dialogs.hgFormlessDialogLayout import hgFormlessDialogLayout
+from PyHtmlGUI.widgets.hgLabel import hgLabel
+from zopra.core.elements.Styles.Default import ssiA
+from zopra.core.elements.Styles.Default import ssiA_VISITED
+from zopra.core.elements.Styles.Default import ssiDLG_LABEL
 
 
-dlgHeader = '<dtml-var standard_html_header>'
-dlgFooter = '<dtml-var standard_html_footer>'
-
-
-def getStdDialog(title = '', action = None, name = None, formless = False):
+def getStdDialog(title='', action=None, name=None, formless=False):
     """ This method returns a standard ZopRA dialog.
 
     @param title
@@ -41,106 +16,27 @@ def getStdDialog(title = '', action = None, name = None, formless = False):
     @return hgDialog
     """
     if formless:
-        dlg = hgFormlessDialogLayout(title = title, name = name)
+        dlg = hgFormlessDialogLayout(title=title, name=name)
     else:
-        dlg = hgDialog(title = title, action = action, name = name)
+        dlg = hgDialog(title=title, action=action, name=name)
 
-    dlg.setHeader(dlgHeader)
-    dlg.setFooter(dlgFooter)
+    dlg.setHeader('<dtml-var standard_html_header>')
+    dlg.setFooter('<dtml-var standard_html_footer>')
 
     # styles
-    dlg._styleSheet.getSsiName( ssiA         )
-    dlg._styleSheet.getSsiName( ssiA_VISITED )
+    dlg._styleSheet.getSsiName(ssiA)
+    dlg._styleSheet.getSsiName(ssiA_VISITED)
     return dlg
 
 
-def getPlainDialog(action, parent, border = True):
-    """ This method returns a caption-less form-containing dialog with one
-        widget with grid layout inside without header/footer
+def dlgLabel(text, parent=None):
+    """ This method returns a text label widget with the given name and parent.
 
-    @param action
-    @param parent
-    @param border
-    @return hgDialog, hgWidget
+    @param text - text that the label will display
+    @param parent - parent widget
+    @return hgLabel - constructed widget
     """
-    dlg = hgDialog(action = action, parent = parent)
-    dlg.setHeader('')
-    dlg.setFooter('')
-
-    if not border:
-        # FIXME: get rid of border -> new style
-        # raise ValueError(len(dlg._styleSheet.getStyleSheetItems()))
-        dlg._styleSheet.add(ssiDLG_NOBORDER)
-        dlg.setSsiName(ssiDLG_NOBORDER.name())
-
-    # mask
-    mask   = hgWidget(parent = dlg)
-    mask.setLayout(hgGridLayout(mask))
-    dlg.add(mask)
-    return dlg, mask
-
-
-def getStdZMOMDialog(title = '', name = None, flags = 0):
-    """ This method returns a standard ZopRA dialog.
-
-    @param title
-    @param name
-    @param flags
-    @return hgDialog
-    """
-    dlg  = Dialog( name = name, flags = flags )
-
-    # in case of embedded dialog, title has to be set after initialization
-    dlg.caption = title
-
-    return dlg
-
-
-def getEmbeddedDialog( title    = '',
-                       action   = None,
-                       name     = None,
-                       formless = True,
-                       parent   = None ):
-    """ This method returns a standard ZopRA dialog with empty header
-        and footer.
-
-    @param title
-    @param action
-    @param name
-    @param formless
-    @param parent
-    @return hgDialog
-    """
-    if formless:
-        dlg = hgFormlessDialogLayout( title  = title,
-                                      name   = name,
-                                      parent = parent )
-    else:
-        dlg  = hgDialog( title  = title,
-                         action = action,
-                         name   = name,
-                         parent = parent )
-    dlg.setHeader( '' )
-    dlg.setFooter( '' )
-
-    # styles
-    dlg._styleSheet.getSsiName( ssiA         )
-    dlg._styleSheet.getSsiName( ssiA_VISITED )
-    return dlg
-
-
-def getAccessDialog(manager):
-    """ This method returns the HTML source of an access denied dialog.
-
-    @param manager
-    @return String - a HTML page with an access denied dialog
-    """
-    dlg  = getStdDialog('Access Denied')
-
-    dlg.add(hgNEWLINE)
-    dlg.add('<center>')
-    dlg.add('Please login to access this function.')
-    dlg.add('</center>')
-    dlg.add(hgNEWLINE)
-    dlg.add(manager.getBackButtonStr())
-    return HTML( dlg.getHtml() )(manager, None)
+    label = hgLabel(text, parent=parent)
+    label._styleSheet.getSsiName(ssiDLG_LABEL)
+    label.setSsiName('.dlg_label')
+    return label
