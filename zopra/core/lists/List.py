@@ -1,49 +1,36 @@
-############################################################################
-#    Copyright (C) 2004 by Ingo Keller                                     #
-#    <webmaster@ingo-keller.de>                                            #
-#                                                                          #
-# Copyright: See COPYING file that comes with this distribution            #
-#                                                                          #
-############################################################################
-"""\brief Basic List Handling for Dropdownlists, List Entry Management."""
+"""Basic List Handling and List Entry Management."""
 
-#
-# Python Language Imports
-#
-from types                  import ListType, StringType, IntType, UnicodeType
-from copy                   import deepcopy
+from copy import deepcopy
+from operator import itemgetter
+from types import IntType
+from types import ListType
+from types import StringType
+from types import UnicodeType
 
-#
-# PyHtmlGUI Imports
-#
-from PyHtmlGUI                      import E_PARAM_TYPE
-from PyHtmlGUI.widgets.hgLabel      import hgLabel,   \
-                                           hgSPACE,   \
-                                           hgNEWLINE, \
-                                           hgProperty
-from PyHtmlGUI.kernel.hgTable       import hgTable
-from PyHtmlGUI.widgets.hgTextEdit   import hgTextEdit
+from PyHtmlGUI import E_PARAM_TYPE
+from PyHtmlGUI.kernel.hgTable import hgTable
+from PyHtmlGUI.widgets.hgCheckBox import hgCheckBox
+from PyHtmlGUI.widgets.hgLabel import hgLabel
+from PyHtmlGUI.widgets.hgLabel import hgNEWLINE
+from PyHtmlGUI.widgets.hgLabel import hgSPACE
 from PyHtmlGUI.widgets.hgPushButton import hgPushButton
-from PyHtmlGUI.widgets.hgCheckBox   import hgCheckBox
-
-#
-# ZopRA Imports
-#
-from zopra.core                     import HTML, ZC
-from zopra.core.elements.Buttons    import mpfAddButton,     \
-                                           mpfDeleteButton,  \
-                                           mpfUpdateButton,  \
-                                           mpfReset2Button,  \
-                                           DLG_FUNCTION,     \
-                                           BTN_L_ADD,        \
-                                           BTN_L_DELETE,     \
-                                           BTN_L_UPDATE,     \
-                                           BTN_L_RESET2,     \
-                                           getPressedButton
-from zopra.core.CorePart            import getStdDialog
-from zopra.core.lists.GenericList   import GenericList, \
-                                           _list_definition
-from zopra.core.widgets             import dlgLabel
+from PyHtmlGUI.widgets.hgTextEdit import hgTextEdit
+from zopra.core import HTML
+from zopra.core import ZC
+from zopra.core.dialogs import getStdDialog
+from zopra.core.elements.Buttons import BTN_L_ADD
+from zopra.core.elements.Buttons import BTN_L_DELETE
+from zopra.core.elements.Buttons import BTN_L_RESET2
+from zopra.core.elements.Buttons import BTN_L_UPDATE
+from zopra.core.elements.Buttons import DLG_FUNCTION
+from zopra.core.elements.Buttons import getPressedButton
+from zopra.core.elements.Buttons import mpfAddButton
+from zopra.core.elements.Buttons import mpfDeleteButton
+from zopra.core.elements.Buttons import mpfReset2Button
+from zopra.core.elements.Buttons import mpfUpdateButton
+from zopra.core.lists.GenericList import GenericList
+from zopra.core.lists.GenericList import _list_definition
+from zopra.core.dialogs import dlgLabel
 
 
 class List(GenericList):
@@ -112,11 +99,6 @@ class List(GenericList):
                 log = False
 
         m_product.delTable( my_id + self.listname, log )
-
-        # fname = 'atov' + my_id + self.listname
-        # m_product.delFunction( fname,
-        #                        'integer',
-        #                         log )
 
 
     # noedit property methods
@@ -347,7 +329,6 @@ class List(GenericList):
         return completelist
 
 
-
     def updateEntry( self,
                      descr_dict,
                      entry_id ):
@@ -547,133 +528,15 @@ class List(GenericList):
 
         return retlist if is_list else retlist[0]
 
-
-    def getEntryFromRequest(self, autoid, REQUEST):
-        """\brief get value and translations from REQUEST"""
-        entry = { ZC.VALUE: REQUEST.get(self.listname + str(autoid))}
-        for trans in self.translations:
-            key = ZC.VALUE + '_' + trans
-            keyReq = self.listname + '_' + trans + str(autoid)
-            if REQUEST.get(keyReq):
-                entry[key] = REQUEST[keyReq]
-        return entry
-
+    ##########################################################################
+    #
+    # Legacy editForm Stub for patching
+    #
+    ##########################################################################
 
     def editForm(self, REQUEST = None):
         """\brief Return the html source of the edit list form."""
-        # if the list is used by a HierarchyList, then we have to forward to its special editForm
-        # get all lists connected to this one
-        mgr = self.getManager()
-
-        lHandler = mgr.listHandler
-        tabname = None
-        for table in lHandler.maptable2lists.keys():
-            if self.listname in lHandler.maptable2lists[table]['hierarchylist']:
-                tabname = table
-                break
-        if tabname:
-            # found hierarchylist using this list -> forward editForm
-            # FIXME: this means we need the value functions in ForeignList, needs to be moved here
-            fwd = lHandler.absolute_url() + '/' + tabname + '_' + self.listname + '/editForm'
-            REQUEST.RESPONSE.redirect(fwd)
-
-        # security manager
-        m_sec = mgr.getHierarchyUpManager(ZC.ZM_SCM)
-
-        button     = mgr.getPressedButton(REQUEST)
-        if button:
-            changedIds = mgr.getValueListFromRequest(REQUEST, 'entry')
-
-            # add function
-            if button == BTN_L_ADD:
-                if 'new_entry' in REQUEST:
-                    self.addValue(REQUEST['new_entry'])
-
-            # delete function
-            elif button == BTN_L_DELETE:
-                for changed_id in changedIds:
-                    changed_id = int(changed_id)
-                    self.delValue(changed_id)
-
-            # switch hide -> show
-            elif button == 'Show':
-                for changed_id in changedIds:
-                    self.updateEntry( {ZC.SHOW: 'yes'},
-                                      changed_id )
-
-            # switch show -> hide
-            elif button == 'Hide':
-                for changed_id in changedIds:
-                    self.updateEntry( {ZC.SHOW: 'no'},
-                                      changed_id )
-            # update function
-            elif button == BTN_L_UPDATE:
-                [self.updateEntry(self.getEntryFromRequest(eid, REQUEST), eid) for eid in changedIds]
-
-        # interface building
-        entry_list = self.getEntries(with_hidden = True)
-        # sort by value
-        own_cmp = lambda x, y: (x[ZC.VALUE] < y[ZC.VALUE]) and -1 or (x[ZC.VALUE] > y[ZC.VALUE]) and 1 or 0
-        entry_list.sort(own_cmp)
-
-        offset = len(self.translations)
-
-        # build mask
-        tab = hgTable()
-        tab[0, 4] = dlgLabel('Values')
-        for index, trans in enumerate(self.translations):
-            tab[0, index + 5] = dlgLabel(trans)
-        tab[0, 5 + offset] = dlgLabel('Show')
-        row = 2
-
-        # all existing list entries
-        for entry in entry_list:
-            tab[row, 1] = hgCheckBox('', entry.get(ZC.TCN_AUTOID), name = 'entry')
-            tab[row, 4] = hgTextEdit( entry.get(ZC.VALUE),
-                                      name = self.listname +
-                                      str(entry.get(ZC.TCN_AUTOID)) )
-            for index, trans in enumerate(self.translations):
-                formkey = self.listname + '_' + trans + str(entry.get(ZC.TCN_AUTOID))
-                key = ZC.VALUE + '_' + trans
-                tab[row, index + 5] = hgTextEdit( entry.get(key),
-                                                  name = formkey )
-            tab[row, 5 + offset] = entry.get(ZC.SHOW)
-            row += 1
-
-        #
-        # dialog
-        #
-
-        # roc_count
-        counttxt = '(%s %s)' % (len(entry_list), len(entry_list) == 1 and 'entry' or 'entries')
-
-        dlg  = getStdDialog('Edit %s List %s' % (self.label, counttxt), 'editForm')
-
-        dlg.add( hgNEWLINE)
-        dlg.add( '<center>' )
-        dlg.add( tab )
-        dlg.add( hgNEWLINE)
-        dlg.add( mpfUpdateButton)
-        if not m_sec or m_sec.getCurrentLevel() > 8:
-            dlg.add( hgSPACE)
-            dlg.add( hgPushButton(' Show ', DLG_FUNCTION + 'Show') )
-            dlg.add( hgSPACE)
-            dlg.add( hgPushButton(' Hide ', DLG_FUNCTION + 'Hide') )
-            dlg.add( hgSPACE)
-            dlg.add( mpfDeleteButton )
-        dlg.add( hgNEWLINE)
-        dlg.add( hgNEWLINE)
-
-        # new entry
-        dlg.add( 'New Value:')
-        dlg.add( hgTextEdit(name = "new_entry"))
-        dlg.add( mpfAddButton )
-        dlg.add( '</center>' )
-        dlg.add( hgNEWLINE)
-        dlg.add( hgProperty('listname', self.listname) )
-        dlg.add( mgr.getBackButtonStr(REQUEST) )
-        return HTML( dlg.getHtml() )(self, REQUEST)
-
+        return 'Legacy method. Not implemented.'
 
     ##########################################################################
     #
@@ -710,7 +573,7 @@ class List(GenericList):
 
 
         tab[2, 0] = self.listname
-        tab[2, 2] = self.label
+        tab[2, 2] = self.label.encode('utf8')
         tab[2, 6] = (self.noedit and 'yes') or 'no'
 
         # try to get rowcount, if error: dbtable for list may not exist
@@ -731,7 +594,7 @@ class List(GenericList):
         dlg.add( tab )
         return HTML( dlg.getHtml() )(self, REQUEST)
 
-
+    # TODO: what about translation-columns?
     def editTab(self, REQUEST):
         """\brief List edit tab."""
         message = ''
@@ -739,9 +602,9 @@ class List(GenericList):
         # test Request for edit
         mgr = self.getManager()
 
-        button = mgr.getPressedButton(REQUEST)
-
-        if button:
+        buttons = getPressedButton(REQUEST)
+        if len(buttons) > 0:
+            button = buttons[0]
             changedIds = mgr.getValueListFromRequest(REQUEST, 'entry')
 
             # add function
@@ -779,10 +642,9 @@ class List(GenericList):
                     changedIds )
 
         # interface building
-        entry_list = self.getEntries()
+        entry_list = self.getEntries(with_hidden=True)
         # sort by value
-        own_cmp = lambda x, y: (x[ZC.TCN_AUTOID] < y[ZC.TCN_AUTOID]) and -1 or (x[ZC.TCN_AUTOID] > y[ZC.TCN_AUTOID]) and 1 or 0
-        entry_list.sort(own_cmp)
+        entry_list = sorted(entry_list, key=itemgetter(ZC.TCN_AUTOID))
 
         # build mask
         tab = hgTable()
@@ -795,17 +657,20 @@ class List(GenericList):
 
         # all existing list entries
         for entry in entry_list:
+            rank = entry.get(ZC.RANK) or u''
+            value = entry.get(ZC.VALUE) or ''
+            notes = entry.get(ZC.NOTES) or u''
             tab[row, 1] = entry.get(ZC.TCN_AUTOID)
             tab[row, 4] = entry.get(ZC.SHOW)
 
             tab[row, 0] = hgCheckBox('', entry.get(ZC.TCN_AUTOID), name = 'entry')
 
-            tab[row, 2] = hgTextEdit( entry.get(ZC.VALUE),
+            tab[row, 2] = hgTextEdit( value.encode('utf8'),
                                       name = self.listname +
                                       str(entry.get(ZC.TCN_AUTOID)))
-            tab[row, 3] = hgTextEdit( entry.get(ZC.RANK),
+            tab[row, 3] = hgTextEdit( rank,
                                       name = ZC.RANK + str(entry.get(ZC.TCN_AUTOID)))
-            tab[row, 5] = hgTextEdit( entry.get(ZC.NOTES),
+            tab[row, 5] = hgTextEdit( notes.encode('utf8'),
                                       name = ZC.NOTES + str(entry.get(ZC.TCN_AUTOID)))
             row += 1
 

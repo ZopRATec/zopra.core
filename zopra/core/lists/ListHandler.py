@@ -5,42 +5,23 @@
 # Copyright: See COPYING file that comes with this distribution           #
 #                                                                         #
 ###########################################################################
-import string
-from types                           import ListType
+from types import ListType
 
-#
-# PyHtmlGUI Imports
-#
-from PyHtmlGUI.widgets.hgRadioButton import hgRadioButton
-from PyHtmlGUI.kernel.hgTable        import hgTable
-from PyHtmlGUI.kernel.hgWidget       import hgWidget
-from PyHtmlGUI.kernel.hgGridLayout   import hgGridLayout
-from PyHtmlGUI.widgets.hgLabel       import hgLabel,       \
-                                            hgSPACE,       \
-                                            hgProperty
+from PyHtmlGUI.kernel.hgTable import hgTable
+from PyHtmlGUI.widgets.hgLabel import hgLabel
 
-#
-# ZopRA Imports
-#
-from zopra.core                     import HTML, Folder, ZM_PM, ZM_SCM, ZC
-from zopra.core.dialogs             import getStdDialog,       \
-                                           getStdZMOMDialog
-from zopra.core.elements.Buttons    import BTN_L_ADDITEM,  \
-                                           BTN_L_REMOVE,   \
-                                           BTN_L_FILTER,   \
-                                           BTN_HL_SELECT,  \
-                                           BTN_HL_REMOVE,  \
-                                           BTN_FRL_PREV,   \
-                                           BTN_FRL_NEXT,   \
-                                           DLG_CUSTOM,     \
-                                           mpfContinueButton
-from zopra.core.lists.GenericList   import GenericList
-from zopra.core.lists.List          import List
-from zopra.core.lists.ForeignList   import ForeignList
-from zopra.core.lists.MultiList     import MultiList
+from zopra.core import HTML
+from zopra.core import ZC
+from zopra.core import ZM_PM
+from zopra.core import ZM_SCM
+from zopra.core import Folder
+from zopra.core.dialogs.Dialog import Dialog
+from zopra.core.lists.ForeignList import ForeignList
 from zopra.core.lists.HierarchyList import HierarchyList
-from zopra.core.utils               import getParentManager, getASTFromXML
-from zopra.core.widgets             import dlgLabel
+from zopra.core.lists.List import List
+from zopra.core.lists.MultiList import MultiList
+from zopra.core.utils import getASTFromXML
+from zopra.core.utils import getParentManager
 
 
 LISTTYPES = ['singlelist', 'multilist', 'hierarchylist']
@@ -227,13 +208,13 @@ class ListHandler(Folder):
         return self.hasObject(key)
 
     def keys(self):
-        """\brief returns all names of basic List objects"""
+        """Returns all names of basic List objects"""
         keylist = []
         for item in dir(self):
             if hasattr(self, str(item)):
                 attr = getattr(self, item)
                 # just take genuine db lists
-                if hasattr(attr, '_classType') and 'List' in attr._classType:
+                if hasattr(attr, 'getClassType') and 'List' in attr.getClassType():
                     keylist.append(item)
         return keylist
 
@@ -446,41 +427,6 @@ class ListHandler(Folder):
             self[entry].clearCache()
 
 
-#
-# context menu
-#
-    def getListContextTable(self, parent, multiCol = 1):
-        """\brief Returns all available lists in this handler (html)"""
-
-        widg = hgWidget(parent = parent)
-        lay  = hgGridLayout(widg, 2, 1, 10, 0)
-        row = 0
-        col = 0
-        ordered_list  = []
-        for item in self.getListIDs():
-            if self[item].noedit is not True:
-                label = self[item].getLabel( )
-                if not label or label == ' ':
-                    continue
-                ordered_list.append( (label, item) )
-
-        ordered_list.sort()
-        for (label, listname) in ordered_list:
-            link      = 'listHandler/%s/editForm' % listname
-            lab = hgLabel( 'Edit List %s' % label, link, parent = widg )
-            lay.addWidget(lab, row, col)
-
-            col += 1
-            if not col % multiCol:
-                col = 0
-                row += 1
-
-        if row > 0 or col > 0:
-            return widg
-        else:
-            return None
-
-
     def checkEmptyEditList(self, table, edit_dict, descr_dict):
         """\brief checks wether a list has been edited to emtpy
                   and changes the descr_dict."""
@@ -502,182 +448,11 @@ class ListHandler(Folder):
                 descr_dict[col] = []
         return
 
-
-    def handleListButtons(self, table, button, REQUEST, descr_dict, prefix = None):
-        """\brief removes or adds values from/to descr_dict
-                    according to button/REQUEST."""
-        # button might be buttonname + '_' + listname
-        # multilist add
-        if button.startswith(BTN_L_ADDITEM):
-            # only commented once, same for all buttons
-            # length mismatch -> listname at end of buttonname
-            if len(button) != len(BTN_L_ADDITEM):
-                # get the listname
-                tmpname = button[len(BTN_L_ADDITEM) + 1:]
-                # prefixed lists
-                if prefix and tmpname.startswith(DLG_CUSTOM + prefix):
-                    # rest of name is listname
-                    listname = tmpname[len(DLG_CUSTOM + prefix):]
-                else:
-                    # no prefix, all is listname
-                    listname = tmpname
-                # for multitable-searchhandling, check whether list exists
-                if not self.hasList(table, listname):
-                    # list does not belong to this table/manager
-                    return
-                # get the list object
-                listobj = self.getList(table, listname)
-                # check listtype to be sure
-                if listobj.listtype in ['singlelist', 'multilist']:
-                    # handle it
-                    listobj.handleSelectionAdd(REQUEST, descr_dict, prefix)
-            # lenth match -> listname not given, could be any
-            # this allows one button to act for all lists -> sometimes desired behaviour
-            else:
-                # cycle through lists, check all
-                for (tab, col) in self.mapcol2list.keys():
-                    # at least we can match the tablename
-                    if tab != table:
-                        continue
-                    # found a matching list, get it
-                    listobj = self[tab + '_' + col]
-                    # check listtype to be sure
-                    if listobj.listtype in ['singlelist', 'multilist']:
-                        # handle it
-                        listobj.handleSelectionAdd(REQUEST, descr_dict, prefix)
-
-        # multilist remove
-        elif button.startswith(BTN_L_REMOVE):
-            if len(button) != len(BTN_L_REMOVE):
-                tmpname = button[len(BTN_L_REMOVE) + 1:]
-                if prefix and tmpname.startswith(DLG_CUSTOM + prefix):
-                    listname = tmpname[len(DLG_CUSTOM + prefix):]
-                else:
-                    listname = tmpname
-                if not self.hasList(table, listname):
-                    return
-                listobj = self.getList(table, listname)
-                if listobj.listtype == 'multilist':
-                    listobj.handleSelectionRemove(REQUEST, descr_dict, prefix)
-            else:
-                for (tab, col) in self.mapcol2list.keys():
-                    if tab != table:
-                        continue
-                    listobj = self[tab + '_' + col]
-                    if listobj.listtype == 'multilist':
-                        listobj.handleSelectionRemove(REQUEST, descr_dict, prefix)
-
-        # hierarchylist add
-        elif button.startswith(BTN_HL_SELECT):
-            if len(button) != len(BTN_HL_SELECT):
-                tmpname = button[len(BTN_HL_SELECT) + 1:]
-                if prefix and tmpname.startswith(DLG_CUSTOM + prefix):
-                    listname = tmpname[len(DLG_CUSTOM + prefix):]
-                else:
-                    listname = tmpname
-                if not self.hasList(table, listname):
-                    return
-                listobj = self.getList(table, listname)
-                if listobj.listtype == 'hierarchylist':
-                    listobj.handleSelectionAdd(REQUEST, descr_dict, prefix)
-            else:
-                for (tab, col) in self.mapcol2list.keys():
-                    if tab != table:
-                        continue
-                    listobj = self[tab + '_' + col]
-                    if listobj.listtype == 'hierarchylist':
-                        listobj.handleSelectionAdd(REQUEST, descr_dict, prefix)
-
-        # hierarchylist remove
-        elif button.startswith(BTN_HL_REMOVE):
-            if len(button) != len(BTN_HL_REMOVE):
-                tmpname = button[len(BTN_HL_REMOVE) + 1:]
-                if prefix and tmpname.startswith(DLG_CUSTOM + prefix):
-                    listname = tmpname[len(DLG_CUSTOM + prefix):]
-                else:
-                    listname = tmpname
-                if not self.hasList(table, listname):
-                    return
-                listobj = self.getList(table, listname)
-                if listobj.listtype == 'hierarchylist':
-                    listobj.handleSelectionRemove(REQUEST, descr_dict, prefix)
-            else:
-                for (tab, col) in self.mapcol2list.keys():
-                    if tab != table:
-                        continue
-                    listobj = self[tab + '_' + col]
-                    if listobj.listtype == 'hierarchylist':
-                        listobj.handleSelectionRemove(REQUEST, descr_dict, prefix)
-
-        # singlelist filter
-        elif button.startswith(BTN_L_FILTER):
-            if len(button) != len(BTN_L_FILTER):
-                tmpname = button[len(BTN_L_FILTER) + 1:]
-                if prefix and tmpname.startswith(DLG_CUSTOM + prefix):
-                    listname = tmpname[len(DLG_CUSTOM + prefix):]
-                else:
-                    listname = tmpname
-                if not self.hasList(table, listname):
-                    return
-                listobj = self.getList(table, listname)
-                if listobj.listtype in ['singlelist', 'multilist']:
-                    listobj.handleFilterApply(REQUEST, descr_dict, prefix)
-            else:
-                for (tab, col) in self.mapcol2list.keys():
-                    if tab != table:
-                        continue
-                    listobj = self[tab + '_' + col]
-                    if listobj.listtype in ['singlelist', 'multilist']:
-                        listobj.handleFilterApply(REQUEST, descr_dict, prefix)
-
-        # multi/single range switch to next / prev
-        elif button.startswith(BTN_FRL_PREV):
-            if len(button) != len(BTN_FRL_PREV):
-                tmpname = button[len(BTN_FRL_PREV) + 1:]
-                if prefix and tmpname.startswith(DLG_CUSTOM + prefix):
-                    listname = tmpname[len(DLG_CUSTOM + prefix):]
-                else:
-                    listname = tmpname
-                if not self.hasList(table, listname):
-                    return
-                listobj = self.getList(table, listname)
-                if listobj.listtype in ['singlelist', 'multilist']:
-                    # last param is prev -> False
-                    listobj.handleRangeSwitch(REQUEST, descr_dict, prefix, False)
-            else:
-                for (tab, col) in self.mapcol2list.keys():
-                    if tab != table:
-                        continue
-                    listobj = self[tab + '_' + col]
-                    if listobj.listtype in ['singlelist', 'multilist']:
-                        # last param is prev -> False
-                        listobj.handleRangeSwitch(REQUEST, descr_dict, prefix, False)
-
-        elif button.startswith(BTN_FRL_NEXT):
-            if len(button) != len(BTN_FRL_NEXT):
-                tmpname = button[len(BTN_FRL_NEXT) + 1:]
-                if prefix and tmpname.startswith(DLG_CUSTOM + prefix):
-                    listname = tmpname[len(DLG_CUSTOM + prefix):]
-                else:
-                    listname = tmpname
-                if not self.hasList(table, listname):
-                    return
-                listobj = self.getList(table, listname)
-                if listobj.listtype in ['singlelist', 'multilist']:
-                    listobj.handleRangeSwitch(REQUEST, descr_dict, prefix, True)
-            else:
-                for (tab, col) in self.mapcol2list.keys():
-                    if tab != table:
-                        continue
-                    listobj = self[tab + '_' + col]
-                    if listobj.listtype in ['singlelist', 'multilist']:
-                        listobj.handleRangeSwitch(REQUEST, descr_dict, prefix, True)
-
-
     def manageOverview(self, REQUEST = None):
         """\brief Returns a overview manage tab."""
 
-        dlg = getStdZMOMDialog('')
+        dlg = Dialog( name = None, flags = 0 )
+        dlg.caption = ''
         dlg.setHeader( '<dtml-var manage_page_header><dtml-var manage_tabs>' )
         dlg.setFooter( '<dtml-var manage_page_footer>'                       )
 
@@ -698,14 +473,14 @@ class ListHandler(Folder):
         for listname in self.keys():
             list_obj = self[listname]
 
-            assert isinstance(list_obj, List), 'Found obj is not of type List: %s (%s)' % (listname, type(list_obj))
+            #assert isinstance(list_obj, List), 'Found obj is not of type List: %s (%s)' % (listname, type(list_obj))
 
             # provide a link to the list reference
             url = '%s/%s/manage_workspace' % (list_obj.absolute_url(), listname)
             lab_list = hgLabel(list_obj.listname, url)
 
             tab[r, 1] = lab_list
-            tab[r, 2] = hgLabel(list_obj.getLabel())
+            tab[r, 2] = hgLabel(list_obj.getLabel().encode('utf8'))
             tab[r, 3] = hgLabel(list_obj.getNoEdit())
 
             r += 1
@@ -719,7 +494,8 @@ class ListHandler(Folder):
         # get the manager parent of the listhandler
         manager = self.getManager()
 
-        dlg = getStdZMOMDialog('')
+        dlg = Dialog( name = None, flags = 0 )
+        dlg.caption = ''
         dlg.setHeader( '<dtml-var manage_page_header><dtml-var manage_tabs>' )
         dlg.setFooter( '<dtml-var manage_page_footer>'                       )
 
@@ -819,214 +595,4 @@ class ListHandler(Folder):
 
             r += 1
 
-        return HTML( dlg.getHtml() )(self, REQUEST)
-
-
-    def correctMySQLDB(self, do = False):
-        """\brief mysql list tables have the show-column renamed to show1, which is not necessary anymore due to escaping. Rename the column."""
-        mgr = self.getManager()
-        pm = mgr.getManager(ZM_PM)
-        done = 0
-        for key in self.getListIDs():
-            lobj = self[key]
-            sql = 'ALTER TABLE %s%s CHANGE COLUMN `show1` `show` varchar(255)' % (self.getManager().getId(), lobj.listname)
-            if do:
-                pm.executeDBQuery(sql)
-            done += 1
-        return '%s Tabellen angepasst.' % done
-
-
-    # TODO: FIXIT - adapt to new list objects / move to dialog!
-    def moveListValues(self, REQUEST):
-        """\brief Move values, adjust keys in main-content."""
-        print 'ListHandler.moveListValues() broken. FIXME'
-
-        return
-
-        mgr = self.getParentNode()
-        if 'step' not in REQUEST:
-            step = 0
-        else:
-            step = int(REQUEST['step'])
-
-        tab = hgTable()
-        if step == 0:
-            # choose lists to move from / to
-            tab[0, 1] = dlgLabel('Choose lists of same type to move')
-            tab.setCellSpanning(0, 1, 1, 3)
-            tab[1, 1] = dlgLabel('from')
-            tab[1, 3] = dlgLabel('to')
-            row = 2
-            for item in self.keys():
-
-                if not self[item].manager:
-                    tab[row, 1]  = hgRadioButton(item, name = 'from_list')
-                    tab[row, 1] += self[item].getLabel()
-                    tab[row, 3]  = hgRadioButton(item, name = 'to_list')
-                    tab[row, 3] += self[item].getLabel()
-                    row += 1
-            tab[row, 1] = hgSPACE + hgProperty('step', str(step + 1))
-
-        elif step == 1:
-
-            # choose values, confirm tables
-            from_list = REQUEST.get('from_list')
-            to_list  = REQUEST.get('to_list')
-            if not from_list or not to_list:
-                errstr = 'Please choose a source and a destination.'
-                err    = mgr.getErrorDialog(errstr)
-                raise ValueError(err)
-            from_obj = self[from_list]
-            to_obj   = self[to_list]
-            if from_obj.listtype != to_obj.listtype:
-                errstr = 'Not implemented for different listtypes.'
-                err    = mgr.getErrorDialog(errstr)
-                raise ValueError(err)
-            # get all managers (hierarchy up,
-            # and their tables to check for occurence of from_list)
-            mgrs = mgr.getAllManagers(objects = True)
-            tabs = []
-            for manager in mgrs:
-
-                # only from matters
-                if from_list in manager.listHandler:
-
-                    # the manager has a table with that list
-                    table = manager.listHandler[from_list].table
-                    if not table:
-
-                        for tabname in manager.tableHandler.keys():
-
-                            if manager.tableHandler[tabname].getField(from_list):
-                                table = tabname
-                                break
-
-                    tabs.append(manager.getClassName() + '___' + table)
-
-            # put tables and from/to lists into tab
-            tab[0, 0]  = dlgLabel('from')
-            tab[0, 1]  = self[from_list].getLabel()
-            tab[0, 1] += hgProperty('from_list', from_list)
-            tab[1, 0]  = dlgLabel('to')
-            tab[1, 1]  = self[to_list].getLabel()
-            tab[1, 1] += hgProperty('to_list', to_list)
-            tab[2, 0]  = dlgLabel('tables involved')
-            tab[2, 1]  = hgLabel(string.join(tabs, '<br>'))
-            props = []
-            for entry in tabs:
-                props.append(str(hgProperty('table', entry)))
-            tab[2, 2] = string.join(props, ' ')
-            # show multilist-selection for values of from_list (simple view)
-            tab[3, 0] = dlgLabel('select values')
-            entries = from_obj.getEntries()
-            vals = []
-            for entry in entries:
-                vals.append([entry.get('autoid'), entry.get('value')])
-            mul       = MultiList('dummy')
-            widget    = mul.getSpecialWidget('values', m_list = vals)
-            tab[3, 1] = widget
-
-            # show move / copy - option
-            tab[4, 0]  = hgRadioButton(name = 'action', value = 'move')
-            tab[4, 0] += dlgLabel('move')
-            tab[4, 1]  = hgRadioButton(name = 'action', value = 'copy')
-            tab[4, 1] += dlgLabel('copy')
-
-            tab[5, 0] = hgSPACE + hgProperty('step', str(step + 1))
-            tab[6, 0] = mpfContinueButton
-
-        elif step == 2:
-            # get tables and lists from request
-            values    = REQUEST.get('values')
-            if not values:
-                errstr = 'Please choose at least one value.'
-                err    = mgr.getErrorDialog(errstr)
-                raise ValueError(err)
-            if not isinstance(values, ListType):
-                values = [values]
-            action   = REQUEST.get('action')
-            if not action:
-                raise ValueError(mgr.getErrorDialog('Please choose an action.'))
-            from_list = REQUEST.get('from_list')
-            to_list  = REQUEST.get('to_list')
-            from_obj = self[from_list]
-            to_obj   = self[to_list]
-            tabs = REQUEST.get('table')
-            if not isinstance(tabs, ListType):
-                tabs = [tabs]
-            # determine type
-            listtype = from_obj.listtype
-            mapping  = {}
-            # copy values and create value-mapping
-            for entry in values:
-                newid = to_obj.addValue(from_obj.getValueByAutoid(entry))
-                mapping[entry] = newid
-            # copy or move keys
-            # (update tab set [a = NULL, ]b = new where a = old)
-            for entry in tabs:
-                pos = entry.find('___')
-                mgrname = entry[:pos]
-                tabname = entry[pos + 3:]
-                manager = mgr.getHierarchyUpManager(mgrname)
-                field = manager.tableHandler[tabname].getField(to_list)
-                if field:
-                    mgr_to_obj = manager.listHandler[to_list]
-                mgr_from_obj = manager.listHandler[from_list]
-                for oldval in mapping:
-                    if listtype == 'singlelist':
-                        # if to_list belongs to table, we update the table
-                        if field:
-                            sql  = "update %s%s " % ( manager.id,
-                                                      tabname )
-                            sql += "set %s = %s " % ( to_list,
-                                                      mapping[oldval] )
-                            sql += "where %s = %s" % ( from_list,
-                                                       oldval )
-                            manager.getManager('ZopRAProduct').executeDBQuery(sql)
-                        # move means: delete old entries (resp. their keys)
-                        if action == 'move':
-                            sql  = "update %s%s " % ( manager.id,
-                                                      tabname )
-                            sql += "set %s = NULL " % ( from_list )
-                            sql += "where %s = %s"  % ( from_list,
-                                                        oldval )
-                            manager.getManager('ZopRAProduct').executeDBQuery(sql)
-                    elif listtype == 'multilist':
-                        # add new multilist-references
-                        if field:
-                            # other multitable, so we cant update
-                            tabids = mgr_from_obj.getMLRef(None, oldval)
-                            for entry in tabids:
-                                notes = mgr_from_obj.getMLNotes(entry, oldval)
-                                if not notes:
-                                    notes = ''
-                                if not mapping[oldval] in mgr_to_obj.getMLRef(entry):
-                                    mgr_to_obj.addMLRef( entry,
-                                                         mapping[oldval],
-                                                         notes )
-                        # if move -> delete old references
-                        if action == 'move':
-                            mgr_from_obj.delMLRef(None, oldval)
-                    else:
-                        errstr = 'Not implemented for hierarchy-lists.'
-                        err    = mgr.getErrorDialog(errstr)
-                        raise ValueError(err)
-
-                # clear table cache for tables
-                manager.tableHandler[tabname].cache.clearCache()
-                # clear listcache (to_list / from_list)
-                if field:
-                    mgr_to_obj.emptyCache()
-                mgr_from_obj.emptyCache()
-                # clear cache before removing old values ... bad ... but works.
-            if action == 'move':
-                # delete old values
-                for oldval in mapping:
-                    from_obj.delValue(int(oldval))
-            tab[0, 0] = dlgLabel('Done.')
-            # show results
-        else:
-            raise ValueError('Navig Error.')
-        dlg  = getStdDialog('Move List Values Step %s' % step, 'moveListValues')
-        dlg.add(tab)
         return HTML( dlg.getHtml() )(self, REQUEST)

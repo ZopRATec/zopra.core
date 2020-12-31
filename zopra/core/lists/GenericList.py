@@ -6,15 +6,12 @@
 #                                                                          #
 ############################################################################
 
-from types                                      import ListType
+from types import ListType
 
-from PyHtmlGUI.widgets.hgComboBox               import hgComboBox
+from zopra.core import ZC
+from zopra.core import SimpleItem
+from zopra.core.utils import getParentManager
 
-from zopra.core                                 import SimpleItem, ZC
-from zopra.core.elements.Buttons                import DLG_CUSTOM
-from zopra.core.widgets.hgShortenedComboBox     import hgShortenedComboBox
-from zopra.core.widgets.hgFilteredComboBox      import hgFilteredComboBox
-from zopra.core.utils                           import getParentManager
 
 _list_definition = {  # value of the list entry
                       ZC.VALUE: { ZC.COL_TYPE: 'string' },
@@ -47,6 +44,16 @@ class GenericList(SimpleItem):
         self.listname = listname
         self.label    = label if label else u''
 
+    def getClassName(self):
+        """ This method returns the class name.
+
+        :result: string of classes name
+        """
+        return self.__class__.__name__
+
+    def getClassType(self):
+        """This method returns a list of the class names of all ancestors and the current class"""
+        return [onetype.__name__ for onetype in self.__class__.__bases__] + [self.getClassName()]
 
     def createTable(self):
         """\brief Create the database table."""
@@ -165,94 +172,6 @@ class GenericList(SimpleItem):
         # the addListValueFunction only adds,
         # if not present and returns the id
         return self.addValue(value)
-
-
-    def createWidget( self,
-                      name,
-                      with_novalue = False,
-                      with_null    = False,
-                      parent       = None,
-                      config       = None):
-        """\brief Returns a list combobox."""
-        raise ValueError('TESTING REMOVAL OF LIST.CREATEWIDGET')
-        # NOTE: defaults to single list
-
-        # load list data and build combobox
-        if config and config['type'] == 'filtered':
-            if config['direction'] == 'horizontal':
-                vertical = False
-            else:
-                vertical = True
-            pattern = config['pattern']
-            if config['maxlen'] > 0:
-                cbox = hgShortenedComboBox( name     = name,
-                                            parent   = parent,
-                                            pattern  = pattern,
-                                            vertical = vertical )
-
-                cbox.setListLength(config['maxlen'])
-
-                if config['tolerance'] > 0:
-                    cbox.setListTolerance(config['tolerance'])
-                else:
-                    cbox.setListTolerance(10)
-            else:
-                cbox = hgFilteredComboBox( name     = name,
-                                           parent   = parent,
-                                           pattern  = pattern,
-                                           vertical = vertical )
-        else:
-            cbox = hgComboBox(name = name, parent = parent)
-
-        # empty value
-        if with_novalue:
-            cbox.insertItem(' -- no search value -- ', '')
-
-        # null value
-        if with_null:
-            cbox.insertItem(' -- no value -- ', 'NULL')
-
-        return cbox
-
-
-    def getWidget( self,
-                   with_novalue = False,
-                   selected     = None,
-                   with_hidden  = False,
-                   with_null    = False,
-                   prefix       = '',
-                   parent       = None,
-                   config       = None):
-        """\brief Returns a list combobox."""
-        raise ValueError('TESTING REMOVAL OF LIST.GETWIDGET')
-        # only used by multilist notes widgets
-        # check how to remove it from here
-
-        # prefix is only for REQUEST-handling
-        pre  = DLG_CUSTOM + prefix if prefix else ''
-        cbox = self.createWidget(pre + self.listname,
-                                 with_novalue,
-                                 with_null,
-                                 parent,
-                                 config)
-
-        entry_list = self.getEntries()
-
-        for entry in entry_list:
-            # test for 'no' in case attribute is missing
-            if with_hidden or entry.get(SHOW) != 'no':
-                cbox.insertItem(entry[VALUE], entry['autoid'])
-
-        # sort
-        cbox.sort()
-
-        # handles the selection of a list entry
-        if selected:
-            cbox.setCurrentValue(selected)
-        else:
-            cbox.setCurrentItem(0)
-
-        return cbox
 
 
     def getValueCount(self):
