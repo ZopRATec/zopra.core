@@ -10,8 +10,9 @@
 """The second test manager for tests with templates, layout is similar to TestManager 
 (but reduced, because the options for different list types are reduced with templates)"""
 
-from zopra.core                      import ZM_TEST2
+from zopra.core import ZM_TEST2
 from zopra.core.tools.TemplateBaseManager import TemplateBaseManager
+
 
 class mgrTest(TemplateBaseManager):
     """ Test 2 Manager """

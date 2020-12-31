@@ -11,32 +11,34 @@
     SubModules and manually add them to Zope-Folders.
 """
 import inspect
-from importlib              import import_module
 import os
-import types
 import pkg_resources
+import types
+from importlib import import_module
 
 #
 # Zope Imports
 #
-from AccessControl              import ClassSecurityInfo, getSecurityManager
-from AccessControl              import allow_module
-from App.special_dtml           import DTMLFile, HTML
-from AccessControl.class_init   import InitializeClass
-from zExceptions                import BadRequest
-from zope.i18nmessageid         import MessageFactory
+from AccessControl import ClassSecurityInfo
+from AccessControl import allow_module
+from AccessControl import getSecurityManager
+from AccessControl.class_init import InitializeClass
+from App.special_dtml import HTML
+from App.special_dtml import DTMLFile
+from OFS.DTMLDocument import DTMLDocument
+from OFS.Folder import Folder
+from OFS.Image import Image
+from OFS.interfaces import IObjectManager
+from OFS.PropertyManager import PropertyManager
+from OFS.SimpleItem import SimpleItem
+from zExceptions import BadRequest
+from zope.i18nmessageid import MessageFactory
 
-from OFS.DTMLDocument       import DTMLDocument
-from OFS.Folder             import Folder
-from OFS.Image              import Image
-from OFS.PropertyManager    import PropertyManager
-from OFS.SimpleItem         import SimpleItem
-from OFS.interfaces         import IObjectManager
+from PyHtmlGUI import E_PARAM_TYPE
+from zopra.core.constants import ZC
+from zopra.core.interfaces import IZopRAManager
+from zopra.core.interfaces import IZopRAProduct
 
-from PyHtmlGUI              import E_PARAM_TYPE
-
-from zopra.core.constants   import ZC
-from zopra.core.interfaces  import IZopRAProduct, IZopRAManager
 
 # check for plone (Robot tests only run with plone, some functionality is removed when installing ZopRA as Plone Plugin)
 # use pkg_resources.parse_version(vstring) to compare Versions
@@ -257,30 +259,12 @@ def initialize(context):
     print 'Initializing ZopRA'
 
     from zopra.core.tools.ZopRAProduct          import ZopRAProduct
-    from zopra.core.tools.ContactManager        import ContactManager
-    from zopra.core.tools.ContentManager        import ContentManager
-    from zopra.core.tools.DebugInfoManager      import DebugInfoManager
-    from zopra.core.tools.FileManager           import FileManager
     from zopra.core.tools.GenericManager        import GenericManager
-    from zopra.core.tools.MessagingManager      import MessagingManager
-    from zopra.core.tools.PrintManager          import PrintManager
-    from zopra.core.tools.SecurityManager       import SecurityManager
     from zopra.core.tools.TemplateBaseManager   import TemplateBaseManager
-    from zopra.core.tools.TestManager           import TestManager
-    from zopra.core.tools.mgrTest               import mgrTest
 
     registerManager(context, ZopRAProduct)
-    registerManager(context, ContactManager)
-    registerManager(context, ContentManager)
-    registerManager(context, DebugInfoManager)
-    registerManager(context, FileManager)
     registerManager(context, GenericManager)
-    registerManager(context, MessagingManager)
-    registerManager(context, PrintManager)
-    registerManager(context, SecurityManager)
     registerManager(context, TemplateBaseManager)
-    registerManager(context, TestManager)
-    registerManager(context, mgrTest)
 
 
 def getProductManager(context):
