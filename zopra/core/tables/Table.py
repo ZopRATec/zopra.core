@@ -89,11 +89,10 @@ class Table(SimpleItem, PropertyManager):
     implements(IZopRATable)
 
     manage_options = (  {'label': 'Overview',    'action': 'viewTab' },
-                        {'label': 'Edit',        'action': 'editTab' },
+                        #{'label': 'Edit',        'action': 'editTab' },
                         {'label': 'Statistic',   'action': 'statsTab' },
                         {'label': 'Table Cache', 'action': 'cacheTab' },
                         {'label': 'Search Tree', 'action': 'searchTreeTab' },
-                        # {'label': 'Management',  'action': 'managementTab' },
                         ) + PropertyManager.manage_options + SimpleItem.manage_options
 
     _properties = ({'id': 'do_cache',    'type': 'boolean',     'mode': 'w'},)
@@ -1891,9 +1890,11 @@ class Table(SimpleItem, PropertyManager):
         row     = 2
         offset  = 1
         for col in self.getColumnTypes().keys():
+            col_obj = self.getField(col)
+            label = col_obj.get(ZC.COL_LABEL, u'').encode('utf8')
             tab[row + offset, 0] = col
-            tab[row + offset, 1] = self.getField(col).get(ZC.COL_TYPE)
-            tab[row + offset, 2] = self.getField(col).get(ZC.COL_LABEL, col)
+            tab[row + offset, 1] = col_obj.get(ZC.COL_TYPE).encode('utf8')
+            tab[row + offset, 2] = label or col
             offset += 1
 
         row = row + offset + 1
@@ -1910,58 +1911,29 @@ class Table(SimpleItem, PropertyManager):
         dlg.add( tab )
         return HTML( dlg.getHtml() )(self, REQUEST)
 
-
-#    def managementTab(self, REQUEST):
-#        """\brief Table edit tab."""
+# edit tab was broken from the beginning. Disabld 2020 by Peter
+# additionally, the TableEntryDialog was moved to legacy with most of the dialog and widget machinery
 #
-#        columnOrder = REQUEST.form.get( 'columnOrder' )
-#        if columnOrder:
-#            self.setDefaultOrder(columnOrder)
+#    def editTab(self, REQUEST):
+#        """\brief Returns a show entry dialog."""
+#        session = REQUEST.SESSION
+#        mgr = self.getManager()
+#        key = self.id + TableEntryDialog._className + self.tablename
+#        dlg = session.get(key)
 #
-#        dlg  = getStdDialog('', 'managementTab')
-#        dlg.setHeader( "<dtml-var manage_page_header><dtml-var manage_tabs>" )
-#        dlg.setFooter( "<dtml-var manage_page_footer>"                       )
+#        # either we didn't have this dlg already or we got a zope refresh !!!
+#        if not dlg or dlg.uid != id(dlg):
+#            dlg = TableEntryDialog( mgr, self.tablename )
+#            dlg.setName('editTab')
+#            header = "<dtml-var manage_page_header><dtml-var manage_tabs>"
+#            dlg.setHeader( header )
+#            dlg.setFooter( "<dtml-var manage_page_footer>" )
 #
-#        table = hgTable()
-#        table._old_style = False
-#        dlg.add( table )
+#            key = mgr.id + TableEntryDialog._className + self.tablename
+#            session[key] = dlg
 #
-#        multiList = hgMultiList( name = 'columnOrder' )
-#
-#        for col in self.tabledict.keys():
-#            multiList.insertItem( col, col )
-#
-#        defOrd = self.getDefaultOrder()
-#        if defOrd:
-#            multiList.setSelectedStringList(defOrd)
-#
-#        table[0, 0] = 'Column Order'
-#        table[0, 1] = multiList
-#
-#        dlg.add( hgPushButton('Change') )
+#        dlg.execDlg( mgr, REQUEST )
 #        return HTML( dlg.getHtml() )(self, REQUEST)
-
-
-    def editTab(self, REQUEST):
-        """\brief Returns a show entry dialog."""
-        session = REQUEST.SESSION
-        mgr = self.getManager()
-        key = self.id + TableEntryDialog._className + self.tablename
-        dlg = session.get(key)
-
-        # either we didn't have this dlg already or we got a zope refresh !!!
-        if not dlg or dlg.uid != id(dlg):
-            dlg = TableEntryDialog( mgr, self.tablename )
-            dlg.setName('editTab')
-            header = "<dtml-var manage_page_header><dtml-var manage_tabs>"
-            dlg.setHeader( header )
-            dlg.setFooter( "<dtml-var manage_page_footer>" )
-
-            key = mgr.id + TableEntryDialog._className + self.tablename
-            session[key] = dlg
-
-        dlg.execDlg( mgr, REQUEST )
-        return HTML( dlg.getHtml() )(self, REQUEST)
 
 
     def statsTab(self, REQUEST):
@@ -1988,7 +1960,7 @@ class Table(SimpleItem, PropertyManager):
         offset = 0
         for result in stats_dict['entriesInMonth']:
             table[row + offset, 1] = '%06d' % result[0]
-            table[row + offset, 2] = '%02d.%4d' % result[1:]
+            table[row + offset, 2] = '%4d/%02d' % result[1:]
             offset += 1
         row += offset + 1
 
@@ -1997,7 +1969,7 @@ class Table(SimpleItem, PropertyManager):
         offset = 0
         for result in stats_dict['entriesInDay']:
             table[row + offset, 1] = '%06d' % result[0]
-            table[row + offset, 2] = '%02d.%02d.%4d' % result[1:]
+            table[row + offset, 2] = '%4d/%02d/%02d' % result[1:]
             offset += 1
         row += offset + 1
 
