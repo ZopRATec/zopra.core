@@ -7,16 +7,19 @@
 #    the Free Software Foundation; either version 2 of the License, or     #
 #    (at your option) any later version.                                   #
 ############################################################################
-from copy     import copy
-from os       import path
-from types    import StringType
+from copy import copy
+from os import path
+from types import StringType
 
 #
 # ZopRA Imports
 #
-from zopra.core                              import Folder, Image, BadRequest
-from zopra.core.utils                        import getZopRAPath, getASTFromXML
-from zopra.core.ImageProperties              import ImageProperties
+from zopra.core import BadRequest
+from zopra.core import Folder
+from zopra.core import Image
+from zopra.core.ImageProperties import ImageProperties
+from zopra.core.utils import getASTFromXML
+from zopra.core.utils import getZopRAPath
 
 
 class IconHandler(Folder):

@@ -5,7 +5,8 @@
 #                                                                         #
 ###########################################################################
 # TODO: use BTree as Cache to speed up pickle and unpickle
-from types          import ListType
+from types import ListType
+
 from OFS.SimpleItem import SimpleItem
 
 

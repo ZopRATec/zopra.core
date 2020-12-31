@@ -7,15 +7,19 @@
 #    the Free Software Foundation; either version 2 of the License, or     #
 #    (at your option) any later version.                                   #
 ############################################################################
-from copy         import deepcopy
-from types        import StringType, IntType, DictType, BooleanType
-from time         import ctime
+from copy import deepcopy
+from time import ctime
+from types import BooleanType
+from types import DictType
+from types import IntType
+from types import StringType
 
 #
 # ZopRA Imports
 #
-from zopra.core                        import ZC
+from zopra.core import ZC
 from zopra.core.connector.SqlConnector import SqlConnector
+
 
 # overwrite _edit_tracking_cols, mysql doesn't like default values for datetime
 _edit_tracking_cols = { ZC.TCN_CREATOR: { ZC.COL_TYPE:   'singlelist',

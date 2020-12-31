@@ -8,6 +8,7 @@ Created on 7 Nov 2019
 from zopra.core.tests import StandaloneTestCase
 from zopra.core.tools.mgrTest import mgrTest
 
+
 class TableNodeTest(StandaloneTestCase):
     """Unittest Testcases for the tables.TableNode.TableNode and tables.Filter.Filter classes (standalone, no db)"""
 

@@ -1,64 +1,40 @@
-############################################################################
-#    Copyright (C) 2004 by ZopRATec GbR                                    #
-#    webmaster@ingo-keller.de                                              #
-#                                                                          #
-#    This program is free software; you can redistribute it and#or modify  #
-#    it under the terms of the GNU General Public License as published by  #
-#    the Free Software Foundation; either version 2 of the License, or     #
-#    (at your option) any later version.                                   #
-############################################################################
-"""\brief The ZopRAProduct handles the database connection."""
+"""The ZopRAProduct is the center of a ZopRA installation and handles the database connection."""
 
-from time         import strftime
-from datetime     import datetime
-from difflib      import HtmlDiff
 import pickle
+from datetime import datetime
+from difflib import HtmlDiff
+from time import strftime
 
-#
-# PyHtmlGUI Imports
-#
-from PyHtmlGUI.kernel.hgTable         import hgTable
-from PyHtmlGUI.widgets.hgCheckBox     import hgCheckBox
-from PyHtmlGUI.widgets.hgLabel        import hgLabel, hgSPACE, hgNEWLINE
-from PyHtmlGUI.widgets.hgPushButton   import hgPushButton
-from PyHtmlGUI.widgets.hgTextEdit     import hgTextEdit
-from PyHtmlGUI.widgets.hgVBox         import hgVBox
+from zope.interface import implements
 
-from zope.interface                   import implements
-
-#
-# ZopRA Imports
-#
-from zopra.core import HTML, ClassSecurityInfo, getSecurityManager, modifyPermission, managePermission, ZM_PM, ZM_CM, ZC, HAVE_PLONE
-
-from zopra.core.elements.Buttons import DLG_CUSTOM,      \
-                                                   BTN_L_ADD,       \
-                                                   BTN_L_UPDATE,    \
-                                                   BTN_L_DELETE,    \
-                                                   mpfAddButton,    \
-                                                   mpfUpdateButton, \
-                                                   mpfDeleteButton, \
-                                                   getSpecialField
-
-
-from zopra.core.elements.Styles.Default      import ssiDLG_SHADE
-from zopra.core.constants                    import TCN_CREATOR,     \
-                                                    TCN_EDITOR,      \
-                                                    TCN_OWNER,       \
-                                                    TCN_DATE,        \
-                                                    TCN_EDATE
-from zopra.core.CorePart                     import COL_TYPE,        \
-                                                    COL_LABEL
-
-from zopra.core.ManagerPart                  import ManagerPart
-from zopra.core.connector.SqlConnector       import getConnector
-from zopra.core.dialogs                      import getStdDialog
-from zopra.core.lists.ListHandler            import ListHandler
-from zopra.core.tables.TableHandler          import TableHandler
-from zopra.core.interfaces                   import IZopRAProduct
-from zopra.core.lists.ForeignList            import ForeignList
-from zopra.core.utils                        import getZopRAPath
-from zopra.core.widgets                      import dlgLabel
+from PyHtmlGUI.kernel.hgTable import hgTable
+from PyHtmlGUI.widgets.hgCheckBox import hgCheckBox
+from PyHtmlGUI.widgets.hgLabel import hgLabel
+from PyHtmlGUI.widgets.hgPushButton import hgPushButton
+from PyHtmlGUI.widgets.hgVBox import hgVBox
+from zopra.core import HAVE_PLONE
+from zopra.core import HTML
+from zopra.core import ZC
+from zopra.core import ZM_CM
+from zopra.core import ZM_PM
+from zopra.core import ClassSecurityInfo
+from zopra.core import getSecurityManager
+from zopra.core import managePermission
+from zopra.core import modifyPermission
+from zopra.core.connector.SqlConnector import getConnector
+from zopra.core.constants import TCN_CREATOR
+from zopra.core.constants import TCN_DATE
+from zopra.core.constants import TCN_EDATE
+from zopra.core.constants import TCN_EDITOR
+from zopra.core.constants import TCN_OWNER
+from zopra.core.dialogs import getStdDialog
+from zopra.core.interfaces import IZopRAManager
+from zopra.core.interfaces import IZopRAProduct
+from zopra.core.lists.ListHandler import ListHandler
+from zopra.core.ManagerPart import ManagerPart
+from zopra.core.tables.TableHandler import TableHandler
+from zopra.core.utils import getZopRAPath
+from zopra.core.dialogs import dlgLabel
 
 
 TN_LOG      = 'log'

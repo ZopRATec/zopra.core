@@ -12,13 +12,14 @@
 # Python Imports
 #
 import string
-from time                                        import strftime
-from types                                       import IntType
+from time import strftime
+from types import IntType
 
 #
 # PyHtmlGUI Imports
 #
-from PyHtmlGUI.widgets.hgPushButton              import hgPushButton
+from PyHtmlGUI.widgets.hgPushButton import hgPushButton
+
 
 # img button shortcuts
 PB_PIXMAPSRC = hgPushButton.PB_PIXMAPSRC

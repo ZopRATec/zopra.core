@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 import os
+
 import plone.api
 
-from zopra.core import HAVE_WEBCMS, DBDA_ID
+from zopra.core import DBDA_ID
+from zopra.core import HAVE_WEBCMS
+
 
 def setupTestSzenario(context):
     """setups various when installing add-on

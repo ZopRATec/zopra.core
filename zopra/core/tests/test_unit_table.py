@@ -8,6 +8,7 @@ Created on 7 Nov 2019
 from zopra.core.tests import StandaloneTestCase
 from zopra.core.tools.mgrTest import mgrTest
 
+
 class TableTest(StandaloneTestCase):
     """Unittest Testcases for the tables.Table and tables.TableHandler classes (standalone, no db)"""
 

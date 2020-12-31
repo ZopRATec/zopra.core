@@ -8,24 +8,23 @@
 #    (at your option) any later version.                                   #
 ############################################################################
 
-from types                            import ListType
+from types import ListType
 
-from PyHtmlGUI.widgets.hgCheckBox     import hgCheckBox
-from PyHtmlGUI.widgets.hgComboBox     import hgComboBox
-from PyHtmlGUI.widgets.hgDateEdit     import hgDateChooser
+from PyHtmlGUI.dialogs.hgWizard import hgWizard
+from PyHtmlGUI.widgets.hgCheckBox import hgCheckBox
+from PyHtmlGUI.widgets.hgComboBox import hgComboBox
+from PyHtmlGUI.widgets.hgDateEdit import hgDateChooser
 from PyHtmlGUI.widgets.hgFileSelector import hgFileSelector
-from PyHtmlGUI.widgets.hgMultiList    import hgMultiList
-from PyHtmlGUI.widgets.hgLabel        import hgProperty
-from PyHtmlGUI.widgets.hgLineEdit     import hgLineEdit
-from PyHtmlGUI.widgets.hgPushButton   import hgPushButton
-from PyHtmlGUI.widgets.hgRadioButton  import hgRadioButton
-from PyHtmlGUI.widgets.hgScrollBar    import hgScrollBar
-from PyHtmlGUI.widgets.hgTabBar       import hgTab
-from PyHtmlGUI.widgets.hgTextEdit     import hgTextEdit
-from PyHtmlGUI.widgets.hgTimeChooser  import hgTimeChooser
-from PyHtmlGUI.widgets.hgWidgetStack  import hgWidgetStack
-from PyHtmlGUI.dialogs.hgWizard       import hgWizard
-
+from PyHtmlGUI.widgets.hgLabel import hgProperty
+from PyHtmlGUI.widgets.hgLineEdit import hgLineEdit
+from PyHtmlGUI.widgets.hgMultiList import hgMultiList
+from PyHtmlGUI.widgets.hgPushButton import hgPushButton
+from PyHtmlGUI.widgets.hgRadioButton import hgRadioButton
+from PyHtmlGUI.widgets.hgScrollBar import hgScrollBar
+from PyHtmlGUI.widgets.hgTabBar import hgTab
+from PyHtmlGUI.widgets.hgTextEdit import hgTextEdit
+from PyHtmlGUI.widgets.hgTimeChooser import hgTimeChooser
+from PyHtmlGUI.widgets.hgWidgetStack import hgWidgetStack
 
 
 class guiHandler(object):

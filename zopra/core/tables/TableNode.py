@@ -6,16 +6,17 @@
 ###########################################################################
 """\brief Provides Joined Database Searches"""
 import string
-from copy                               import copy
-from types                              import StringType, ListType
+from copy import copy
+from types import ListType
+from types import StringType
 
-from PyHtmlGUI                          import E_PARAM_TYPE
-from PyHtmlGUI.kernel.hgTable           import hgTable
-from PyHtmlGUI.widgets.hgLabel          import hgNEWLINE
-
-from zopra.core                         import SimpleItem, ZC
-from zopra.core.tables.Filter           import Filter
-from zopra.core.elements.Buttons        import DLG_CUSTOM
+from PyHtmlGUI import E_PARAM_TYPE
+from PyHtmlGUI.kernel.hgTable import hgTable
+from PyHtmlGUI.widgets.hgLabel import hgNEWLINE
+from zopra.core import ZC
+from zopra.core import SimpleItem
+from zopra.core.elements.Buttons import DLG_CUSTOM
+from zopra.core.tables.Filter import Filter
 
 
 ALLLISTS = ['multilist', 'hierarchylist', 'singlelist']

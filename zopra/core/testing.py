@@ -1,19 +1,23 @@
-from plone.testing import z2
-from plone.app.testing import PLONE_FIXTURE
-from plone.app.testing import FunctionalTesting
-from plone.app.testing import PloneSandboxLayer
-from plone.app.robotframework.remote import RemoteLibraryLayer, RemoteLibrary
 from plone.app.robotframework.autologin import AutoLogin
 from plone.app.robotframework.content import Content
 from plone.app.robotframework.genericsetup import GenericSetup
 from plone.app.robotframework.i18n import I18N
 from plone.app.robotframework.mailhost import MockMailHost
 from plone.app.robotframework.quickinstaller import QuickInstaller
+from plone.app.robotframework.remote import RemoteLibrary
+from plone.app.robotframework.remote import RemoteLibraryLayer
 from plone.app.robotframework.server import Zope2ServerRemote
 from plone.app.robotframework.users import Users
+from plone.app.testing import PLONE_FIXTURE
+from plone.app.testing import FunctionalTesting
+from plone.app.testing import PloneSandboxLayer
+from plone.testing import z2
 
-from zopra.core import HAVE_WEBCMS, DBDA_ID
+from zopra.core import DBDA_ID
+from zopra.core import HAVE_WEBCMS
+from zopra.core import registerManager
 from zopra.core.tests import setupCoreSessions
+
 
 # preparation for keywords implemented in python
 class Keywords(RemoteLibrary):

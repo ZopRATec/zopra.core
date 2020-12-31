@@ -7,13 +7,15 @@
 #    the Free Software Foundation; either version 2 of the License, or     #
 #    (at your option) any later version.                                   #
 ############################################################################
-from copy         import deepcopy
-from types        import StringType, IntType, DictType
+from copy import deepcopy
+from types import DictType
+from types import IntType
+from types import StringType
 
 #
 # ZopRA Imports
 #
-from zopra.core                        import ZC
+from zopra.core import ZC
 from zopra.core.connector.SqlConnector import SqlConnector
 
 

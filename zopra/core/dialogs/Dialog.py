@@ -10,15 +10,15 @@
 #
 # PyHtmlGUI Imports
 #
-from PyHtmlGUI.dialogs.hgDialog      import hgDialog
-from PyHtmlGUI.widgets.hgPushButton  import hgPushButton
-from PyHtmlGUI.widgets.hgLabel       import hgProperty
-
+from PyHtmlGUI.dialogs.hgDialog import hgDialog
+from PyHtmlGUI.widgets.hgLabel import hgProperty
+from PyHtmlGUI.widgets.hgPushButton import hgPushButton
 #
 # ZopRA Imports
 #
-from zopra.core.dialogs.guiHandler      import guiHandler
-from zopra.core.elements.Styles.Default import ssiA, ssiA_VISITED
+from zopra.core.dialogs.guiHandler import guiHandler
+from zopra.core.elements.Styles.Default import ssiA
+from zopra.core.elements.Styles.Default import ssiA_VISITED
 
 
 class Dialog(hgDialog, guiHandler):

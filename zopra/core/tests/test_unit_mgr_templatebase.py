@@ -6,7 +6,9 @@ Created on 7 Nov 2019
 '''
 
 import unittest
+
 from zopra.core.tools.TemplateBaseManager import TemplateBaseManager
+
 
 class TemplateBaseManagerTest(unittest.TestCase):
     """Unittest Testcases for the tools.TemplateBaseManager class"""
@@ -69,4 +71,3 @@ class TemplateBaseManagerTest(unittest.TestCase):
     # - getDiffLabels
     # - getRelatedEntries
     # - val_translate
-

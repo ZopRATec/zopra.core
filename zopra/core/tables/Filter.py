@@ -1,52 +1,36 @@
-###########################################################################
-#    Copyright (C) 2005 by ZopRATec GbR                                   #
-#    <webmaster@ingo-keller.de>                                           #
-# Copyright: See COPYING file that comes with this distribution           #
-#                                                                         #
-###########################################################################
-"""\brief Filter class for sql generation"""
+"""Filter class for sql generation"""
 
-#
-# Python Language Imports
-#
-from copy  import copy
+from copy import copy
+from time import strftime
+from time import strptime
 from types import ListType
-from time  import strftime, strptime
 
-#
-# PyHtmlGUI Imports
-#
-from PyHtmlGUI.kernel.hgTable      import hgTable
-from PyHtmlGUI.widgets.hgLabel     import hgNEWLINE
+from PyHtmlGUI.kernel.hgTable import hgTable
+from PyHtmlGUI.widgets.hgLabel import hgNEWLINE
 
-# constants defined in zopra.core.elements.Buttons and CorePart
-# redefined here to avoid dependencies
-DLG_CUSTOM = 'c_'
-COL_TYPE   = 'TYPE'
+from zopra.core import ZC
+from zopra.core.elements.Buttons import DLG_CUSTOM
 
 # own constants
-MULLISTS = ['multilist', 'hierarchylist']
+MULLISTS = [ZC.ZCOL_MLIST, ZC.ZCOL_HLIST]
 
 # deprecated module type checking / date conversion
 # date mapping for convertDate
-format_list = [
-
-            '%d-%m-%y',
-            '%d-%m-%Y',
-            '%d.%m.%y',
-            '%d.%m.%Y',
-            '%d %m %y',
-            '%d %m %Y',
-            '%d/%m/%y',
-            '%d/%m/%Y',
-            '%m.%y',
-            '%m.%Y',
-            '%m/%d/%y',
-            '%m/%d/%Y',
-            '%d\%m\%y',
-            '%d\%m\%Y',
-            ]
-format_new  = '%d.%m.%Y'
+format_list = ['%d-%m-%y',
+               '%d-%m-%Y',
+               '%d.%m.%y',
+               '%d.%m.%Y',
+               '%d %m %y',
+               '%d %m %Y',
+               '%d/%m/%y',
+               '%d/%m/%Y',
+               '%m.%y',
+               '%m.%Y',
+               '%m/%d/%y',
+               '%m/%d/%Y',
+               '%d\%m\%y',
+               '%d\%m\%Y',]
+format_new = '%d.%m.%Y'
 
 
 def convertDateDeprecated(old_date):

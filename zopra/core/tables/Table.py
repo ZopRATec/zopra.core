@@ -5,45 +5,51 @@
 #                                                                         #
 ###########################################################################
 
-from copy     import copy, deepcopy
-from types    import StringType, ListType, TupleType, DictType, BooleanType
+from copy import copy
+from copy import deepcopy
 from itertools import izip
+from types import BooleanType
+from types import DictType
+from types import ListType
+from types import StringType
+from types import TupleType
 
-from zope.interface.declarations            import implements
+from zope.interface.declarations import implements
 
 #
 # PyHtmlGUI Imports
 #
-from PyHtmlGUI                              import E_PARAM_TYPE, E_PARAM_FAIL
-from PyHtmlGUI.kernel.hgTable               import hgTable
-
-from PyHtmlGUI.widgets.hgLabel              import hgLabel, hgSPACE
-from PyHtmlGUI.widgets.hgPushButton         import hgPushButton
-from PyHtmlGUI.widgets.hgMultiList          import hgMultiList
-from PyHtmlGUI.stylesheet.hgStyleSheetItem  import hgStyleSheetItem
-
+from PyHtmlGUI import E_PARAM_FAIL
+from PyHtmlGUI import E_PARAM_TYPE
+from PyHtmlGUI.kernel.hgTable import hgTable
+from PyHtmlGUI.stylesheet.hgStyleSheetItem import hgStyleSheetItem
+from PyHtmlGUI.widgets.hgLabel import hgLabel
+from PyHtmlGUI.widgets.hgLabel import hgSPACE
+from PyHtmlGUI.widgets.hgMultiList import hgMultiList
+from PyHtmlGUI.widgets.hgPushButton import hgPushButton
 #
 # ZopRA Imports
 #
-from zopra.core                             import HTML, ZC, SimpleItem, PropertyManager
-from zopra.core.constants                   import TCN_AUTOID,     \
-                                                   TCN_OWNER,      \
-                                                   TCN_DATE,       \
-                                                   TCN_CREATOR
-from zopra.core.elements.Buttons            import mpfReset2Button, \
-                                                   BTN_L_RESET2,    \
-                                                   getPressedButton
-
-from zopra.core.elements.Styles.Default     import ssiDLG_LABEL
-
-from zopra.core.tables.Filter               import Filter
-from zopra.core.tables.TableCache           import TableCache
-from zopra.core.tables.TableNode            import TableNode, TablePrivate
-
-from zopra.core.dialogs                     import getStdDialog
-from zopra.core.dialogs.TableEntryDialog    import TableEntryDialog
-from zopra.core.security.EntryPermission    import EntryPermission
-from zopra.core.interfaces                  import IZopRATable, IGenericManager
+from zopra.core import HTML
+from zopra.core import ZC
+from zopra.core import PropertyManager
+from zopra.core import SimpleItem
+from zopra.core.constants import TCN_AUTOID
+from zopra.core.constants import TCN_CREATOR
+from zopra.core.constants import TCN_DATE
+from zopra.core.constants import TCN_OWNER
+from zopra.core.dialogs import getStdDialog
+from zopra.core.elements.Buttons import BTN_L_RESET2
+from zopra.core.elements.Buttons import getPressedButton
+from zopra.core.elements.Buttons import mpfReset2Button
+from zopra.core.elements.Styles.Default import ssiDLG_LABEL
+from zopra.core.interfaces import IGenericManager
+from zopra.core.interfaces import IZopRATable
+from zopra.core.security.EntryPermission import EntryPermission
+from zopra.core.tables.Filter import Filter
+from zopra.core.tables.TableCache import TableCache
+from zopra.core.tables.TableNode import TableNode
+from zopra.core.tables.TableNode import TablePrivate
 from zopra.core.utils import getParentManager
 
 

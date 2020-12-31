@@ -9,11 +9,12 @@
 __revision__ = '0.1'
 
 import string
-from time             import strftime
-from xml.sax          import make_parser
-from xml.sax.handler  import ContentHandler
+from time import strftime
+from xml.sax import make_parser
+from xml.sax.handler import ContentHandler
 
 from zopra.core.ImageProperties import ImageProperties
+
 
 if __debug__:
     #import re, types

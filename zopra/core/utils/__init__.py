@@ -1,13 +1,14 @@
-import os.path
 import inspect
+import os.path
 import StringIO
 import types
 
-from OFS.interfaces         import IObjectManager
+from OFS.interfaces import IObjectManager
 
 import zopra.core
-from zopra.core.interfaces  import IZopRAManager
-from zopra.core.Classes     import XMLHandler, make_parser
+from zopra.core.Classes import XMLHandler
+from zopra.core.Classes import make_parser
+from zopra.core.interfaces import IZopRAManager
 
 
 E_FILE_NOT_FOUND = '[Error] File not found: %s'

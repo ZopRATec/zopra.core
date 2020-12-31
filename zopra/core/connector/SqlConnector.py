@@ -7,12 +7,18 @@
 #    the Free Software Foundation; either version 2 of the License, or     #
 #    (at your option) any later version.                                   #
 ############################################################################
-from copy         import deepcopy
-from importlib    import import_module
-from time         import strftime, strptime
-from types        import StringType, IntType, DictType, ListType
+from copy import deepcopy
+from importlib import import_module
+from time import strftime
+from time import strptime
+from types import DictType
+from types import IntType
+from types import ListType
+from types import StringType
 
-from zopra.core   import SimpleItem, ZC
+from zopra.core import ZC
+from zopra.core import SimpleItem
+
 
 # date mapping for convertDate
 format_list = [ '%d-%m-%y',

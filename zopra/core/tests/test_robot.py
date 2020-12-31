@@ -1,10 +1,11 @@
 import os
-import robotsuite
 import unittest
 
+import robotsuite
 from plone.testing import layered
 
 from zopra.core.testing import ROBOT_TESTING
+
 
 def test_suite():
     """Provides a test suite of robot tests for zopra.core.

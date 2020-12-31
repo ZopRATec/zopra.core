@@ -8,40 +8,42 @@
 #    (at your option) any later version.                                   #
 ############################################################################
 
-#
+
+import json
+import re
 # Python Language Imports
 #
-from binascii   import hexlify
-from copy       import deepcopy
-from random     import randint
-import re
-from sets       import Set as set
-from types      import ListType, StringType
+from binascii import hexlify
+#
+from copy import deepcopy
+from random import randint
+from sets import Set as set
+from types import ListType
+from types import StringType
 from urllib import quote
-import json
-import icu
 
 # Zope Imports
 from zope.component import getMultiAdapter
 
+import icu
 #
 # ZopRA Imports
 #
-from zopra.core                         import ClassSecurityInfo, \
-                                               getSecurityManager, \
-                                               ZC, \
-                                               zopraMessageFactory as _
-from zopra.core.CorePart                import MASK_SHOW
-from zopra.core.tools.GenericManager    import GenericManager
+from zopra.core import ZC
+from zopra.core import ClassSecurityInfo
+from zopra.core import getSecurityManager
+from zopra.core import zopraMessageFactory as _
+from zopra.core.tools.GenericManager import GenericManager
+
 
 protection_expression = re.compile(r'(mailto\:)?[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})')
 
 
 class TemplateBaseManager(GenericManager):
-    """ StudienInfo Manager """
+    """ Template Base Manager """
     _className    = 'TemplateBaseManager'
     _classType    = GenericManager._classType + [_className]
-    meta_type     = _className
+    meta_type     = ''
 
 #
 # Security

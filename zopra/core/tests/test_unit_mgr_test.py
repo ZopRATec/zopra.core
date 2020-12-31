@@ -8,6 +8,7 @@ Created on 7 Nov 2019
 from zopra.core.tests import StandaloneTestCase
 from zopra.core.tools.mgrTest import mgrTest
 
+
 class TestManagerTest(StandaloneTestCase):
     """Unittest Testcases for the mgrTest Testing class (standalone, no db)"""
 

@@ -1,8 +1,6 @@
-from Persistence    import Persistent
-
-from persistent.list import PersistentList
+from Persistence import Persistent
 from persistent.dict import PersistentDict
-
+from persistent.list import PersistentList
 
 
 class PersistentCache(Persistent):

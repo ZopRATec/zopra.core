@@ -8,10 +8,9 @@
 #    (at your option) any later version.                                   #
 ############################################################################
 
-from PyHtmlGUI.widgets.hgLabel          import hgProperty
-from PyHtmlGUI.widgets.hgPushButton     import hgPushButton
-
+from PyHtmlGUI.widgets.hgPushButton import hgPushButton
 from zopra.core.elements.Styles.Default import ssiB_BUTTON
+
 
 # dialog prefixe
 DLG_CUSTOM   = 'c_'        # to recognize custom fields
