@@ -9,8 +9,6 @@ from types import TupleType
 
 from zope.interface.declarations import implements
 
-from PyHtmlGUI import E_PARAM_FAIL
-from PyHtmlGUI import E_PARAM_TYPE
 from PyHtmlGUI.kernel.hgTable import hgTable
 from PyHtmlGUI.widgets.hgLabel import hgLabel
 from PyHtmlGUI.widgets.hgLabel import hgSPACE
@@ -253,8 +251,8 @@ class Table(SimpleItem, PropertyManager):
             entry = {}
 
             # no luck
-            assert mgr.id, E_PARAM_FAIL % "mgr.id"
-            assert self.tabledict, E_PARAM_FAIL % "tabledict"
+            assert mgr.id, ZC.E_PARAM_FAIL % "mgr.id"
+            assert self.tabledict, ZC.E_PARAM_FAIL % "tabledict"
 
             if not data_tuple or not col_list:
                 # get table definition
@@ -895,12 +893,12 @@ class Table(SimpleItem, PropertyManager):
     ):
         """Uses requestEntries to return a list of descr_dicts."""
         # should replace getEntries after speed test
-        assert direction in self.Order, E_PARAM_TYPE % (
+        assert direction in self.Order, ZC.E_PARAM_TYPE % (
             "direction",
             "Table.Order",
             direction,
         )
-        assert idfield, E_PARAM_FAIL % "idfield"
+        assert idfield, ZC.E_PARAM_FAIL % "idfield"
 
         # get TreeRoot
         root = self.getTableNode()
@@ -973,7 +971,7 @@ class Table(SimpleItem, PropertyManager):
 
     def getEntryCount(self, idvalue=None, idfield=ZC.TCN_AUTOID):
         """ Returns the count for getEntries - old value-handling (simple attrs only)"""
-        assert idfield, E_PARAM_FAIL % "idfield"
+        assert idfield, ZC.E_PARAM_FAIL % "idfield"
 
         # get TreeRoot
         root = self.getTableNode()

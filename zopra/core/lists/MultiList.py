@@ -1,4 +1,3 @@
-from PyHtmlGUI import E_PARAM_TYPE
 from PyHtmlGUI.widgets.hgLabel import hgLabel
 from PyHtmlGUI.widgets.hgPushButton import hgPushButton
 from zopra.core import ZC
@@ -161,7 +160,7 @@ class MultiList(ForeignList):
 
     def addMLRef(self, tableid, value, notes=None):
         """inserts a row with given tableid and value in table 'multi'+list_name"""
-        assert value, E_PARAM_TYPE % (
+        assert value, ZC.E_PARAM_TYPE % (
             ZC.VALUE,
             "not None value for %s" % self.listname,
             value,

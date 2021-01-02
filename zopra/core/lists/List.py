@@ -7,7 +7,6 @@ from types import ListType
 from types import StringType
 from types import UnicodeType
 
-from PyHtmlGUI import E_PARAM_TYPE
 from PyHtmlGUI.kernel.hgTable import hgTable
 from PyHtmlGUI.widgets.hgCheckBox import hgCheckBox
 from PyHtmlGUI.widgets.hgLabel import hgLabel
@@ -476,7 +475,7 @@ class List(GenericList):
                     isinstance(aid, IntType)
                     or isinstance(aid, StringType)
                     or isinstance(aid, UnicodeType)
-                ), E_PARAM_TYPE % ("aid", "IntType/StringType", aid)
+                ), ZC.E_PARAM_TYPE % ("aid", "IntType/StringType", aid)
 
                 aid = int(aid)
 

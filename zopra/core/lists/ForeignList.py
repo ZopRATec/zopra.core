@@ -5,7 +5,6 @@ from types import ListType
 from types import StringType
 from types import UnicodeType
 
-from PyHtmlGUI import E_PARAM_TYPE
 from PyHtmlGUI.kernel.hgTable import hgTable
 from PyHtmlGUI.widgets.hgLabel import hgLabel
 from zopra.core import HTML
@@ -637,7 +636,7 @@ class ForeignList(GenericList):
             elif manager:
                 assert isinstance(aid, IntType) or isinstance(
                     aid, StringType
-                ), E_PARAM_TYPE % ("aid", "IntType/StringType", aid)
+                ), ZC.E_PARAM_TYPE % ("aid", "IntType/StringType", aid)
 
                 aid = int(aid)
 

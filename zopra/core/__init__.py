@@ -24,9 +24,7 @@ from OFS.SimpleItem import SimpleItem
 from zExceptions import BadRequest
 from zope.i18nmessageid import MessageFactory
 
-from PyHtmlGUI import E_PARAM_TYPE
 from zopra.core.constants import ZC
-from zopra.core.interfaces import IZopRAManager
 from zopra.core.interfaces import IZopRAProduct
 
 

@@ -10,7 +10,6 @@ from copy import copy
 from types import ListType
 from types import StringType
 
-from PyHtmlGUI import E_PARAM_TYPE
 from PyHtmlGUI.kernel.hgTable import hgTable
 from PyHtmlGUI.widgets.hgLabel import hgNEWLINE
 from zopra.core import ZC
@@ -93,7 +92,7 @@ class TableNode(SimpleItem):
 
     def setName(self, name):
         """\brief Sets the table name to \a name."""
-        assert isinstance(name, StringType), E_PARAM_TYPE % ("name", "StringType", name)
+        assert isinstance(name, StringType), ZC.E_PARAM_TYPE % ("name", "StringType", name)
         self.data.tablename = name
 
     name = property(getName, setName)
@@ -106,12 +105,12 @@ class TableNode(SimpleItem):
     def __init__(self, data, mgr, prefix=""):
         """\brief Constructs a table."""
         # prefix must not be None!
-        assert isinstance(prefix, StringType), E_PARAM_TYPE % (
+        assert isinstance(prefix, StringType), ZC.E_PARAM_TYPE % (
             "prefix",
             "StringType",
             prefix,
         )
-        assert isinstance(data, TablePrivate), E_PARAM_TYPE % (
+        assert isinstance(data, TablePrivate), ZC.E_PARAM_TYPE % (
             "data",
             "TableNode",
             data,
@@ -186,7 +185,7 @@ class TableNode(SimpleItem):
     def setPrefix(self, prefix):
         """\brief set a String prefix to identify constraints
         for this node object"""
-        assert isinstance(prefix, StringType), E_PARAM_TYPE % (
+        assert isinstance(prefix, StringType), ZC.E_PARAM_TYPE % (
             "prefix",
             "StringType",
             prefix,
