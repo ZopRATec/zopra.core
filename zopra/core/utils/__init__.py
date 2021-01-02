@@ -11,20 +11,19 @@ from zopra.core.Classes import make_parser
 from zopra.core.interfaces import IZopRAManager
 
 
-E_FILE_NOT_FOUND = '[Error] File not found: %s'
+E_FILE_NOT_FOUND = "[Error] File not found: %s"
 
 
 def getZopRAPath():
-    """ This method returns the path in of the zopra.core package.
+    """This method returns the path in of the zopra.core package.
 
     @return String directory name of the zopra.core package
     """
     return os.path.dirname(zopra.core.__file__)
 
 
-def getParentManager( context,
-                      error_message = 'No Manager found via getParentNode()' ):
-    """ This method returns the parent manager from the given node.
+def getParentManager(context, error_message="No Manager found via getParentNode()"):
+    """This method returns the parent manager from the given node.
 
     The method goes up at least one level. It does not check whether the
     given node is already a manager.
@@ -48,7 +47,7 @@ def getParentManager( context,
 
 
 def gatherManagers(context):
-    """ This method finds the Manager instances in the current folder and above
+    """This method finds the Manager instances in the current folder and above
 
     @return List - unsorted list of IDs
     """
@@ -62,7 +61,7 @@ def gatherManagers(context):
                 if IZopRAManager.providedBy(obj):
                     ids.append(obj.getId())
 
-        if hasattr(context, 'aq_parent'):
+        if hasattr(context, "aq_parent"):
             context = context.aq_parent
         else:
             context = None
@@ -71,18 +70,18 @@ def gatherManagers(context):
 
 
 def getASTFromXML(xml):
-    """ This method reads a XML-string and converts it into an object tree
+    """This method reads a XML-string and converts it into an object tree
         representation.
 
     @param xml - string containing the XML
     @result object - the object tree's root element
     """
-    assert(isinstance(xml, types.StringType))
+    assert isinstance(xml, types.StringType)
 
     inputFile = StringIO.StringIO(xml)
 
     # XML handling
-    xsHandler  = XMLHandler()
+    xsHandler = XMLHandler()
     saxParser = make_parser()
     saxParser.setContentHandler(xsHandler)
 
@@ -94,7 +93,7 @@ def getASTFromXML(xml):
 
 
 def getClassPath(obj):
-    """ This method returns the path of the objects class file.
+    """This method returns the path of the objects class file.
 
     @param obj - object for which the class file path should be returned
     @result path object - contains the path to the class file
@@ -103,19 +102,19 @@ def getClassPath(obj):
 
 
 def getModulePath(cls):
-    """ This method returns the path of the object's class file.
+    """This method returns the path of the object's class file.
 
     @param cls - class for which the class file path should be returned
     @result path object - contains the path to the class file
     """
     _path = inspect.getfile(cls)
-    if _path.endswith('pyc'):
+    if _path.endswith("pyc"):
         _path = _path[:-1]
     return _path
 
 
 def getTableDefinition(manager):
-    """ This method returns the table definition of the given manager.
+    """This method returns the table definition of the given manager.
 
     @param manager - ZopRA manager
     @result string - XML containing the table definition
@@ -123,18 +122,17 @@ def getTableDefinition(manager):
 
     # model loading
     className = manager.getClassName()
-    _file     = os.path.join( getClassPath(manager),
-                              'model', '%s.xml' % className )
+    _file = os.path.join(getClassPath(manager), "model", "%s.xml" % className)
 
     if os.path.exists(_file):
-        with open(_file, 'r') as fHandle:
+        with open(_file, "r") as fHandle:
             return fHandle.read()
 
     return '<?xml version="1.0"?><Tabledefinition />'
 
 
 def getIconsDefinition(manager):
-    """ This method returns the icon definition of the given manager.
+    """This method returns the icon definition of the given manager.
 
     @param manager - ZopRA manager
     @result string - XML containing the icon definition
@@ -142,11 +140,10 @@ def getIconsDefinition(manager):
 
     # model loading
     className = manager.getClassName()
-    _file     = os.path.join( getClassPath(manager),
-                              'icons', '%s.xml' % className )
+    _file = os.path.join(getClassPath(manager), "icons", "%s.xml" % className)
 
     if os.path.exists(_file):
-        with open(_file, 'r') as fHandle:
+        with open(_file, "r") as fHandle:
             return fHandle.read()
 
     return '<?xml version="1.0"?><Icondefinitions />'

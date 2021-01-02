@@ -13,22 +13,24 @@ from zopra.core import ZC
 from zopra.core.dialogs import getStdDialog
 from zopra.core.lists.GenericList import GenericList
 
+
 # function prefixes for foreign funtions
-F_VALUE  = 'Value'
-F_SELECT = 'Select'
-F_LINK   = 'Link'
+F_VALUE = "Value"
+F_SELECT = "Select"
+F_LINK = "Link"
 
 SUFFIXES = [F_VALUE, F_SELECT, F_LINK]
 
 
 class ForeignList(GenericList):
     """A single selection list residing in the listHandler of a ZopRA Manager belonging to one table.
-       It references a 'zopra.core.lists.List' basic list in the same manager (attribute 'foreign') to use the values from that list.
-       It can reference its basic list in another manager (attribute 'manager'). The manager will always
-       be looked up by class upwards in the hierarchy (thus only one can be found). If no manager was found, the
-       hierarchy downwards is looked through, using the first found manager.
+    It references a 'zopra.core.lists.List' basic list in the same manager (attribute 'foreign') to use the values from that list.
+    It can reference its basic list in another manager (attribute 'manager'). The manager will always
+    be looked up by class upwards in the hierarchy (thus only one can be found). If no manager was found, the
+    hierarchy downwards is looked through, using the first found manager.
     """
-    _className = 'ForeignList'
+
+    _className = "ForeignList"
     _classType = GenericList._classType + [_className]
 
     __notes = None
@@ -37,10 +39,11 @@ class ForeignList(GenericList):
     __maxshown = None
     __invisible = True
 
-    listtype = 'singlelist'
+    listtype = "singlelist"
 
-    manage_options = ({'label': 'Overview', 'action': 'viewTab'},
-                      ) + GenericList.manage_options
+    manage_options = (
+        {"label": "Overview", "action": "viewTab"},
+    ) + GenericList.manage_options
 
     def __init__(self, listname, manager=None, function=None, label=None):
         """Constructs a ForeignList."""
@@ -54,8 +57,8 @@ class ForeignList(GenericList):
         self.__invisible = True
 
         if not function:
-            function = ''
-        idx = function.find('(')
+            function = ""
+        idx = function.find("(")
         if idx == -1:
             # points to a handwritten function
             self.function = function
@@ -66,9 +69,9 @@ class ForeignList(GenericList):
             self.function = None
             self.foreign = function[:idx]
 
-            collist = function[idx + 1: -1]
-            cols = collist.split(',')
-            if cols == ['']:
+            collist = function[idx + 1 : -1]
+            cols = collist.split(",")
+            if cols == [""]:
                 cols = []
 
             self.cols = []
@@ -119,17 +122,17 @@ class ForeignList(GenericList):
     # labelsearch property methods
     def setLabelSearch(self, labelsearch):
         """Set labelsearch property
-                If set, getAutoidByValue will use searchLabelStrings from manager
-                which is supposed to perform a db search based on Value string.
-                Also enables filtering for the list. labelsearch is normally used in conjunction
-                with maxshown to have a reduced size list with searchable values.
-                This should speed up the data retrieval considerably compared
-                to the standard method of retrieving all entries from db,
-                creating their label string and comparing it to the pattern.
-                Note: searchLabelStrings defaults to autoid search and must be overwritten in the
-                        manager, if different behaviour is desired.
-                Note: Only a valid option if self.cols is not set since this changes the displayed
-                        value string and composed strings cannot be searched right now. -> needs to be solved
+        If set, getAutoidByValue will use searchLabelStrings from manager
+        which is supposed to perform a db search based on Value string.
+        Also enables filtering for the list. labelsearch is normally used in conjunction
+        with maxshown to have a reduced size list with searchable values.
+        This should speed up the data retrieval considerably compared
+        to the standard method of retrieving all entries from db,
+        creating their label string and comparing it to the pattern.
+        Note: searchLabelStrings defaults to autoid search and must be overwritten in the
+                manager, if different behaviour is desired.
+        Note: Only a valid option if self.cols is not set since this changes the displayed
+                value string and composed strings cannot be searched right now. -> needs to be solved
         """
 
         if labelsearch:
@@ -146,11 +149,11 @@ class ForeignList(GenericList):
 
     def setMaxShown(self, maxshown):
         """Set maxshown property
-                If set, list size is reduced to maxshown to increase speed for display.
-                The target widget only gets loaded with the needed entries and offers functions
-                to determine limit and offset. Used in getWidget and MultiList.getComplexWidget
-                to select the target widget (not set -> hgComboBox / hgComplexMultiList or
-                set and len(entries) > maxshown -> hgFilteredRangeList)
+        If set, list size is reduced to maxshown to increase speed for display.
+        The target widget only gets loaded with the needed entries and offers functions
+        to determine limit and offset. Used in getWidget and MultiList.getComplexWidget
+        to select the target widget (not set -> hgComboBox / hgComplexMultiList or
+        set and len(entries) > maxshown -> hgFilteredRangeList)
         """
 
         if maxshown:
@@ -182,14 +185,11 @@ class ForeignList(GenericList):
 
     def copy(self):
         """Create a copy of the list."""
-        cop = self.__class__( self.listname,
-                              self.manager,
-                              self.function,
-                              self.label )
+        cop = self.__class__(self.listname, self.manager, self.function, self.label)
 
-        cop.notes       = self.notes
+        cop.notes = self.notes
         cop.labelsearch = self.labelsearch
-        cop.maxshown    = self.maxshown
+        cop.maxshown = self.maxshown
 
         return cop
 
@@ -206,7 +206,9 @@ class ForeignList(GenericList):
             foreign = local
         else:
             # try same container first and then up the hierarchy
-            foreign = local.getManager(self.manager) or local.getHierarchyUpManager(self.manager)
+            foreign = local.getManager(self.manager) or local.getHierarchyUpManager(
+                self.manager
+            )
             # if that does not work, try down
             # CAUTION: down could be multiple managers of same type, first found gets returned
             # FIXME: should build in zopratype differentiation somehow
@@ -220,7 +222,7 @@ class ForeignList(GenericList):
         if self.label:
             label = self.label
             if self.notes and self.noteslabel:
-                label = '%s (%s)' % (label, self.noteslabel)
+                label = "%s (%s)" % (label, self.noteslabel)
             return label
         else:
             manager = self.getForeignManager()
@@ -231,7 +233,7 @@ class ForeignList(GenericList):
                 elif self.foreign in manager.listHandler:
                     return manager.listHandler[self.foreign].getLabel()
 
-        return ''
+        return ""
 
     def isListReference(self):
         """True if the List refers to a list of a foreign manager"""
@@ -246,7 +248,7 @@ class ForeignList(GenericList):
         return not not self.function
 
     # NOTE: is it useful to allow add/del of values in foreign lists?
-    def addValue( self, value, notes = '', rank  = '', show  = 'yes', **kwargs ):
+    def addValue(self, value, notes="", rank="", show="yes", **kwargs):
         """Adds a value to a list lookup table.
 
         The function adds a new value to a lookup list. It also checks if
@@ -271,10 +273,10 @@ class ForeignList(GenericList):
 
         \throw RuntimeError if list not found.
         """
-        raise ValueError('addValue is only available in base list')
+        raise ValueError("addValue is only available in base list")
 
         if self.function:
-            raise ValueError('Non-simple foreign list doesnt support addValue.')
+            raise ValueError("Non-simple foreign list doesnt support addValue.")
 
         manager = self.getForeignManager()
 
@@ -282,20 +284,20 @@ class ForeignList(GenericList):
             return
 
         if self.foreign in manager.tableHandler:
-            raise ValueError('Non-simple foreign list doesnt support addValue.')
+            raise ValueError("Non-simple foreign list doesnt support addValue.")
         elif self.foreign in manager.listHandler:
             _list = manager.listHandler[self.foreign]
             return _list.addValue(value, notes, rank, show, **kwargs)
         else:
-            raise ValueError('Couldn\'t find foreign list.')
+            raise ValueError("Couldn't find foreign list.")
 
     def delValue(self, autoid):
         """Deletes a value from a list lookup table."""
-        raise ValueError('delValue is only available in base list')
+        raise ValueError("delValue is only available in base list")
 
         if self.function:
-            message = 'Unable to delete from non-simple foreign list %s.'
-            raise ValueError( message % self.listname)
+            message = "Unable to delete from non-simple foreign list %s."
+            raise ValueError(message % self.listname)
 
         manager = self.getForeignManager()
 
@@ -303,12 +305,12 @@ class ForeignList(GenericList):
             return
 
         if self.foreign in manager.tableHandler:
-            message = 'Unable to delete from non-simple foreign list %s.'
-            raise ValueError( message % self.listname)
+            message = "Unable to delete from non-simple foreign list %s."
+            raise ValueError(message % self.listname)
         elif self.foreign in manager.listHandler:
             manager.listHandler[self.foreign].delValue(autoid)
         else:
-            raise ValueError('Couldn\'t find foreign list.')
+            raise ValueError("Couldn't find foreign list.")
 
     def getEntry(self, autoid):
         """Fetches a value from an list lookup table. Local function."""
@@ -331,7 +333,7 @@ class ForeignList(GenericList):
         if self.foreign in manager.listHandler:
             return manager.listHandler[self.foreign].getEntry(autoid)
 
-        raise ValueError('Couldn\'t find foreign list.')
+        raise ValueError("Couldn't find foreign list.")
 
     def getEntries(self, value=None, with_hidden=False, manager=None, lang=None):
         """Returns all list entries of one list."""
@@ -347,36 +349,39 @@ class ForeignList(GenericList):
                 funcstr = self.function + F_SELECT
 
                 # test
-                if not hasattr( manager, funcstr):
-                    errstr = '%s missing function: %s' % (manager.id, funcstr)
+                if not hasattr(manager, funcstr):
+                    errstr = "%s missing function: %s" % (manager.id, funcstr)
                     raise ValueError(errstr)
 
-                selfunc = getattr( manager, funcstr )
+                selfunc = getattr(manager, funcstr)
                 reslist = selfunc(lang)
 
                 for result in reslist:
-                    if value is None or \
-                       value in result[1]:
+                    if value is None or value in result[1]:
                         # this is not multilingual, target functions neet to supply correct language
-                        newentry = { ZC.TCN_AUTOID: result[0],
-                                     ZC.VALUE:      result[1],
-                                     ZC.SHOW:       'yes' }
+                        newentry = {
+                            ZC.TCN_AUTOID: result[0],
+                            ZC.VALUE: result[1],
+                            ZC.SHOW: "yes",
+                        }
                         completelist.append(newentry)
             else:
                 # table-standard-function used
                 if self.foreign in manager.tableHandler:
                     tobj = manager.tableHandler[self.foreign]
                     cons = self.getManager().getListSelectionConstraints(self.listname)
-                    tentries = tobj.getEntryList(constraints = cons)
+                    tentries = tobj.getEntryList(constraints=cons)
                     completelist = []
                     for entry in tentries:
-                        val = ''
-                        autoid = entry['autoid']
+                        val = ""
+                        autoid = entry["autoid"]
                         if not self.cols:
                             # empty, use getLabelString
                             if manager.doesTranslations(self.foreign):
                                 # getLabelString does the translation (and switches to translated entry by itself)
-                                val = manager.getLabelString(self.foreign, None, entry, lang)
+                                val = manager.getLabelString(
+                                    self.foreign, None, entry, lang
+                                )
                             else:
                                 val = manager.getLabelString(self.foreign, None, entry)
                         else:
@@ -388,63 +393,67 @@ class ForeignList(GenericList):
                                 col = col.strip()
                                 if entry.get(col):
                                     vals.append(unicode(entry.get(col)))
-                            val = ' '.join(vals)
+                            val = " ".join(vals)
 
-                        if value is None or \
-                           value in val:
-                            newentry = { ZC.TCN_AUTOID: autoid,
-                                         ZC.VALUE:      val,
-                                         ZC.SHOW:       'yes' }
-                            completelist.append( newentry )
+                        if value is None or value in val:
+                            newentry = {
+                                ZC.TCN_AUTOID: autoid,
+                                ZC.VALUE: val,
+                                ZC.SHOW: "yes",
+                            }
+                            completelist.append(newentry)
                 # get data from list
                 elif self.foreign in manager.listHandler:
                     lobj = manager.listHandler[self.foreign]
                     # call getEntries of the ZMOMLIst object that is referenced (lang is not necessary, the entries are multilingual anyway)
                     completelist = lobj.getEntries(value, with_hidden)
                 else:
-                    raise ValueError('Couldn\'t find foreign list %s:%s for %s' % (manager.getClassName(), self.foreign, self.listname))
+                    raise ValueError(
+                        "Couldn't find foreign list %s:%s for %s"
+                        % (manager.getClassName(), self.foreign, self.listname)
+                    )
         else:
             # manager not found
             return []
 
         return completelist
 
-    def updateEntry( self,
-                     descr_dict,
-                     entry_id ):
+    def updateEntry(self, descr_dict, entry_id):
         """changes list values in the database"""
-        raise ValueError('updateEntry is only available in base list')
+        raise ValueError("updateEntry is only available in base list")
 
         if self.function:
-            raise ValueError('Non-simple foreign list doesnt support updateEntry.')
+            raise ValueError("Non-simple foreign list doesnt support updateEntry.")
 
         manager = self.getForeignManager()
 
         if manager:
             if self.foreign in manager.tableHandler:
-                raise ValueError('Non-simple foreign list doesnt support updateEntry.')
+                raise ValueError("Non-simple foreign list doesnt support updateEntry.")
             elif self.foreign in manager.listHandler:
                 _list = manager.listHandler[self.foreign]
                 return _list.updateEntry(descr_dict, entry_id)
             else:
-                raise ValueError('Couldn\'t find foreign list.')
+                raise ValueError("Couldn't find foreign list.")
 
     def getAutoidByValue(self, value, rank=None):
         """Returns the autoid from an specified list entry."""
-        assert ( isinstance(value, StringType)   or
-                 isinstance(value, ListType)     or
-                 isinstance(value, UnicodeType)  or
-                 value is None )
+        assert (
+            isinstance(value, StringType)
+            or isinstance(value, ListType)
+            or isinstance(value, UnicodeType)
+            or value is None
+        )
 
         # NOTE: do not handle lists recursivly:
         #      1) getting the manager is expensive
         #      2) loading all entries of a list from the db for each searched value is wasteful
-        if isinstance( value, ListType):
+        if isinstance(value, ListType):
             is_list = True
             values = value
         else:
             is_list = False
-            values = [ value ]
+            values = [value]
 
         retlist = []
 
@@ -462,7 +471,7 @@ class ForeignList(GenericList):
         # retrieve data via function
         elif self.function:
             # function or table
-            entrylist = self.getEntries( with_hidden = True, manager = manager )
+            entrylist = self.getEntries(with_hidden=True, manager=manager)
 
             # NOTE: keep in mind to preserve the order of searched values,
             #       as well as multiple occurences of values
@@ -474,11 +483,11 @@ class ForeignList(GenericList):
             val2autoid = {}
 
             for entry in entrylist:
-                val2autoid[ entry[ZC.VALUE] ] = entry[ZC.TCN_AUTOID]
+                val2autoid[entry[ZC.VALUE]] = entry[ZC.TCN_AUTOID]
 
             # get the autoid for each value
             for val in values:
-                retlist.append( val2autoid.get(val, None) )
+                retlist.append(val2autoid.get(val, None))
 
         # retrieve data via table
         elif self.foreign in manager.tableHandler:
@@ -495,21 +504,21 @@ class ForeignList(GenericList):
                         retlist.append(None)
             else:
                 # Note: this is horribly expensive for big tables, use label search if possible
-                entrylist = self.getEntries( with_hidden = True, manager = manager )
+                entrylist = self.getEntries(with_hidden=True, manager=manager)
 
                 # NOTE: look at note of function section above
                 val2autoid = {}
 
                 for entry in entrylist:
-                    val2autoid[ entry[ZC.VALUE] ] = entry[ZC.TCN_AUTOID]
+                    val2autoid[entry[ZC.VALUE]] = entry[ZC.TCN_AUTOID]
 
                 # get the autoid for each value
                 for val in values:
-                    retlist.append( val2autoid.get(val, None) )
+                    retlist.append(val2autoid.get(val, None))
 
         # manager is available but list cannot be found - error
         else:
-            raise ValueError('Couldn\'t find foreign list.')
+            raise ValueError("Couldn't find foreign list.")
 
         return retlist if is_list else retlist[0]
 
@@ -517,15 +526,14 @@ class ForeignList(GenericList):
     def getAutoidsByFreeText(self, value):
         """Returns the autoid from any fitting list entry."""
         reslist = []
-        upval   = value.upper()
+        upval = value.upper()
 
         manager = self.getForeignManager()
 
         if manager:
-            if self.function or \
-               self.foreign in manager.tableHandler:
+            if self.function or self.foreign in manager.tableHandler:
                 # function or table
-                resultlist = self.getEntries(with_hidden = True, manager = manager)
+                resultlist = self.getEntries(with_hidden=True, manager=manager)
                 for entry in resultlist:
                     if entry[1].upper().find(upval) != -1:
                         reslist.append(entry[0])
@@ -536,7 +544,7 @@ class ForeignList(GenericList):
                     lobj = manager.listHandler[self.foreign]
                     reslist = lobj.getAutoidsByFreeText(value)
                 else:
-                    raise ValueError('Couldn\'t find foreign list.')
+                    raise ValueError("Couldn't find foreign list.")
 
         return reslist
 
@@ -547,21 +555,20 @@ class ForeignList(GenericList):
         Returns the new or existing id.
         """
         if self.function:
-            raise ValueError('Cannot cross foreign function-based lists.')
+            raise ValueError("Cannot cross foreign function-based lists.")
 
         manager = self.getForeignManager()
 
         if manager:
             # handle foreign table or list
             if self.foreign in manager.tableHandler:
-                raise ValueError('Cannot cross foreign table-based lists.')
+                raise ValueError("Cannot cross foreign table-based lists.")
             elif self.foreign in manager.listHandler:
-                return manager.listHandler[self.foreign].\
-                           crossLookupList( entry1,
-                                            entry2,
-                                            crossString )
+                return manager.listHandler[self.foreign].crossLookupList(
+                    entry1, entry2, crossString
+                )
             else:
-                raise ValueError('Couldn\'t find foreign list.')
+                raise ValueError("Couldn't find foreign list.")
 
     def getValueCount(self):
         """Returns the length of a list.
@@ -579,7 +586,7 @@ class ForeignList(GenericList):
         if self.function:
 
             # NOTE: expensive, but the only way
-            return len(self.getEntries(manager = manager))
+            return len(self.getEntries(manager=manager))
         else:
 
             # handle foreign table or list
@@ -589,13 +596,13 @@ class ForeignList(GenericList):
             elif self.foreign in manager.listHandler:
                 return manager.listHandler[self.foreign].getValueCount()
 
-        raise ValueError('Couldn\'t find foreign list.')
+        raise ValueError("Couldn't find foreign list.")
 
     def getValueByAutoid(self, autoid, lang=None):
         """Returns the value from an specified list entry/entries."""
         # additional check for None to avoid fetching foreign manager etc.
         if autoid == None:
-            return ''
+            return ""
 
         # NOTE: do not handle lists recursivly since getting the
         #       manager is expensive
@@ -612,29 +619,29 @@ class ForeignList(GenericList):
 
         if not manager:
             # manager not found -> ignore and return empty values
-            value = ['' for aid in autoids]
+            value = ["" for aid in autoids]
             if is_list:
                 return value
             else:
                 return value[0]
         for aid in autoids:
-            value  = ''
+            value = ""
             # not existing values
-            if aid is None or aid == '':
+            if aid is None or aid == "":
                 value = None
             # no value
-            elif aid == 'NULL':
+            elif aid == "NULL":
                 pass
-            elif aid == '_not_NULL':
+            elif aid == "_not_NULL":
                 # TODO: use translation (Plone 4)
-                if lang == 'de':
-                    value = 'beliebig'
+                if lang == "de":
+                    value = "beliebig"
                 else:
-                    value = 'any'
+                    value = "any"
             elif manager:
-                assert isinstance(aid, IntType) or \
-                       isinstance(aid, StringType), \
-                       E_PARAM_TYPE % ('aid', 'IntType/StringType', aid)
+                assert isinstance(aid, IntType) or isinstance(
+                    aid, StringType
+                ), E_PARAM_TYPE % ("aid", "IntType/StringType", aid)
 
                 aid = int(aid)
 
@@ -642,17 +649,19 @@ class ForeignList(GenericList):
                     funcstr = self.function + F_VALUE
                     assert hasattr(manager, funcstr)
                     valfunc = getattr(manager, funcstr)
-                    value   = valfunc(aid, lang)
+                    value = valfunc(aid, lang)
                 else:
                     # collist given, table-standard-function used
                     if self.foreign in manager.tableHandler:
-                        tobj  = manager.tableHandler[self.foreign]
-                        value = tobj.getEntryValue( aid, self.cols, lang )
+                        tobj = manager.tableHandler[self.foreign]
+                        value = tobj.getEntryValue(aid, self.cols, lang)
                     elif self.foreign in manager.listHandler:
-                        lobj  = manager.listHandler[self.foreign]
+                        lobj = manager.listHandler[self.foreign]
                         value = lobj.getValueByAutoid(aid, lang)
                     else:
-                        raise ValueError('Couldn\'t find foreign list \'%s\'.' % self.foreign)
+                        raise ValueError(
+                            "Couldn't find foreign list '%s'." % self.foreign
+                        )
 
             retlist.append(value)
 
@@ -669,40 +678,38 @@ class ForeignList(GenericList):
     def viewTab(self, REQUEST):
         """List overview tab."""
         dlg = self.getViewTabDialog(REQUEST)
-        return HTML( dlg.getHtml() )(self, REQUEST)
-
+        return HTML(dlg.getHtml())(self, REQUEST)
 
     def getViewTabDialog(self, REQUEST):
         """view tab dialog creation is extra for overwriting and extending the dialog in multilist"""
-        message = ''
+        message = ""
 
-        dlg = getStdDialog('', 'viewTab')
-        dlg.setHeader( "<dtml-var manage_page_header><dtml-var manage_tabs>" )
-        dlg.setFooter( "<dtml-var manage_page_footer>"                       )
+        dlg = getStdDialog("", "viewTab")
+        dlg.setHeader("<dtml-var manage_page_header><dtml-var manage_tabs>")
+        dlg.setFooter("<dtml-var manage_page_footer>")
 
         tab = hgTable()
         tab._old_style = False
 
         # show tables information
-        tab[0, 0] = '<h3>List Overview</h3>'
-        tab.setCellSpanning(0, 0, colspan = 3)
+        tab[0, 0] = "<h3>List Overview</h3>"
+        tab.setCellSpanning(0, 0, colspan=3)
 
-        tab[1, 0] = '<b>Name</b>'
-        tab[1, 1] = '<b>Type</b>'
-        tab[1, 2] = '<b>Label</b>'
-        tab[1, 4] = '<b>Manager</b>'
-        tab[1, 5] = '<b>Reference Type</b>'
-        tab[1, 6] = '<b>Target</b>'
-        tab[1, 7] = '<b>Columns</b>'
-        tab[1, 8] = '<b>Notes</b>'
-        tab[1, 9] = '<b>Invisible</b>'
-
+        tab[1, 0] = "<b>Name</b>"
+        tab[1, 1] = "<b>Type</b>"
+        tab[1, 2] = "<b>Label</b>"
+        tab[1, 4] = "<b>Manager</b>"
+        tab[1, 5] = "<b>Reference Type</b>"
+        tab[1, 6] = "<b>Target</b>"
+        tab[1, 7] = "<b>Columns</b>"
+        tab[1, 8] = "<b>Notes</b>"
+        tab[1, 9] = "<b>Invisible</b>"
 
         list_mgr = self.getForeignManager()
 
         if list_mgr:
-            lab = list_mgr.getId() + ' (' + list_mgr.getClassName() + ')'
-            url = '%s/manage_main' % list_mgr.absolute_url()
+            lab = list_mgr.getId() + " (" + list_mgr.getClassName() + ")"
+            url = "%s/manage_main" % list_mgr.absolute_url()
 
             lab_mgr = hgLabel(lab, url)
         else:
@@ -711,30 +718,36 @@ class ForeignList(GenericList):
 
         tab[2, 0] = self.listname
         tab[2, 1] = self.listtype
-        tab[2, 2] = self.label.encode('utf8')
+        tab[2, 2] = self.label.encode("utf8")
         tab[2, 4] = lab_mgr
 
         if self.function:
-            target_type = 'Function'
-            lab_target  = self.function
+            target_type = "Function"
+            lab_target = self.function
         else:
-            target_type = 'List or Table'
+            target_type = "List or Table"
 
             if list_mgr:
                 if self.foreign in list_mgr.tableHandler:
-                    target_type = 'Table'
+                    target_type = "Table"
 
-                    url = '%s/%s/manage_workspace' % (list_mgr.tableHandler[self.foreign].absolute_url(), self.foreign)
+                    url = "%s/%s/manage_workspace" % (
+                        list_mgr.tableHandler[self.foreign].absolute_url(),
+                        self.foreign,
+                    )
                     lab_target = hgLabel(self.foreign, url)
                     if self.cols:
                         tab[2, 7] = str(self.cols)
                 elif self.foreign in list_mgr.listHandler:
-                    target_type = 'List'
+                    target_type = "List"
 
-                    url = '%s/%s/manage_workspace' % (list_mgr.listHandler[self.foreign].absolute_url(), self.foreign)
+                    url = "%s/%s/manage_workspace" % (
+                        list_mgr.listHandler[self.foreign].absolute_url(),
+                        self.foreign,
+                    )
                     lab_target = hgLabel(self.foreign, url)
                 else:
-                    target_type = 'Missing'
+                    target_type = "Missing"
                     lab_target = hgLabel('<font color="red">%s</font>' % self.foreign)
             else:
                 lab_target = hgLabel('<font color="red">%s</font>' % self.foreign)
@@ -745,8 +758,8 @@ class ForeignList(GenericList):
         if isinstance(self.notes, StringType):
             tab[2, 8] = self.notes
         else:
-            tab[2, 8] = (self.notes and 'yes') or 'no'
-        tab[2, 9] = (self.invisible and 'yes') or 'no'
+            tab[2, 8] = (self.notes and "yes") or "no"
+        tab[2, 9] = (self.invisible and "yes") or "no"
 
         dlg.add(tab)
         return dlg

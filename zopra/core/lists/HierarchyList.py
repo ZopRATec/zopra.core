@@ -4,20 +4,24 @@ from zopra.core.lists.MultiList import MultiList
 
 class HierarchyList(MultiList):
     """ Hierarchical Lists (based on Multilists) """
-    _className = 'HierarchyList'
+
+    _className = "HierarchyList"
     _classType = MultiList._classType + [_className]
 
     # for compatibility
-    listtype = 'hierarchylist'
+    listtype = "hierarchylist"
 
-    def __init__(self, listname, manager, function, table, label='', map=None, docache=True):
-        """Construct a MultiList.
-        """
-        MultiList.__init__(self, listname, manager, function, table, label, map, docache)
+    def __init__(
+        self, listname, manager, function, table, label="", map=None, docache=True
+    ):
+        """Construct a MultiList."""
+        MultiList.__init__(
+            self, listname, manager, function, table, label, map, docache
+        )
 
     def getHierarchyListParent(self, autoid):
         """Returns the parent-id (stored in rank for the beginning)
-                  of the entry with autoid in the list."""
+        of the entry with autoid in the list."""
         if autoid == 0:
             return None
         entry = self.getEntry(autoid)
@@ -27,7 +31,7 @@ class HierarchyList(MultiList):
         """utility function for new hierarchylist template handling, retrieves the ancestor line of an entry with the given autoid"""
         ancestors = []
         # show / list widgets need an empty list, when no value was given (None or '')
-        if autoid in (None, ''):
+        if autoid in (None, ""):
             return []
         # in all other cases, autoid is a number (0 for first level on search)
         autoid = int(autoid)
@@ -45,8 +49,10 @@ class HierarchyList(MultiList):
         autoid = int(autoid)
 
         for child in self.getEntriesByParent(autoid):
-            descendants.append(child['autoid'])
-            descendants = descendants + self.getHierarchyListDescendants(child['autoid'])
+            descendants.append(child["autoid"])
+            descendants = descendants + self.getHierarchyListDescendants(
+                child["autoid"]
+            )
 
         return descendants
 
@@ -56,7 +62,9 @@ class HierarchyList(MultiList):
         # search entries
         for entry in entries:
             # test for parent = autoid
-            if (entry.get(ZC.RANK) or entry.get(ZC.RANK) == 0) and int(entry[ZC.RANK]) == int(autoid):
+            if (entry.get(ZC.RANK) or entry.get(ZC.RANK) == 0) and int(
+                entry[ZC.RANK]
+            ) == int(autoid):
                 # found a child
                 childid = entry.get(ZC.TCN_AUTOID)
                 # test it for own children
@@ -82,13 +90,13 @@ class HierarchyList(MultiList):
 
         parentid = str(parentid)
 
-        where = ''
+        where = ""
         if parentid is not None:
             # search for value
-            parentid = parentid.replace('*', '%')
+            parentid = parentid.replace("*", "%")
             where = " WHERE rank like '%s'" % parentid
             sort = " ORDER BY value ASC "
-        sql = 'SELECT %s FROM %s%s%s%s;'
+        sql = "SELECT %s FROM %s%s%s%s;"
         sql = sql % (ZC.TCN_AUTOID, mgr.id, self.listname, where, sort)
         results = mgr.getManager(ZC.ZM_PM).executeDBQuery(sql)
         for result in results:

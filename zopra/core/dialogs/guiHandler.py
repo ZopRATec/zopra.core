@@ -1,13 +1,3 @@
-############################################################################
-#    Copyright (C) 2004-2015 by ZopRATec GbR                               #
-#    Ingo.Keller@zopratec.de                                               #
-#                                                                          #
-#    This program is free software; you can redistribute it and#or modify  #
-#    it under the terms of the GNU General Public License as published by  #
-#    the Free Software Foundation; either version 2 of the License, or     #
-#    (at your option) any later version.                                   #
-############################################################################
-
 from types import ListType
 
 from PyHtmlGUI.dialogs.hgWizard import hgWizard
@@ -28,44 +18,31 @@ from PyHtmlGUI.widgets.hgWidgetStack import hgWidgetStack
 
 
 class guiHandler(object):
-    """ The guiHandler class provides a mix-in for the GUI handling in the
-        ZopRA infrastructure context.
-    """
-    _stdHeader = '<dtml-var standard_html_header>'
-    _stdFooter = '<dtml-var standard_html_footer>'
+    """The guiHandler class provides a mix-in for the GUI handling in the
+    ZopRA infrastructure context."""
 
+    _stdHeader = "<dtml-var standard_html_header>"
+    _stdFooter = "<dtml-var standard_html_footer>"
 
-    ##########################################################################
-    #
-    # Enumerations
-    #
-    ##########################################################################
     # enum DialogType
     Standalone = 1
-    Embedded   = 2
-    DialogType = [ Standalone, Embedded ]
+    Embedded = 2
+    DialogType = [Standalone, Embedded]
 
-    ##########################################################################
-    #
-    # Static Methods
-    #
-    ##########################################################################
     def _foundWidgetFunction(self, widget, value):
-        """ This method is called if a \a widget was found that gets a new
-            \a value.
+        """This method is called if a widget was found that gets a new value.
 
-        If you really know what you are doing you can overload this function
-        to get different widget behavior.
+        You can overload this method to get different widget behavior.
 
-        @param hgWidget - widget instance
-        @param value    - value to update the hgWidget's state
+        :param widget: the widget instance
+        :param value: value to update the widget state
         """
         # standard widget functions
         if isinstance(widget, hgPushButton):
             # only one button will be pushed per request
             # we handle this button at the end of all other things
             # store it for now
-            if not hasattr(self, 'guiHandlerButtonPushed'):
+            if not hasattr(self, "guiHandlerButtonPushed"):
                 self.guiHandlerButtonPushed = widget
             else:
                 if isinstance(widget, hgTab):
@@ -91,7 +68,7 @@ class guiHandler(object):
 
         elif isinstance(widget, hgComboBox):
             if value:
-                widget.setCurrentValue( value )
+                widget.setCurrentValue(value)
 
         elif isinstance(widget, hgFileSelector):
             widget.setFileHandle(value)
@@ -100,18 +77,17 @@ class guiHandler(object):
             if value:
                 if not isinstance(value, ListType):
                     value = [value]
-                widget.setSelectedValueList( value )
+                widget.setSelectedValueList(value)
 
         elif isinstance(widget, hgScrollBar):
-            if value == '>' or value == '\/':
+            if value == ">" or value == "\\/":
                 widget.nextLine()
 
-            elif value == '<' or value == '/\\':
+            elif value == "<" or value == "/\\":
                 widget.prevLine()
 
-
-    def _processEvents( self, widget, form ):
-        """ This method processes all events that occur on a form."""
+    def _processEvents(self, widget, form):
+        """This method processes all events that occur on a form."""
         # back to default for all widgets that return no value at all
         # if they are empty -> see hgCheckBox where you don't get a off value
         # back
@@ -141,14 +117,14 @@ class guiHandler(object):
 
         # handle img-buttons
         if isinstance(widget, hgPushButton) and widget._pixmap:
-            if not form.has_key(widget.name) and      \
-               ( form.has_key(widget.name + '.x') and \
-                 form.has_key(widget.name + '.y') ):
+            if widget.name not in form and (
+                widget.name + ".x" in form and widget.name + ".y" in form
+            ):
                 form[widget.name] = widget.btext
                 # form[widget.name] = widget.name
 
         # normal procedure
-        if form.has_key(widget.name):
+        if widget.name in form:
 
             # radio buttons do all have the same name (same can happen for
             # check boxes)
@@ -157,61 +133,50 @@ class guiHandler(object):
                     # radioButton/checkBox have no children, we return
                     return
 
-            self._foundWidgetFunction( widget, form[widget.name] )
+            self._foundWidgetFunction(widget, form[widget.name])
             del form[widget.name]
 
         if widget.hasChildren():
 
             for child in widget.children():
-                self._processEvents( child, form )
+                self._processEvents(child, form)
 
-    ##########################################################################
-    #
-    # Instance Methods
-    #
-    ##########################################################################
-    def __init__(self, flags = Standalone):
-        """\brief Initialize the guiHandler."""
+    def __init__(self, flags=Standalone):
+        """Initialize the guiHandler."""
 
         if flags & self.Standalone:
             self.header = self._stdHeader
             self.footer = self._stdFooter
 
         elif flags & self.Embedded:
-            self.header  = ''
-            self.footer  = ''
-            self.caption = ''
+            self.header = ""
+            self.footer = ""
+            self.caption = ""
 
         # this is highly deprecated. The Property for dialog recognition is set
         # in DialogHandler.show(...). Still left it in here for backwards
         # compatibility. Have to check where this is used
         # TODO: check if and where this is used
-        self.add( hgProperty( 'uid', self.name ) )
-
+        self.add(hgProperty("uid", self.name))
 
     def execDlg(self, manager, REQUEST):
-        """ This method evaluates the \a REQUEST object and determines the
-            changes of the widgets.
-        """
+        """This method evaluates the REQUEST object and determines the changes of the widgets."""
         # no action on first call (form empty)
         if REQUEST.form:
             self._processEvents(self, REQUEST.form)
 
             # button gets processed last
-            if hasattr(self, 'guiHandlerButtonPushed'):
+            if hasattr(self, "guiHandlerButtonPushed"):
                 self._foundWidgetFunction(self.guiHandlerButtonPushed, None)
 
-
     def setParam(self, key, value, manager):
-        """\brief Virtual function to set arbitrary dialog parameter."""
+        """Virtual function to set arbitrary dialog parameters."""
         pass
 
-
     def performAccepted(self, manager):
-        """\brief This function is called after a dialog was accepted."""
-        print 'accepted'
-
+        """This function is called after a dialog was accepted."""
+        print "accepted"
 
     def performRejected(self, manager):
-        """\brief This function is called after a dialog was rejected."""
-        print 'rejected'
+        """This function is called after a dialog was rejected."""
+        print "rejected"

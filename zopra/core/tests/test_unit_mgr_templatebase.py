@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-'''
+"""
 Created on 7 Nov 2019
 
 @author: peterseifert
-'''
+"""
 
 import unittest
 
@@ -12,11 +12,12 @@ from zopra.core.tools.TemplateBaseManager import TemplateBaseManager
 
 class TemplateBaseManagerTest(unittest.TestCase):
     """Unittest Testcases for the tools.TemplateBaseManager class"""
+
     def test_TemplateBaseManager(self):
-        t = TemplateBaseManager('Testtitle', 'testid', nocreate=1, zopratype='')
-        self.assertEqual(t.meta_type, 'TemplateBaseManager')
-        self.assertEqual(t.title, 'Testtitle')
-    
+        t = TemplateBaseManager("Testtitle", "testid", nocreate=1, zopratype="")
+        self.assertEqual(t.meta_type, "TemplateBaseManager")
+        self.assertEqual(t.title, "Testtitle")
+
     # what can we test on the TemplateBaseManager object?
     # - getListOwnUsers
     # - getPermissionInfo
@@ -51,7 +52,7 @@ class TemplateBaseManagerTest(unittest.TestCase):
     # - getLayoutInfo
     # - getHelpTexts
     # - getTableEntryFromRequest
-    #the following 3 could be moved to list unit test
+    # the following 3 could be moved to list unit test
     # handleHierarchyListOnSearch
     # prepareHierarchylistDisplayEntries
     # sortListEntriesForDisplay

@@ -19,75 +19,72 @@ class TableCache(SimpleItem):
         -ITEM:   itemcache for single entries (key=autoid) .
     """
 
-    _className = 'ZMOMTableCache'
+    _className = "ZMOMTableCache"
     _classType = [_className]
 
     # action
-    INSERT  = 1
-    UPDATE  = 2
-    DELETE  = 3
+    INSERT = 1
+    UPDATE = 2
+    DELETE = 3
 
     # cache type
-    ITEM    = 4
-    IDLIST  = 5
+    ITEM = 4
+    IDLIST = 5
     ALLLIST = 6
-    ALL     = 7
+    ALL = 7
 
-    item_count    = 200
-    idlist_count  = 10
+    item_count = 200
+    idlist_count = 10
     alllist_count = 3
 
-#
-# Instance Methods
-#
+    #
+    # Instance Methods
+    #
 
     def __init__(self):
         """\brief Constructs a TableCache."""
-        self.item          = {}
-        self.idlist        = {}
-        self.alllist       = {}
-        self.item_order    = []
-        self.idlist_order  = []
+        self.item = {}
+        self.idlist = {}
+        self.alllist = {}
+        self.item_order = []
+        self.idlist_order = []
         self.alllist_order = []
 
-
-    def invalidate(self, autoid = None):
+    def invalidate(self, autoid=None):
         """\brief Cleares the cache.
-           \param autoid Only removes the item with this
-                  autoid from item-cache
+        \param autoid Only removes the item with this
+               autoid from item-cache
         """
         self.clearCache(self.IDLIST)
         self.clearCache(self.ALLLIST)
         self.delItem(autoid)
 
-
     def delItem(self, autoid):
         """\brief Remove one item from the item-cache.
-           \param autoid The autoid of the item to remove
+        \param autoid The autoid of the item to remove
         """
         if autoid is not None and self.item.get(int(autoid)):
             del self.item[int(autoid)]
             self.item_order.remove(int(autoid))
             self.make_persistent()
 
-
-    def clearCache(self, cachetype = ALL):
+    def clearCache(self, cachetype=ALL):
         """\brief removes the complete cache."""
         if cachetype == self.ALL:
-            self.item          = {}
-            self.idlist        = {}
-            self.alllist       = {}
-            self.item_order    = []
-            self.idlist_order  = []
+            self.item = {}
+            self.idlist = {}
+            self.alllist = {}
+            self.item_order = []
+            self.idlist_order = []
             self.alllist_order = []
 
         elif cachetype == self.ITEM:
-            self.item    = {}
-            self.item_order    = []
+            self.item = {}
+            self.item_order = []
 
         elif cachetype == self.IDLIST:
-            self.idlist  = {}
-            self.idlist_order  = []
+            self.idlist = {}
+            self.idlist_order = []
 
         elif cachetype == self.ALLLIST:
             self.alllist = {}
@@ -96,9 +93,8 @@ class TableCache(SimpleItem):
         # me hate persistance
         self.make_persistent()
 
-
     def getItem(self, cachetype, key):
-        """ Returns a cached item if available from the chosen cache.
+        """Returns a cached item if available from the chosen cache.
 
         @param cachetype - int flag for cache type
         @param key       - key for the cached item
@@ -117,14 +113,13 @@ class TableCache(SimpleItem):
             assert isinstance(key, ListType)
             return self.alllist.get(str(key))
 
-
     def insertItem(self, cachetype, key, value):
         """\brief Insert an item into cache."""
         assert cachetype in [self.ITEM, self.IDLIST, self.ALLLIST]
         assert key is not None
 
         if cachetype == self.ITEM:
-            key   = int(key)
+            key = int(key)
             cache = self.item
             order = self.item_order
             count = self.item_count
@@ -136,7 +131,7 @@ class TableCache(SimpleItem):
 
         elif cachetype == self.ALLLIST:
             assert isinstance(key, ListType)
-            key   = str(key)
+            key = str(key)
             cache = self.alllist
             order = self.alllist_order
             count = self.alllist_count
@@ -150,7 +145,6 @@ class TableCache(SimpleItem):
 
             # persistence
             self.make_persistent()
-
 
     def make_persistent(self):
         """\brief Zope persistence needs to be activated... ugly style."""

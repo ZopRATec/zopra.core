@@ -5,16 +5,16 @@ from zopra.core.interfaces import IZopRAManager
 from zopra.core.interfaces import IZopRAProduct
 
 
-folder_types = ['Folder', 'ATFolder']
+folder_types = ["Folder", "ATFolder"]
 
 
 class ManagerFinderMixin(object):
-    """ The ManagerFinderMixin class provides methods to find managers. """
+    """The ManagerFinderMixin class provides methods to find managers."""
 
     def getContainer(self):
-        """ Returns the Zope container where the actual object is in.
+        """Returns the Zope container where the actual object is in.
 
-        @return Zope Container, otherwise None
+        :return: Zope Container, otherwise None
         """
         not_found = True
         container = self
@@ -27,7 +27,7 @@ class ManagerFinderMixin(object):
             if not container:
                 # something went wrong, didn't find container
                 # try _container value (set temporarily for startupconfig)
-                if hasattr(self, '_container') and self._container:
+                if hasattr(self, "_container") and self._container:
                     return self._container
                 else:
                     # try to get folder name from physical path
@@ -42,16 +42,16 @@ class ManagerFinderMixin(object):
                     else:
 
                         # top level, get root
-                        container = self.restrictedTraverse('/')
+                        container = self.restrictedTraverse("/")
 
                     if not container:
-                        raise ValueError('No Container found.')
+                        raise ValueError("No Container found.")
 
                     return container
 
             container = container.getParentNode()
             # first folder is returned
-            if hasattr(container, 'meta_type') and container.meta_type in folder_types:
+            if hasattr(container, "meta_type") and container.meta_type in folder_types:
                 not_found = False
 
             # TODO: top level check to stop iteration on top level?
@@ -59,41 +59,37 @@ class ManagerFinderMixin(object):
         return container
 
     def setContainer(self, container):
-        """ set a reference to the container.
-            Only for temporary container ref!
-        """
+        """Set a reference to the container. Only for temporary container ref!"""
         self._container = container
 
     def delContainer(self):
-        """ Remove temporary container reference. """
-        if hasattr(self, '_container'):
+        """Remove temporary container reference."""
+        if hasattr(self, "_container"):
             del self._container
 
     def getManager(self, name, obj_id=None):
-        """ Returns the specified manager.
+        """Returns the specified manager.
 
         If you use DTML to call a manager, be sure to work in the managers directory!
         Use <dtml-with <dirname>> to achieve this. Otherwise, the dtml's directory will
         be misunderstood as container and the searched manager will never be found.
 
-        @param name  The argument \a name is the name of the manager.
-        @param id    The argument \a id is to specify a manager id in an
-                     environment where more than one manager of a special type
-                     is instantiated.
-
-        @return a manager object if one was found, otherwise None.
+        :param name: The name of the manager.
+        :param obj_id: Use obj_id to specify a manager id in an environment where more than
+        one manager of a special type is instantiated.
+        :return: a manager object if one was found, otherwise None.
         """
         container = self.getContainer()
-        if name and hasattr(container, 'objectValues'):
+        if name and hasattr(container, "objectValues"):
 
             # iterate over container content
             for obj in container.objectValues():
 
-                if hasattr(obj, 'getClassType') and name in obj.getClassType():
+                if hasattr(obj, "getClassType") and name in obj.getClassType():
 
                     # if id is given then look also for these
                     if obj_id:
-                        if hasattr(obj, 'id') and str(obj.id) == obj_id:
+                        if hasattr(obj, "id") and str(obj.id) == obj_id:
                             return obj
 
                     # in all other cases return with the first object
@@ -104,29 +100,27 @@ class ManagerFinderMixin(object):
         return None
 
     def getObjByMetaType(self, meta_type, obj_id=None):
-        """ Returns a specified object with \a meta_type and \a id.
+        """Returns a specified object with meta_type and obj_id.
 
-        @param meta_type   The argument \a name is the name of the manager.
-        @param id          The argument \a id is to specify a object id in an
-                           environment where more than one object of a special
-                           type is instanciated.
-
-        @return a object if one was found, otherwise None.
+        :param meta_type: meta_type / class name of the manager
+        :param obj_id: Use obj_id to specify a manager id in an environment where more than
+        one manager of a special type is instantiated.
+        :return: an object if one was found, otherwise None.
         """
         container = self.getContainer()
 
         while container:
 
-            if meta_type and hasattr(container, 'objectValues'):
+            if meta_type and hasattr(container, "objectValues"):
 
                 # iterate over container content
                 for obj in container.objectValues():
 
-                    if hasattr(obj, 'meta_type') and obj.meta_type == meta_type:
+                    if hasattr(obj, "meta_type") and obj.meta_type == meta_type:
 
                         # if id is given then look also for these
                         if obj_id:
-                            if hasattr(obj, 'id') and str(obj.id) == obj_id:
+                            if hasattr(obj, "id") and str(obj.id) == obj_id:
                                 return obj
 
                         # in all other cases return with the first object
@@ -139,15 +133,12 @@ class ManagerFinderMixin(object):
         return None
 
     def getHierarchyUpManager(self, name, obj_id=None):
-        """ Returns the specified manager out of the Folder Hierarchy.
+        """Returns the specified manager out of the Folder Hierarchy.
 
-        @param name  The argument \a name is the name of the manager.
-        @param id    The argument \a id is to specify a manager id in an
-                     environment where more than one manager of a special type
-                     is instanciated.
-
-        @return a manager object if one was found, otherwise None.
-        """
+        :param name: The name of the manager
+        :param obj_id: Use obj_id to specify a manager id in an environment where more than
+        one manager of a special type is instantiated.
+        :return: a manager object if one was found, otherwise None."""
         if not name:
             return None
 
@@ -183,19 +174,16 @@ class ManagerFinderMixin(object):
 
         return None
 
-    def getHierarchyDownManager(self, name, obj_id=None, zopratype=''):
-        """ Returns the specified manager out of the Folder Hierarchy.
+    def getHierarchyDownManager(self, name, obj_id=None, zopratype=""):
+        """Returns the specified manager out of the Folder Hierarchy.
 
-        @param name  The argument \a name is the name of the manager.
-        @param id    The argument \a id is to specify a manager id in an
-                     environment where more than one manager of a special type
-                     is instantiated.
-
-        @return a manager object if one was found, otherwise None.
-        """
-        assert ZC.checkType('name', name, type(''))
-        print 'Search for ', name, obj_id, zopratype
-        print '-------------------------------------'
+        :param name: The name of the manager
+        :param obj_id: Use obj_id to specify a manager id in an environment where more than
+        one manager of a special type is instantiated.
+        :return: a manager object if one was found, otherwise None."""
+        assert ZC.checkType("name", name, type(""))
+        print "Search for ", name, obj_id, zopratype
+        print "-------------------------------------"
         # go back until we find a folder
         # for older zope versions that have a problem with redirection and
         # getParentNode
@@ -206,17 +194,10 @@ class ManagerFinderMixin(object):
             folder = folder.getParentNode()
 
         # start the loop on this folder
-        return self.getManagerDownLoop(folder,
-                                       name,
-                                       obj_id,
-                                       zopratype)
+        return self.getManagerDownLoop(folder, name, obj_id, zopratype)
 
-    def getManagerDownLoop(self,
-                           folder,
-                           name,
-                           obj_id=None,
-                           zopratype=None):
-        """ Helper method to loop through children of a folder. """
+    def getManagerDownLoop(self, folder, name, obj_id=None, zopratype=None):
+        """Helper method to loop through children of a folder."""
 
         if not IObjectManager.providedBy(folder):
             return None
@@ -240,19 +221,16 @@ class ManagerFinderMixin(object):
 
         return None
 
-    def getAllManagersDownLoop(self,
-                               folder,
-                               zopratype='',
-                               result_dict=None,
-                               classname=None):
-        """ Helper method to loop through children of a folder.
+    def getAllManagersDownLoop(
+        self, folder, zopratype="", result_dict=None, classname=None
+    ):
+        """Helper method to loop through children of a folder.
 
-        @param folder      - object that implements IObjectManager
-        @param zopratype   - string containing the zopratype
-        @param result_dict - if provided the results will be added
-        @param classname   - specifies a particular class
-        @result { <ID> : <IZopRAManager> }
-        """
+        :param folder: object that implements IObjectManager
+        :param zopratype: string containing the zopratype
+        :param result_dict: if provided the results will be added
+        :param classname: specifies a particular class
+        :result: { <ID> : <IZopRAManager> }"""
 
         # not a folder object return empty dictionary
         if not IObjectManager.providedBy(folder):
@@ -277,37 +255,27 @@ class ManagerFinderMixin(object):
 
             # no recursive lookup into a manager
             elif IObjectManager.providedBy(obj):
-                self.getAllManagersDownLoop(obj,
-                                            zopratype,
-                                            result_dict,
-                                            classname)
+                self.getAllManagersDownLoop(obj, zopratype, result_dict, classname)
         return result_dict
 
-    def getAllManagersHierarchyDown(self, zopratype='', classname=None):
-        """ Returns an unordered list with all manager objects found downward in
-            the hierarchy.
+    def getAllManagersHierarchyDown(self, zopratype="", classname=None):
+        """Returns an unordered list with all manager objects found downward in the hierarchy.
 
-        @param zopratype   - string containing the zopratype
-        @param classname   - specifies a particular class
-        @return [ <IZopRAManager>* ]
-        """
-        return self.getAllManagersDownLoop(self.getParentNode(),
-                                           zopratype,
-                                           classname=classname
-                                           ).values()
+        :param zopratype: string containing the zopratype
+        :param classname: specifies a particular class
+        :return: [ <IZopRAManager>* ]"""
+        return self.getAllManagersDownLoop(
+            self.getParentNode(), zopratype, classname=classname
+        ).values()
 
     def getAllManagers(self, type_only=True, objects=False):
-        """ Returns a list with all managers of a special type.
+        """Returns a list with all managers of a special type.
 
-        @param type_only - boolean. If True the result contains the meta_types
-                          of the manager; otherwise contains the IDs of the
-                          managers (default is True).
-        @param objects -  boolean. If True the result contains the manager
-                          objects; otherwise the IDs or meta_types (default is
-                          False).
-        @result [ <_>* ] - A list of meta_types, IDs or objects of the managers
-                           from the actual container and above.
-        """
+        :param type_only: If True the result contains the meta_types of the manager;
+        otherwise contains the IDs of the managers (default is True).
+        :param objects:If True the result contains the manager objects; otherwise the IDs or meta_types
+        (default is False).
+        :result: A list of meta_types, IDs or objects of the managers from the actual container and above."""
         result_dict = {}
 
         # we use a dictionary to receive only one manager per type
@@ -340,8 +308,7 @@ class ManagerFinderMixin(object):
         return result_dict.keys()
 
     def topLevelProduct(self, zopratype=None):
-        """ Returns the hierarchy's topmost product manager.
-        """
+        """Returns the hierarchy's topmost product manager."""
         # TODO: switch to path-related traversal (see getHierarchyUpManager)
         product = None
         folder = self.getContainer()
@@ -349,10 +316,15 @@ class ManagerFinderMixin(object):
         while folder:
             # iterate over container content
             for obj in folder.objectValues():
-                if (IZopRAProduct.providedBy(obj) and
-                     (zopratype is None or obj.getZopraType() == zopratype)):
+                if IZopRAProduct.providedBy(obj) and (
+                    zopratype is None or obj.getZopraType() == zopratype
+                ):
                     product = obj
 
-            folder = None if folder.isTopLevelPrincipiaApplicationObject else folder.getParentNode()
+            folder = (
+                None
+                if folder.isTopLevelPrincipiaApplicationObject
+                else folder.getParentNode()
+            )
 
         return product

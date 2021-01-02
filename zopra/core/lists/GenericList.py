@@ -14,38 +14,32 @@ from zopra.core.utils import getParentManager
 
 
 _list_definition = {  # value of the list entry
-                      ZC.VALUE: { ZC.COL_TYPE: 'string' },
-
-                      # used for sorting the shown list
-                      ZC.RANK:  { ZC.COL_TYPE: 'string' },
-
-                      # if false the entry will only be used for lookup
-                      ZC.SHOW:  { ZC.COL_TYPE: 'string' },
-
-                      # comments to these entries
-                      ZC.NOTES: { ZC.COL_TYPE: 'string' } }
+    ZC.VALUE: {ZC.COL_TYPE: "string"},
+    # used for sorting the shown list
+    ZC.RANK: {ZC.COL_TYPE: "string"},
+    # if false the entry will only be used for lookup
+    ZC.SHOW: {ZC.COL_TYPE: "string"},
+    # comments to these entries
+    ZC.NOTES: {ZC.COL_TYPE: "string"},
+}
 
 
 class GenericList(SimpleItem):
     """\brief The class GenericList is the super class for all lists"""
 
-    _className = 'GenericList'
+    _className = "GenericList"
     _classType = [_className]
 
     # for compatibility
-    listtype   = 'singlelist'
+    listtype = "singlelist"
 
-
-    def __init__( self,
-                  listname,
-                  label    = None):
-        """\brief Constructs a GenericList.
-        """
+    def __init__(self, listname, label=None):
+        """\brief Constructs a GenericList."""
         self.listname = listname
-        self.label    = label if label else u''
+        self.label = label if label else u""
 
     def getClassName(self):
-        """ This method returns the class name.
+        """This method returns the class name.
 
         :result: string of classes name
         """
@@ -53,78 +47,65 @@ class GenericList(SimpleItem):
 
     def getClassType(self):
         """This method returns a list of the class names of all ancestors and the current class"""
-        return [onetype.__name__ for onetype in self.__class__.__bases__] + [self.getClassName()]
+        return [onetype.__name__ for onetype in self.__class__.__bases__] + [
+            self.getClassName()
+        ]
 
     def createTable(self):
         """\brief Create the database table."""
         raise NotImplementedError(ZC.E_CALL_ABSTRACT)
 
-
-    def deleteTable(self, omit_log = None):
+    def deleteTable(self, omit_log=None):
         """\brief Create the database table."""
         raise NotImplementedError(ZC.E_CALL_ABSTRACT)
 
-
     def getManager(self):
         """\brief Returns the owning manager."""
-        message = 'No Manager found for List Object via getParentNode()'
+        message = "No Manager found for List Object via getParentNode()"
         return getParentManager(self, message)
-
 
     def getResponsibleManagerId(self):
         """\brief Returns the foreign manager (or mgr, if no foreign list).
-                  mgr exists only for testing."""
+        mgr exists only for testing."""
 
         # on default local manager is assumed
         return self.getManager().id
-
 
     def getLabel(self):
         """\brief Returns the label of the listattribute."""
         return self.label
 
-
-    def addValue( self, value, notes = '', rank  = '', show  = 'yes' ):
-        """\brief Adds a value to a list lookup table.
-        """
+    def addValue(self, value, notes="", rank="", show="yes"):
+        """\brief Adds a value to a list lookup table."""
         return 0
-
 
     def delValue(self, autoid):
         """\brief Deletes a value from a list lookup table."""
         raise NotImplementedError(ZC.E_CALL_ABSTRACT)
 
-
     def getEntry(self, autoid):
         """\brief Fetches a value from an list lookup table. Local function."""
         return {}
 
-
-    def getEntries(self, value = None, with_hidden = False):
+    def getEntries(self, value=None, with_hidden=False):
         """\brief Returns all list entries of one list."""
         return []
 
-
-    def updateEntry( self,
-                     descr_dict,
-                     entry_id ):
+    def updateEntry(self, descr_dict, entry_id):
         """\brief changes list values in the database"""
         return 0
 
-
-    def getAutoidByValue(self, value, rank = None):
+    def getAutoidByValue(self, value, rank=None):
         """\brief Returns the autoid from an specified list entry."""
         raise NotImplementedError(ZC.E_CALL_ABSTRACT)
-
 
     def getAutoidsByFreeText(self, value):
         """\brief Returns the autoid from any fitting list entry."""
         return []
 
-
     def crossValue(self, value1, value2, crossString):
         """\brief splits the entries by crossString, combines the lists,
-                  joins everything by crossString and returns the new value.
+        joins everything by crossString and returns the new value.
         """
 
         # empty entries
@@ -150,7 +131,6 @@ class GenericList(SimpleItem):
         reslist.sort()
         return crossString.join(reslist)
 
-
     def crossLookupList(self, entry1, entry2, crossString):
         """\brief gets the values for the entries calls crossValue and
                   inserts the result into the list.
@@ -167,12 +147,11 @@ class GenericList(SimpleItem):
 
         value1 = self.getValueByAutoid(entry1)
         value2 = self.getValueByAutoid(entry2)
-        value  = self.crossValue(value1, value2, crossString)
+        value = self.crossValue(value1, value2, crossString)
 
         # the addListValueFunction only adds,
         # if not present and returns the id
         return self.addValue(value)
-
 
     def getValueCount(self):
         """\briefs Returns the length of a list.
@@ -184,7 +163,6 @@ class GenericList(SimpleItem):
         """
         return 0
 
-
     def getValueByAutoid(self, autoid):
         """\brief Returns the value from an specified list entry/entries."""
-        return [ '' for aid in autoid ] if isinstance( autoid, ListType) else ''
+        return ["" for aid in autoid] if isinstance(autoid, ListType) else ""

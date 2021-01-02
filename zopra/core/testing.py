@@ -23,18 +23,26 @@ from zopra.core.tests import setupCoreSessions
 class Keywords(RemoteLibrary):
     pass
 
+
 REMOTE_LIBRARY_BUNDLE_FIXTURE = RemoteLibraryLayer(
     bases=(PLONE_FIXTURE,),
-    libraries=(AutoLogin, QuickInstaller, GenericSetup,
-               Content, Users, I18N, MockMailHost,
-               Zope2ServerRemote, Keywords),
-    name="RemoteLibraryBundle:RobotRemote"
+    libraries=(
+        AutoLogin,
+        QuickInstaller,
+        GenericSetup,
+        Content,
+        Users,
+        I18N,
+        MockMailHost,
+        Zope2ServerRemote,
+        Keywords,
+    ),
+    name="RemoteLibraryBundle:RobotRemote",
 )
 
 
 class ZopraCoreLayer(PloneSandboxLayer):
-    """Testing Layer for this add-on.
-    """
+    """Testing Layer for this add-on."""
 
     defaultBases = (PLONE_FIXTURE,)
 
@@ -58,35 +66,35 @@ class ZopraCoreLayer(PloneSandboxLayer):
             import tud.addons.ckeditorplugins
 
             # Ensure that all dependencies of tud.profiles.webcms are going to be loaded
-            self.loadZCML(name='testing.zcml', package=tud.profiles.webcms)
-            self.loadZCML(name='testing.zcml', package=tud.addons.webcms)
-            self.loadZCML(name='testing.zcml', package=tud.content.webcms)
-            self.loadZCML(name='testing.zcml', package=tud.boxes.base)
-            self.loadZCML(name='testing.zcml', package=tud.boxes.webcms)
-            self.loadZCML(name='testing.zcml', package=tud.addons.ckeditorplugins)
-            self.loadZCML(name='testing.zcml', package=tud.theme.webcms2)
+            self.loadZCML(name="testing.zcml", package=tud.profiles.webcms)
+            self.loadZCML(name="testing.zcml", package=tud.addons.webcms)
+            self.loadZCML(name="testing.zcml", package=tud.content.webcms)
+            self.loadZCML(name="testing.zcml", package=tud.boxes.base)
+            self.loadZCML(name="testing.zcml", package=tud.boxes.webcms)
+            self.loadZCML(name="testing.zcml", package=tud.addons.ckeditorplugins)
+            self.loadZCML(name="testing.zcml", package=tud.theme.webcms2)
 
-            z2.installProduct(app, 'raptus.multilanguagefields')
-            z2.installProduct(app, 'collective.workspace')
-            z2.installProduct(app, 'tud.addons.webcms')
-            z2.installProduct(app, 'tud.content.webcms')
-            z2.installProduct(app, 'tud.boxes.base')
-            z2.installProduct(app, 'tud.boxes.webcms')
-            z2.installProduct(app, 'tud.addons.ckeditorplugins')
-            z2.installProduct(app, 'Products.DateRecurringIndex')
-            z2.installProduct(app, 'tud.addons.redirect')
-            z2.installProduct(app, 'tud.profiles.webcms')
+            z2.installProduct(app, "raptus.multilanguagefields")
+            z2.installProduct(app, "collective.workspace")
+            z2.installProduct(app, "tud.addons.webcms")
+            z2.installProduct(app, "tud.content.webcms")
+            z2.installProduct(app, "tud.boxes.base")
+            z2.installProduct(app, "tud.boxes.webcms")
+            z2.installProduct(app, "tud.addons.ckeditorplugins")
+            z2.installProduct(app, "Products.DateRecurringIndex")
+            z2.installProduct(app, "tud.addons.redirect")
+            z2.installProduct(app, "tud.profiles.webcms")
 
         import zopra.core
 
-        self.loadZCML(name='testing.zcml', package=zopra.core)
+        self.loadZCML(name="testing.zcml", package=zopra.core)
 
-        z2.installProduct(app, 'zopra.core')
-        z2.installProduct(app, 'Products.ZMySQLDA')
+        z2.installProduct(app, "zopra.core")
+        z2.installProduct(app, "Products.ZMySQLDA")
 
         from zopra.core.tests.mgrTest import mgrTest
-        registerManager(app, mgrTest)
 
+        registerManager(app, mgrTest)
 
     def setUpPloneSite(self, portal):
         """Method to set up the Plone Site (installing products and applying Profiles)
@@ -97,9 +105,8 @@ class ZopraCoreLayer(PloneSandboxLayer):
         """
         # extra WEBCMS setUp (Content + Theme)
         if HAVE_WEBCMS:
-            self.applyProfile(portal, 'tud.profiles.webcms:default')
-        self.applyProfile(portal, 'zopra.core:test')
-
+            self.applyProfile(portal, "tud.profiles.webcms:default")
+        self.applyProfile(portal, "zopra.core:test")
 
     def tearDownPloneSite(self, portal):
         """Tear down the Plone site.
@@ -108,10 +115,9 @@ class ZopraCoreLayer(PloneSandboxLayer):
         ``setUpPloneSite()`` method were confined to the ZODB and the global
         component regsitry, those changes will be torn down automatically.
         """
-        zoprafolder = 'base/zopra/app'
+        zoprafolder = "base/zopra/app"
         zfobj = portal.unrestrictedTraverse(zoprafolder)
         self.clearDatabase(zfobj)
-
 
     def clearDatabase(self, zoprafolder):
         """
@@ -122,20 +128,23 @@ class ZopraCoreLayer(PloneSandboxLayer):
         """
         zmysql = getattr(zoprafolder, DBDA_ID, None)
         if zmysql is None:
-            raise Exception('Z MySQL object not found!')
+            raise Exception("Z MySQL object not found!")
 
         dbc = zmysql()
 
-        tables = [table['table_name'] for table in dbc.tables() if table['table_type'] == 'table']
+        tables = [
+            table["table_name"]
+            for table in dbc.tables()
+            if table["table_type"] == "table"
+        ]
 
         for table in tables:
-            dbc.query('DROP TABLE {}'.format(table.encode('utf-8')))
+            dbc.query("DROP TABLE {}".format(table.encode("utf-8")))
 
 
 FIXTURE = ZopraCoreLayer()
 
 ROBOT_TESTING = FunctionalTesting(
-    bases=(REMOTE_LIBRARY_BUNDLE_FIXTURE,
-           z2.ZSERVER_FIXTURE,
-           FIXTURE),
-    name="zopra.core:Robot")
+    bases=(REMOTE_LIBRARY_BUNDLE_FIXTURE, z2.ZSERVER_FIXTURE, FIXTURE),
+    name="zopra.core:Robot",
+)

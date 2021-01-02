@@ -6,7 +6,7 @@
 ## \file ZMOMClasses.py
 ## \brief ZMOMClasses handles the xml-definition import
 ## (generated automatically).
-__revision__ = '0.1'
+__revision__ = "0.1"
 
 import string
 from time import strftime
@@ -17,12 +17,14 @@ from zopra.core.ImageProperties import ImageProperties
 
 
 if __debug__:
-    #import re, types
+    # import re, types
     from types import StringType, UnicodeType
+
 
 class Columnlist:
     """\brief Container for Columns"""
-    __classname__ = 'Columnlist'
+
+    __classname__ = "Columnlist"
 
     def __init__(self):
         self.collist = None
@@ -31,51 +33,49 @@ class Columnlist:
         return self.collist
 
     def setList(self, collist):
-        #FIXME no type check for 'list' available.
+        # FIXME no type check for 'list' available.
         self.collist = collist
 
-    def storeXML(self, ioHandle, level = 0):
+    def storeXML(self, ioHandle, level=0):
 
         # keeps track of tab level depth
-        tab  = ""
-        tab += string.join( ([" "] * level * 4), "" )
+        tab = ""
+        tab += string.join(([" "] * level * 4), "")
 
         # start generating xml
         tmp_string = []
         if level == 0:
             ioHandle.write('<?xml version="1.0"?>\n')
-            ioHandle.write("<!-- Creation date: %s -->\n" \
-                             % strftime('%d.%m.%Y') )
+            ioHandle.write("<!-- Creation date: %s -->\n" % strftime("%d.%m.%Y"))
         tmp_string.append(tab + "<Columnlist")
         if self.collist:
             tmp_string.append(' list="%s"' % self.collist)
         tmp_string.append("/>")
-        ioHandle.write( string.join(tmp_string, "") + "\n" )
+        ioHandle.write(string.join(tmp_string, "") + "\n")
 
 
 class Column:
-    __classname__ = 'Column'
+    __classname__ = "Column"
 
     def __init__(self, name, coltype):
         # no type check for 'key' available.
         self.name = name
-        assert isinstance(coltype, UnicodeType) or \
-               isinstance(coltype, StringType)
+        assert isinstance(coltype, UnicodeType) or isinstance(coltype, StringType)
         self.coltype = coltype
-        self.label = u' '
+        self.label = u" "
         self.default = None
         self.notnull = False
         self.autoinc = False
         self.manager = None
-        self.function  = None
-        self.noedit    = None
+        self.function = None
+        self.noedit = None
         self.invisible = None
-        self.notes     = None
+        self.notes = None
         self.noteslabel = None
         self.noconnect = None
         self.labelsearch = None
-        self.maxshown  = None
-        self.map       = None
+        self.maxshown = None
+        self.map = None
 
     def getName(self):
         return self.name
@@ -88,37 +88,34 @@ class Column:
         return self.coltype
 
     def setType(self, coltype):
-        assert isinstance(coltype, UnicodeType) or \
-               isinstance(coltype, StringType)
+        assert isinstance(coltype, UnicodeType) or isinstance(coltype, StringType)
         self.coltype = coltype
 
     def getLabel(self):
         return self.label
 
-    def setLabel(self, label = u' '):
-        assert isinstance(label, UnicodeType) or \
-               isinstance(label, StringType)
+    def setLabel(self, label=u" "):
+        assert isinstance(label, UnicodeType) or isinstance(label, StringType)
         self.label = label
 
     def getDefault(self):
         return self.default
 
     def setDefault(self, default):
-        assert isinstance(default, UnicodeType) or \
-               isinstance(default, StringType)
+        assert isinstance(default, UnicodeType) or isinstance(default, StringType)
         self.default = default
 
     def getNotnull(self):
         return self.notnull
 
-    def setNotnull(self, notnull = False):
+    def setNotnull(self, notnull=False):
         # no type check for 'boolean' available.
         self.notnull = notnull
 
     def getAutoinc(self):
         return self.autoinc
 
-    def setAutoinc(self, autoinc = False):
+    def setAutoinc(self, autoinc=False):
         # no type check for 'boolean' available.
         self.autoinc = autoinc
 
@@ -126,87 +123,78 @@ class Column:
         return self.manager
 
     def setManager(self, manager):
-        assert isinstance(manager, UnicodeType) or \
-               isinstance(manager, StringType)
+        assert isinstance(manager, UnicodeType) or isinstance(manager, StringType)
         self.manager = manager
 
     def getFunction(self):
         return self.function
 
     def setFunction(self, function):
-        assert isinstance(function, UnicodeType) or \
-               isinstance(function, StringType)
+        assert isinstance(function, UnicodeType) or isinstance(function, StringType)
         self.function = function
 
     def getInvisible(self):
         return self.invisible
 
     def setInvisible(self, invisible):
-        assert isinstance(invisible, UnicodeType) or \
-               isinstance(invisible, StringType)
+        assert isinstance(invisible, UnicodeType) or isinstance(invisible, StringType)
         self.invisible = invisible
 
     def getNotes(self):
         return self.notes
 
     def setNotes(self, notes):
-        assert isinstance(notes, UnicodeType) or \
-               isinstance(notes, StringType)
+        assert isinstance(notes, UnicodeType) or isinstance(notes, StringType)
         self.notes = notes
 
     def getNoteslabel(self):
         return self.noteslabel
 
     def setNoteslabel(self, noteslabel):
-        assert isinstance(noteslabel, UnicodeType) or \
-               isinstance(noteslabel, StringType)
+        assert isinstance(noteslabel, UnicodeType) or isinstance(noteslabel, StringType)
         self.noteslabel = noteslabel
-
 
     def getNoconnect(self):
         return self.noconnect
 
     def setNoconnect(self, noconnect):
-        assert isinstance(noconnect, UnicodeType) or \
-               isinstance(noconnect, StringType)
+        assert isinstance(noconnect, UnicodeType) or isinstance(noconnect, StringType)
         self.noconnect = noconnect
 
     def getLabelsearch(self):
         return self.labelsearch
 
     def setLabelsearch(self, labelsearch):
-        assert isinstance(labelsearch, UnicodeType) or \
-               isinstance(labelsearch, StringType)
+        assert isinstance(labelsearch, UnicodeType) or isinstance(
+            labelsearch, StringType
+        )
         self.labelsearch = labelsearch
 
     def getMaxshown(self):
         return self.maxshown
 
     def setMaxshown(self, maxshown):
-        assert isinstance(maxshown, UnicodeType) or \
-               isinstance(maxshown, StringType)
+        assert isinstance(maxshown, UnicodeType) or isinstance(maxshown, StringType)
         self.maxshown = maxshown
 
     def getMap(self):
         return self.map
 
     def setMap(self, map):
-        assert isinstance(map, UnicodeType) or \
-               isinstance(map, StringType)
+        assert isinstance(map, UnicodeType) or isinstance(map, StringType)
         self.map = map
 
-    def storeXML(self, ioHandle, level = 0):
+    def storeXML(self, ioHandle, level=0):
 
         # keeps track of tab level depth
-        tab  = ""
-        tab += string.join( ([" "] * level * 4), "" )
+        tab = ""
+        tab += string.join(([" "] * level * 4), "")
 
         # start generating xml
         tmp_string = []
         if level == 0:
             ioHandle.write('<?xml version="1.0"?>\n')
-            ioHandle.write("<!-- Creation date: %s -->\n" \
-                             % strftime('%d.%m.%Y') )
+            ioHandle.write("<!-- Creation date: %s -->\n" % strftime("%d.%m.%Y"))
         tmp_string.append(tab + "<Column")
         if self.name:
             tmp_string.append(' name="%s"' % self.name)
@@ -241,19 +229,20 @@ class Column:
         if self.map:
             tmp_string.append(' map="%s"' % self.map)
         tmp_string.append("/>")
-        ioHandle.write( string.join(tmp_string, "") + "\n" )
+        ioHandle.write(string.join(tmp_string, "") + "\n")
+
 
 class List:
-    __classname__ = 'List'
+    __classname__ = "List"
 
     def __init__(self, name):
         # no type check for 'key' available.
         self.name = name
 
-        self.label = u' '
-        self.noedit    = None
+        self.label = u" "
+        self.noedit = None
         self.invisible = None
-        self.docache   = None
+        self.docache = None
         self.translations = None
 
     def getName(self):
@@ -266,55 +255,51 @@ class List:
     def getLabel(self):
         return self.label
 
-    def setLabel(self, label = u' '):
-        assert isinstance(label, UnicodeType) or \
-               isinstance(label, StringType)
+    def setLabel(self, label=u" "):
+        assert isinstance(label, UnicodeType) or isinstance(label, StringType)
         self.label = label
 
     def getNoedit(self):
         return self.noedit
 
     def setNoedit(self, noedit):
-        assert isinstance(noedit, UnicodeType) or \
-               isinstance(noedit, StringType)
+        assert isinstance(noedit, UnicodeType) or isinstance(noedit, StringType)
         self.noedit = noedit
 
     def getInvisible(self):
         return self.invisible
 
     def setInvisible(self, invisible):
-        assert isinstance(invisible, UnicodeType) or \
-               isinstance(invisible, StringType)
+        assert isinstance(invisible, UnicodeType) or isinstance(invisible, StringType)
         self.invisible = invisible
 
     def getDocache(self):
         return self.docache
 
     def setDocache(self, docache):
-        assert isinstance(docache, UnicodeType) or \
-               isinstance(docache, StringType)
+        assert isinstance(docache, UnicodeType) or isinstance(docache, StringType)
         self.docache = docache
 
     def getTranslations(self):
         return self.translations
 
     def setTranslations(self, translations):
-        assert isinstance(translations, UnicodeType) or \
-               isinstance(translations, StringType)
+        assert isinstance(translations, UnicodeType) or isinstance(
+            translations, StringType
+        )
         self.translations = translations
 
-    def storeXML(self, ioHandle, level = 0):
+    def storeXML(self, ioHandle, level=0):
 
         # keeps track of tab level depth
-        tab  = ""
-        tab += string.join( ([" "] * level * 4), "" )
+        tab = ""
+        tab += string.join(([" "] * level * 4), "")
 
         # start generating xml
         tmp_string = []
         if level == 0:
             ioHandle.write('<?xml version="1.0"?>\n')
-            ioHandle.write("<!-- Creation date: %s -->\n" \
-                             % strftime('%d.%m.%Y') )
+            ioHandle.write("<!-- Creation date: %s -->\n" % strftime("%d.%m.%Y"))
         tmp_string.append(tab + "<List")
         if self.name:
             tmp_string.append(' name="%s"' % self.name)
@@ -329,11 +314,14 @@ class List:
         if self.translations:
             tmp_string.append(' translations="%s"' % self.translations)
         tmp_string.append("/>")
-        ioHandle.write( string.join(tmp_string, "") + "\n" )
-#FIXME Indes, Unique and Foreignkey do not exist
+        ioHandle.write(string.join(tmp_string, "") + "\n")
+
+
+# FIXME Indes, Unique and Foreignkey do not exist
+
 
 class Constraints:
-    __classname__ = 'Constraints'
+    __classname__ = "Constraints"
 
     def __init__(self):
         self.index = {}
@@ -361,21 +349,20 @@ class Constraints:
         assert isinstance(obj, Foreignkey)
         self.foreignkey[key] = obj
 
-    def storeXML(self, ioHandle, level = 0):
+    def storeXML(self, ioHandle, level=0):
 
         # keeps track of tab level depth
-        tab  = ""
-        tab += string.join( ([" "] * level * 4), "" )
+        tab = ""
+        tab += string.join(([" "] * level * 4), "")
 
         # start generating xml
         tmp_string = []
         if level == 0:
             ioHandle.write('<?xml version="1.0"?>\n')
-            ioHandle.write("<!-- Creation date: %s -->\n" \
-                              % strftime('%d.%m.%Y') )
+            ioHandle.write("<!-- Creation date: %s -->\n" % strftime("%d.%m.%Y"))
         tmp_string.append(tab + "<Constraints")
         tmp_string.append(">")
-        ioHandle.write( string.join(tmp_string, "") + "\n" )
+        ioHandle.write(string.join(tmp_string, "") + "\n")
 
         # generates sub elements
         for key in self.index:
@@ -383,13 +370,11 @@ class Constraints:
             if entry and hasattr(entry, "storeXML"):
                 entry.storeXML(ioHandle, level + 1)
 
-
         # generates sub elements
         for key in self.unique:
             entry = self.unique[key]
             if entry and hasattr(entry, "storeXML"):
                 entry.storeXML(ioHandle, level + 1)
-
 
         # generates sub elements
         for key in self.foreignkey:
@@ -401,7 +386,7 @@ class Constraints:
 
 
 class Table:
-    __classname__ = 'Table'
+    __classname__ = "Table"
 
     def __init__(self, name):
         # no type check for 'key' available.
@@ -410,9 +395,9 @@ class Table:
         self.column = {}
         self.checks = {}
         self.constraints = {}
-        self.ebase  = None
-        self.label  = None
-        self.uid    = None
+        self.ebase = None
+        self.label = None
+        self.uid = None
 
     def getName(self):
         return self.name
@@ -425,8 +410,7 @@ class Table:
         return self.primarykey
 
     def setPrimarykey(self, primarykey):
-        assert isinstance(primarykey, UnicodeType) or \
-               isinstance(primarykey, StringType)
+        assert isinstance(primarykey, UnicodeType) or isinstance(primarykey, StringType)
         self.primarykey = primarykey
 
     def getColumn(self, key):
@@ -439,7 +423,7 @@ class Table:
     def getChecks(self, key):
         return self.checks.get(key)
 
-    #FIXME Checks does not exist
+    # FIXME Checks does not exist
     def addChecks(self, key, obj):
         assert isinstance(obj, Checks)
         self.checks[key] = obj
@@ -455,38 +439,34 @@ class Table:
         return self.ebase
 
     def setEbase(self, ebase):
-        assert isinstance(ebase, UnicodeType) or \
-               isinstance(ebase, StringType)
+        assert isinstance(ebase, UnicodeType) or isinstance(ebase, StringType)
         self.ebase = ebase
 
     def getLabel(self):
         return self.label
 
     def setLabel(self, label):
-        assert isinstance(label, UnicodeType) or \
-               isinstance(label, StringType)
+        assert isinstance(label, UnicodeType) or isinstance(label, StringType)
         self.label = label
 
     def getUid(self):
         return self.uid
 
     def setUid(self, uid):
-        assert isinstance(uid, UnicodeType) or \
-               isinstance(uid, StringType)
+        assert isinstance(uid, UnicodeType) or isinstance(uid, StringType)
         self.uid = uid
 
-    def storeXML(self, ioHandle, level = 0):
+    def storeXML(self, ioHandle, level=0):
 
         # keeps track of tab level depth
-        tab  = ""
-        tab += string.join( ([" "] * level * 4), "" )
+        tab = ""
+        tab += string.join(([" "] * level * 4), "")
 
         # start generating xml
         tmp_string = []
         if level == 0:
             ioHandle.write('<?xml version="1.0"?>\n')
-            ioHandle.write("<!-- Creation date: %s -->\n" \
-                              % strftime('%d.%m.%Y') )
+            ioHandle.write("<!-- Creation date: %s -->\n" % strftime("%d.%m.%Y"))
         tmp_string.append(tab + "<Table")
         if self.name:
             tmp_string.append(' name="%s"' % self.name)
@@ -499,7 +479,7 @@ class Table:
         if self.uid:
             tmp_string.append(' uid="%s"' % self.uid)
         tmp_string.append(">")
-        ioHandle.write( string.join(tmp_string, "") + "\n" )
+        ioHandle.write(string.join(tmp_string, "") + "\n")
 
         # generates sub elements
         for key in self.column:
@@ -507,13 +487,11 @@ class Table:
             if entry and hasattr(entry, "storeXML"):
                 entry.storeXML(ioHandle, level + 1)
 
-
         # generates sub elements
         for key in self.checks:
             entry = self.checks[key]
             if entry and hasattr(entry, "storeXML"):
                 entry.storeXML(ioHandle, level + 1)
-
 
         # generates sub elements
         for key in self.constraints:
@@ -525,11 +503,11 @@ class Table:
 
 
 class Tabledefinition:
-    __classname__ = 'Tabledefinition'
+    __classname__ = "Tabledefinition"
 
     def __init__(self):
         self.table = {}
-        self.list  = {}
+        self.list = {}
 
     def getTable(self, key):
         return self.table.get(key)
@@ -545,21 +523,20 @@ class Tabledefinition:
         assert isinstance(obj, List)
         self.list[key] = obj
 
-    def storeXML(self, ioHandle, level = 0):
+    def storeXML(self, ioHandle, level=0):
 
         # keeps track of tab level depth
-        tab  = ""
-        tab += string.join( ([" "] * level * 4), "" )
+        tab = ""
+        tab += string.join(([" "] * level * 4), "")
 
         # start generating xml
         tmp_string = []
         if level == 0:
             ioHandle.write('<?xml version="1.0"?>\n')
-            ioHandle.write("<!-- Creation date: %s -->\n" \
-                              % strftime('%d.%m.%Y') )
+            ioHandle.write("<!-- Creation date: %s -->\n" % strftime("%d.%m.%Y"))
         tmp_string.append(tab + "<Tabledefinition")
         tmp_string.append(">")
-        ioHandle.write( string.join(tmp_string, "") + "\n" )
+        ioHandle.write(string.join(tmp_string, "") + "\n")
 
         # generates sub elements
         # tables
@@ -578,7 +555,7 @@ class Tabledefinition:
 
 
 class Icondefinitions:
-    __classname__ = 'Icondefinitions'
+    __classname__ = "Icondefinitions"
 
     def __init__(self):
         self.image = {}
@@ -590,21 +567,20 @@ class Icondefinitions:
         assert isinstance(obj, ImageProperties)
         self.image[key] = obj
 
-    def storeXML(self, ioHandle, level = 0):
+    def storeXML(self, ioHandle, level=0):
 
         # keeps track of tab level depth
-        tab  = ""
-        tab += string.join( ([" "] * level * 4), "" )
+        tab = ""
+        tab += string.join(([" "] * level * 4), "")
 
         # start generating xml
         tmp_string = []
         if level == 0:
             ioHandle.write('<?xml version="1.0"?>\n')
-            ioHandle.write("<!-- Creation date: %s -->\n" \
-                              % strftime('%d.%m.%Y') )
+            ioHandle.write("<!-- Creation date: %s -->\n" % strftime("%d.%m.%Y"))
         tmp_string.append(tab + "<Icondefinitions")
         tmp_string.append(">")
-        ioHandle.write( string.join(tmp_string, "") + "\n" )
+        ioHandle.write(string.join(tmp_string, "") + "\n")
 
         # generates sub elements
         for key in self.image:
@@ -616,13 +592,12 @@ class Icondefinitions:
 
 
 class XMLHandler(ContentHandler):
-
     def __init__(self):
 
         ContentHandler.__init__(self)
         self.tmpObjects = {}
         self.lvlElement = {}
-        self.prevList   = []
+        self.prevList = []
         self.rootObject = None
         self.idCounter = 0
 
@@ -631,213 +606,207 @@ class XMLHandler(ContentHandler):
 
     def incElementLevel(self, element):
         if not self.lvlElement.get(element):
-            self.lvlElement[element]  = 0
+            self.lvlElement[element] = 0
         else:
             self.lvlElement[element] += 1
 
     def decElementLevel(self, element):
         if not self.lvlElement.get(element):
             pass
-            #raise ValueError('Too many closing tags \
+            # raise ValueError('Too many closing tags \
             #                   for element %s.' % element)
         else:
             self.lvlElement[element] -= 1
 
     def startElement(self, name, attrs):
-        if not name in ['Columnlist',
-                        'Column',
-                        'Table',
-                        'List',
-                        'Image',
-                        'Tabledefinition',
-                        'Constraints',
-                        'Icondefinitions']:
+        if not name in [
+            "Columnlist",
+            "Column",
+            "Table",
+            "List",
+            "Image",
+            "Tabledefinition",
+            "Constraints",
+            "Icondefinitions",
+        ]:
             return
 
         self.incElementLevel(name)
 
         tmpObject = None
 
+        if name == "Columnlist":
+            tmpObject = Columnlist()
 
+            if attrs.get("list"):
+                tmpObject.setList(attrs["list"])
 
-        if name == 'Columnlist':
-            tmpObject = Columnlist(
-                          )
-
-            if attrs.get('list'):
-                tmpObject.setList( attrs['list'] )
-
-        if name == 'Column':
+        if name == "Column":
             tmpObject = Column(
-                            attrs.get('name'),
-                            attrs.get('type'),
-                          )
+                attrs.get("name"),
+                attrs.get("type"),
+            )
 
-            if attrs.get('label'):
-                tmpObject.setLabel( attrs['label'] )
+            if attrs.get("label"):
+                tmpObject.setLabel(attrs["label"])
 
-            if attrs.get('default'):
-                tmpObject.setDefault( attrs['default'] )
+            if attrs.get("default"):
+                tmpObject.setDefault(attrs["default"])
 
-            if attrs.get('notnull'):
-                tmpObject.setNotnull( attrs['notnull'] )
+            if attrs.get("notnull"):
+                tmpObject.setNotnull(attrs["notnull"])
 
-            if attrs.get('autoinc'):
-                tmpObject.setAutoinc( attrs['autoinc'] )
+            if attrs.get("autoinc"):
+                tmpObject.setAutoinc(attrs["autoinc"])
 
-            if attrs.get('manager'):
-                tmpObject.setManager( attrs['manager'] )
+            if attrs.get("manager"):
+                tmpObject.setManager(attrs["manager"])
 
-            if attrs.get('function'):
-                tmpObject.setFunction( attrs['function'] )
+            if attrs.get("function"):
+                tmpObject.setFunction(attrs["function"])
 
-            if attrs.get('noconnect'):
-                tmpObject.setNoconnect( attrs['noconnect'] )
+            if attrs.get("noconnect"):
+                tmpObject.setNoconnect(attrs["noconnect"])
 
-            if attrs.get('invisible'):
-                tmpObject.setInvisible( attrs['invisible'] )
+            if attrs.get("invisible"):
+                tmpObject.setInvisible(attrs["invisible"])
 
-            if attrs.get('notes'):
-                tmpObject.setNotes( attrs['notes'] )
+            if attrs.get("notes"):
+                tmpObject.setNotes(attrs["notes"])
 
-            if attrs.get('noteslabel'):
-                tmpObject.setNoteslabel( attrs['noteslabel'] )
+            if attrs.get("noteslabel"):
+                tmpObject.setNoteslabel(attrs["noteslabel"])
 
-            if attrs.get('labelsearch'):
-                tmpObject.setLabelsearch( attrs['labelsearch'] )
+            if attrs.get("labelsearch"):
+                tmpObject.setLabelsearch(attrs["labelsearch"])
 
-            if attrs.get('maxshown'):
-                tmpObject.setMaxshown( attrs['maxshown'] )
+            if attrs.get("maxshown"):
+                tmpObject.setMaxshown(attrs["maxshown"])
 
-            if attrs.get('map'):
-                tmpObject.setMap( attrs['map'] )
+            if attrs.get("map"):
+                tmpObject.setMap(attrs["map"])
 
-        if name == 'Table':
+        if name == "Table":
             tmpObject = Table(
-                            attrs.get('name'),
-                          )
+                attrs.get("name"),
+            )
 
-            if attrs.get('primarykey'):
-                tmpObject.setPrimarykey( attrs['primarykey'] )
+            if attrs.get("primarykey"):
+                tmpObject.setPrimarykey(attrs["primarykey"])
 
-            if attrs.get('label'):
-                tmpObject.setLabel( attrs['label'] )
+            if attrs.get("label"):
+                tmpObject.setLabel(attrs["label"])
 
-            if attrs.get('ebase'):
-                tmpObject.setEbase( attrs['ebase'] )
+            if attrs.get("ebase"):
+                tmpObject.setEbase(attrs["ebase"])
 
-            if attrs.get('uid'):
-                tmpObject.setUid( attrs['uid'] )
+            if attrs.get("uid"):
+                tmpObject.setUid(attrs["uid"])
 
-        if name == 'List':
-            tmpObject = List(
-                            attrs.get('name')
-                           )
+        if name == "List":
+            tmpObject = List(attrs.get("name"))
 
-            if attrs.get('label'):
-                tmpObject.setLabel( attrs['label'] )
+            if attrs.get("label"):
+                tmpObject.setLabel(attrs["label"])
 
-            if attrs.get('noedit'):
-                tmpObject.setNoedit( attrs['noedit'] )
+            if attrs.get("noedit"):
+                tmpObject.setNoedit(attrs["noedit"])
 
-            if attrs.get('invisible'):
-                tmpObject.setInvisible( attrs['invisible'] )
+            if attrs.get("invisible"):
+                tmpObject.setInvisible(attrs["invisible"])
 
-            if attrs.get('docache'):
-                tmpObject.setDocache( attrs['docache'] )
+            if attrs.get("docache"):
+                tmpObject.setDocache(attrs["docache"])
 
-            if attrs.get('translations'):
-                tmpObject.setTranslations( attrs['translations'] )
+            if attrs.get("translations"):
+                tmpObject.setTranslations(attrs["translations"])
 
-        if name == 'Image':
-            tmpObject = ImageProperties(
-                            attrs.get('src'),
-                            attrs.get('title')
-                          )
+        if name == "Image":
+            tmpObject = ImageProperties(attrs.get("src"), attrs.get("title"))
 
-            if attrs.get('package'):
-                tmpObject.setPackage( attrs['package'] )
+            if attrs.get("package"):
+                tmpObject.setPackage(attrs["package"])
 
-            if attrs.get('alt'):
-                tmpObject.setAlt( attrs['alt'] )
+            if attrs.get("alt"):
+                tmpObject.setAlt(attrs["alt"])
 
-            if attrs.get('desc'):
-                tmpObject.setDesc( attrs['desc'] )
+            if attrs.get("desc"):
+                tmpObject.setDesc(attrs["desc"])
 
-            if attrs.get('border'):
+            if attrs.get("border"):
                 try:
-                    b = int(attrs['border'])
+                    b = int(attrs["border"])
                 except:
                     pass
                 else:
-                    tmpObject.setBorder( b )
+                    tmpObject.setBorder(b)
 
-            if attrs.get('width'):
+            if attrs.get("width"):
                 try:
-                    w = int(attrs['width'])
+                    w = int(attrs["width"])
                 except:
                     pass
                 else:
-                    tmpObject.setWidth( w )
+                    tmpObject.setWidth(w)
 
-            if attrs.get('height'):
+            if attrs.get("height"):
                 try:
-                    h = int(attrs['height'])
+                    h = int(attrs["height"])
                 except:
                     pass
                 else:
-                    tmpObject.setHeight( h )
+                    tmpObject.setHeight(h)
 
-        if name == 'Tabledefinition':
+        if name == "Tabledefinition":
             tmpObject = Tabledefinition()
 
-        if name == 'Constraints':
+        if name == "Constraints":
             tmpObject = Constraints()
 
-        if name == 'Icondefinitions':
+        if name == "Icondefinitions":
             tmpObject = Icondefinitions()
-
 
         if tmpObject:
             self.prevList.append(tmpObject)
 
-
     def endElement(self, name):
         ## TODO: same always, implement simplier (python generator)
-        if not name in ['Columnlist',
-                        'Column',
-                        'Table',
-                        'List',
-                        'Image',
-                        'Tabledefinition',
-                        'Constraints',
-                        'Icondefinitions']:
+        if not name in [
+            "Columnlist",
+            "Column",
+            "Table",
+            "List",
+            "Image",
+            "Tabledefinition",
+            "Constraints",
+            "Icondefinitions",
+        ]:
             return
 
         lenList = len(self.prevList)
         if lenList > 1:
-            entry = self.prevList[lenList-1]
+            entry = self.prevList[lenList - 1]
             self.idCounter += 1
             key = self.idCounter
             # get object
-            obj = self.prevList[lenList-2]
+            obj = self.prevList[lenList - 2]
             # get add function from object
-            func = getattr(obj, 'add%s' % entry.__classname__)
+            func = getattr(obj, "add%s" % entry.__classname__)
             # call add function
-            func(key, self.prevList[lenList-1])
+            func(key, self.prevList[lenList - 1])
         elif lenList == 1:
             self.rootObject = self.prevList[0]
-        self.prevList = self.prevList[0:lenList-1]
+        self.prevList = self.prevList[0 : lenList - 1]
 
         self.decElementLevel(name)
 
 
-def main(args, filename = 'xmlLog'):
+def main(args, filename="xmlLog"):
     """\brief main function."""
-    inputFile  = open(filename + '.xml', 'r')
+    inputFile = open(filename + ".xml", "r")
 
     # xml handling
-    xsHandler  = XMLHandler()
+    xsHandler = XMLHandler()
     saxParser = make_parser()
     saxParser.setContentHandler(xsHandler)
 
@@ -852,4 +821,5 @@ def main(args, filename = 'xmlLog'):
 
 if __name__ == "__main__":
     import sys
+
     main(sys.argv)

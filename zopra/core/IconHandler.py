@@ -26,27 +26,25 @@ class IconHandler(Folder):
     """\class IconHandler"""
 
     # class variables
-    _className  = 'IconHandler'
-    _classType  = [_className]
-    meta_type   = _className
+    _className = "IconHandler"
+    _classType = [_className]
+    meta_type = _className
 
     _properties = Folder._properties
 
-    App         = 'hgApplication'
+    App = "hgApplication"
 
-
-    def __init__(self, name, package = None):
+    def __init__(self, name, package=None):
         """\brief Constructs a IconHandler."""
         Folder.__init__(self, name)
 
         self.title2properties = {}
-        self.imgsources       = set()
-        self.id2title         = {}
+        self.imgsources = set()
+        self.id2title = {}
 
-        self.package          = package
+        self.package = package
 
-
-    def filtered_meta_types(self, user = None):
+    def filtered_meta_types(self, user=None):
         # Return a list of the types for which the user has
         # adequate permission to add that type of object.
         folder_meta_types = Folder.filtered_meta_types(self, user=None)
@@ -54,35 +52,34 @@ class IconHandler(Folder):
         meta_types = []
 
         for fmt in folder_meta_types:
-            if fmt['name'] == 'Image':
+            if fmt["name"] == "Image":
                 meta_types.append(fmt)
 
         return meta_types
 
-
-    def _setObject(self, id, object, roles = None, user = None, set_owner = 1,
-                   suppress_events = False):
-        """Set an object into this container.
-        """
+    def _setObject(
+        self, id, object, roles=None, user=None, set_owner=1, suppress_events=False
+    ):
+        """Set an object into this container."""
 
         assert isinstance(object, Image)
 
         if not id:
-            raise BadRequest('Image data missing.' )
+            raise BadRequest("Image data missing.")
 
         if id in self.imgsources:
             raise BadRequest('Image with Id "%s" already exists.' % id)
 
-        key = getattr(object, 'title', '')
+        key = getattr(object, "title", "")
 
         if not key:
-            key   = str(object.id())
-            title = ''
+            key = str(object.id())
+            title = ""
         else:
             title = key
 
         if not key:
-            raise BadRequest('Image Title missing.' )
+            raise BadRequest("Image Title missing.")
 
         if self.has(key):
             raise BadRequest('Image with Title "%s" already exists.' % title)
@@ -92,19 +89,20 @@ class IconHandler(Folder):
 
         # create properties if necessary img inserted by user via ZMI
         if key not in self.title2properties:
-            w   = getattr(object, 'width',  '')
-            h   = getattr(object, 'height', '')
-            alt = getattr(object, 'alt',    '')
+            w = getattr(object, "width", "")
+            h = getattr(object, "height", "")
+            alt = getattr(object, "alt", "")
 
             # no package for externally loaded images
-            img_properties = ImageProperties(id, title, '', alt, '', None, w, h)
+            img_properties = ImageProperties(id, title, "", alt, "", None, w, h)
 
             self.title2properties[key] = copy(img_properties)
 
         self.id2title[id] = key
 
-        return Folder._setObject(self, id, object, roles, user, set_owner, suppress_events)
-
+        return Folder._setObject(
+            self, id, object, roles, user, set_owner, suppress_events
+        )
 
     def xmlInit(self, xml):
         """\brief Initializes all tables specified in the xml-string"""
@@ -115,32 +113,29 @@ class IconHandler(Folder):
             img_descr = tmp_obj.image[icon_idx]
 
             # TODO: add descriptions to
-            self.attach( img_descr )
-
+            self.attach(img_descr)
 
     def manage_delObjects(self, ids=None, REQUEST=None):
         """\brief replaces ObjectManager's manage_delObjects.
-                  Be careful to only use this method to remove images.
-                  Using _delObject will lead to orphan image_properties lying around"""
+        Be careful to only use this method to remove images.
+        Using _delObject will lead to orphan image_properties lying around"""
 
         for _id in ids:
             self.delete(self.id2title[_id])
 
         return Folder.manage_delObjects(self, ids, REQUEST)
 
-
     def has(self, title):
         """\brief."""
 
-        assert( isinstance(title, StringType) or isinstance(title, type(unicode(''))))
+        assert isinstance(title, StringType) or isinstance(title, type(unicode("")))
         return title in self.title2properties
-
 
     def add(self, img_properties):
         """\brief. Adds an image to the iconHandler and set """
 
-        assert( isinstance(img_properties, ImageProperties) )
-        assert( img_properties.title )
+        assert isinstance(img_properties, ImageProperties)
+        assert img_properties.title
 
         if self.has(img_properties.title):
             return False
@@ -151,18 +146,18 @@ class IconHandler(Folder):
         filename = getZopRAPath()
 
         if img_properties.pkg:
-            filename += '/' + img_properties.pkg
+            filename += "/" + img_properties.pkg
 
         elif self.package:
-            filename += '/' + self.package
+            filename += "/" + self.package
 
-        filename += '/images/' + img_properties.src
+        filename += "/images/" + img_properties.src
 
         if not path.exists(filename):
             return False
 
-        fHandle = open(filename, 'r')
-        image   = Image(img_properties.src, img_properties.title, fHandle.read())
+        fHandle = open(filename, "r")
+        image = Image(img_properties.src, img_properties.title, fHandle.read())
 
         self._setObject(img_properties.src, image)
 
@@ -171,15 +166,14 @@ class IconHandler(Folder):
 
         return True
 
-
-    def attach(self, img_properties, remove_empty = False):
+    def attach(self, img_properties, remove_empty=False):
         """\brief. Updates properties for image referenced in img_properties.src with new settings
-                   Setting remove_empty to true will remove unset properties in img_properties.
-                   Note: title cannot be unset
+        Setting remove_empty to true will remove unset properties in img_properties.
+        Note: title cannot be unset
         """
 
-        assert( isinstance(img_properties, ImageProperties) )
-        assert( img_properties.title )
+        assert isinstance(img_properties, ImageProperties)
+        assert img_properties.title
 
         if img_properties.src not in self.imgsources:
             return False
@@ -193,22 +187,22 @@ class IconHandler(Folder):
 
         # update settings
         if img_properties.title:
-            current_properties.title  = img_properties.title
+            current_properties.title = img_properties.title
 
         if img_properties.alt:
-            current_properties.alt    = img_properties.alt
+            current_properties.alt = img_properties.alt
         elif remove_empty:
-            current_properties.alt    = None
+            current_properties.alt = None
 
         if img_properties.border is not None:
-            current_properties.border  = img_properties.border
+            current_properties.border = img_properties.border
         elif remove_empty:
-            current_properties.border  = None
+            current_properties.border = None
 
         if img_properties.width:
-            current_properties.width  = img_properties.width
+            current_properties.width = img_properties.width
         elif remove_empty:
-            current_properties.width  = None
+            current_properties.width = None
 
         if img_properties.height:
             current_properties.height = img_properties.height
@@ -228,14 +222,13 @@ class IconHandler(Folder):
 
         return True
 
-
     # extract filename from img sources
     # only unique filenames are allowed
 
-    def delete(self, title, manage = False):
+    def delete(self, title, manage=False):
         """\brief."""
 
-        assert( isinstance(title, StringType) )
+        assert isinstance(title, StringType)
 
         img_properties = self.get(title)
 
@@ -252,11 +245,10 @@ class IconHandler(Folder):
 
         return img_properties
 
-
-    def get(self, title, path = False):
+    def get(self, title, path=False):
         """\brief."""
 
-        assert( isinstance(title, StringType) )
+        assert isinstance(title, StringType)
 
         img_properties = None
 
@@ -269,34 +261,30 @@ class IconHandler(Folder):
 
         # adjust path
         if img_properties and path:
-            img_properties.src = self.absolute_url() + '/' + img_properties.src
+            img_properties.src = self.absolute_url() + "/" + img_properties.src
 
         return img_properties
-
 
     def getImageObject(self, title):
         """\brief."""
 
-        img_object     = None
+        img_object = None
         img_properties = self.get(title)
 
         if img_properties:
-            assert ( hasattr( self, img_properties.src ) )
+            assert hasattr(self, img_properties.src)
 
-            img_object = getattr( self, img_properties.src )
+            img_object = getattr(self, img_properties.src)
 
         return img_object
-
 
     def getTitleList(self):
         """\brief."""
         return self.title2properties.keys()
 
-
     def empty(self):
         """\brief."""
         return len(self.title2properties) == 0
-
 
     def count(self):
         """\brief."""

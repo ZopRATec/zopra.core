@@ -9,8 +9,8 @@ from zopra.core import HTML
 from zopra.core import ZC
 from zopra.core import ClassSecurityInfo
 from zopra.core import managePermission
-from zopra.core.dialogs import getStdDialog
 from zopra.core.dialogs import dlgLabel
+from zopra.core.dialogs import getStdDialog
 
 
 #
@@ -18,11 +18,9 @@ from zopra.core.dialogs import dlgLabel
 #
 
 
-
-
 class ManagerManageTabsMixin(object):
-    """ The ManagerManageTabsMixin class provides display and helper methods
-        for the management tabs of ZopRA managers. """
+    """The ManagerManageTabsMixin class provides display and helper methods
+    for the management tabs of ZopRA managers."""
 
     #
     # Security
@@ -30,14 +28,14 @@ class ManagerManageTabsMixin(object):
     security = ClassSecurityInfo()
     security.declareObjectPublic()
 
-    security.declareProtected(managePermission, 'setDebugOutput')
+    security.declareProtected(managePermission, "setDebugOutput")
 
     def setDebugOutput(self):
-        """ Hook method for manager specific debug output.
+        """Hook method for manager specific debug output.
 
         This function is called by the management view-tab to display further
         debug output."""
-        return ''
+        return ""
 
     ###########################################################################
     #                                                                         #
@@ -45,69 +43,69 @@ class ManagerManageTabsMixin(object):
     #                                                                         #
     ###########################################################################
 
-    security.declareProtected(managePermission, 'viewTab')
+    security.declareProtected(managePermission, "viewTab")
 
-    def viewTab(self, REQUEST = None):
+    def viewTab(self, REQUEST=None):
         """\brief Returns the HTML source for the view form."""
         perm = self.getGUIPermission()
-        dlg = getStdDialog('Debug Output', '%s/viewTab' % self.absolute_url())
-        dlg.setHeader('<dtml-var manage_page_header><dtml-var manage_tabs>')
-        dlg.setFooter('<dtml-var manage_page_footer>')
+        dlg = getStdDialog("Debug Output", "%s/viewTab" % self.absolute_url())
+        dlg.setHeader("<dtml-var manage_page_header><dtml-var manage_tabs>")
+        dlg.setFooter("<dtml-var manage_page_footer>")
 
         if perm.hasRole(perm.SC_ADMIN):
             dlg.add(self.getDebugOutput(REQUEST))
         else:
-            dlg.add(hgLabel('<b>Access denied</b>'))
+            dlg.add(hgLabel("<b>Access denied</b>"))
         return HTML(dlg.getHtml())(self, REQUEST)
 
+    security.declareProtected(managePermission, "updateTab")
 
-    security.declareProtected(managePermission, 'updateTab')
-
-    def updateTab(self, REQUEST = None):
+    def updateTab(self, REQUEST=None):
         """\brief Returns the html source for the view form."""
         perm = self.getGUIPermission()
         if perm.hasRole(perm.SC_ADMIN):
-            dlg = getStdDialog('Update Version', '%s/updateTab' % self.absolute_url())
-            dlg.setHeader('<dtml-var manage_page_header><dtml-var manage_tabs>')
-            dlg.setFooter('<dtml-var manage_page_footer>')
+            dlg = getStdDialog("Update Version", "%s/updateTab" % self.absolute_url())
+            dlg.setHeader("<dtml-var manage_page_header><dtml-var manage_tabs>")
+            dlg.setFooter("<dtml-var manage_page_footer>")
 
             #
-            dlg.add(hgLabel('<br/>'))
+            dlg.add(hgLabel("<br/>"))
 
             # update handling
             if REQUEST is not None:
-                if REQUEST.form.get('update'):
+                if REQUEST.form.get("update"):
                     report = self.updateVersion()
 
-                    dlg.add(hgLabel('<b>Update Report</b>'))
-                    dlg.add(hgLabel('<br/>'))
+                    dlg.add(hgLabel("<b>Update Report</b>"))
+                    dlg.add(hgLabel("<br/>"))
                     dlg.add(str(report))
-                    dlg.add(hgLabel('<br/>'))
-                    dlg.add(hgLabel('<br/>'))
+                    dlg.add(hgLabel("<br/>"))
+                    dlg.add(hgLabel("<br/>"))
 
             version = self.zopra_version
-            newver  = ManagerManageTabsMixin.zopra_version
+            newver = ManagerManageTabsMixin.zopra_version
 
             tab = hgTable()
 
-            tab[0, 0] = hgLabel('<b>Current Manager Version:<b>')
+            tab[0, 0] = hgLabel("<b>Current Manager Version:<b>")
             tab[0, 1] = hgLabel(str(version))
-            tab[1, 0] = hgLabel('<b>Installed Version:<b>')
+            tab[1, 0] = hgLabel("<b>Installed Version:<b>")
             tab[1, 1] = hgLabel(str(newver))
 
             dlg.add(tab)
 
             if newver > version:
-                dlg.add( hgPushButton('Update', name = 'update') )
+                dlg.add(hgPushButton("Update", name="update"))
             else:
-                dlg.add(hgLabel('No update required'))
+                dlg.add(hgLabel("No update required"))
 
             return HTML(dlg.getHtml())(self, REQUEST)
         else:
-            raise ValueError('Access Denied: Insufficient privileges to access this function')
+            raise ValueError(
+                "Access Denied: Insufficient privileges to access this function"
+            )
 
-
-    security.declareProtected(managePermission, 'getDebugOutput')
+    security.declareProtected(managePermission, "getDebugOutput")
 
     def getDebugOutput(self, REQUEST):
         """\brief Returns the HTML source of the debug output view."""
@@ -115,35 +113,35 @@ class ManagerManageTabsMixin(object):
 
         additional = self.setDebugOutput()
         if additional:
-            html.append( '<h2>Manager specific Debug Output</h2>' + str(hgNEWLINE) )
-            html.append( additional )
-            html.append( str(hgNEWLINE) )
+            html.append("<h2>Manager specific Debug Output</h2>" + str(hgNEWLINE))
+            html.append(additional)
+            html.append(str(hgNEWLINE))
 
-        html.append(str(dlgLabel('<h2> Debug Output </h2>') + hgNEWLINE))
+        html.append(str(dlgLabel("<h2> Debug Output </h2>") + hgNEWLINE))
 
         # security
         tab = hgTable()
-        html.append(str(dlgLabel('<br>Security Settings')))
-        tab[0, 0] = hgLabel('EBaSe:')
+        html.append(str(dlgLabel("<br>Security Settings")))
+        tab[0, 0] = hgLabel("EBaSe:")
         tab[0, 1] = hgLabel(str(self.ebase))
-        tab[1, 0] = hgLabel('SBAR:')
+        tab[1, 0] = hgLabel("SBAR:")
         tab[1, 1] = hgLabel(str(self.checkSBAR()))
         html.append(str(tab))
 
         tab = hgTable()
 
         # show tables information
-        tab[0, 0] = dlgLabel('<h3>Table Overview</h3>')
+        tab[0, 0] = dlgLabel("<h3>Table Overview</h3>")
 
-        tab[1, 0] = dlgLabel('Table Name')
-        tab[1, 1] = dlgLabel('Column Name')
-        tab[1, 2] = dlgLabel('Column Type')
-        tab[1, 3] = dlgLabel('Column Label')
+        tab[1, 0] = dlgLabel("Table Name")
+        tab[1, 1] = dlgLabel("Column Name")
+        tab[1, 2] = dlgLabel("Column Type")
+        tab[1, 3] = dlgLabel("Column Label")
 
         row = 2
         for table in self.tableHandler.keys():
-            tab[row, 0] = dlgLabel('<b>%s</b>' % table)
-            offset  = 1
+            tab[row, 0] = dlgLabel("<b>%s</b>" % table)
+            offset = 1
             for col in self.tableHandler[table].getMainColumnNames():
                 tab[row + offset, 1] = col
                 colobj = self.tableHandler[table].getField(col)
@@ -159,13 +157,13 @@ class ManagerManageTabsMixin(object):
             #       are displayed this way
             #       foreign lists referencing those lists or lists in other managers
             #       are omitted right now
-            tab[row, 0] = dlgLabel('<h3>List (Basic Lists with dbtable) Overview</h3>')
+            tab[row, 0] = dlgLabel("<h3>List (Basic Lists with dbtable) Overview</h3>")
             row += 1
-            tab[row, 0] = dlgLabel('List Name')
-            tab[row, 1] = dlgLabel('Value Count')
+            tab[row, 0] = dlgLabel("List Name")
+            tab[row, 1] = dlgLabel("Value Count")
             row += 1
             for list_entry in self.listHandler.keys():
-                tab[row, 0] = '<b>' + list_entry + '</b>'
+                tab[row, 0] = "<b>" + list_entry + "</b>"
                 try:
                     cnt = self.listHandler[list_entry].getValueCount()
                     tab[row, 1] = cnt
@@ -176,22 +174,22 @@ class ManagerManageTabsMixin(object):
         row += 1
 
         # show foreign _list information
-        tab[row, 0] = dlgLabel('<h3>List References Overview</h3>')
+        tab[row, 0] = dlgLabel("<h3>List References Overview</h3>")
         row += 2
-        tab[row, 0] = dlgLabel('Table Name')
-        tab[row, 1] = dlgLabel('Column Name')
-        tab[row, 2] = dlgLabel('Column Label')
-        tab[row, 3] = dlgLabel('List Type')
-        tab[row, 4] = dlgLabel('Referenced Manager')
-        tab[row, 5] = dlgLabel('List Function')
-        tab[row, 6] = dlgLabel('Foreign List')
+        tab[row, 0] = dlgLabel("Table Name")
+        tab[row, 1] = dlgLabel("Column Name")
+        tab[row, 2] = dlgLabel("Column Label")
+        tab[row, 3] = dlgLabel("List Type")
+        tab[row, 4] = dlgLabel("Referenced Manager")
+        tab[row, 5] = dlgLabel("List Function")
+        tab[row, 6] = dlgLabel("Foreign List")
         row += 1
 
         for table in self.tableHandler.keys():
             tablelists = self.listHandler.getLists(table)
 
             for _list in tablelists:
-                tab[row, 0] = dlgLabel('<b>%s</b>' % table)
+                tab[row, 0] = dlgLabel("<b>%s</b>" % table)
                 tab[row, 1] = dlgLabel(_list.listname)
                 tab[row, 2] = dlgLabel(_list.getLabel())
                 tab[row, 3] = dlgLabel(_list.listtype)
@@ -203,6 +201,6 @@ class ManagerManageTabsMixin(object):
                 tab[row, 6] = dlgLabel(_list.foreign)
                 row += 1
 
-        html.append( str(tab) )
+        html.append(str(tab))
 
-        return '\n'.join(html)
+        return "\n".join(html)
