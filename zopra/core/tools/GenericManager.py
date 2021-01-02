@@ -29,20 +29,21 @@ class GenericManager(ManagerPart):
     meta_type = _className
     implements(IGenericManager)
 
-    """ usage: _generic_config = {table: {key:value}}
-        keys: basket_to     (True / False) - for showForm/showList-BasketButton
-              basket_from   (True / False) - for newForm-BasketButton
-              basket_active (True / False) - show basket at all
-              visible       (True / False) - visible in zopra_manager_main_form
-              show_fields   ([attrs])      - attributes for search result listing (editorial)
-              required      ([attrs])      - required attributes for new/edit
-              check_fields  ([{fieldname: function}] - call the module function for the field check when adding / editing an entry, function parameters are: attr_name, entry, mgr
-              links         ([{'label':'<label>', 'link': '...%s', 'field': '<fieldname>', 'iconclass': 'icon-xyz'}]) - use info to add a link column to search result listing (editorial), linking to the given url (enhanced by the content of the field with the given fieldname), using the given label and icon class [url needs exactly one %s, normally used with the autoid field]
-              specials      ([{'label': '<label>', fieldname: function}] - call the module function on every displayed entry in search result listing (editorial) to calculate the html content for a special column, label is used for table head, function parameters are: mgr, table, entry, lang, html
-              importable    (True / False) - show in importForm for Import
-              show_table_options    ({'create':1, 'search':1, 'list':1, 'import': (<target>, <label>), ...}) - define options for generic table overview (on manager_main_form)
-              dependent     (True / False) - set to True to not show the create button on zopra_table_show_form / zopra_table_edit_form
-        access via getGenericConfig(table)
+    """:generic configuration dict
+    usage: _generic_config = {table: {key:value}}
+    keys: basket_to     (True / False) - for showForm/showList-BasketButton
+            basket_from   (True / False) - for newForm-BasketButton
+            basket_active (True / False) - show basket at all
+            visible       (True / False) - visible in zopra_manager_main_form
+            show_fields   ([attrs])      - attributes for search result listing (editorial)
+            required      ([attrs])      - required attributes for new/edit
+            check_fields  ([{fieldname: function}] - call the module function for the field check when adding / editing an entry, function parameters are: attr_name, entry, mgr
+            links         ([{'label':'<label>', 'link': '...%s', 'field': '<fieldname>', 'iconclass': 'icon-xyz'}]) - use info to add a link column to search result listing (editorial), linking to the given url (enhanced by the content of the field with the given fieldname), using the given label and icon class [url needs exactly one %s, normally used with the autoid field]
+            specials      ([{'label': '<label>', fieldname: function}] - call the module function on every displayed entry in search result listing (editorial) to calculate the html content for a special column, label is used for table head, function parameters are: mgr, table, entry, lang, html
+            importable    (True / False) - show in importForm for Import
+            show_table_options    ({'create':1, 'search':1, 'list':1, 'import': (<target>, <label>), ...}) - define options for generic table overview (on manager_main_form)
+            dependent     (True / False) - set to True to not show the create button on zopra_table_show_form / zopra_table_edit_form
+    access via getGenericConfig(table)
     """
     _generic_config = {}
 
@@ -51,6 +52,8 @@ class GenericManager(ManagerPart):
     #
     security = ClassSecurityInfo()
     security.declareObjectPublic()
+
+    # generic config helper methods
 
     def getGenericConfig(self, table):
         """ Retrieve the generic config for the table """
@@ -66,6 +69,49 @@ class GenericManager(ManagerPart):
         if not fields:
             fields = self.tableHandler[table].getColumnDefs().keys()
         return fields
+
+    def getRequiredFields(self, table):
+        """Get the required attributes for the table"""
+
+        if table not in self.tableHandler:
+            raise ValueError(
+                "Table '%s' does not exist in %s" % (table, self.getTitle())
+            )
+
+        required = []
+
+        # simple managers do not need a _generic_config, so check for existence
+        if self._generic_config.get(table):
+            if self._generic_config[table].get("required"):
+                required = self._generic_config[table]["required"]
+
+        return required
+
+    def checkRequiredFields(self, table, dict):
+        """Checks required attributes in dict to be accepted by table"""
+
+        if table not in self.tableHandler:
+            raise ValueError(
+                "Table '%s' does not exist in %s" % (table, self.getTitle())
+            )
+
+        if dict is None or not isinstance(dict, DictType):
+            dict = {}
+
+        missing = []
+        required = self.getRequiredFields(table)
+
+        for field in required:
+            # field is not in entry_dict and no multilist
+            if not dict.get(field):
+                missing.append(field)
+            elif dict.get(field) == "NULL":
+                if self.listHandler.hasList(table, field):
+                    missing.append(field)
+
+        return missing
+
+    # language / translations / working copies switched off
 
     def getCurrentLanguage(self):
         """ Language default is en, overridden in TemplateBaseManager"""
@@ -219,35 +265,96 @@ class GenericManager(ManagerPart):
         error = self.renderError(msg, "Button Error")
         raise ValueError(error)
 
+    #############################################
+    # Generic Manager Basic Methods             #
+    #   - to be overwritten for custom handling #
+    #   they provide a basic implementation      #
+    #############################################
+
+        def getSearchPattern(self, table):
+        """called before REQUEST is analysed by showList
+                 This function is used to define how the generic search mask
+                 will look like. While all other masks are simple single
+                 masks showing one entry of one table (in the generic case),
+                 a generic search mask can consist of masks for different
+                 tables of different managers. Each row in the list that is returned
+                 is a tuple (manager-className, tablename, prefix).
+                 The search tree template produced by generateTableSearchTreeTemplate
+                 should match the tables and prefixes used here so the values entered into
+                 the masks will be matched correctly.
+        \return a list of tuples looking like that: (manager, table, prefix)"""
+        return [(self.getClassName(), table, "")]
+
+    def generateTableSearchTreeTemplate(self, table):
+        """Virtual function for manager specific searchTree called by Table.getSearchTreeTemplate.
+        The standard search tree is just the corresponding
+        TableNode for the table. This function forwards to the
+        overwritten version in ManagerPart which returns
+        the TableNode. Overwrite it to produce a custom
+        search tree and return the root node. To get the template for custom searches,
+        use Table.getSearchTreeTemplate (caching is done there)."""
+        return ManagerPart.generateTableSearchTreeTemplate(self, table)
+
+    def getLabelString(self, table, autoid=None, descr_dict=None):
+        """Return label for entry, overwrite for special functionality."""
+        # return autoid, no matter what table
+        if descr_dict:
+            autoid = descr_dict.get(ZC.TCN_AUTOID, "")
+        elif not autoid:
+            return ""
+        return str(autoid)
+
+    def prepare_labelstringsearch(self, table, searchterm, root):
+        """Basic Generic Function, overwrite for special functionality.
+        Implementation builds constraints and order for search and puts them
+        into the TableNode named root for the searchLabelStrings function to use.
+        The information is taken from _generic_config with key 'labelsearchfields'
+        """
+        # default behaviour is to look into _generic_config for a main column
+        fields = self._generic_config.get(table, {}).get("labelsearchfields", [])
+
+        cons = {}
+        # empty searchterm returns everything -> no cons
+        if searchterm:
+            for field in fields:
+                # for now, use searchterm for each field
+                cons[field] = "*" + searchterm + "*"
+
+        if fields:
+            order = fields
+        else:
+            order = ZC.TCN_AUTOID
+
+        # multiple fields each have the same searchterm in the constraints
+        # for multifield, we need to either break the term apart or simply build a filter for or-search
+        # the latter is done for now
+        root.setConstraints(cons)
+        if len(cons.keys()) > 1:
+            root.filterTree.setOperator(root.filterTree.OR)
+        if order:
+            root.setOrder(order)
+
+    def getHierarchyListConfig(self, table, name):
+        """Get a default config for hierarchylists. Overwrite for special settings."""
+        # TODO: right now, the Plone templates only allow working with the exact settings below, different combinations have not been implemented yet.
+        # multivalued: multiple values can be set on edit
+        # multisearch: search allows to select multiple (leaf)nodes
+        # nonleaf-search: search allows to select nodes, that are no leafs
+        # nonleaf-search-expand: search for all nodes/leafs below the chosen one (and the node itself), only applies when nonleaf-search is True
+        # nonleaf-edit: allow the autoid of a node as value, that is not a leaf node
+        return {
+            "multivalued": False,
+            "multisearch": False,
+            "nonleaf-search": True,
+            "nonleaf-search-expand": True,
+            "nonleaf-edit": True,
+        }
+
     ############################################
     # Generic Manager generic basic functions  #
     #   - providing basic handling for entries #
-    #   Overwrite them with caution            #
+    #                                          #
     ############################################
-
-    security.declareProtected(modifyPermission, "deleteEntries")
-
-    def deleteEntries(self, table, idlist, REQUEST=None):
-        # Entry deletion, make sure to call superclass if overwritten.
-        #            Does the calling of the prepareDelete hook and forwards
-        #            to Table.deleteEntries.
-        if table not in self.tableHandler:
-            return
-
-        if not idlist:
-            return
-
-        if not isinstance(idlist, ListType):
-            idlist = [idlist]
-
-        # make sure we properly handle the delete operation
-        for oneid in idlist:
-            msg = self.prepareDelete(table, oneid, REQUEST)
-            if msg and msg is not True:
-                return msg
-
-        self.tableHandler[table].deleteEntries(idlist)
-        return True
 
     def getEntry(self, table, autoid, lang=None, ignore_permissions=False):
         """Calls tableHandlers getEntry, overwrite for special functionality."""
@@ -282,75 +389,41 @@ class GenericManager(ManagerPart):
         # return result
         return entry
 
-    def getSearchPattern(self, table):
-        """called before REQUEST is analysed by showList
-                 This function is used to define how the generic search mask
-                 will look like. While all other masks are simple single
-                 masks showing one entry of one table (in the generic case),
-                 a generic search mask can consist of masks for different
-                 tables of different managers. Each row in the list that is returned
-                 is a tuple (manager-className, tablename, prefix).
-                 The search tree template produced by generateTableSearchTreeTemplate
-                 should match the tables and prefixes used here so the values entered into
-                 the masks will be matched correctly.
-        \return a list of tuples looking like that: (manager, table, prefix)"""
-        return [(self.getClassName(), table, "")]
+    security.declareProtected(modifyPermission, "deleteEntries")
 
-    def generateTableSearchTreeTemplate(self, table):
-        """Virtual function for manager specific searchTree called by Table.getSearchTreeTemplate.
-        The standard search tree is just the corresponding
-        TableNode for the table. This function forwards to the
-        overwritten version in ManagerPart which returns
-        the TableNode. Overwrite it to produce a custom
-        search tree and return the root node. To get the template for custom searches,
-        use Table.getSearchTreeTemplate (caching is done there)."""
-        return ManagerPart.generateTableSearchTreeTemplate(self, table)
+    def deleteEntries(self, table, idlist, REQUEST=None):
+        # Entry deletion, make sure to call superclass if overwritten.
+        #            Does the calling of the prepareDelete hook and forwards
+        #            to Table.deleteEntries.
+        if table not in self.tableHandler:
+            return
 
-    def getLabelString(self, table, autoid=None, descr_dict=None):
-        """Return label for entry, overwrite for special functionality."""
-        # return autoid, no matter what table
-        if descr_dict:
-            autoid = descr_dict.get(ZC.TCN_AUTOID, "")
-        elif not autoid:
-            return ""
-        return str(autoid)
+        if not idlist:
+            return
 
-    def getLink(self, table, autoid=None, descr_dict=None, parent=None):
-        """Return link to that entry, overwrite for special functionality.
-        Note that either autoid or descr_dict is given."""
-        # parent is a widget for display
-        # get autoid / descr_dict
-        if descr_dict:
-            autoid = descr_dict.get(ZC.TCN_AUTOID)
-            ddict = descr_dict
-        elif autoid:
-            ddict = self.getEntry(table, autoid)
-        else:
-            return hgLabel("", parent=parent)
-        # get label and base url
-        label = self.getLabelString(table, None, ddict)
-        base = self.absolute_url()
-        # build link
-        link = "%s/showForm?table=%s&id=%s" % (base, table, autoid)
+        if not isinstance(idlist, ListType):
+            idlist = [idlist]
 
-        # return a widget
-        if label:
-            return hgLabel(label, link, parent=parent)
-        else:
-            return hgLabel("", parent=parent)
+        # make sure we properly handle the delete operation
+        for oneid in idlist:
+            msg = self.prepareDelete(table, oneid, REQUEST)
+            if msg and msg is not True:
+                return msg
 
-    # NOTE: give desired max number of strings
-    #       give start, stop number
-    #       return total number, and found ids
-    # NOTE: now used for improved getAutoidByValue in ForeignList
-    #       list object must have set option labelsearch == True to use this function
+        self.tableHandler[table].deleteEntries(idlist)
+        return True
+
     def searchLabelStrings(self, table, search, start=0, show=-1, tolerance=0):
         """Returns autoid list whose labels match search.
         Search should cover wildcards *, ?
         Generic search calls prepare_labelstringsearch hook, which uses
-        _generic_config->labelsearchfields. For own search functionality,
-        overwrite prepare_labelstringsearch"""
+        labelsearchfields from _generic_config. For own search functionality,
+        overwrite prepare_labelstringsearch.
+        Used for improved getAutoidByValue in ForeignList.
+        List object must have set option labelsearch == True to use this method.
 
+        :return: tuple of list of found ids and total number
+        """
         if show is None:
             show = -1
 
@@ -392,8 +465,7 @@ class GenericManager(ManagerPart):
         if start == 0:
             start = None
 
-        # FIXME: why is distinct False? this could generate a lot of double autoid entries
-        # which are filtered then into a distinct list. can't remember why. maybe due to ordering
+        # FIXME: distinct is False due to ordering. But we do not have an order. Strange.
         sql = root.getSQL(show, start, distinct=False, checker=self)
         cache = self.tableHandler[table].cache
         autoidlist = deepcopy(cache.getItem(cache.IDLIST, sql))
@@ -409,40 +481,10 @@ class GenericManager(ManagerPart):
                 if autoid not in tmp_dict:
                     tmp_dict[autoid] = None
                     autoidlist.append(autoid)
-            # caching (need to check if the int values could harm anything)
+            # caching
             cache.insertItem(cache.IDLIST, sql, autoidlist)
 
         return (autoidlist, total)
-
-    def prepare_labelstringsearch(self, table, searchterm, root):
-        """Basic Generic Function, overwrite for special functionality.
-        Implementation builds constraints and order for search and puts them
-        into the TableNode named root for the searchLabelStrings function to use.
-        The information is taken from _generic_config with key 'labelsearchfields'
-        """
-        # default behaviour is to look into _generic_config for a main column
-        fields = self._generic_config.get(table, {}).get("labelsearchfields", [])
-
-        cons = {}
-        # empty searchterm returns everything -> no cons
-        if searchterm:
-            for field in fields:
-                # for now, use searchterm for each field
-                cons[field] = "*" + searchterm + "*"
-
-        if fields:
-            order = fields
-        else:
-            order = ZC.TCN_AUTOID
-
-        # multiple fields each have the same searchterm in the constraints
-        # for multifield, we need to either break the term apart or simply build a filter for or-search
-        # the latter is done for now
-        root.setConstraints(cons)
-        if len(cons.keys()) > 1:
-            root.filterTree.setOperator(root.filterTree.OR)
-        if order:
-            root.setOrder(order)
 
     def prepare_zopra_currency_value(self, value):
         """Format a currency value according to german standard or return as is
@@ -489,60 +531,3 @@ class GenericManager(ManagerPart):
                 if column not in attrs:
                     attrs.append(column)
             return attrs
-
-    def getHierarchyListConfig(self, table, name):
-        """Get a default config for hierarchylists. Overwrite for special settings."""
-        # TODO: right now, the Plone templates only allow working with the exact settings below, different combinations have not been implemented yet.
-        # multivalued: multiple values can be set on edit
-        # multisearch: search allows to select multiple (leaf)nodes
-        # nonleaf-search: search allows to select nodes, that are no leafs
-        # nonleaf-search-expand: search for all nodes/leafs below the chosen one (and the node itself), only applies when nonleaf-search is True
-        # nonleaf-edit: allow the autoid of a node as value, that is not a leaf node
-        return {
-            "multivalued": False,
-            "multisearch": False,
-            "nonleaf-search": True,
-            "nonleaf-search-expand": True,
-            "nonleaf-edit": True,
-        }
-
-    def getRequiredFields(self, table):
-        """Get the required attributes for the table"""
-
-        if table not in self.tableHandler:
-            raise ValueError(
-                "Table '%s' does not exist in %s" % (table, self.getTitle())
-            )
-
-        required = []
-
-        # simple managers do not need a _generic_config, so check for existence
-        if self._generic_config.get(table):
-            if self._generic_config[table].get("required"):
-                required = self._generic_config[table]["required"]
-
-        return required
-
-    def checkRequiredFields(self, table, dict):
-        """Checks required attributes in dict to be accepted by table"""
-
-        if table not in self.tableHandler:
-            raise ValueError(
-                "Table '%s' does not exist in %s" % (table, self.getTitle())
-            )
-
-        if dict is None or not isinstance(dict, DictType):
-            dict = {}
-
-        missing = []
-        required = self.getRequiredFields(table)
-
-        for field in required:
-            # field is not in entry_dict and no multilist
-            if not dict.get(field):
-                missing.append(field)
-            elif dict.get(field) == "NULL":
-                if self.listHandler.hasList(table, field):
-                    missing.append(field)
-
-        return missing
