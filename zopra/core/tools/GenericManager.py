@@ -1,6 +1,5 @@
 """The GenericManager adds convenience methods on top of the ManagerPart."""
 
-import re
 from copy import deepcopy
 from types import DictType
 from types import ListType
@@ -163,7 +162,7 @@ class GenericManager(ManagerPart):
     def actionBeforeSearch(
         self, table, REQUEST, descr_dict, firstSearch=True, prefix=""
     ):
-        """Hook Function called by searchForm and showList.
+        """Hook Function called by zopra_table_search_result (and legacy searchForm and showList).
 
         This hook is invoked on first search by searchForm and later on by
         showList after its searchForm handling.
@@ -186,45 +185,21 @@ class GenericManager(ManagerPart):
         """
         return None
 
-    def actionBeforeShowList(self, table, param, REQUEST):
-        """\brief Hook Function called before listing-relevant showList Handling
-        \param param is a dict which can be filled with default flags
-                     changing the showList behaviour.
-                     Non-present keys will be filled in by showList with own default values.
-                 Available keys for param-dict:
-                 with_edit: True or False
-                 with_show: True or False
-                 with_delete: True or False
-                 with_basket: True or False
-                 with_autoid_navig: True or False
-                 show_fields: [fieldlist]
-                 constraints: additional constraints {key:value}
-                 links: {name: link_dict} (additional link for each entry in the
-                                         following format)
-                     { link: url_base (leave out for label instead link),
-                        field:<attr> (for url_addition / display),
-                        check:<func_name> (for calcs/checks,
-                                          returns new id or label)
-                      }
-                 special_field: name of the main attribute (used for col 1 and initial ordering)
-        """
-        pass
-
     def startupConfig(self, REQUEST):
-        """\brief Hook Function called after first creation by manageAddGeneric
+        """Hook Function called after first creation by manageAddGeneric
         This function can be used to create standard entries for noneditable lists,
         it is only called if the database tables were created, not on reinstallation.
         So it should not be used to configure the manager, just the database."""
         pass
 
     def installConfig(self, REQUEST):
-        """\brief Hook Function called after creation by manageAddGeneric on each install.
+        """Hook Function called after creation by manageAddGeneric on each install.
         Use it to get dtml-form values from REQUEST.
         For database action (only on first install) see startupConfig Hook"""
         pass
 
     def prepareDelete(self, table, id, REQUEST):
-        """\brief Hook Function called before delete
+        """Hook Function called before delete
         This function is for cleaning up the database where custom cleaning is necessary.
         Entries that depend on the to-be-deleted entry have
         to be adjusted here. REQUEST might be None (parameter added later on).
@@ -308,7 +283,7 @@ class GenericManager(ManagerPart):
         return entry
 
     def getSearchPattern(self, table):
-        """\brief called before REQUEST is analysed by showList
+        """called before REQUEST is analysed by showList
                  This function is used to define how the generic search mask
                  will look like. While all other masks are simple single
                  masks showing one entry of one table (in the generic case),
@@ -322,7 +297,7 @@ class GenericManager(ManagerPart):
         return [(self.getClassName(), table, "")]
 
     def generateTableSearchTreeTemplate(self, table):
-        """\brief Virtual function for manager specific searchTree called by Table.getSearchTreeTemplate.
+        """Virtual function for manager specific searchTree called by Table.getSearchTreeTemplate.
         The standard search tree is just the corresponding
         TableNode for the table. This function forwards to the
         overwritten version in ManagerPart which returns
@@ -332,7 +307,7 @@ class GenericManager(ManagerPart):
         return ManagerPart.generateTableSearchTreeTemplate(self, table)
 
     def getLabelString(self, table, autoid=None, descr_dict=None):
-        """\brief Return label for entry, overwrite for special functionality."""
+        """Return label for entry, overwrite for special functionality."""
         # return autoid, no matter what table
         if descr_dict:
             autoid = descr_dict.get(ZC.TCN_AUTOID, "")
@@ -341,7 +316,7 @@ class GenericManager(ManagerPart):
         return str(autoid)
 
     def getLink(self, table, autoid=None, descr_dict=None, parent=None):
-        """\brief Return link to that entry, overwrite for special functionality.
+        """Return link to that entry, overwrite for special functionality.
         Note that either autoid or descr_dict is given."""
         # parent is a widget for display
         # get autoid / descr_dict
@@ -370,7 +345,7 @@ class GenericManager(ManagerPart):
     # NOTE: now used for improved getAutoidByValue in ForeignList
     #       list object must have set option labelsearch == True to use this function
     def searchLabelStrings(self, table, search, start=0, show=-1, tolerance=0):
-        """\brief Returns autoid list whose labels match search.
+        """Returns autoid list whose labels match search.
         Search should cover wildcards *, ?
         Generic search calls prepare_labelstringsearch hook, which uses
         _generic_config->labelsearchfields. For own search functionality,
@@ -440,7 +415,7 @@ class GenericManager(ManagerPart):
         return (autoidlist, total)
 
     def prepare_labelstringsearch(self, table, searchterm, root):
-        """\brief Basic Generic Function, overwrite for special functionality.
+        """Basic Generic Function, overwrite for special functionality.
         Implementation builds constraints and order for search and puts them
         into the TableNode named root for the searchLabelStrings function to use.
         The information is taken from _generic_config with key 'labelsearchfields'
@@ -478,13 +453,13 @@ class GenericManager(ManagerPart):
 
         try:
             res = ("%.2f" % float(str(value).replace(",", "."))).replace(".", ",")
-        except:
+        except Exception:
             res = str(value)
 
         return res
 
     def getAttributeEditPermissions(self, table):
-        """\brief Return List of editable attributes for current user (used by multiedit)
+        """Return List of editable attributes for current user (used by multiedit)
         Overwrite to specify which permission is needed to edit which attributes.
         The dlgMultiEdit uses this function to determine which attributes to
         display in edit-mode and which not."""
@@ -516,7 +491,7 @@ class GenericManager(ManagerPart):
             return attrs
 
     def getHierarchyListConfig(self, table, name):
-        """\brief Get a default config for hierarchylists. Overwrite for special settings."""
+        """Get a default config for hierarchylists. Overwrite for special settings."""
         # TODO: right now, the Plone templates only allow working with the exact settings below, different combinations have not been implemented yet.
         # multivalued: multiple values can be set on edit
         # multisearch: search allows to select multiple (leaf)nodes
@@ -532,7 +507,7 @@ class GenericManager(ManagerPart):
         }
 
     def getRequiredFields(self, table):
-        """\brief Get the required attributes for the table"""
+        """Get the required attributes for the table"""
 
         if table not in self.tableHandler:
             raise ValueError(
@@ -549,7 +524,7 @@ class GenericManager(ManagerPart):
         return required
 
     def checkRequiredFields(self, table, dict):
-        """\brief Checks required attributes in dict to be accepted by table"""
+        """Checks required attributes in dict to be accepted by table"""
 
         if table not in self.tableHandler:
             raise ValueError(

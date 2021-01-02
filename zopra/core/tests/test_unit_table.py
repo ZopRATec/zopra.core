@@ -48,7 +48,6 @@ class TableTest(StandaloneTestCase):
     # - deleteEntry
     # - updateEntry
     # - validateEntry
-    # - exportTab
     # - exportXML
     # - exportCSV
     # - deleteEntries

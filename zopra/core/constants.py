@@ -1,15 +1,6 @@
 import PyHtmlGUI
 
 
-# edit_tracking
-TCN_AUTOID = "autoid"
-TCN_CREATOR = "creator"
-TCN_DATE = "entrydate"
-TCN_EDITOR = "editor"
-TCN_EDATE = "changedate"
-TCN_OWNER = "owner"
-
-
 class ZC:
 
     # list widget constants for handling

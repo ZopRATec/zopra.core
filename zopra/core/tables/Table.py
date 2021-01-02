@@ -12,19 +12,13 @@ from zope.interface.declarations import implements
 from PyHtmlGUI import E_PARAM_FAIL
 from PyHtmlGUI import E_PARAM_TYPE
 from PyHtmlGUI.kernel.hgTable import hgTable
-from PyHtmlGUI.stylesheet.hgStyleSheetItem import hgStyleSheetItem
 from PyHtmlGUI.widgets.hgLabel import hgLabel
 from PyHtmlGUI.widgets.hgLabel import hgSPACE
-from PyHtmlGUI.widgets.hgMultiList import hgMultiList
 from PyHtmlGUI.widgets.hgPushButton import hgPushButton
 from zopra.core import HTML
 from zopra.core import ZC
 from zopra.core import PropertyManager
 from zopra.core import SimpleItem
-from zopra.core.constants import TCN_AUTOID
-from zopra.core.constants import TCN_CREATOR
-from zopra.core.constants import TCN_DATE
-from zopra.core.constants import TCN_OWNER
 from zopra.core.dialogs import getStdDialog
 from zopra.core.elements.Buttons import BTN_L_RESET2
 from zopra.core.elements.Buttons import getPressedButton
@@ -270,11 +264,11 @@ class Table(SimpleItem, PropertyManager):
                     if tfield not in self.tabledict:
                         cols_list.append(tfield)
                 # autoid
-                if TCN_AUTOID not in self.tabledict:
-                    cols_list.append(TCN_AUTOID)
+                if ZC.TCN_AUTOID not in self.tabledict:
+                    cols_list.append(ZC.TCN_AUTOID)
                 # build query text
                 query_text = "SELECT {} FROM {}{} WHERE {} = {}".format(
-                    ", ".join(cols_list), mgr.id, self.tablename, TCN_AUTOID, entry_id
+                    ", ".join(cols_list), mgr.id, self.tablename, ZC.TCN_AUTOID, entry_id
                 )
 
                 # execute query
@@ -320,7 +314,7 @@ class Table(SimpleItem, PropertyManager):
             )
             entry = dict(map(check, izip(cols_list, result)))
             # add multilist ids
-            autoid = entry[TCN_AUTOID]
+            autoid = entry[ZC.TCN_AUTOID]
             # get all multilists for the table
             multilists = mgr.listHandler.getLists(
                 self.tablename, types=["singlelist"], include=False
@@ -383,7 +377,7 @@ class Table(SimpleItem, PropertyManager):
             return True
 
         # check ownerid of the entry
-        ownerid = entry.get(TCN_OWNER)
+        ownerid = entry.get(ZC.TCN_OWNER)
         owner = m_sec.getUserByCMId(ownerid).get("login")
         return m_sec.getCurrentLogin() == owner
 
@@ -397,7 +391,7 @@ class Table(SimpleItem, PropertyManager):
         mgr = self.getManager()
 
         # shortcut for ordinary autoid field
-        if name == TCN_AUTOID:
+        if name == ZC.TCN_AUTOID:
             return {
                 ZC.COL_TYPE: "int",
                 ZC.COL_LABEL: u"Automatic No.",
@@ -446,13 +440,13 @@ class Table(SimpleItem, PropertyManager):
 
         # caching first (not entirely sure where this is needed, why ask for the
         # autoid if the autoid is given?)
-        if self.do_cache and idfield == TCN_AUTOID and entry_id:
+        if self.do_cache and idfield == ZC.TCN_AUTOID and entry_id:
             item = self.cache.getItem(self.cache.ITEM, entry_id)
             if item:
-                return item.get(TCN_AUTOID)
+                return item.get(ZC.TCN_AUTOID)
 
         where = self.processWhereString(entry_id, idfield)
-        query = "select %s from %s%s%s" % (TCN_AUTOID, mgr.id, self.tablename, where)
+        query = "select %s from %s%s%s" % (ZC.TCN_AUTOID, mgr.id, self.tablename, where)
         results = m_product.executeDBQuery(query)
         if results:
             if len(results) > 1:
@@ -502,8 +496,8 @@ class Table(SimpleItem, PropertyManager):
             entry_dict[name] = descr_dict.get(name)
 
         # autoid - workaround
-        if overwrite_autoid and descr_dict.get(TCN_AUTOID):
-            entry_dict[TCN_AUTOID] = descr_dict.get(TCN_AUTOID)
+        if overwrite_autoid and descr_dict.get(ZC.TCN_AUTOID):
+            entry_dict[ZC.TCN_AUTOID] = descr_dict.get(ZC.TCN_AUTOID)
 
         # check if all required fields are present
         missing = []
@@ -569,7 +563,7 @@ class Table(SimpleItem, PropertyManager):
 
         return lastid
 
-    def deleteEntry(self, entry_id, idfield=TCN_AUTOID):
+    def deleteEntry(self, entry_id, idfield=ZC.TCN_AUTOID):
         """Delete one entry with given id from table.
         Does no cascading. For that, overwrite the manager prepareDelete hook."""
         mgr = self.getManager()
@@ -578,12 +572,12 @@ class Table(SimpleItem, PropertyManager):
         if not entry_id:
             return False
 
-        if idfield != TCN_AUTOID:
+        if idfield != ZC.TCN_AUTOID:
 
             # this works for lists of idfield/entry_id as well
             entries = self.getEntries(entry_id, idfield)
             if entries:
-                autoid = entries[0][TCN_AUTOID]
+                autoid = entries[0][ZC.TCN_AUTOID]
             else:
                 return False
 
@@ -613,7 +607,7 @@ class Table(SimpleItem, PropertyManager):
         return m_prod.simpleDelete(name, autoid, self._uid, entry)
 
     def updateEntry(
-        self, descr_dict, entry_id, idfield=TCN_AUTOID, required=None, orig_entry=None
+        self, descr_dict, entry_id, idfield=ZC.TCN_AUTOID, required=None, orig_entry=None
     ):
         """inserts changed values into the database"""
         mgr = self.getManager()
@@ -655,7 +649,7 @@ class Table(SimpleItem, PropertyManager):
 
             # get autoid if necessary
 
-            if idfield != TCN_AUTOID:
+            if idfield != ZC.TCN_AUTOID:
                 # this works for lists of idfield/entry_id as well
                 entries = self.getEntries(entry_id, idfield)
                 # more than one entry should never happen
@@ -665,7 +659,7 @@ class Table(SimpleItem, PropertyManager):
                     msg = msg % (idfield, entry_id, len(entries), self.tablename)
                     raise ValueError(msg)
 
-                autoid = entries[0][TCN_AUTOID]
+                autoid = entries[0][ZC.TCN_AUTOID]
 
             else:
                 autoid = entry_id
@@ -776,11 +770,515 @@ class Table(SimpleItem, PropertyManager):
                 errors[field] = ("Input required", "")
         return errors
 
+    def deleteEntries(self, idlist):
+        """Deletes the entries with the autoids in idlist and their
+        multilist-references, including files / images.
+        Calls genericFileDelete for generic managers and forwards to self.deleteEntry for each entry in idlist."""
+        mgr = self.getManager()
+
+        # file deletion for generic managers
+        # has to be done here, because entry is needed for that
+        if IGenericManager.providedBy(mgr):
+            mgr.genericFileDelete(self.tablename, idlist)
+
+        for autoid in idlist:
+            self.deleteEntry(int(autoid))
+
     #
-    # global table functions
+    # Entry handling
     #
 
-    def exportTab(
+    def filterEntries(
+        self,
+        filterTree=None,
+        order=None,
+        orderdir=None,
+        show=None,
+        start=None,
+        oneCol=None,
+    ):
+        """Returns an entry list (or a list of values of oneCol),
+        constraints are given in Filter (tree) form, order
+        must be an attribute of the table, dir is asc or desc,
+        show and start control offset and number of entries.
+        Can be used to retrieve one col only (using oneCol)"""
+        root = self.getTableNode()
+        if filterTree:
+            root.setFilter(filterTree)
+        if order:
+            root.setOrder(order, orderdir)
+        return self.requestEntries(root, show, start, oneCol)
+
+    def requestEntries(
+        self, treeRoot, show=None, start=None, oneCol=None, ignore_permissions=False
+    ):
+        """Returns an entry list (or a list of values of oneCol),
+        Constraints and order are transported by treeRoot (TableNode tree),
+        number and offset of entries controlled by show and start."""
+
+        mgr = self.getManager()
+        entries = []
+
+        if oneCol:
+            # test oneCol
+            if not self.getField(oneCol):
+                raise ValueError("Table Error: OneCol %s not in table" % oneCol)
+            cols = [oneCol]
+        else:
+            cols = self.getMainColumnNames()
+        sql = treeRoot.getSQL(show, start, col_list=cols, distinct=True, checker=mgr)
+
+        # try cache
+        if self.do_cache:
+            cached = self.cache.getItem(self.cache.IDLIST, sql)
+            if cached:
+                # added deepcopy call 03/2009 (had some changes to cached-items hanging in the cache)
+                # TODO: check and remove / replace by 2-level-copy
+                return deepcopy(cached)
+
+        results = mgr.getManager(ZC.ZM_PM).executeDBQuery(sql)
+
+        # the final list is now stored in the cache with security objects
+        # because security settings can change without inducing cache reload,
+        # we decided to not have security objects cached
+        # therefore, only the original database result or an entrylist without security objects
+        # should be cached, caught from the cache and then be pimped accordingly
+
+        if oneCol:
+            entries = [result[0] for result in results]
+
+        else:
+            local_getEntry = self.getEntry
+            # autoid is always first column
+            # get the entry (for all via map/lambda def)
+            # data_tuple parameter speeds up entry creation, contains base values
+            entries = map(
+                lambda result, cols=cols: local_getEntry(
+                    result[0], result, cols, ignore_permissions
+                ),
+                results,
+            )
+
+        # put complete entries in cache (since list-resolving is done later, this is safe)
+        if self.do_cache:
+            self.cache.insertItem(self.cache.IDLIST, sql, entries)
+        if oneCol:
+            return entries
+        else:
+            # return a copy (origs went in the cache, but entries are copied by getentry again, so no worry here)
+            return copy(entries)
+
+    def requestEntryCount(self, treeRoot):
+        """Returns the entry count for the TableNode object (constraints have to be set already)"""
+        mgr = self.getManager()
+        sql = treeRoot.getSQL(function="count(distinct %sautoid)", checker=mgr)
+        # no caching for count requests
+        results = mgr.getManager(ZC.ZM_PM).executeDBQuery(sql)
+        if results:
+            return int(results[0][0])
+        else:
+            return 0
+
+    def getEntries(self, idvalue=None, idfield=ZC.TCN_AUTOID, order=None, direction=Asc):
+        """Uses requestEntries to return a list of descr_dicts."""
+        # should replace getEntries after speed test
+        assert direction in self.Order, E_PARAM_TYPE % (
+            "direction",
+            "Table.Order",
+            direction,
+        )
+        assert idfield, E_PARAM_FAIL % "idfield"
+
+        # get TreeRoot
+        root = self.getTableNode()
+        if order:
+            root.setOrder(order, direction)
+
+        # create filter
+        fil = Filter(Filter.AND)
+
+        # populate filter
+        self.buildGetEntriesFilter(fil, idvalue, idfield)
+        root.setFilter(fil)
+
+        # evaluate the tableNode (caching is done in requestEntries)
+        return self.requestEntries(root)
+
+    def buildGetEntriesFilter(self, filter, idvalue, idfield):
+        """Populate the given FilterNode with the values.
+        If idvalue and idfield are list they have to be of same length.
+
+        :param filter: A filterNode to be used to store the configuration.
+        :param idvalue: Either a value or a list of values
+        :param idfield: Either a field name or a list of field names
+        """
+
+        # check idvalue / idfield
+        if not isinstance(idfield, ListType):
+
+            if idfield == ZC.TCN_AUTOID and idvalue is None:
+                idfield = []
+                idvalue = []
+
+            else:
+                idvalue = [idvalue]
+                idfield = [idfield]
+
+        # build dicts out of the given field / value lists
+        defdict = {}
+        multidefdict = {}
+
+        for field, value in zip(idfield, idvalue):
+
+            # list values are handled by checktype, not here
+            # they will always be evaluated via IN-operator
+            # which means OR
+
+            # test defdict
+            if field in defdict:
+                value2 = defdict[field]
+                del defdict[field]
+                multidefdict[field] = [value2, value]
+
+            # not in defdict, check multi
+            elif field in multidefdict:
+
+                # append to multidefdict-value
+                multidefdict[field].append(value)
+
+            else:
+
+                # put into defdict
+                defdict[field] = value
+
+        # set single constraints
+        filter.setUncheckedConstraints(defdict)
+
+        # set multi constraints
+        for key, value in multidefdict.items():
+            filter.setMultiConstraint(key, value)
+
+    def getEntryCount(self, idvalue=None, idfield=ZC.TCN_AUTOID):
+        """ Returns the count for getEntries - old value-handling (simple attrs only)"""
+        assert idfield, E_PARAM_FAIL % "idfield"
+
+        # get TreeRoot
+        root = self.getTableNode()
+
+        # create filter
+        _filter = Filter(Filter.AND)
+
+        # populate filter
+        self.buildGetEntriesFilter(_filter, idvalue, idfield)
+        root.setFilter(_filter)
+
+        # evaluate the tableNode
+        return self.requestEntryCount(root)
+
+    def getEntryList(
+        self,
+        show_number=None,
+        start_number=None,
+        idfield=ZC.TCN_AUTOID,
+        constraints=None,
+        order=None,
+        direction=None,
+        constr_or=False,
+        ignore_permissions=False,
+    ):
+        """Returns a list of entries, same as getEntries but with constraints, start_number and show_number."""
+        root = self.getTableNode()
+        if order:
+            root.setOrder(order, direction)
+        else:
+            root.setOrder(idfield, direction)
+        if constraints:
+            root.setConstraints(constraints)
+        if constr_or:
+            fi = root.getFilter()
+            fi.setOperator(fi.OR)
+        return self.requestEntries(
+            root, show_number, start_number, ignore_permissions=ignore_permissions
+        )
+
+    def getEntryDict(self, idfield=ZC.TCN_AUTOID, constraints=None):
+        """Returns a dict of entries, key is the idfield (default: autoid), uses getEntryList"""
+        res = {}
+        tmp = self.getEntryList(constraints=constraints)
+        for entry in tmp:
+            res[entry[idfield]] = entry
+        return res
+
+    def getEntryListCount(self, constraints=None):
+        """Returns the complete count for getEntryList."""
+        root = self.getTableNode()
+        if constraints:
+            root.setConstraints(constraints)
+        return self.requestEntryCount(root)
+
+    def getEntryAutoidList(
+        self,
+        show_number=None,
+        start_number=None,
+        idfield=ZC.TCN_AUTOID,
+        constraints=None,
+        order=None,
+        direction=None,
+        constr_or=False,
+    ):
+        """Returns a list of autoids."""
+        # caching is done by requestEntries
+        root = self.getTableNode()
+        if order:
+            root.setOrder(order, direction)
+        else:
+            root.setOrder(idfield, direction)
+        if constraints:
+            root.setConstraints(constraints)
+        if constr_or:
+            fi = root.getFilter()
+            fi.setOperator(fi.OR)
+        return self.requestEntries(root, show_number, start_number, idfield)
+
+    def getLabel(self, column_name=None):
+        """Returns a label string for the specified column or the table if no
+        column is specified.
+
+        :return: Returns the label of the table or the given column"""
+        field = self.getField(column_name)
+        return field.get(ZC.COL_LABEL, "") if field else self.label
+
+    def getLastId(self, idfield=ZC.TCN_AUTOID, wherefield=None, wherevalue=None):
+        """Returns the last id of the specified table.
+        The function will use a string comparision to determine the order. So
+        be aware that '02' will go before '1'!
+
+        :param idfield: the id column
+        :return: The id of the last entry in the table"""
+        mgr = self.getManager()
+        product = mgr.getManager(ZC.ZM_PM)
+        wherestr = self.processWhereString(wherevalue, wherefield)
+
+        return product.getLastId(idfield, mgr.id + self.tablename, wherestr)
+
+    def getRowCount(self, constraints=None):
+        """Returns the number of rows in the table that match the constraints.
+
+        :param constraints: contains a dictionary with key, value pairs that
+        will be used as a constraints for a database query.
+        :return: The number of rows that match."""
+        if constraints is None:
+            constraints = {}
+        return self.getEntryListCount(constraints)
+
+    #
+    # Foreign List management generic functions
+    #
+    def getEntryValue(self, autoid, cols, lang=None):
+        """Returns a Valuestring consisting of the content of cols for the entry with the given autoid."""
+        assert isinstance(cols, ListType)
+        if not autoid or autoid == "NULL":
+            return ""
+
+        entry = self.getEntry(autoid)
+        if entry:
+            if not cols:
+                mgr = self.getManager()
+                if IGenericManager.providedBy(mgr):
+                    # check for language
+                    if mgr.doesTranslations(self.tablename):
+                        # TODO: unify getLabelString to always have a lang parameter
+                        return mgr.getLabelString(self.tablename, None, entry, lang)
+                    else:
+                        return mgr.getLabelString(self.tablename, None, entry)
+                else:
+                    return entry.get(ZC.TCN_AUTOID)
+            else:
+                value = []
+                for col in cols:
+                    if entry.get(col):
+                        value.append(unicode(entry[col]))
+                return " ".join(value)
+        return ""
+
+    def getEntrySelect(self, cols):
+        """Returns a list of all entries containing the requested cols plus autoid."""
+        assert isinstance(cols, ListType)
+        reslist = None
+        # caching
+        if self.do_cache:
+            reslist = self.cache.getItem(self.cache.ALLLIST, cols)
+
+        if not reslist:
+            mgr = self.getManager()
+            reslist = []
+            entries = self.getEntries()
+            for entry in entries:
+                autoid = entry.get(ZC.TCN_AUTOID)
+                value = []
+                if not cols:
+                    if IGenericManager.providedBy(mgr):
+                        # use getLabelString
+                        label = mgr.getLabelString(self.tablename, None, entry)
+                        reslist.append([autoid, label])
+                    else:
+                        reslist.append([autoid, autoid])
+                else:
+                    for col in cols:
+                        if entry.get(col):
+                            value.append(str(entry.get(col)))
+                    reslist.append([autoid, " ".join(value)])
+            if self.do_cache:
+                self.cache.insertItem(self.cache.ALLLIST, cols, reslist)
+        return reslist
+
+    def showCache(self):
+        """Show all chached items."""
+        caches = [self.cache.item, self.cache.idlist, self.cache.alllist]
+        counts = [
+            self.cache.item_count,
+            self.cache.idlist_count,
+            self.cache.alllist_count,
+        ]
+        names = ["Items", "IDLists", "All"]
+        tab = hgTable()
+        tab[0, 0] = "Caching: %s" % self.do_cache
+        tab[4, 0] = "Cache Details"
+        row = 5
+        for index, cache in enumerate(caches):
+            tab[index + 1, 0] = "%s: %s" % (names[index], len(cache))
+            tab[index + 1, 1] = "Maximum: %s" % (counts[index])
+            tab[row, 0] = "%s (%s)" % (names[index], len(cache))
+            row += 1
+            for key in cache.keys():
+                tab[row, 0] = key
+                tab[row, 1] = cache.get(key)
+                row += 1
+            tab[row, 0] = hgSPACE
+            row += 1
+        return tab
+
+    def getColumnTypes(self, vis_only=False):
+        """Returns a dict containing all columns as keys
+        and their types as values.
+
+        :param vis_only: True returns only visible columns"""
+        mgr = self.getManager()
+        resdict = {}
+
+        # types in list that are not included -> [] -> all list types are included
+        tablelists = mgr.listHandler.getLists(self.tablename)
+        for listobj in tablelists:
+            if not vis_only or listobj.invisible is not True:
+                resdict[listobj.listname] = listobj.listtype
+
+        for column in self.tabledict:
+            if column not in resdict:
+                field = self.tabledict[column]
+                if not vis_only or field.get(ZC.COL_INVIS) is not True:
+                    resdict[column] = field.get(ZC.COL_TYPE)
+
+        # edit tracking cols ZC.TCN_DATE and ZC.TCN_CREATOR are visible too but not
+        # in the dict
+        if ZC.TCN_CREATOR not in resdict:
+            resdict[ZC.TCN_CREATOR] = ZC.ZCOL_SLIST
+
+        if ZC.TCN_DATE not in resdict:
+            resdict[ZC.TCN_DATE] = ZC.ZCOL_DATE
+
+        # edit tracking col ZC.TCN_AUTOID is invis (most of the time)
+        if not vis_only:
+            resdict[ZC.TCN_AUTOID] = ZC.ZCOL_INT
+
+        return resdict
+
+    def getColumnDefs(self, vis_only=False, edit_tracking=False):
+        """Returns a dictionary containing all columns as keys and their column
+        definitions as values.
+
+        :return: { <column_name> : <column_definition> }
+        """
+        resdict = {}
+        tablelists = self.getManager().listHandler.getLists(self.tablename)
+        for listobj in tablelists:
+            if not vis_only or listobj.invisible is not True:
+                resdict[listobj.listname] = self.getField(listobj.listname)
+
+        # copy normal attr info
+        for key in self.tabledict:
+            if key not in resdict:
+                field = self.tabledict[key]
+                if not vis_only or field.get(ZC.COL_INVIS) is not True:
+                    resdict[key] = field
+
+        # add edit_tracking fields creator, creationdate and autoid if requested
+        if edit_tracking:
+
+            if ZC.TCN_CREATOR not in resdict:
+                resdict[ZC.TCN_CREATOR] = self.getField(ZC.TCN_CREATOR)
+
+            if ZC.TCN_DATE not in resdict:
+                resdict[ZC.TCN_DATE] = self.getField(ZC.TCN_DATE)
+
+            if ZC.TCN_AUTOID not in resdict:
+                resdict[ZC.TCN_AUTOID] = self.getField(ZC.TCN_AUTOID)
+
+        return resdict
+
+    def getMainColumnNames(self):
+        """Returns a list containing all column names for the main table.
+
+        :return: [ <column_names> ]
+        """
+        # autoid has to be first column!
+        reslist = [ZC.TCN_AUTOID]
+        reslist += [c for c in self.tabledict if c != ZC.TCN_AUTOID]
+        reslist += [c for c in ZC._edit_tracking_cols if c not in reslist]
+        return reslist
+
+    ##########################################################################
+    #
+    # Search Tree Methods
+    #
+    ##########################################################################
+
+    def getSearchTreeTemplate(self):
+        """Template method for join selection with join-tree caching"""
+        # TODO: use this function in all entry requesting functions instead of
+        #       getTableNode() -> needs testing
+        mgr = self.getManager()
+
+        if not self.treeTemplate:
+            self.treeTemplate = mgr.generateTableSearchTreeTemplate(self.tablename)
+
+        return self.treeTemplate.copy(mgr, mgr.getZopraType())
+
+    def resetSearchTreeTemplate(self):
+        """Reset the template"""
+        self.treeTemplate = None
+
+    def getTableNode(self):
+        """Returns a new table Node for this table.
+
+        :return: TableNode object
+        """
+        mgr = self.getManager()
+
+        # FIXME: having the listHandler set in the TableNode is odd, but
+        #        acquisition didn't work
+        data = TablePrivate()
+        data.tablename = self.tablename
+        data.tabledict = self.tabledict
+        data.listHandler = mgr.listHandler
+        return TableNode(data, mgr)
+
+    ##########################################################################
+    #
+    # Data exports (CSV/XML)
+    #
+    ##########################################################################
+
+    def exportCSV(
         self,
         columnList=None,
         autoidList=None,
@@ -794,7 +1292,7 @@ class Table(SimpleItem, PropertyManager):
         :param columnList: List of columns to be exported.
         :param autoidList: List of autoids for restricted export.
         :param flags: Flags for common parameters.
-        :param delim: Delimiter for attributes in one line
+        :param delim: Cell delimiter
         :param multilines: remove|replace|keep for handling of linebreaks in attributes
         :param special_columns: list of dicts containing label and function for special column definition
         """
@@ -871,8 +1369,8 @@ class Table(SimpleItem, PropertyManager):
                     columnList.append(col)
 
             # add autoid column if not present
-            if TCN_AUTOID not in columnList:
-                columnList.insert(0, TCN_AUTOID)
+            if ZC.TCN_AUTOID not in columnList:
+                columnList.insert(0, ZC.TCN_AUTOID)
 
         # get table count
         if autoidList:
@@ -1011,8 +1509,8 @@ class Table(SimpleItem, PropertyManager):
                     columnList.append(col)
 
             # add autoid column if not present
-            if TCN_AUTOID not in columnList:
-                columnList.insert(0, TCN_AUTOID)
+            if ZC.TCN_AUTOID not in columnList:
+                columnList.insert(0, ZC.TCN_AUTOID)
 
         # get table count
         if autoidList:
@@ -1098,7 +1596,7 @@ class Table(SimpleItem, PropertyManager):
             else:
                 entry_id = result
 
-            export_list.append("%s<entry %s='%s'>" % (pad, TCN_AUTOID, entry_id))
+            export_list.append("%s<entry %s='%s'>" % (pad, ZC.TCN_AUTOID, entry_id))
 
             entry = self.getEntry(entry_id)
 
@@ -1146,615 +1644,6 @@ class Table(SimpleItem, PropertyManager):
             export_list.append("</instance>")
 
         return export_list
-
-    def exportCSV(
-        self,
-        columnList=None,
-        autoidList=None,
-        flags=None,
-        delim=";",
-        multilines="keep",
-        special_columns=[],
-    ):
-        """This method exports the database contents to csv. It's basically an
-        adapter based on exportTab.
-
-        :param columnList: List of columns to be exported.
-        :param autoidList: List of autoids for partial export.
-        :param flags: Flags for common parameters.
-        :param delim: Delimiter for attributes in one line
-        :param multilines: remove|replace|keep for handling of linebreaks in attributes"""
-        # this only forwards to exportTab now, no extra handling necessary
-        # TODO: exportTab should be renamed to exportCSV, exportCSV-code be
-        #       moved here
-        return self.exportTab(
-            columnList, autoidList, flags, delim, multilines, special_columns
-        )
-
-    # TODO: put in a patch in legacy package
-    def getFieldSelectionList(self):
-        """Builds a MultiList-Widget of all column labels in table for search.
-
-        :return: hgMultiList widget"""
-        mgr = self.getManager()
-        multiList = hgMultiList(name="show_fields")
-
-        # no extra invisibility-checks necessary
-        collist = self.getColumnTypes(vis_only=True)
-
-        # show_fields
-        sfields = []
-
-        if (
-            hasattr(mgr, "_generic_config")
-            and mgr._generic_config.get(self.tablename)
-            and mgr._generic_config[self.tablename].get("show_fields")
-        ):
-
-            # get fields, select them
-            sfields = mgr._generic_config[self.tablename]["show_fields"]
-
-        elif hasattr(mgr, "actionBeforeShowList"):
-            param = {}
-            mgr.actionBeforeShowList(self.tablename, param, {})
-            sfields = param.get("show_fields", [])
-
-        for column in [TCN_AUTOID, TCN_DATE, TCN_CREATOR, TCN_OWNER]:
-            if column in sfields:
-                collist[column] = ""
-
-        for column in collist:
-            field = self.getField(column)
-            label = field[ZC.COL_LABEL]
-            if label and label != " ":
-                multiList.insertItem(label, column)
-
-        if sfields:
-            multiList.setSelectedValueList(sfields)
-
-        return multiList
-
-    def deleteEntries(self, idlist):
-        """Deletes the entries with the autoids in idlist and their
-        multilist-references, including files / images.
-        Calls genericFileDelete for generic managers and forwards to self.deleteEntry for each entry in idlist."""
-        mgr = self.getManager()
-
-        # file deletion for generic managers
-        # has to be done here, because entry is needed for that
-        if IGenericManager.providedBy(mgr):
-            mgr.genericFileDelete(self.tablename, idlist)
-
-        for autoid in idlist:
-            self.deleteEntry(int(autoid))
-
-    #
-    # Entry handling
-    #
-
-    def filterEntries(
-        self,
-        filterTree=None,
-        order=None,
-        orderdir=None,
-        show=None,
-        start=None,
-        oneCol=None,
-    ):
-        """Returns an entry list (or a list of values of oneCol),
-        constraints are given in Filter (tree) form, order
-        must be an attribute of the table, dir is asc or desc,
-        show and start control offset and number of entries.
-        Can be used to retrieve one col only (using oneCol)"""
-        root = self.getTableNode()
-        if filterTree:
-            root.setFilter(filterTree)
-        if order:
-            root.setOrder(order, orderdir)
-        return self.requestEntries(root, show, start, oneCol)
-
-    def requestEntries(
-        self, treeRoot, show=None, start=None, oneCol=None, ignore_permissions=False
-    ):
-        """Returns an entry list (or a list of values of oneCol),
-        Constraints and order are transported by treeRoot (TableNode tree),
-        number and offset of entries controlled by show and start."""
-
-        mgr = self.getManager()
-        entries = []
-
-        if oneCol:
-            # test oneCol
-            if not self.getField(oneCol):
-                raise ValueError("Table Error: OneCol %s not in table" % oneCol)
-            cols = [oneCol]
-        else:
-            cols = self.getMainColumnNames()
-        sql = treeRoot.getSQL(show, start, col_list=cols, distinct=True, checker=mgr)
-
-        # try cache
-        if self.do_cache:
-            cached = self.cache.getItem(self.cache.IDLIST, sql)
-            if cached:
-                # added deepcopy call 03/2009 (had some changes to cached-items hanging in the cache)
-                # TODO: check and remove / replace by 2-level-copy
-                return deepcopy(cached)
-
-        results = mgr.getManager(ZC.ZM_PM).executeDBQuery(sql)
-
-        # for result in results:
-        #     if oneCol:
-        #         entries.append(result[0])
-        #     else:
-        #         # autoid is always first column
-        #         # get the entry
-        #         # data_tuple parameter speeds up entry creation, contains base values
-        #         new_entry = self.getEntry( result[0],
-        #                                    data_tuple = result,
-        #                                    col_list   = cols )
-        #         entries.append( new_entry )
-
-        # the final list is now stored in the cache including security objects
-        # because security settings can change without inducing cache reload,
-        # we decided to not have security objects cached
-        # therefore, only the original database result or an entrylist without security objects
-        # should be cached, caught from the cache and then be pimped accordingly
-
-        if oneCol:
-            entries = [result[0] for result in results]
-
-        else:
-            local_getEntry = self.getEntry
-            # autoid is always first column
-            # get the entry (for all via map/lambda def)
-            # data_tuple parameter speeds up entry creation, contains base values
-            entries = map(
-                lambda result, cols=cols: local_getEntry(
-                    result[0], result, cols, ignore_permissions
-                ),
-                results,
-            )
-
-        # put complete entries in cache (since list-resolving is done later, this is safe)
-        if self.do_cache:
-            self.cache.insertItem(self.cache.IDLIST, sql, entries)
-        if oneCol:
-            return entries
-        else:
-            # return a copy (origs went in the cache, but entries are copied by getentry again, so no worry here)
-            return copy(entries)
-
-    def requestEntryCount(self, treeRoot):
-        """Returns the entry count for the TableNode object (constraints have to be set already)"""
-        mgr = self.getManager()
-        sql = treeRoot.getSQL(function="count(distinct %sautoid)", checker=mgr)
-        # no caching for count requests
-        results = mgr.getManager(ZC.ZM_PM).executeDBQuery(sql)
-        if results:
-            return int(results[0][0])
-        else:
-            return 0
-
-    def getEntries(self, idvalue=None, idfield=TCN_AUTOID, order=None, direction=Asc):
-        """Uses requestEntries to return a list of descr_dicts."""
-        # should replace getEntries after speed test
-        assert direction in self.Order, E_PARAM_TYPE % (
-            "direction",
-            "Table.Order",
-            direction,
-        )
-        assert idfield, E_PARAM_FAIL % "idfield"
-
-        # get TreeRoot
-        root = self.getTableNode()
-        if order:
-            root.setOrder(order, direction)
-
-        # create filter
-        fil = Filter(Filter.AND)
-
-        # populate filter
-        self.buildGetEntriesFilter(fil, idvalue, idfield)
-        root.setFilter(fil)
-
-        # evaluate the tableNode (caching is done in requestEntries)
-        return self.requestEntries(root)
-
-    def buildGetEntriesFilter(self, filter, idvalue, idfield):
-        """Populate the given FilterNode with the values.
-        If idvalue and idfield are list they have to be of same length.
-
-        :param filter: A filterNode to be used to store the configuration.
-        :param idvalue: Either a value or a list of values
-        :param idfield: Either a field name or a list of field names
-        """
-
-        # check idvalue / idfield
-        if not isinstance(idfield, ListType):
-
-            if idfield == TCN_AUTOID and idvalue is None:
-                idfield = []
-                idvalue = []
-
-            else:
-                idvalue = [idvalue]
-                idfield = [idfield]
-
-        # build dicts out of the given field / value lists
-        defdict = {}
-        multidefdict = {}
-
-        for field, value in zip(idfield, idvalue):
-
-            # list values are handled by checktype, not here
-            # they will always be evaluated via IN-operator
-            # which means OR
-
-            # test defdict
-            if field in defdict:
-                value2 = defdict[field]
-                del defdict[field]
-                multidefdict[field] = [value2, value]
-
-            # not in defdict, check multi
-            elif field in multidefdict:
-
-                # append to multidefdict-value
-                multidefdict[field].append(value)
-
-            else:
-
-                # put into defdict
-                defdict[field] = value
-
-        # set single constraints
-        filter.setUncheckedConstraints(defdict)
-
-        # set multi constraints
-        for key, value in multidefdict.items():
-            filter.setMultiConstraint(key, value)
-
-    def getEntryCount(self, idvalue=None, idfield=TCN_AUTOID):
-        """ Returns the count for getEntries - old value-handling (simple attrs only)"""
-        assert idfield, E_PARAM_FAIL % "idfield"
-
-        # get TreeRoot
-        root = self.getTableNode()
-
-        # create filter
-        _filter = Filter(Filter.AND)
-
-        # populate filter
-        self.buildGetEntriesFilter(_filter, idvalue, idfield)
-        root.setFilter(_filter)
-
-        # evaluate the tableNode
-        return self.requestEntryCount(root)
-
-    def getEntryList(
-        self,
-        show_number=None,
-        start_number=None,
-        idfield=TCN_AUTOID,
-        constraints=None,
-        order=None,
-        direction=None,
-        constr_or=False,
-        ignore_permissions=False,
-    ):
-        """Returns a list of entries, same as getEntries but with constraints, start_number and show_number."""
-        root = self.getTableNode()
-        if order:
-            root.setOrder(order, direction)
-        else:
-            root.setOrder(idfield, direction)
-        if constraints:
-            root.setConstraints(constraints)
-        if constr_or:
-            fi = root.getFilter()
-            fi.setOperator(fi.OR)
-        return self.requestEntries(
-            root, show_number, start_number, ignore_permissions=ignore_permissions
-        )
-
-    def getEntryDict(self, idfield=TCN_AUTOID, constraints=None):
-        """Returns a dict of entries, key is the idfield (default: autoid), uses getEntryList"""
-        res = {}
-        tmp = self.getEntryList(constraints=constraints)
-        for entry in tmp:
-            res[entry[idfield]] = entry
-        return res
-
-    def getEntryListCount(self, constraints=None):
-        """Returns the complete count for getEntryList."""
-        root = self.getTableNode()
-        if constraints:
-            root.setConstraints(constraints)
-        return self.requestEntryCount(root)
-
-    def getEntryAutoidList(
-        self,
-        show_number=None,
-        start_number=None,
-        idfield=TCN_AUTOID,
-        constraints=None,
-        order=None,
-        direction=None,
-        constr_or=False,
-    ):
-        """Returns a list of autoids."""
-        # caching is done by requestEntries
-        root = self.getTableNode()
-        if order:
-            root.setOrder(order, direction)
-        else:
-            root.setOrder(idfield, direction)
-        if constraints:
-            root.setConstraints(constraints)
-        if constr_or:
-            fi = root.getFilter()
-            fi.setOperator(fi.OR)
-        return self.requestEntries(root, show_number, start_number, idfield)
-
-    def getLabel(self, column_name=None):
-        """Returns a label string for the specified column or the table if no
-        column is specified.
-
-        :return: Returns the label of the table or the given column"""
-        field = self.getField(column_name)
-        return field.get(ZC.COL_LABEL, "") if field else self.label
-
-    def getLabelWidget(
-        self,
-        column_name=None,
-        style=ssiDLG_LABEL,
-        prefix=None,
-        suffix=None,
-        parent=None,
-    ):
-        """Returns a label widget for the specified column.
-
-        :return: Returns a hgLabel widget if a label exists for the column, otherwise an empty label."""
-        assert isinstance(style, hgStyleSheetItem)
-
-        text = self.getLabel(column_name)
-
-        if prefix:
-            text = "%s %s" % (prefix, text)
-        if suffix:
-            text = "%s %s" % (text, suffix)
-
-        if text and text != " ":
-            label = hgLabel(text, None, parent)
-            label._styleSheet.getSsiName(style)
-            label.setSsiName(style.name())
-            return label
-        else:
-            return hgLabel("", parent=parent)
-
-    def getLastId(self, idfield=TCN_AUTOID, wherefield=None, wherevalue=None):
-        """Returns the last id of the specified table.
-        The function will use a string comparision to determine the order. So
-        be aware that '02' will go before '1'!
-
-        :param idfield: the id column
-        :return: The id of the last entry in the table"""
-        mgr = self.getManager()
-        product = mgr.getManager(ZC.ZM_PM)
-        wherestr = self.processWhereString(wherevalue, wherefield)
-
-        return product.getLastId(idfield, mgr.id + self.tablename, wherestr)
-
-    def getRowCount(self, constraints=None):
-        """Returns the number of rows in the table that match the constraints.
-
-        :param constraints: contains a dictionary with key, value pairs that
-        will be used as a constraints for a database query.
-        :return: The number of rows that match."""
-        if constraints is None:
-            constraints = {}
-        return self.getEntryListCount(constraints)
-
-    #
-    # Foreign List management generic functions
-    #
-    def getEntryValue(self, autoid, cols, lang=None):
-        """Returns a Valuestring consisting of the content of cols for the entry with the given autoid."""
-        assert isinstance(cols, ListType)
-        if not autoid or autoid == "NULL":
-            return ""
-
-        entry = self.getEntry(autoid)
-        if entry:
-            if not cols:
-                mgr = self.getManager()
-                if IGenericManager.providedBy(mgr):
-                    # check for language
-                    if mgr.doesTranslations(self.tablename):
-                        # TODO: unify getLabelString to always have a lang parameter
-                        return mgr.getLabelString(self.tablename, None, entry, lang)
-                    else:
-                        return mgr.getLabelString(self.tablename, None, entry)
-                else:
-                    return entry.get(TCN_AUTOID)
-            else:
-                value = []
-                for col in cols:
-                    if entry.get(col):
-                        value.append(unicode(entry[col]))
-                return " ".join(value)
-        return ""
-
-    def getEntrySelect(self, cols):
-        """Returns a list of all entries containing the requested cols plus autoid."""
-        assert isinstance(cols, ListType)
-        reslist = None
-        # caching
-        if self.do_cache:
-            reslist = self.cache.getItem(self.cache.ALLLIST, cols)
-
-        if not reslist:
-            mgr = self.getManager()
-            reslist = []
-            entries = self.getEntries()
-            for entry in entries:
-                autoid = entry.get(TCN_AUTOID)
-                value = []
-                if not cols:
-                    if IGenericManager.providedBy(mgr):
-                        # use getLabelString
-                        label = mgr.getLabelString(self.tablename, None, entry)
-                        reslist.append([autoid, label])
-                    else:
-                        reslist.append([autoid, autoid])
-                else:
-                    for col in cols:
-                        if entry.get(col):
-                            value.append(str(entry.get(col)))
-                    reslist.append([autoid, " ".join(value)])
-            if self.do_cache:
-                self.cache.insertItem(self.cache.ALLLIST, cols, reslist)
-        return reslist
-
-    def showCache(self):
-        """Show all chached items."""
-        caches = [self.cache.item, self.cache.idlist, self.cache.alllist]
-        counts = [
-            self.cache.item_count,
-            self.cache.idlist_count,
-            self.cache.alllist_count,
-        ]
-        names = ["Items", "IDLists", "All"]
-        tab = hgTable()
-        tab[0, 0] = "Caching: %s" % self.do_cache
-        tab[4, 0] = "Cache Details"
-        row = 5
-        for index, cache in enumerate(caches):
-            tab[index + 1, 0] = "%s: %s" % (names[index], len(cache))
-            tab[index + 1, 1] = "Maximum: %s" % (counts[index])
-            tab[row, 0] = "%s (%s)" % (names[index], len(cache))
-            row += 1
-            for key in cache.keys():
-                tab[row, 0] = key
-                tab[row, 1] = cache.get(key)
-                row += 1
-            tab[row, 0] = hgSPACE
-            row += 1
-        return tab
-
-    def getColumnTypes(self, vis_only=False):
-        """Returns a dict containing all columns as keys
-        and their types as values.
-
-        :param vis_only: True returns only visible columns"""
-        mgr = self.getManager()
-        resdict = {}
-
-        # types in list that are not included -> [] -> all list types are included
-        tablelists = mgr.listHandler.getLists(self.tablename)
-        for listobj in tablelists:
-            if not vis_only or listobj.invisible is not True:
-                resdict[listobj.listname] = listobj.listtype
-
-        for column in self.tabledict:
-            if column not in resdict:
-                field = self.tabledict[column]
-                if not vis_only or field.get(ZC.COL_INVIS) is not True:
-                    resdict[column] = field.get(ZC.COL_TYPE)
-
-        # edit tracking cols TCN_DATE and TCN_CREATOR are visible too but not
-        # in the dict
-        if TCN_CREATOR not in resdict:
-            resdict[TCN_CREATOR] = ZC.ZCOL_SLIST
-
-        if TCN_DATE not in resdict:
-            resdict[TCN_DATE] = ZC.ZCOL_DATE
-
-        # edit tracking col TCN_AUTOID is invis (most of the time)
-        if not vis_only:
-            resdict[TCN_AUTOID] = ZC.ZCOL_INT
-
-        return resdict
-
-    def getColumnDefs(self, vis_only=False, edit_tracking=False):
-        """Returns a dictionary containing all columns as keys and their column
-        definitions as values.
-
-        :return: { <column_name> : <column_definition> }
-        """
-        resdict = {}
-        tablelists = self.getManager().listHandler.getLists(self.tablename)
-        for listobj in tablelists:
-            if not vis_only or listobj.invisible is not True:
-                resdict[listobj.listname] = self.getField(listobj.listname)
-
-        # copy normal attr info
-        for key in self.tabledict:
-            if key not in resdict:
-                field = self.tabledict[key]
-                if not vis_only or field.get(ZC.COL_INVIS) is not True:
-                    resdict[key] = field
-
-        # add edit_tracking fields creator, creationdate and autoid if requested
-        if edit_tracking:
-
-            if TCN_CREATOR not in resdict:
-                resdict[TCN_CREATOR] = self.getField(TCN_CREATOR)
-
-            if TCN_DATE not in resdict:
-                resdict[TCN_DATE] = self.getField(TCN_DATE)
-
-            if TCN_AUTOID not in resdict:
-                resdict[TCN_AUTOID] = self.getField(TCN_AUTOID)
-
-        return resdict
-
-    def getMainColumnNames(self):
-        """Returns a list containing all column names for the main table.
-
-        :return: [ <column_names> ]
-        """
-        # autoid has to be first column!
-        reslist = [TCN_AUTOID]
-        reslist += [c for c in self.tabledict if c != TCN_AUTOID]
-        reslist += [c for c in ZC._edit_tracking_cols if c not in reslist]
-        return reslist
-
-    ##########################################################################
-    #
-    # Search Tree Methods
-    #
-    ##########################################################################
-
-    def getSearchTreeTemplate(self):
-        """Template method for join selection with join-tree caching"""
-        # TODO: use this function in all entry requesting functions instead of
-        #       getTableNode() -> needs testing
-        mgr = self.getManager()
-
-        if not self.treeTemplate:
-            self.treeTemplate = mgr.generateTableSearchTreeTemplate(self.tablename)
-
-        return self.treeTemplate.copy(mgr, mgr.getZopraType())
-
-    def resetSearchTreeTemplate(self):
-        """Reset the template"""
-        self.treeTemplate = None
-
-    def getTableNode(self):
-        """Returns a new table Node for this table.
-
-        :return: TableNode object
-        """
-        mgr = self.getManager()
-
-        # FIXME: having the listHandler set in the TableNode is odd, but
-        #        acquisition didn't work
-        data = TablePrivate()
-        data.tablename = self.tablename
-        data.tabledict = self.tabledict
-        data.listHandler = mgr.listHandler
-        return TableNode(data, mgr)
 
     ##########################################################################
     #
@@ -1947,3 +1836,22 @@ class Table(SimpleItem, PropertyManager):
             dlg.add(hgLabel("No Template Tree found."))
 
         return HTML(dlg.getHtml())(self, REQUEST)
+
+    #
+    # Legacy method stubs
+    #
+
+    def getFieldSelectionList(self):
+        """Builds a MultiList-Widget of all column labels in table for search."""
+        return "Legacy: Not implemented."
+
+    def getLabelWidget(
+        self,
+        column_name=None,
+        style=ssiDLG_LABEL,
+        prefix=None,
+        suffix=None,
+        parent=None,
+    ):
+        """Returns a label widget for the specified column."""
+        return "Legacy: Not implemented."

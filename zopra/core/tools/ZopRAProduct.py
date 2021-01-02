@@ -22,11 +22,6 @@ from zopra.core import getSecurityManager
 from zopra.core import managePermission
 from zopra.core import modifyPermission
 from zopra.core.connector.SqlConnector import getConnector
-from zopra.core.constants import TCN_CREATOR
-from zopra.core.constants import TCN_DATE
-from zopra.core.constants import TCN_EDATE
-from zopra.core.constants import TCN_EDITOR
-from zopra.core.constants import TCN_OWNER
 from zopra.core.dialogs import dlgLabel
 from zopra.core.dialogs import getStdDialog
 from zopra.core.interfaces import IZopRAManager
@@ -362,14 +357,14 @@ class ZopRAProduct(ManagerPart):
         # prepare update and write log
         # edit tracking
         # set changedate
-        entry_dict[TCN_EDATE] = strftime("%d.%m.%Y")
+        entry_dict[ZC.TCN_EDATE] = strftime("%d.%m.%Y")
 
         # set editor
         m_contact = self.getHierarchyUpManager(ZM_CM)
         if m_contact:
 
             # process all fields in descr_dict
-            entry_dict[TCN_EDITOR] = m_contact.getCurrentUserId()
+            entry_dict[ZC.TCN_EDITOR] = m_contact.getCurrentUserId()
 
         done = self.connector.simpleUpd(name, origcols_dict, entry_dict, autoid)
         if done:
@@ -397,13 +392,13 @@ class ZopRAProduct(ManagerPart):
         if m_contact:
             uid = m_contact.getCurrentUserId()
             # creator field
-            if entry_dict.get(TCN_CREATOR) is None:
-                entry_dict[TCN_CREATOR] = uid
-            if entry_dict.get(TCN_OWNER) is None:
-                entry_dict[TCN_OWNER] = uid
+            if entry_dict.get(ZC.TCN_CREATOR) is None:
+                entry_dict[ZC.TCN_CREATOR] = uid
+            if entry_dict.get(ZC.TCN_OWNER) is None:
+                entry_dict[ZC.TCN_OWNER] = uid
         # creation date field
-        if not entry_dict.get(TCN_DATE):
-            entry_dict[TCN_DATE] = strftime("%d.%m.%Y")
+        if not entry_dict.get(ZC.TCN_DATE):
+            entry_dict[ZC.TCN_DATE] = strftime("%d.%m.%Y")
 
         lastid = self.connector.simpleIns(name, origcols_dict, entry_dict)
 
@@ -629,23 +624,6 @@ class ZopRAProduct(ManagerPart):
     def delConfigParam(self, autoid):
         # Deletes one entry row.
         return self.tableHandler["config"].deleteEntry(autoid)
-
-    security.declareProtected(modifyPermission, "showEditFormConfig")
-
-    def showEditFormConfig(self, REQUEST=None):
-        """Return the html source for configuration tasks."""
-        return "Legacy: Not implemented."
-
-    #
-    # public managing
-    #
-    security.declareProtected(modifyPermission, "_index_html")
-
-    def _index_html(self, REQUEST, parent):
-        """Returns the html source for the manager specific part of
-        the index_html.
-        """
-        return "Legacy: Not implemented."
 
     security.declareProtected(managePermission, "viewForm")
 
@@ -891,3 +869,20 @@ class ZopRAProduct(ManagerPart):
             did = entry.updateVersion()
             box.add(hgLabel(did, parent=box))
         return HTML(dlg.getHtml())(self, None)
+
+    security.declareProtected(modifyPermission, "showEditFormConfig")
+
+    def showEditFormConfig(self, REQUEST=None):
+        """Return the html source for configuration tasks."""
+        return "Legacy: Not implemented."
+
+    #
+    # public managing
+    #
+    security.declareProtected(modifyPermission, "_index_html")
+
+    def _index_html(self, REQUEST, parent):
+        """Returns the html source for the manager specific part of
+        the index_html.
+        """
+        return "Legacy: Not implemented."

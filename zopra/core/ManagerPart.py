@@ -164,7 +164,7 @@ class ManagerPart(Folder, ManagerFinderMixin, ManagerManageTabsMixin):
     security.declareProtected(viewPermission, "prepareFieldForExport")
 
     def prepareFieldForExport(self, table, column, value, entry):
-        """Hook function called by Table.exportTab to preprocess each column
+        """Hook method called by Table.exportTab to preprocess each column
         of each entry to be exported.
         The value is already processed (translated ids into values for lists)
         and will be escaped after being returned here.
