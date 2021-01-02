@@ -15,13 +15,15 @@ lobj = context.listHandler[listname]
 
 # get all entries of all doubleids
 if not doubleid:
-    msgs.append('Ids der doppelten Listeneintraege fehlen.')
-    context.REQUEST.RESPONSE.redirect(url + '/zopra_main_form?portal_status_message=' + '<br />'.join(msgs))
+    msgs.append("Ids der doppelten Listeneintraege fehlen.")
+    context.REQUEST.RESPONSE.redirect(
+        url + "/zopra_main_form?portal_status_message=" + "<br />".join(msgs)
+    )
 else:
-    doubles = tobj.getEntryList(constraints = {listname: doubleid})
+    doubles = tobj.getEntryList(constraints={listname: doubleid})
 
 if not doubles:
-    msgs.append('Keine Tabelleneintraege zu den doppelten Listeneintraegen gefunden.')
+    msgs.append("Keine Tabelleneintraege zu den doppelten Listeneintraegen gefunden.")
     # no need to jump back, we want to remove the double list entries anyway
 
 # check type of attribute
@@ -32,28 +34,32 @@ attr_type = types.get(attr_name)
 
 for double in doubles:
     # set origid in the entries
-    if attr_type in ('multilist', 'hierarchylist'):
+    if attr_type in ("multilist", "hierarchylist"):
         attr_value = double[attr_name]
         for item in attr_value:
             if item in doubleid:
                 attr_value.remove(item)
         attr_value.append(origid)
-    elif attr_type == 'singlelist':
+    elif attr_type == "singlelist":
         double[attr_name] = origid
     # update
-    tobj.updateEntry(double, double['autoid'])
+    tobj.updateEntry(double, double["autoid"])
 
-msgs.append('Attribut %s wurde in %s Tabelleneintraegen korrigiert.' % (listname, len(doubles)))
+msgs.append(
+    "Attribut %s wurde in %s Tabelleneintraegen korrigiert." % (listname, len(doubles))
+)
 # doublecheck that no entries are left
-check = tobj.getEntryList(constraints = {listname: doubleid})
+check = tobj.getEntryList(constraints={listname: doubleid})
 if check:
-    msgs.append('Problem: Einige Eintraege scheinen nicht korrigiert worden zu sein.')
+    msgs.append("Problem: Einige Eintraege scheinen nicht korrigiert worden zu sein.")
 
 else:
     # remove the double values
     for autoid in doubleid:
         lobj.delValue(autoid)
-    msgs.append('Markierte Listeneintraege wurden entfernt.')
+    msgs.append("Markierte Listeneintraege wurden entfernt.")
 
 url = context.getParentNode().absolute_url()
-context.REQUEST.RESPONSE.redirect(url + '/zopra_main_form?portal_status_message=' + '<br />'.join(msgs))
+context.REQUEST.RESPONSE.redirect(
+    url + "/zopra_main_form?portal_status_message=" + "<br />".join(msgs)
+)
