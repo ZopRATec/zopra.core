@@ -79,61 +79,22 @@ class PostgresConnector(SqlConnector):
             print query_text
             raise e
 
-#
-# table handling
-#
-    def testForTable(self, name):
-        """ \see SqlConnector.testForTable """
-        assert isinstance(name, StringType), \
-               ZC.E_PARAM_TYPE % ('name', 'StringType', name)
+    def createTable(self, name, cols_dict, edit_tracking=True):
+        """Adds a table to the database.
 
-        query_text = "SELECT * FROM pg_class WHERE relname LIKE '%s'" % name
-        return bool( self.query(query_text) )
-
-
-    def testForColumn(self, mgrid, table, column):
-        """\brief Test if the column already exists in table.
-
-        \param manager        The argument \a manager is a string with the
-                              manager id.
-
-        \param table           The argument \a table is a string with the
-                              fullname of a table.
-
-        \param column         The argument \a column is a string with the
-                              fullname of a column.
-
-        \return Boolean       Returns True if the column exists in table, otherwise False
+        :param name: the full table name
+        :param cols_dict: dictionary containing the column definition
+        :param edit_tracking: if enabled special columns for tracking the
+                               edit changes will be added; default is True.
         """
-        assert isinstance(mgrid, StringType), \
-               ZC.E_PARAM_TYPE % ('mgrid', 'StringType', mgrid)
+        assert ZC.checkType("name", name, StringType)
+        assert ZC.checkType("cols_dict", cols_dict, DictType)
+        assert ZC.checkType("edit_tracking", edit_tracking, BooleanType)
 
-        assert isinstance(table, StringType), \
-               ZC.E_PARAM_TYPE % ('table', 'StringType', table)
-
-        assert isinstance(table, StringType), \
-               ZC.E_PARAM_TYPE % ('column', 'StringType', column)
-
-        query_text  = "SELECT count(a.attname) AS tot FROM pg_catalog.pg_stat_user_tables AS t, pg_catalog.pg_attribute a "
-        query_text += "WHERE t.relid = a.attrelid AND t.schemaname = 'public' "
-        query_text += "AND t.relname = '%s%s'  AND a.attname = '%s';" % (mgrid.lower(), table, column)
-
-        result = self.query(query_text)
-        return bool(result[0][0] if result else False)
-
-
-    def createTable(self, name, cols_dict, edit_tracking = True):
-        """\brief Adds a SQL table to an existing database."""
-        assert isinstance(name, StringType), \
-               ZC.E_PARAM_TYPE % ('name', 'StringType', name)
-        assert isinstance(cols_dict, DictType), \
-               ZC.E_PARAM_TYPE % ('cols_dict', 'DictType', cols_dict)
-        assert edit_tracking == True or edit_tracking == False, \
-               ZC.E_PARAM_TYPE % ('edit_tracking',  'BooleanType', edit_tracking)
-
-        create_text = ['CREATE TABLE %s (' % name]
-        create_text.append( "autoid INT4 DEFAULT nextval('%s')," % \
-                            self._createSequence(name) )
+        create_text = ["CREATE TABLE %s (" % name]
+        create_text.append(
+            "autoid INT4 DEFAULT nextval('%s')," % self._createSequence(name)
+        )
 
         if edit_tracking:
             create_text.append(self.getColumnDefinition(ZC._edit_tracking_cols))
@@ -205,14 +166,14 @@ class PostgresConnector(SqlConnector):
 
             # build data_list
             # get type of col
-            if cols_dict.get(col):
+            if col in cols_dict:
                 col_type = cols_dict[col][ZC.COL_TYPE]
 
-            elif ZC._edit_tracking_cols.get(col):
+            elif col in ZC._edit_tracking_cols:
                 col_type = ZC._edit_tracking_cols[col][ZC.COL_TYPE]
 
             # this needs to be here to allow autoid overwriting
-            elif col == 'autoid':
+            elif col == ZC.TCN_AUTOID:
                 col_type = ZC.ZCOL_INT
             else:
                 raise ValueError("No ColType found")

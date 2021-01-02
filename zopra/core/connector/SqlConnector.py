@@ -402,40 +402,14 @@ class SqlConnector(SimpleItem):
                 "%s%s%s%s" % (self.escape_sql_name(col), dbtype, default, reference)
             )
 
-    def testForTable(self, name):
-        """ Test if the table already exists.
+        return ", ".join(cols_str)
 
-        @param name           The argument \a name is a string with the
-                              full name of a table.
+    def createTable(self, name, cols_dict, edit_tracking=True):
+        """Adds a table to the database.
 
-        @return Boolean       Returns True if the table exists; otherwise False.
-        """
-        raise NotImplementedError(ZC.E_CALL_ABSTRACT)
-
-
-    def testForColumn(self, mgrid, table, column):
-        """ Test if the column already exists in table.
-
-        @param manager        The argument \a manager is a string with the
-                              manager id.
-
-        @param table           The argument \a table is a string with the
-                              fullname of a table.
-
-        @param column         The argument \a column is a string with the
-                              fullname of a column.
-
-        @return Boolean       Returns True if the column exists in table, otherwise False
-        """
-        raise NotImplementedError(ZC.E_CALL_ABSTRACT)
-
-
-    def createTable(self, name, cols_dict, edit_tracking = True):
-        """ This method adds a SQL table to an existing database.
-
-        @param name          - string containing the table name
-        @param cols_dict     - dictionary containing the column definition
-        @param edit_tracking - if enabled special columns for tracking the
+        :param name: the full table name
+        :param cols_dict: dictionary containing the column definition
+        :param edit_tracking: if enabled special columns for tracking the
                                edit changes will be added; default is True.
         """
         raise NotImplementedError(ZC.E_CALL_ABSTRACT)
@@ -471,26 +445,19 @@ class SqlConnector(SimpleItem):
     # select handling
     #
     ############################################################################
-    def simpleIns(self, name, origcols_dict, entry_dict):
-        """ insert into table """
-        assert ZC.checkType('name', name, StringType)
+    def simpleIns(self, name, cols_dict, entry_dict):
+        """insert into table"""
+        assert ZC.checkType("name", name, StringType)
 
-        insert_text = ['INSERT INTO %s ( ' % name]
-        cols_list   = []
-        data_list   = []
-        cols_dict   = deepcopy(origcols_dict)
+        insert_text = ["INSERT INTO %s ( " % name]
+        cols_list = []
+        data_list = []
 
-        for col in ZC._edit_tracking_cols:
-            if col not in cols_dict:
-                cols_dict[col] = ZC._edit_tracking_cols[col]
-        cols = entry_dict.keys()
-
-        for col in cols:
+        for col in entry_dict.keys():
             # don't save NULL values, saves a little bit string length
             # but store 0-values
-            if entry_dict[col] is None         or  \
-               entry_dict[col] == 'NULL'       or  \
-               entry_dict[col] == 'None':
+            val = entry_dict.get(col, None)
+            if val is None or val == "NULL" or val == "None":
                 continue
 
             # build col_list
@@ -505,24 +472,26 @@ class SqlConnector(SimpleItem):
                 col_type = ZC._edit_tracking_cols[col][ZC.COL_TYPE]
 
             # this needs to be here to allow autoid overwriting
-            elif col == 'autoid':
+            elif col == ZC.TCN_AUTOID:
                 col_type = ZC.ZCOL_INT
             else:
                 raise ValueError("No ColType found")
 
             # build proper data entries
-            data_list.append( self.checkType( entry_dict[col],
-                                              col_type,
-                                              False,
-                                              cols_dict.get(col, {}).get(ZC.COL_LABEL, ''),
-                                              False  # no char replacement
-                                              )
-                             )
+            data_list.append(
+                self.checkType(
+                    val,
+                    col_type,
+                    False,
+                    cols_dict.get(col, {}).get(ZC.COL_LABEL, ""),
+                    False,  # no char replacement
+                )
+            )
 
-        insert_text.append( ', '.join(cols_list) )
-        insert_text.append( ') VALUES ( ')
-        insert_text.append( ', '.join(data_list) )
-        insert_text.append( ');' )
+        insert_text.append(", ".join(cols_list))
+        insert_text.append(") VALUES ( ")
+        insert_text.append(", ".join(data_list))
+        insert_text.append(");")
 
         # query
         self.query("".join(insert_text))

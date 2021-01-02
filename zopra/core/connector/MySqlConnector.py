@@ -108,15 +108,14 @@ class MySqlConnector(SqlConnector):
         """insert into table"""
         assert ZC.checkType("name", name, StringType)
 
-        insert_text = ['INSERT INTO %s ( ' % name]
-        cols_list   = []
-        data_list   = []
-        cols_dict   = deepcopy(origcols_dict)
+        insert_text = ["INSERT INTO %s ( " % name]
+        cols_list = []
+        data_list = []
 
-        for col in _edit_tracking_cols:
-            if col not in cols_dict:
-                cols_dict[col] = ZC._edit_tracking_cols[col]
         cols = cols_dict.keys()
+        for col in _edit_tracking_cols:
+            if col not in cols:
+                cols.append(col)
 
         for col in cols:
             # don't save NULL values, saves a little bit string length
@@ -129,6 +128,10 @@ class MySqlConnector(SqlConnector):
                 # insert date, mysql doesn't like time default values
                 val = ctime()
 
+            # if the value is still None, we can skip
+            if val is None:
+                continue
+
             # build col_list
             cols_list.append(self.escape_sql_name(col))
 
@@ -137,8 +140,11 @@ class MySqlConnector(SqlConnector):
             if col in cols_dict:
                 col_type = cols_dict[col][ZC.COL_TYPE]
 
+            elif col in ZC._edit_tracking_cols:
+                col_type = ZC._edit_tracking_cols[col][ZC.COL_TYPE]
+
             # this needs to be here to allow autoid overwriting
-            elif col == 'autoid':
+            elif col == ZC.TCN_AUTOID:
                 col_type = ZC.ZCOL_INT
             else:
                 raise ValueError("No ColType found")
@@ -165,23 +171,25 @@ class MySqlConnector(SqlConnector):
         except Exception, e:
             raise ValueError("SQL Error in %s: \n%s" % ("".join(insert_text), str(e)))
         # get last id and return it
-        return self.getLastInsertedId(name)
-
+        return self.getLastId(None, name)
 
     # the mysql way for fetching the last inserted id
-    def getLastInsertedId(self, name):
-        """\brief get id of last entry"""
-        result = self.query( 'SELECT LAST_INSERT_ID() FROM %s' % (name) )
-        res    = result and result[0][0] or 0
-        return res or self.getLastId(ZC.TCN_AUTOID, name)
+    def getLastId(self, id_field, table_name, where=""):
+        """Returns the last id from id_field (by using LAST_INSERT_ID()),
+        fallback is the superclass implementation.
 
+        :param id_field: name of the field containing the id
+        :param table_name: name of the table
+        :param where: additional where clause
+        :return: max value (aka last id) of the id field
+        :rtype: int
+        """
+        result = self.query("SELECT LAST_INSERT_ID() FROM %s" % (table_name))
+        res = result and result[0][0]
+        return res or super(MySqlConnector, self).getLastId(ZC.TCN_AUTOID, table_name)
 
-    def simpleUpd( self,
-                   name,
-                   origcols_dict,
-                   entry_dict,
-                   autoid ):
-        """\brief insert changed values into the database (overwritten for edit-timestamp handling)"""
+    def simpleUpd(self, name, origcols_dict, entry_dict, autoid):
+        """insert changed values into the database (overwritten for edit-timestamp handling)"""
         if isinstance(autoid, StringType):
             autoid = int(autoid)
 
