@@ -1,12 +1,7 @@
 # -*- coding: utf-8 -*-
-"""
-Created on 7 Nov 2019
-
-@author: peterseifert
-"""
 
 from zopra.core.tests import StandaloneTestCase
-from zopra.core.tools.mgrTest import mgrTest
+from zopra.core.tests.mgrTest import mgrTest
 
 
 class TableTest(StandaloneTestCase):

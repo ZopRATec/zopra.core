@@ -30,15 +30,15 @@ All packages in the packages.py file will be loaded, when your Zope instance sta
 
 To make it work, you finally have to create the manager, that is referenced in the managers.py file. The manager is the central concept of ZMOM, collecting tables and lists and giving you access to them. The convention is that the manager class name needs to start with "mgr" (or end on "Manager", which is the old style). In our example, we create a file called mgrGeometry.py containing the mgrGeometry class.
 
-To allow this manager class to be found and installed by ZopRA, you need the class itself with some basic attributes. To ease programming a new Manager, we provide a ZMOMGenericManager baseclass which has a lot of generic functions that will be helpful to set up your own manager. Your class needs to extend it.
+To allow this manager class to be found and installed by ZopRA, you need the class itself with some basic attributes. To ease programming a new Manager, we provide a Manager baseclass which has a lot of generic functions that will be helpful to set up your own manager. Your class needs to extend it.
 
 \code{.py}
-from Products.ZMOM.Tools.ZMOMGenericManager import ZMOMGenericManager
+from zopra.core.Manager import Manager
 
-class mgrGeometry(ZMOMGenericManager):
-    """ ZMOM Geometry Manager """
+class mgrGeometry(Manager):
+    """ Geometry Manager """
     _className    = 'mgrGeometry'
-    _classType    = ZMOMGenericManager._classType + [_className]
+    _classType    = Manager._classType + [_className]
     meta_type     = _className
 
     # generic addForm hints
@@ -411,7 +411,7 @@ Some managers may need default entries or special settings that need to be set. 
 \code{.py}
 def manage_afterAdd(self, item, container):
     """\brief Correct cache sizes."""
-    ZMOMGenericManager.manage_afterAdd(self, item, container)
+    Manager.manage_afterAdd(self, item, container)
     # adjust caches
     self.tableHandler['point'].cache.item_count    = 1000
     self.tableHandler['point'].cache.idlist_count  = 30

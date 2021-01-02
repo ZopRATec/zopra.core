@@ -24,7 +24,7 @@ from zopra.core.elements.Buttons import BTN_L_RESET2
 from zopra.core.elements.Buttons import getPressedButton
 from zopra.core.elements.Buttons import mpfReset2Button
 from zopra.core.elements.Styles.Default import ssiDLG_LABEL
-from zopra.core.interfaces import IGenericManager
+from zopra.core.interfaces import ILegacyManager
 from zopra.core.interfaces import IZopRATable
 from zopra.core.security.EntryPermission import EntryPermission
 from zopra.core.tables.Filter import Filter
@@ -237,7 +237,7 @@ class Table(SimpleItem, PropertyManager):
 
         try:
             entry_id = int(entry_id)
-        except:
+        except ValueError:
             # the entry_id is not an int, so we just say there is no entry by returning None
             return None
 
@@ -268,7 +268,11 @@ class Table(SimpleItem, PropertyManager):
                     cols_list.append(ZC.TCN_AUTOID)
                 # build query text
                 query_text = "SELECT {} FROM {}{} WHERE {} = {}".format(
-                    ", ".join(cols_list), mgr.id, self.tablename, ZC.TCN_AUTOID, entry_id
+                    ", ".join(cols_list),
+                    mgr.id,
+                    self.tablename,
+                    ZC.TCN_AUTOID,
+                    entry_id,
                 )
 
                 # execute query
@@ -301,17 +305,19 @@ class Table(SimpleItem, PropertyManager):
             #                                          5) None-valued singlelist fields are expressed as None
             #                                          6) everything else (other false values) is expressed as None
             # 3 to 6 could not be achieved by boolean expressions, but by inner if
-            check = lambda (x, y): (
-                x,
-                hasattr(y, "strftime")
-                and y.strftime("%d.%m.%Y")
-                or y
-                or (
-                    ""
-                    if (y is None and self.getField(x)[ZC.COL_TYPE] != "singlelist")
-                    else (0 if y == 0 else None)
-                ),
-            )
+            def check(x, y):
+                new_y = (
+                    hasattr(y, "strftime")
+                    and y.strftime("%d.%m.%Y")
+                    or y
+                    or (
+                        ""
+                        if (y is None and self.getField(x)[ZC.COL_TYPE] != "singlelist")
+                        else (0 if y == 0 else None)
+                    )
+                )
+                return x, new_y
+
             entry = dict(map(check, izip(cols_list, result)))
             # add multilist ids
             autoid = entry[ZC.TCN_AUTOID]
@@ -607,7 +613,12 @@ class Table(SimpleItem, PropertyManager):
         return m_prod.simpleDelete(name, autoid, self._uid, entry)
 
     def updateEntry(
-        self, descr_dict, entry_id, idfield=ZC.TCN_AUTOID, required=None, orig_entry=None
+        self,
+        descr_dict,
+        entry_id,
+        idfield=ZC.TCN_AUTOID,
+        required=None,
+        orig_entry=None,
     ):
         """inserts changed values into the database"""
         mgr = self.getManager()
@@ -778,7 +789,7 @@ class Table(SimpleItem, PropertyManager):
 
         # file deletion for generic managers
         # has to be done here, because entry is needed for that
-        if IGenericManager.providedBy(mgr):
+        if ILegacyManager.providedBy(mgr):
             mgr.genericFileDelete(self.tablename, idlist)
 
         for autoid in idlist:
@@ -879,7 +890,9 @@ class Table(SimpleItem, PropertyManager):
         else:
             return 0
 
-    def getEntries(self, idvalue=None, idfield=ZC.TCN_AUTOID, order=None, direction=Asc):
+    def getEntries(
+        self, idvalue=None, idfield=ZC.TCN_AUTOID, order=None, direction=Asc
+    ):
         """Uses requestEntries to return a list of descr_dicts."""
         # should replace getEntries after speed test
         assert direction in self.Order, E_PARAM_TYPE % (
@@ -1084,15 +1097,12 @@ class Table(SimpleItem, PropertyManager):
         if entry:
             if not cols:
                 mgr = self.getManager()
-                if IGenericManager.providedBy(mgr):
-                    # check for language
-                    if mgr.doesTranslations(self.tablename):
-                        # TODO: unify getLabelString to always have a lang parameter
-                        return mgr.getLabelString(self.tablename, None, entry, lang)
-                    else:
-                        return mgr.getLabelString(self.tablename, None, entry)
+                # check for language
+                if mgr.doesTranslations(self.tablename):
+                    # TODO: unify getLabelString to always have a lang parameter
+                    return mgr.getLabelString(self.tablename, None, entry, lang)
                 else:
-                    return entry.get(ZC.TCN_AUTOID)
+                    return mgr.getLabelString(self.tablename, None, entry)
             else:
                 value = []
                 for col in cols:
@@ -1101,7 +1111,8 @@ class Table(SimpleItem, PropertyManager):
                 return " ".join(value)
         return ""
 
-    def getEntrySelect(self, cols):
+    # looks unused, check legacy packages
+    def getEntrySelect(self, cols, lang=None):
         """Returns a list of all entries containing the requested cols plus autoid."""
         assert isinstance(cols, ListType)
         reslist = None
@@ -1117,12 +1128,8 @@ class Table(SimpleItem, PropertyManager):
                 autoid = entry.get(ZC.TCN_AUTOID)
                 value = []
                 if not cols:
-                    if IGenericManager.providedBy(mgr):
-                        # use getLabelString
-                        label = mgr.getLabelString(self.tablename, None, entry)
-                        reslist.append([autoid, label])
-                    else:
-                        reslist.append([autoid, autoid])
+                    label = mgr.getLabelString(self.tablename, None, entry, lang)
+                    reslist.append([autoid, label])
                 else:
                     for col in cols:
                         if entry.get(col):
@@ -1396,13 +1403,13 @@ class Table(SimpleItem, PropertyManager):
             # get all entry autoids
             autoidList = self.getEntryAutoidList()
 
-        if not autoidList:
-            # still empty, return nothing
-            return export_list
-
         # write header
         if flags & TE_WITHHEADER:
             export_list.append(delim.join(columnList + special_list))
+
+        if not autoidList:
+            # nothing for export, return header line only
+            return export_list
 
         if multilines in ["remove", "replace"]:
             multilist_joiner = u", "
@@ -1726,7 +1733,7 @@ class Table(SimpleItem, PropertyManager):
             if message:
                 tab[row, 0] = hgLabel(message)
                 tab.setCellSpanning(row, 0, colspan=3)
-        except:
+        except Exception:
             # show table creation button
             tab[row, 0] = hgPushButton("Create Table", "create")
             tab.setCellSpanning(row, 0, colspan=3)

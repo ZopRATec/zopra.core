@@ -16,18 +16,21 @@ from zopra.core import HAVE_PLONE
 from zopra.core import HTML
 from zopra.core import ZC
 from zopra.core import ZM_CM
+from zopra.core import ZM_IM
 from zopra.core import ZM_PM
+from zopra.core import ZM_PNM
 from zopra.core import ClassSecurityInfo
 from zopra.core import getSecurityManager
 from zopra.core import managePermission
 from zopra.core import modifyPermission
+from zopra.core import viewPermission
 from zopra.core.connector.SqlConnector import getConnector
 from zopra.core.dialogs import dlgLabel
 from zopra.core.dialogs import getStdDialog
 from zopra.core.interfaces import IZopRAManager
 from zopra.core.interfaces import IZopRAProduct
 from zopra.core.lists.ListHandler import ListHandler
-from zopra.core.ManagerPart import ManagerPart
+from zopra.core.Manager import Manager
 from zopra.core.tables.TableHandler import TableHandler
 from zopra.core.utils import getZopRAPath
 
@@ -39,11 +42,11 @@ TCN_ENTRYID = "entryid"
 TCN_BACKUP = "backup"
 
 
-class ZopRAProduct(ManagerPart):
-    """Product class is based on ManagerPart directly."""
+class ZopRAProduct(Manager):
+    """Product class is based on Manager"""
 
     _className = ZM_PM
-    _classType = ManagerPart._classType + [_className]
+    _classType = Manager._classType + [_className]
     meta_type = _className
 
     suggest_id = "pm"
@@ -97,7 +100,7 @@ class ZopRAProduct(ManagerPart):
     def __init__(self, id=None, title="", connection_id="", nocreate=0, zopratype=""):
         """Constructor"""
 
-        ManagerPart.__init__(self, title, id, nocreate, zopratype)
+        Manager.__init__(self, title, id, nocreate, zopratype)
         self.children = []
         self.connection_id_temp = connection_id
 
@@ -151,7 +154,7 @@ class ZopRAProduct(ManagerPart):
         """
         self.nocreate = True
         # call parent method
-        ManagerPart.manage_afterClone(self, item)
+        Manager.manage_afterClone(self, item)
 
     def _installDefaultFiles(self):
         """Installes the default files like standard_html_header"""
@@ -318,11 +321,49 @@ class ZopRAProduct(ManagerPart):
                     child_list.append(obj)
         return child_list
 
+    security.declareProtected(viewPermission, "getNaviManagerUrls")
+
+    def getNaviManagerUrls(self, zopratype, admin):
+        """Build dict of manager titles (key) and manager urls (value) for main_form and navigation"""
+        alllist = {}
+        tmp_list = self.getAllManagers(type_only=False, objects=True)
+
+        def check_manager(mgr):
+            if not mgr:
+                return False
+            if ZC.ZM_PM in mgr.getClassType():
+                return False
+            return mgr.getClassName() not in [ZM_PNM, ZM_IM] or admin
+
+        if tmp_list:
+            for mgr in tmp_list:
+                if check_manager(mgr):
+                    title = mgr.getTitle()
+                    if len(title) > 8 and title[-8:] == " Manager":
+                        title = title[:-8]
+                    alllist[title] = str(mgr.absolute_url())
+
+        # we still have to find all hierarchy-down managers...
+        if zopratype:
+            tmp_list2 = self.getAllManagersHierarchyDown(zopratype=zopratype)
+            if tmp_list2:
+                for mgr in tmp_list2:
+                    # make sure we didnt already find that one
+                    if check_manager(mgr) and mgr not in tmp_list:
+                        title = mgr.getTitle()
+                        if len(title) > 8 and title[-8:] == " Manager":
+                            title = title[:-8]
+                        alllist[title] = str(mgr.absolute_url())
+
+        return alllist
+
     #
     # other Database functions, forwarded to the connector
     #
 
-    def checkType(self, value, column_type, operator=False, label=None, do_replace=True):
+    def checkType(
+        self, value, column_type, operator=False, label=None, do_replace=True
+    ):
         """forwards checkType to connector"""
         return self.connector.checkType(value, column_type, operator, label, do_replace)
 
@@ -727,7 +768,7 @@ class ZopRAProduct(ManagerPart):
                     dlg.add(hgLabel("<br/>"))
 
             version = self.zopra_version
-            newver = ManagerPart.zopra_version
+            newver = Manager.zopra_version
 
             update = False
             if newver > version:
@@ -793,7 +834,7 @@ class ZopRAProduct(ManagerPart):
             updateChildren = []
 
         # update product
-        report = ManagerPart.updateVersion(self)
+        report = Manager.updateVersion(self)
 
         # update children
         for child in self.getChildren():

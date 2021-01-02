@@ -15,8 +15,8 @@ class IAddOnInstalled(Interface):
 class IZopRAManager(IFolder):
     """The IZopRAManager interface marks a class to be a ZopRA manager.
 
-    The ManagerPart class implements the interface. If your manager class is
-    derived from the zopra.core.ManagerPart then you do not have to implement it
+    The Manager class implements the interface. As your manager class is
+    derived from the zopra.core.Manager you do not have to implement it
     on your own.
     """
 
@@ -41,10 +41,9 @@ class IZopRAProduct(IZopRAManager):
     """The IZopRAProduct interface marks a class to be a ZopRA product manager."""
 
 
+# stays for the 2021 zopra core split to make transitions easier
 class IGenericManager(IZopRAManager):
-    """The IGenericManager interface marks a class to be derived from the class
-    zopra.core.tools.GenericManager.GenericManager.
-    """
+    """The IGenericManager interface is deprecated."""
 
     def installConfig(self, REQUEST):
         """This hook method gets called after object creation by
@@ -53,6 +52,10 @@ class IGenericManager(IZopRAManager):
         The hook can be used to get DTML-form values from the REQUEST.
         For database action (only on first install) see startupConfig Hook
         """
+
+
+class ILegacyManager(IZopRAManager):
+    """Interface to mark the legacy managers in the zopra.legacy package and all subclasses."""
 
 
 class IZopRATable(Interface):

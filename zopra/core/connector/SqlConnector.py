@@ -46,10 +46,10 @@ connectors_by_meta_type = {
 
 def getConnector(context, connector_id, connection_id):
     """This method creates and returns a new connector object for the available
-        connection by choosing the appropriate connector class based on the
-        database_type attribute of the connection. This attribute is not
-        specified in the connection interface and might not exist in some connections.
-        Therefore fallback is the meta_type of the connection.
+    connection by choosing the appropriate connector class based on the
+    database_type attribute of the connection. This attribute is not
+    specified in the connection interface and might not exist in some connections.
+    Therefore fallback is the meta_type of the connection.
     """
 
     # works with aquisition
@@ -167,7 +167,9 @@ class SqlConnector(SimpleItem):
 
         return new_date
 
-    def checkType(self, value, column_type, operator=False, label=None, do_replace=True):
+    def checkType(
+        self, value, column_type, operator=False, label=None, do_replace=True
+    ):
         """makes all standard conversions and checking for supported Types
         and returns altered value-string. Returns an operator as well, if param operator is True
         """

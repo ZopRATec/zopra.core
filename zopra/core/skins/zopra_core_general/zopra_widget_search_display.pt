@@ -174,7 +174,7 @@
     <tal:comment tal:replace="nothing">
 Hierarchy list selection for one single value.
 TODO: make multivalued
--> use GenericManager.getHierarchyListConfig(table, attribute) for the config
+-> use Manager.getHierarchyListConfig(table, attribute) for the config
 It seems search already allows selecting one non-leaf-node and search for all leafs of the tree-part that starts with the chosen node.
 User should be able to select a node (in form of a combobox-item) for each hierarchy to enable the
 next combobox on-change.

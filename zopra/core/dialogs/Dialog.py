@@ -1,7 +1,6 @@
 from PyHtmlGUI.dialogs.hgDialog import hgDialog
 from PyHtmlGUI.widgets.hgLabel import hgProperty
 from PyHtmlGUI.widgets.hgPushButton import hgPushButton
-
 from zopra.core.dialogs.guiHandler import guiHandler
 from zopra.core.elements.Styles.Default import ssiA
 from zopra.core.elements.Styles.Default import ssiA_VISITED

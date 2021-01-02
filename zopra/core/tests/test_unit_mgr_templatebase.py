@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on 7 Nov 2019
-
-@author: peterseifert
-"""
 
 import unittest
 

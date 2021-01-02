@@ -377,13 +377,9 @@ class ForeignList(GenericList):
                         autoid = entry["autoid"]
                         if not self.cols:
                             # empty, use getLabelString
-                            if manager.doesTranslations(self.foreign):
-                                # getLabelString does the translation (and switches to translated entry by itself)
-                                val = manager.getLabelString(
-                                    self.foreign, None, entry, lang
-                                )
-                            else:
-                                val = manager.getLabelString(self.foreign, None, entry)
+                            val = manager.getLabelString(
+                                self.foreign, None, entry, lang
+                            )
                         else:
                             vals = []
                             # switch to translated entry if necessary

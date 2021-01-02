@@ -36,7 +36,7 @@ from zopra.core import ZC
 from zopra.core import ClassSecurityInfo
 from zopra.core import getSecurityManager
 from zopra.core import zopraMessageFactory as _
-from zopra.core.tools.GenericManager import GenericManager
+from zopra.core.Manager import Manager
 
 
 protection_expression = re.compile(
@@ -44,11 +44,11 @@ protection_expression = re.compile(
 )
 
 
-class TemplateBaseManager(GenericManager):
-    """ Template Base Manager """
+class TemplateBaseManager(Manager):
+    """Template Base Manager"""
 
     _className = "TemplateBaseManager"
-    _classType = GenericManager._classType + [_className]
+    _classType = Manager._classType + [_className]
     meta_type = ""
 
     #
@@ -58,7 +58,7 @@ class TemplateBaseManager(GenericManager):
     security.declareObjectPublic()
 
     # languages v1
-    _properties = GenericManager._properties + (
+    _properties = Manager._properties + (
         {"id": "lang_default", "type": "string", "mode": "w"},
         {"id": "lang_additional", "type": "lines", "mode": "w"},
     )
@@ -71,16 +71,16 @@ class TemplateBaseManager(GenericManager):
             import plone.api.portal
 
             return plone.api.portal.get_current_language()
-        except:
+        except Exception:
             return self.lang_default
 
     def startupConfig(self, REQUEST):
-        """\brief Function called after creation by manageAddGeneric"""
+        """Function called after creation by manageAddGeneric"""
         # add table constraints
         pass
 
     def index_html(self, REQUEST):
-        """\brief forward one level up"""
+        """forward one level up"""
         parent = self.aq_parent
         REQUEST.RESPONSE.redirect(parent.absolute_url())
 
@@ -105,8 +105,8 @@ class TemplateBaseManager(GenericManager):
 
     # disable caching
     def manage_afterAdd(self, item, container):
-        """\brief Disable Caching for managers running inside Plone."""
-        GenericManager.manage_afterAdd(self, item, container)
+        """Disable Caching for managers running inside Plone."""
+        Manager.manage_afterAdd(self, item, container)
 
         # disable caching for all tables
         for table in self.tableHandler.keys():
@@ -117,7 +117,7 @@ class TemplateBaseManager(GenericManager):
     #
 
     def social_links(self, context, REQUEST):
-        """\brief get the social links for the context"""
+        """get the social links for the context"""
         # TODO: tweak the social links and document actions to display correct titles (e.g. for sins)
         # use special URL (with params) extracted from request instead of base url of the main Folder
         real_url_part1 = REQUEST.get("URL")
@@ -150,7 +150,7 @@ class TemplateBaseManager(GenericManager):
         return rendered
 
     def content_actions(self, context, REQUEST):
-        """\brief get the default actions for the context"""
+        """get the default actions for the context"""
         context_state = getMultiAdapter((context, REQUEST), name=u"plone_context_state")
         result = []
         if context_state:
@@ -248,11 +248,11 @@ class TemplateBaseManager(GenericManager):
         logger.info("Done")
 
     def doesWorkflows(self, table):
-        """\brief """
+        """"""
         return False
 
     def getStateTransferInfo(self, table, entry):
-        """\brief Overwrite for determining label and action for stateswitch button."""
+        """Overwrite for determining label and action for stateswitch button."""
         return {}
 
     #
@@ -265,12 +265,12 @@ class TemplateBaseManager(GenericManager):
         return False
 
     def getListOwnUsers(self, table):
-        """\brief returns constraints if the user should only see own entries"""
+        """returns constraints if the user should only see own entries"""
         user = getSecurityManager().getUser()
         return {"user_login": user.getUserName()}
 
     def getPermissionInfo(self, table, permission):
-        """\brief Overwrite for special permission settings. Returns True, if user has one of the roles, that have the requested permission."""
+        """Overwrite for special permission settings. Returns True, if user has one of the roles, that have the requested permission."""
         # Default definition
         # permissions: list_edit, table_create, table_show, table_edit, table_list, table_delete, table_show_own, table_list_own, table_edit_own, table_delete_own
         # for details on the "own"-permissions, see tud.zopra.erp
@@ -294,7 +294,7 @@ class TemplateBaseManager(GenericManager):
         return user.has_role(roles, self)
 
     def getPermissionEntryInfo(self, table, entry):
-        """\brief Return permissions that current user with his roles has for an entry in a certain state"""
+        """Return permissions that current user with his roles has for an entry in a certain state"""
         # we add additional security handling for template based managers
         # this isn't the final solution, this should be integrated with entry-permissions and gui-permissions
         # which were used before, unfortunately the handling was centered around the security-manager
@@ -325,17 +325,17 @@ class TemplateBaseManager(GenericManager):
     #
 
     def doesWorkingCopies(self, table):
-        """\brief """
+        """"""
         return False
 
     def getWorkingCopies(self, table):
-        """\brief """
+        """"""
         tobj = self.tableHandler[table]
         cons = {"iscopyof": "_not_NULL"}
         return tobj.getEntryList(constraints=cons, ignore_permissions=True)
 
     def getWorkingCopy(self, table, autoid):
-        """\brief Return the working copy or None"""
+        """Return the working copy or None"""
         if self.doesWorkingCopies(table):
             copy = self.tableHandler[table].getEntryList(
                 constraints={"iscopyof": autoid}, ignore_permissions=True
@@ -371,7 +371,6 @@ class TemplateBaseManager(GenericManager):
         autoid = entry_diff.get("autoid")
         cons = {"iscopyof": autoid}
         tobj = self.tableHandler[table]
-        types = tobj.getColumnTypes()
         res = tobj.getEntryList(constraints=cons, ignore_permissions=True)
         if res:
             wc = res[0]
@@ -391,7 +390,7 @@ class TemplateBaseManager(GenericManager):
     #
 
     def doesTranslations(self, table):
-        """\brief """
+        """"""
         return False
 
     def updateTranslation(self, table, entry_diff):
@@ -444,7 +443,7 @@ class TemplateBaseManager(GenericManager):
             return autoid
 
     def removeTranslationInfo(self, table, autoid):
-        """\brief after deleting a translation entry, the orginal entry needs to be corrected (removing the hastranslation marker)"""
+        """after deleting a translation entry, the orginal entry needs to be corrected (removing the hastranslation marker)"""
         # the entry with autoid is a default language entry, whose translation was deleted
         tobj = self.tableHandler[table]
         entry = tobj.getEntry(autoid, ignore_permissions=True)
@@ -461,7 +460,7 @@ class TemplateBaseManager(GenericManager):
                 self.updateWorkingCopy(table, {"autoid": autoid, "hastranslation": 0})
 
     def selectAdditionalLanguage(self, request):
-        """\brief Hook for the language switcher on the translation form."""
+        """Hook for the language switcher on the translation form."""
         # for now, we only allow 1 additional language
         if self.lang_additional:
             return self.lang_additional[0]
@@ -473,7 +472,7 @@ class TemplateBaseManager(GenericManager):
     #
 
     def getFilteredColumnDefs(self, table, vis_only=False, edit_tracking=False):
-        """\brief Indirection to retrieve column defs, allows addition and removal before listing"""
+        """Indirection to retrieve column defs, allows addition and removal before listing"""
         tobj = self.tableHandler[table]
         res = tobj.getColumnDefs(vis_only=vis_only, edit_tracking=edit_tracking)
         if "owner" in res:
@@ -485,18 +484,14 @@ class TemplateBaseManager(GenericManager):
         return res
 
     def checkDefaultWildcardSearch(self, table):
-        """\brief Toggle for Wildcard Search. Overwrite this function and return True
+        """Toggle for Wildcard Search. Overwrite this function and return True
         for the tables that will then automatically use wildcard search for all text
         fields.
         """
         return True
 
-    def generateTableSearchTreeTemplate(self, table):
-        """\brief Overwritten to generate a template"""
-        return GenericManager.generateTableSearchTreeTemplate(self, table)
-
     def getEntryListCountProxy(self, table, constraints=None):
-        """\brief Proxy for Table.getEntryListCount using searchTreeTemplate"""
+        """Proxy for Table.getEntryListCount using searchTreeTemplate"""
         tobj = self.tableHandler[table]
         root = tobj.getSearchTreeTemplate()
         if constraints:
@@ -517,7 +512,7 @@ class TemplateBaseManager(GenericManager):
         direction=None,
         constr_or=False,
     ):
-        """\brief Proxy for Table.getEntryList using searchTreeTemplate"""
+        """Proxy for Table.getEntryList using searchTreeTemplate"""
         tobj = self.tableHandler[table]
         root = tobj.getSearchTreeTemplate()
         if order:
@@ -544,8 +539,8 @@ class TemplateBaseManager(GenericManager):
         return False
 
     def handleHierarchyListOnSearch(self, table, cons):
-        """\brief Add the subtree to a given node for all hierarchy lists of the table (all children of all levels below that node)"""
-        # TODO: use ZMOMGenericManager.getHierarchyListConfig to steer this behaviour
+        """Add the subtree to a given node for all hierarchy lists of the table (all children of all levels below that node)"""
+        # TODO: use Manager.getHierarchyListConfig to steer this behaviour
         hlists = self.listHandler.getLists(table, ["hierarchylist"])
         listnames = [hlist.listname for hlist in hlists]
         for key in cons:
@@ -561,7 +556,7 @@ class TemplateBaseManager(GenericManager):
                 cons[key] = selectList
 
     def prepareHierarchylistDisplayEntries(self, entries):
-        """\brief sort the entries into a tree, add level key and return flattened and sorted list"""
+        """sort the entries into a tree, add level key and return flattened and sorted list"""
         # TODO: implement
         # this is used by zopra_list_edit_form
         # TODO: further check why this exists
@@ -570,7 +565,7 @@ class TemplateBaseManager(GenericManager):
         return entries
 
     def sortListEntriesForDisplay(self, table, attr_name, entries):
-        """\brief sort list entries (for singlelist / multilist edit widget display), overwrite for custom sorting.
+        """sort list entries (for singlelist / multilist edit widget display), overwrite for custom sorting.
         The attribute (attr_name) has to be listed in _generic_config in 'sortables', otherwise this method will not be called."""
         # TODO: use rank as possible sorting field (reintroduce rank to the list edit form, how to indicate rank sorting?)
         # TODO: make sure translations are sorted correctly (sort by value_en e.g.?)
@@ -578,7 +573,7 @@ class TemplateBaseManager(GenericManager):
         return sorted(entries, key=lambda item: item["value"])
 
     def prepareValuesForEdit(self, attr_name, field, entry, request, validation_errors):
-        """\brief Request data only supersedes the entry data when validation errors occured (to retain user input), after saving, the (potentially altered) entry data is used"""
+        """Request data only supersedes the entry data when validation errors occured (to retain user input), after saving, the (potentially altered) entry data is used"""
         if not validation_errors:
             return entry.get(attr_name)
         else:
@@ -591,7 +586,7 @@ class TemplateBaseManager(GenericManager):
             return val
 
     def prepareConstraintsForOutput(self, attr_value, attr_type):
-        """\brief Search Param Visualisation preparation"""
+        """Search Param Visualisation preparation"""
         # general behaviour: this is called by the search result template to generate
         # nicer values for constraint display
         # problem: complex search with sub-tables is ignored, the prefixed constraints get treated as string
@@ -645,7 +640,7 @@ class TemplateBaseManager(GenericManager):
             return self.toLocalizedTime(date)
 
     def generateMailLink(self, email):
-        """\brief generate link string from email to avoid tal:attributes quoting of scrambled email string"""
+        """generate link string from email to avoid tal:attributes quoting of scrambled email string"""
         return '<a href="mailto:%s">%s</a>' % (email, email)
 
     def encrypt_ordtype(self, s):
@@ -671,7 +666,7 @@ class TemplateBaseManager(GenericManager):
         try:
             value.decode("utf-8")
             # no error means we had latin-1 or ascii, which decodes to utf-8 easily
-        except:
+        except Exception:
             # this is already utf-8, ascii-encoder raised an error
             value = value.decode("latin-1")
         return value
@@ -681,7 +676,7 @@ class TemplateBaseManager(GenericManager):
     #
 
     def getLayoutInfo(self, table, action):
-        """\brief Returns grouping information for layout"""
+        """Returns grouping information for layout"""
         # allow external scripts
         res = []
         name = "getLayoutInfo_%s" % (self.getClassName())
@@ -712,7 +707,7 @@ class TemplateBaseManager(GenericManager):
         return res
 
     def getHelpTexts(self, table):
-        """\brief helptexts"""
+        """helptexts"""
         # allow external scripts
         res = {}
         name = "getHelpTexts_%s" % (self.getClassName())
@@ -729,11 +724,11 @@ class TemplateBaseManager(GenericManager):
         return {}
 
     def getDefaultSearchValues(self, table):
-        """\brief return default value dict for search"""
+        """return default value dict for search"""
         return {}
 
     def getDefaultCreateValues(self, table):
-        """\brief return default value dict for creation"""
+        """return default value dict for creation"""
         return {}
 
     #
@@ -741,7 +736,7 @@ class TemplateBaseManager(GenericManager):
     #
 
     def getDiff(self, entrya, entryb):
-        """\brief extract the keys of differences between two complete entries"""
+        """extract the keys of differences between two complete entries"""
         diff = {}
         for key in entrya.keys():
             if key in ["autoid", "permission", "iscopyof", "entrydate", "changedate"]:
@@ -762,7 +757,7 @@ class TemplateBaseManager(GenericManager):
         return diff.keys()
 
     def getCopyDiff(self, table, autoid):
-        """\brief find the copy or original and the diff"""
+        """find the copy or original and the diff"""
         tobj = self.tableHandler[table]
         entry = tobj.getEntry(autoid, ignore_permissions=True)
         copy = None
@@ -781,11 +776,11 @@ class TemplateBaseManager(GenericManager):
             return [orig, copy, self.getDiff(orig, copy)]
 
     def dictIntersect(self, dicta, dictb):
-        """\brief intersect the keys of the two dicts, return list"""
+        """intersect the keys of the two dicts, return list"""
         return list(set(dicta).intersection(set(dictb)))
 
     def getDiffLabels(self, table, entry):
-        """\brief get the labels for the diff keys"""
+        """get the labels for the diff keys"""
         labels = []
         tobj = self.tableHandler[table]
         for attr in self.getDiff(entry, self.zopra_forceOriginal(table, entry)):
@@ -804,11 +799,11 @@ class TemplateBaseManager(GenericManager):
 
     # the really nice formatting is bad for parsing on edit -> dropped it for now
     # def formatCurrency(self, value):
-    #    """\brief Format value as currency with 1000er breaker points and one comma"""
+    #    """Format value as currency with 1000er breaker points and one comma"""
     #    return re.sub("(\d)(?=(\d{3})+(?!\d))", r"\1.", ('%.2f' % value).replace('.', ','))
 
     def alphabeticalSort(self, entries, key_value, lang):
-        """\brief sort a list of dictionaries alphabetical by one key value"""
+        """sort a list of dictionaries alphabetical by one key value"""
         # make sure language is supported
         if not (lang == self.lang_default or lang in self.lang_additional):
             # default is python alphanumerical sorting
@@ -818,18 +813,18 @@ class TemplateBaseManager(GenericManager):
         return sorted(entries, key=lambda entry: collator.getSortKey(entry[key_value]))
 
     def reorderColsAccordingly(self, cols, order):
-        """\brief Order the list cols according to the order in the list order"""
+        """Order the list cols according to the order in the list order"""
         newlist = []
         for onecol in order:
             if onecol in cols:
                 newlist.append(onecol)
         for onecol in cols:
-            if not onecol in newlist:
+            if onecol not in newlist:
                 newlist.append(onecol)
         return newlist
 
     def getRelatedEntries(self, autoid, table, attribute, lang=None):
-        """\brief get Entries of table that are connected to an entry of another
+        """get Entries of table that are connected to an entry of another
         table with autoid autoid via multilist named attribute (backref).
         If lang is given, the result list will be filtered to contain
         1) only entries of that language (if it is the default language) or
@@ -862,9 +857,10 @@ class TemplateBaseManager(GenericManager):
         return res
 
     def prepareLinks(self, text):
-        """\brief find all links in text starting with www or http and make them into real links"""
+        """find all links in text starting with www or http and make them into real links"""
         # expression to find mailto and http/https urls, which will be made into real links
         expr = re.compile(r"((?:mailto\:|https?\://){1}\S+)\s*?(\[.*?\])")
+
         # internal function for link replacement
         def apply(s):
             try:
@@ -880,7 +876,7 @@ class TemplateBaseManager(GenericManager):
                     label = label[1:-1]
                 # build link, insert url and label
                 return '<a href="%s" target="_blank">%s</a>' % (url, label)
-            except:
+            except Exception:
                 # something wrong, do not touch the original string
                 return s.group()
 
@@ -888,7 +884,7 @@ class TemplateBaseManager(GenericManager):
         return expr.sub(apply, text or "")
 
     def removeLinks(self, text):
-        """\brief find all links in text starting with www or http and remove the []-label"""
+        """find all links in text starting with www or http and remove the []-label"""
         expr = re.compile(r"((?:mailto\:|https?\://){1}\S+)\s*?(\[.*?\])")
 
         def apply(s):
@@ -896,14 +892,14 @@ class TemplateBaseManager(GenericManager):
                 # only extract the url
                 url = s.group(1)
                 return url
-            except:
+            except Exception:
                 # single url found
                 return s.group()
 
         return expr.sub(apply, text)
 
     def val_translate(self, name, descr_dict, attr_name=None):
-        """\brief get list object, translate attr id from dict into value"""
+        """get list object, translate attr id from dict into value"""
         return (
             self.listHandler[name].getValueByAutoid(
                 descr_dict.get(attr_name or name, "")
@@ -912,45 +908,37 @@ class TemplateBaseManager(GenericManager):
         )
 
     def py2json(self, object, encoding="utf-8"):
-        """\brief translate python object to json"""
+        """translate python object to json"""
         return json.dumps(object).decode("raw-unicode-escape").encode(encoding)
 
     def json2py(self, jsonstring, encoding="utf-8"):
-        """\brief translate json to python object"""
+        """translate json to python object"""
         return json.loads(jsonstring, encoding)
 
     # Button and REQUEST handling
     def getTableEntryFromRequest(self, table, REQUEST, prefix="", search=False):
-        """\brief Builds a \c descr_dict from an REQUEST object.
+        """Builds a dict from a REQUEST object.
+        Overridden to correct float and currency values and handle empty lists on search.
 
-        The function tries to filter all key,
-        value pairs where a key matches
-        with a column name of the specified table
-        (maybe prefixed with DLG_CUSTOM and the given prefix).
-        It also looks for special keys (ANDconcat for multi search / filter)
+        :param table: a string with the table name without id prefix.
 
-        \param table  The argument \a table is a string with the table name
-               without id prefix.
+        :param REQUEST:  REQUEST object that
+        contains the key - value pairs of the fields from the html form.
 
-        \param REQUEST  The argument \a REQUEST is a REQUEST object that
-               contains the key, value pairs of the fields from the html form.
+        :param prefix: makes this method only filter keys that start with DLG_CUSTOM+prefix,
+        the results are unprefixed however
 
-        \param prefix The argument \a prefix is a string that makes
-               the function only filter keys that
-        start with DLG_CUSTOM+prefix, the results are unprefixed however
+        :param search: indicates whether caller is the search machinery
 
-        \param search indicates whether AND-concatenation should be checked for
-               multi and hierarchy lists.
-
-        \return The function will return a description dictionary with the
-                found key - value pairs
+        :return: The method will return a description dictionary with the
+        found key - value pairs.
+        :rtype: dict
         """
-        entry = GenericManager.getTableEntryFromRequest(
-            self, table, REQUEST, prefix, search
-        )
+        entry = Manager.getTableEntryFromRequest(self, table, REQUEST, prefix, search)
         tobj = self.tableHandler[table]
         col_types = tobj.getColumnTypes()
         for col in col_types:
+            # comma and point in float and currency values
             if col_types[col] in (ZC.ZCOL_FLOAT, ZC.ZCOL_CURR):
                 # only convert if there is something to convert
                 if entry.get(col):
@@ -967,7 +955,7 @@ class TemplateBaseManager(GenericManager):
         return entry
 
     def filterRealSearchConstraints(self, constraints):
-        """\brief check if there are any real constraints in the dictionary"""
+        """check if there are any real constraints in the dictionary"""
         for key in constraints:
             if not key.endswith("_AND"):
                 return True

@@ -1,22 +1,17 @@
 # -*- coding: utf-8 -*-
-"""
-Created on 7 Nov 2019
-
-@author: peterseifert
-"""
 
 import unittest
 
-from zopra.core.tools.GenericManager import GenericManager
+from zopra.core.Manager import Manager
 
 
-class GenericManagerTest(unittest.TestCase):
-    """Unittest Testcases for the GenericManager class"""
+class ManagerTest(unittest.TestCase):
+    """Unittest Testcases for the Manager class"""
 
-    def test_GenericManager(self):
+    def test_Manager(self):
 
-        t = GenericManager("Testtitle", "testid", nocreate=1, zopratype="")
-        self.assertEqual(t.meta_type, "GenericManager")
+        t = Manager("Testtitle", "testid", nocreate=1, zopratype="")
+        self.assertEqual(t.meta_type, "")
         self.assertEqual(t.title, "Testtitle")
 
     # TODO: before any more tests can be implemented, there needs to be a serious clenaup moving all old-style (non-tmeplate) - methods to a separate manager class, cleaning up .tables, .lists and all remaining stuff under zopra.core.*
@@ -27,10 +22,7 @@ class GenericManagerTest(unittest.TestCase):
     # - dbconnector
     # - Classes
     # - constants
-    # - ManagerPart
-
-    # what can we test on the GenericManager object?
-    # getCurrentLanguage
+    # - Manager
 
     # what TemplateBase methods can we test on the mgrTest without db
     # getGenericConfig

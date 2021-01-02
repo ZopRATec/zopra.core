@@ -60,4 +60,4 @@ try:
     return result
 
 except Exception, e:
-    return "Fehler beim Export: " + str(e)
+    return "Error during export: " + str(e)

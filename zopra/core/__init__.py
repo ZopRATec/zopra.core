@@ -262,11 +262,11 @@ def initialize(context):
     print "Initializing ZopRA"
 
     from zopra.core.tools.ZopRAProduct import ZopRAProduct
-    from zopra.core.tools.GenericManager import GenericManager
+    from zopra.core.Manager import Manager
     from zopra.core.tools.TemplateBaseManager import TemplateBaseManager
 
     registerManager(context, ZopRAProduct)
-    registerManager(context, GenericManager)
+    registerManager(context, Manager)
     registerManager(context, TemplateBaseManager)
 
 
