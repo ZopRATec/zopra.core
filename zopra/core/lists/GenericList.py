@@ -53,8 +53,7 @@ class GenericList(SimpleItem):
 
     def getManager(self):
         """Returns the owning manager."""
-        message = "No Manager found for List Object via getParentNode()"
-        return getParentManager(self, message)
+        return getParentManager(self)
 
     def getResponsibleManagerId(self):
         """Returns the foreign manager (or mgr, if no foreign list).

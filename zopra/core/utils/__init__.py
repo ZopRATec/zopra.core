@@ -3,8 +3,6 @@ import os.path
 import StringIO
 import types
 
-from OFS.interfaces import IObjectManager
-
 import zopra.core
 from zopra.core.Classes import XMLHandler
 from zopra.core.Classes import make_parser
@@ -22,7 +20,7 @@ def getZopRAPath():
     return os.path.dirname(zopra.core.__file__)
 
 
-def getParentManager(context, error_message="No Manager found via getParentNode()"):
+def getParentManager(context):
     """This method returns the parent manager from the given node.
 
     The method goes up at least one level. It does not check whether the
@@ -40,33 +38,10 @@ def getParentManager(context, error_message="No Manager found via getParentNode(
     try:
         while not IZopRAManager.providedBy(context):
             context = context.getParentNode()
-    except:
-        raise ValueError(error_message)
+    except Exception:
+        raise ValueError("No Manager found via getParentNode()")
 
     return context
-
-
-def gatherManagers(context):
-    """This method finds the Manager instances in the current folder and above
-
-    @return List - unsorted list of IDs
-    """
-    ids = []
-
-    while context:
-
-        if IObjectManager.providedBy(context):
-            for obj in context.objectValues():
-
-                if IZopRAManager.providedBy(obj):
-                    ids.append(obj.getId())
-
-        if hasattr(context, "aq_parent"):
-            context = context.aq_parent
-        else:
-            context = None
-
-    return ids
 
 
 def getASTFromXML(xml):

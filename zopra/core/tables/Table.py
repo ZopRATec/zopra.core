@@ -146,8 +146,7 @@ class Table(SimpleItem, PropertyManager):
 
     def getManager(self):
         """This method returns the owning manager."""
-        message = "No Manager found for Table Object via getParentNode()"
-        return getParentManager(self, message)
+        return getParentManager(self)
 
     def processWhereString(self, idvalue, idfield):
         """Build where-string from given id-value list pairs.
