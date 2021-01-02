@@ -107,10 +107,10 @@ class Manager(Folder, ManagerFinderMixin, ManagerManageTabsMixin):
 
     security.declareProtected(managePermission, "__init__")
 
-    def __init__(self, title="", part_id=None, nocreate=0, zopratype=""):
+    def __init__(self, title="", id=None, nocreate=0, zopratype=""):
         """Constructs a Manager."""
         self.title = title
-        self.id = part_id
+        self.id = id
 
         self.nocreate = nocreate
         self.zopratype = zopratype
