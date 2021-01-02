@@ -167,7 +167,7 @@ class ManagerManageTabsMixin(object):
                 try:
                     cnt = self.listHandler[list_entry].getValueCount()
                     tab[row, 1] = cnt
-                except:
+                except Exception:
                     pass
                 row += 1
             row += 1
@@ -195,7 +195,7 @@ class ManagerManageTabsMixin(object):
                 tab[row, 3] = dlgLabel(_list.listtype)
                 try:
                     tab[row, 4] = dlgLabel(_list.getResponsibleManagerId())
-                except:
+                except Exception:
                     tab[row, 4] = dlgLabel('<font color="red">not found</font>')
                 tab[row, 5] = dlgLabel(_list.function)
                 tab[row, 6] = dlgLabel(_list.foreign)

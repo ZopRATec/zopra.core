@@ -10,10 +10,6 @@ from PyHtmlGUI.widgets.hgLabel import hgNEWLINE
 from zopra.core import ZC
 from zopra.core.elements.Buttons import DLG_CUSTOM
 
-
-# own constants
-MULLISTS = [ZC.ZCOL_MLIST, ZC.ZCOL_HLIST]
-
 # deprecated module type checking / date conversion
 # date mapping for convertDate
 format_list = [
@@ -29,21 +25,20 @@ format_list = [
     "%m.%Y",
     "%m/%d/%y",
     "%m/%d/%Y",
-    "%d\%m\%y",
-    "%d\%m\%Y",
+    "%d\\%m\\%y",
+    "%d\\%m\\%Y",
 ]
 format_new = "%d.%m.%Y"
 
 
 def convertDateDeprecated(old_date):
-    """\brief Converts different date formats in european standard.
+    """Converts different date formats in european standard.
 
     These function is only for converting date types before inserting in a
     database!
 
-    \param old_date  The argument \a date is a date that should be changed
-                     into a new format.
-    \result String with new date or 'NULL', otherwise an empty string.
+    :param old_date: a date that should be changed into a new format.
+    :return: new date if conversion did work, otherwise an empty string.
     """
     if not old_date:
         return "NULL"
@@ -66,7 +61,7 @@ def convertDateDeprecated(old_date):
 def checkTypeDeprecated(
     value, column_type, operator=False, label=None, do_replace=True
 ):
-    """\brief makes all standard conversions and checking for supported Types
+    """makes all standard conversions and checking for supported Types
     and returns altered value-string.
     Returns an operator as well, if param operator is True
     """
@@ -255,7 +250,7 @@ class Filter:
     OPERATOR = [AND, OR]
 
     def __init__(self, op=AND, temp=None):
-        """\brief Constructs a Filter object."""
+        """Constructs a Filter object."""
         assert op in Filter.OPERATOR
         if temp:
             self.template = temp
@@ -269,7 +264,7 @@ class Filter:
         self.sql = None
 
     def copy(self):
-        """\brief copy constraints, children, op, final"""
+        """copy constraints, children, op, final"""
         cop = Filter(self.operator, self.template)
         cop.constraints = copy(self.constraints)
         for child in self.children:
@@ -280,33 +275,33 @@ class Filter:
         return cop
 
     def setFinal(self):
-        """\brief Finalize. No changes done afterwards."""
+        """Finalize. No changes done afterwards."""
         self.final = True
 
     def setInvalid(self):
-        """\brief Invalidate."""
+        """Invalidate."""
         self.invalid = True
 
     def setTemplate(self, attrdict):
-        """\brief """
+        """"""
         self.template = copy(attrdict)
 
     def getTemplate(self):
-        """\brief """
+        """"""
         return self.template
 
     def setOperator(self, op):
-        """\brief """
+        """"""
         if op in self.OPERATOR:
             self.operator = op
             self.setInvalid()
 
     def getOperator(self):
-        """\brief """
+        """"""
         return self.operator
 
     def getConsCount(self):
-        """\brief return number of own and children constraints."""
+        """return number of own and children constraints."""
         count = len(self.constraints.keys())
         for child in self.children:
             if child.isConstrained():
@@ -314,7 +309,7 @@ class Filter:
         return count
 
     def setConstraints(self, consdict, prefix=None, tableData=None):
-        """\brief Stores matching constraints (including [DLG_CUSTOM+]prefix)
+        """Stores matching constraints (including [DLG_CUSTOM+]prefix)
         from the dictionary, propagates it to its children.
         If this filter doesn't have a template, tableData has to be given."""
         if self.final:
@@ -441,7 +436,7 @@ class Filter:
             self.addChild(fil)
 
     def getConstraints(self):
-        """\brief return the set constraints from this filter obj and its children"""
+        """return the set constraints from this filter obj and its children"""
         cons = copy(self.constraints)
         for child in self.children:
             cons2 = child.getConstraints()
@@ -450,7 +445,7 @@ class Filter:
         return cons
 
     def isConstrained(self):
-        """\brief return True for constrained object or children"""
+        """return True for constrained object or children"""
         if self.constraints:
             return True
         for child in self.children:
@@ -459,7 +454,7 @@ class Filter:
         return False
 
     def addChild(self, filterobj):
-        """\brief Add a child to this filter object.
+        """Add a child to this filter object.
         Children are joined with the other constraints via the operator,
         they can be complex filter trees."""
         if self.final:
@@ -474,7 +469,7 @@ class Filter:
         self.setInvalid()
 
     def getStructureHtml(self):
-        """\brief Generates an html-overview of the tree structure"""
+        """Generates an html-overview of the tree structure"""
         tab = hgTable(border=1)
         tab[0, 0] = self.operator
         if self.constraints:
@@ -490,7 +485,7 @@ class Filter:
         return tab
 
     def getSQL(self, tablename, mgrId, tableData=None, checker=None):
-        """\brief Build where-string from constraints and children."""
+        """Build where-string from constraints and children."""
         # test checker or else import
         if checker and hasattr(checker, "forwardCheckType"):
             checkType = checker.forwardCheckType
@@ -523,8 +518,8 @@ class Filter:
                 and cons[: len(cons) - 7] in self.constraints.keys()
             ):
                 continue
-
-            if ctype not in MULLISTS:
+            # not for multi/hierarchy lists
+            if ctype not in ZC.ZCOL_MLISTS:
 
                 value, operator = checkType(self.constraints[cons], ctype, True, cons)
 

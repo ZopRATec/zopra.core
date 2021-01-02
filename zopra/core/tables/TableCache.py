@@ -11,7 +11,7 @@ from OFS.SimpleItem import SimpleItem
 
 
 class TableCache(SimpleItem):
-    """\brief Table Cache
+    """Table Cache
 
     The TableCache provides 3 different caching mechanisms:
         -ALLIST: complete tablecache for tables used as lists (key=columnlist)
@@ -42,7 +42,7 @@ class TableCache(SimpleItem):
     #
 
     def __init__(self):
-        """\brief Constructs a TableCache."""
+        """Constructs a TableCache."""
         self.item = {}
         self.idlist = {}
         self.alllist = {}
@@ -51,17 +51,16 @@ class TableCache(SimpleItem):
         self.alllist_order = []
 
     def invalidate(self, autoid=None):
-        """\brief Cleares the cache.
-        \param autoid Only removes the item with this
-               autoid from item-cache
+        """Cleares the cache.
+        :param autoid: Additionally remove the item with this autoid from item-cache.
         """
         self.clearCache(self.IDLIST)
         self.clearCache(self.ALLLIST)
         self.delItem(autoid)
 
     def delItem(self, autoid):
-        """\brief Remove one item from the item-cache.
-        \param autoid The autoid of the item to remove
+        """Remove one item from the item-cache.
+        :param autoid: The autoid of the item to remove
         """
         if autoid is not None and self.item.get(int(autoid)):
             del self.item[int(autoid)]
@@ -69,7 +68,7 @@ class TableCache(SimpleItem):
             self.make_persistent()
 
     def clearCache(self, cachetype=ALL):
-        """\brief removes the complete cache."""
+        """removes the complete cache."""
         if cachetype == self.ALL:
             self.item = {}
             self.idlist = {}
@@ -96,10 +95,9 @@ class TableCache(SimpleItem):
     def getItem(self, cachetype, key):
         """Returns a cached item if available from the chosen cache.
 
-        @param cachetype - int flag for cache type
-        @param key       - key for the cached item
+        :param cachetype: int flag for cache type
+        :param key: key for the cached item
         """
-
         assert cachetype in [self.ITEM, self.IDLIST, self.ALLLIST]
         assert key is not None
 
@@ -114,7 +112,7 @@ class TableCache(SimpleItem):
             return self.alllist.get(str(key))
 
     def insertItem(self, cachetype, key, value):
-        """\brief Insert an item into cache."""
+        """Insert an item into cache."""
         assert cachetype in [self.ITEM, self.IDLIST, self.ALLLIST]
         assert key is not None
 
@@ -147,5 +145,5 @@ class TableCache(SimpleItem):
             self.make_persistent()
 
     def make_persistent(self):
-        """\brief Zope persistence needs to be activated... ugly style."""
+        """Zope persistence needs to be activated."""
         self.getParentNode().cache = self

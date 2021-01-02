@@ -76,6 +76,8 @@ class ZC:
     ZCOL_CURR = "currency"
 
     ZCOL_LISTS = [ZCOL_SLIST, ZCOL_MLIST, ZCOL_HLIST]
+    ZCOL_MLISTS = [ZCOL_MLIST, ZCOL_HLIST]
+
     #
     # Table Constants
     #

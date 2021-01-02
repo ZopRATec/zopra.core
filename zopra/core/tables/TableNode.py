@@ -1,10 +1,5 @@
-###########################################################################
-#    Copyright (C) 2005 by ZopRATec GbR                                   #
-#    <webmaster@ingo-keller.de>                                           #
-# Copyright: See COPYING file that comes with this distribution           #
-#                                                                         #
-###########################################################################
-"""\brief Provides Joined Database Searches"""
+"""Provides joined Database Searches with complex filters and sorting
+including attached list tables"""
 import string
 from copy import copy
 from types import ListType
@@ -18,10 +13,6 @@ from zopra.core.elements.Buttons import DLG_CUSTOM
 from zopra.core.tables.Filter import Filter
 
 
-ALLLISTS = ["multilist", "hierarchylist", "singlelist"]
-MULLISTS = ["multilist", "hierarchylist"]
-
-
 class TablePrivate:
     """Contains the static information about a database table.
     """
@@ -29,13 +20,13 @@ class TablePrivate:
     # TODO: Either flush searchTreeTemplate Cache on updateVersion or restructure here
     # TODO: get ListHandler on the fly from manager instead of storing it?
     def __init__(self):
-        """\brief Constructs a TablePrivate object."""
+        """Constructs a TablePrivate object."""
         self.tablename = None
         self.tabledict = None
         self.listHandler = None
 
     def getField(self, name):
-        """\brief Returns the definition dict for a single column."""
+        """Returns the definition dict for a single column."""
         if not name:
             return {}
 
@@ -84,11 +75,11 @@ class TableNode(SimpleItem):
     ##########################################################################
 
     def getName(self):
-        """\brief Returns the tableName property."""
+        """Returns the tableName property."""
         return self.data.tablename
 
     def setName(self, name):
-        """\brief Sets the table name to \a name."""
+        """Sets the table name to \a name."""
         assert isinstance(name, StringType), ZC.E_PARAM_TYPE % ("name", "StringType", name)
         self.data.tablename = name
 
@@ -100,7 +91,7 @@ class TableNode(SimpleItem):
     #
     ##########################################################################
     def __init__(self, data, mgr, prefix=""):
-        """\brief Constructs a table."""
+        """Constructs a table."""
         # prefix must not be None!
         assert isinstance(prefix, StringType), ZC.E_PARAM_TYPE % (
             "prefix",
@@ -129,7 +120,7 @@ class TableNode(SimpleItem):
         self.temporary = False
 
     def copy(self, mgr, zopratype=None):
-        """\brief returns a copy of the complete NodeTree.
+        """returns a copy of the complete NodeTree.
         zopratyped managers have to deliver the type,
         nontyped managers using typed managers
         inside the tree have to deliver their type.
@@ -162,7 +153,7 @@ class TableNode(SimpleItem):
         return cop
 
     def reset(self):
-        """\brief reset the attributes of this node object
+        """reset the attributes of this node object
         (filterTree, sql-validation, order, direction)"""
         self.valid = False
         self.order = []
@@ -170,7 +161,7 @@ class TableNode(SimpleItem):
         self.filterTree = Filter(Filter.AND)
 
     def resetTree(self):
-        """\brief resets the complete join Tree
+        """resets the complete join Tree
         (itself and propagates to its children)"""
         self.reset()
         for entry in self.children:
@@ -180,7 +171,7 @@ class TableNode(SimpleItem):
                 entry.resetTree()
 
     def setPrefix(self, prefix):
-        """\brief set a String prefix to identify constraints
+        """set a String prefix to identify constraints
         for this node object"""
         assert isinstance(prefix, StringType), ZC.E_PARAM_TYPE % (
             "prefix",
@@ -190,22 +181,22 @@ class TableNode(SimpleItem):
         self.prefix = prefix
 
     def getPrefix(self):
-        """\brief return the actual prefix"""
+        """return the actual prefix"""
         return self.prefix
 
     p_prefix = property(getPrefix, setPrefix)
 
     def invalidate(self):
-        """\brief sets the valid-attribute for the
+        """sets the valid-attribute for the
         pregenerated sql-parts to False"""
         self.valid = False
 
     def isValid(self):
-        """\brief tests the valid-attribute for the pregenerated sql-parts"""
+        """tests the valid-attribute for the pregenerated sql-parts"""
         return self.valid
 
     def setFilter(self, filterTree):
-        """\brief for complex where-clause, filter trees can be set manually"""
+        """for complex where-clause, filter trees can be set manually"""
         self.filterTree = filterTree
         self.invalidate()
 
@@ -214,7 +205,7 @@ class TableNode(SimpleItem):
         return self.filterTree
 
     def setConstraints(self, consdict):
-        """\brief Stores matching constraints (including [DLG_CUSTOM+]prefix)
+        """Stores matching constraints (including [DLG_CUSTOM+]prefix)
         from the dictionary, propagates it to its children and
         invalidates itself if a constraint change happened
         (allows adding constraints without complete tree-invalidation)."""
@@ -272,7 +263,7 @@ class TableNode(SimpleItem):
         return change or invalidChild
 
     def getConstraints(self):
-        """\brief return the set constraints from this node object
+        """return the set constraints from this node object
         and all children"""
         cons = {}
         pre = ""
@@ -310,7 +301,7 @@ class TableNode(SimpleItem):
         return cons
 
     def isConstrained(self):
-        """\brief indicates whether this node object
+        """indicates whether this node object
         or the children are constrained or not."""
         if self.filterTree and self.filterTree.isConstrained():
             return True
@@ -322,24 +313,24 @@ class TableNode(SimpleItem):
             return False
 
     def setTemporary(self):
-        """\brief Mark node as temporary.
+        """Mark node as temporary.
         Temporary Nodes will be deleted on reset / setConstraints.
         """
         self.temporary = True
 
     def isTemporary(self):
-        """\brief check whether node is temporary."""
+        """check whether node is temporary."""
         return self.temporary if hasattr(self, "temporary") else False
 
     def setJoinAttrParent(self, attribute):
-        """\brief set the name of the attribute of the parent
+        """set the name of the attribute of the parent
         which is used for joining
         (only 1 attribute joins allowed)"""
         # no check possible, object doesn't know its parent
         self.joinAttrParent = attribute
 
     def setJoinAttrSelf(self, attribute):
-        """\brief set the name of the attribute of this node object
+        """set the name of the attribute of this node object
         which is used for joining it to its parent."""
         assert self.data.getField(
             attribute
@@ -347,7 +338,7 @@ class TableNode(SimpleItem):
         self.joinAttrSelf = attribute
 
     def addChild(self, node, joinAttrParent, joinAttrChild):
-        """\brief Add a child to this node object
+        """Add a child to this node object
         using the joinAttrs on parent and child side
         to make the join."""
         assert isinstance(node, TableNode), "Child has to a TableNode object"
@@ -356,12 +347,12 @@ class TableNode(SimpleItem):
         node.setJoinAttrSelf(joinAttrChild)
 
     def removeChild(self, child):
-        """\brief remove child"""
+        """remove child"""
         if child in self.children:
             self.children.remove(child)
 
     def getChild(self, prefix):
-        """\brief Search for a child with the given prefix
+        """Search for a child with the given prefix
         in the join Tree beneath this node object."""
         for entry in self.children:
             if entry.getPrefix() == prefix:
@@ -375,11 +366,11 @@ class TableNode(SimpleItem):
                     pass
 
     def getAllChildren(self):
-        """\brief return the list of child-TableNode-objects"""
+        """return the list of child-TableNode-objects"""
         return self.children
 
     def setOrder(self, order, direction=None):
-        """\brief set the attribute name which should be used
+        """set the attribute name which should be used
         to sort the result, as well as its direction"""
         # TODO: allow child-columns to be used for sorting
         assert isinstance(direction, ListType) or direction in [
@@ -424,7 +415,7 @@ class TableNode(SimpleItem):
                 orderfield = self.data.getField(order)
                 if not orderfield:
                     raise ValueError("Unknown order field %s." % str(order))
-                if orderfield[ZC.COL_TYPE] in ALLLISTS:
+                if orderfield[ZC.COL_TYPE] in ZC.ZCOL_LISTS:
                     # to order by lists, we have to join the list-table -> new sql query
                     self.invalidate()
                 # otherwise, the tree doesn't have to be invalidated
@@ -433,15 +424,15 @@ class TableNode(SimpleItem):
         self.orderDirection = directions
 
     def getOrder(self):
-        """\brief return the list of sorting attributes"""
+        """return the list of sorting attributes"""
         return self.order
 
     def getOrderDirection(self):
-        """\brief return the sorting direction as list of ('asc', 'desc', None)"""
+        """return the sorting direction as list of ('asc', 'desc', None)"""
         return self.orderDirection
 
     def getStructureHtml(self):
-        """\brief Generates an html-overview of the tree structure"""
+        """Generates an html-overview of the tree structure"""
         tab = hgTable(border=1)
         tab[0, 0] = (
             self.getName()
@@ -472,7 +463,7 @@ class TableNode(SimpleItem):
         distinct=True,
         checker=None,
     ):
-        """\brief generate the sql query, using the cached parts,
+        """generate the sql query, using the cached parts,
         involving all constrained children.
         limit and offset can be used to select only a range of results,
         function can be used to select a function over the results ['[count(*)'] or
@@ -509,8 +500,8 @@ class TableNode(SimpleItem):
                     if (
                         plist
                         and clist
-                        and plist.listtype in MULLISTS
-                        and clist.listtype in MULLISTS
+                        and plist.listtype in ZC.ZCOL_MLISTS
+                        and clist.listtype in ZC.ZCOL_MLISTS
                     ):
                         # double mullist join on multitables (no value comparison)
                         # three joins for this child
@@ -537,7 +528,7 @@ class TableNode(SimpleItem):
                             count,
                         )
 
-                    elif plist and plist.listtype in MULLISTS:
+                    elif plist and plist.listtype in ZC.ZCOL_MLISTS:
                         # two joins for this child
                         # multi table
                         mulTab = plist.dbname  # '%smulti%s' % (self.mgr.id, pJoin)
@@ -557,7 +548,7 @@ class TableNode(SimpleItem):
                             cJoin,
                         )
 
-                    elif clist and clist.listtype in MULLISTS:
+                    elif clist and clist.listtype in ZC.ZCOL_MLISTS:
                         # two joins for this child
                         # multi table
                         mulTab = clist.dbname  # '%smulti%s' % (child.mgr.id, cJoin)
@@ -598,7 +589,7 @@ class TableNode(SimpleItem):
             )
             for listobj in tablelists:
                 xlist = listobj.listname
-                if listobj.listtype in MULLISTS:
+                if listobj.listtype in ZC.ZCOL_MLISTS:
                     # constrained or ordered by multilists have to be joined (multitable)
                     if xlist in self.filterTree.getConstraints() or xlist in self.order:
                         # we have to join the multitable
@@ -637,7 +628,7 @@ class TableNode(SimpleItem):
 
                             # singlelists join with main table,
                             # multilists join with multitable (aliased)
-                            if listobj.listtype in MULLISTS:
+                            if listobj.listtype in ZC.ZCOL_MLISTS:
                                 # join using multitable
                                 tabstr = "%s.%s" % (listobj.dbname, xlist)
 
@@ -691,7 +682,7 @@ class TableNode(SimpleItem):
                 jlist = self.mgr.listHandler.getList(
                     self.data.tablename, self.joinAttrSelf
                 )
-            if jlist and jlist.listtype in MULLISTS:
+            if jlist and jlist.listtype in ZC.ZCOL_MLISTS:
                 # joinAttr is a list, select autoid
                 select = "SELECT %s%s%s.%s" % (
                     dist,
@@ -723,7 +714,7 @@ class TableNode(SimpleItem):
             for column in col_list:
                 if (
                     not self.data.getField(column)
-                    or self.data.getField(column)[ZC.COL_TYPE] in MULLISTS
+                    or self.data.getField(column)[ZC.COL_TYPE] in ZC.ZCOL_MLISTS
                 ):
                     raise ValueError("Internal Column Selection Error: %s." % column)
                 if column == ZC.TCN_AUTOID:
@@ -808,7 +799,7 @@ class TableNode(SimpleItem):
     def getIDs(
         self, limit=None, offset=None, function=None, col_list=None, distinct=True
     ):
-        """\brief generate an sql query and use it to generate a list of autoids
+        """generate an sql query and use it to generate a list of autoids
         (for databases without join-operators)"""
         # FIXME: implement!
         # find out if db supports joins
@@ -823,7 +814,7 @@ class TableNode(SimpleItem):
         return
 
     def generateOrderLimitOffset(self, order, limit, offset):
-        """\brief return an sql string with the
+        """return an sql string with the
         ORDER BY, LIMIT and OFFSET keywords"""
         orderstring = ""
         limitstring = ""
@@ -854,7 +845,7 @@ class TableNode(SimpleItem):
         return "%s%s%s" % (orderstring, limitstring, offsetstring)
 
     def generateOrder(self, dist):
-        """\brief return a dict containing order dicts with sql strings for the
+        """return a dict containing order dicts with sql strings for the
         correct sql representation
         of the order-field (lists / foreign lists / normal)"""
         do_group = False
@@ -876,7 +867,7 @@ class TableNode(SimpleItem):
                 function = listobj.function
 
             # order by own attr
-            if orderfield[ZC.COL_TYPE] in ALLLISTS and not function:
+            if orderfield[ZC.COL_TYPE] in ZC.ZCOL_LISTS and not function:
                 # function lists have to be joined as TableNode Objects
                 # to order by value
                 # normal lists (even foreign) order on mgr+list.value
@@ -888,7 +879,7 @@ class TableNode(SimpleItem):
                     orderstring = "%s%s.value" % (othermgr, listobj.foreign)
                 elif not listobj.cols:
                     # ordering on main table or multilist table
-                    if orderfield[ZC.COL_TYPE] in MULLISTS:
+                    if orderfield[ZC.COL_TYPE] in ZC.ZCOL_MLISTS:
                         # multilist foreign table ref, but no column given
                         # order on multilisttable valueref column (named like column/order)
                         orderstring = "%s.%s" % (listobj.dbname, order)
@@ -905,13 +896,13 @@ class TableNode(SimpleItem):
                         for col in listobj.cols
                     ]
 
-            elif orderfield[ZC.COL_TYPE] in MULLISTS:
+            elif orderfield[ZC.COL_TYPE] in ZC.ZCOL_MLISTS:
                 # multilists, but complex foreign list, so we order by id
                 orderstring = "%s.%s" % (listobj.dbname, order)
             else:
                 orderstring = "%s%s.%s" % (self.mgr.id, self.data.tablename, order)
             # only for distinct-queries, we need grouping when ordering on multilists
-            if dist and orderfield[ZC.COL_TYPE] in MULLISTS:
+            if dist and orderfield[ZC.COL_TYPE] in ZC.ZCOL_MLISTS:
                 do_group = True
             orderdict = {
                 "col": order,
@@ -948,7 +939,7 @@ class TableNode(SimpleItem):
         return result, do_group
 
     def processWhereString(self, checker=None):
-        """\brief Build where-string"""
+        """Build where-string"""
         where = ""
         if self.filterTree:
             newWhere = self.filterTree.getSQL(
