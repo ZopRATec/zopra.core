@@ -957,9 +957,6 @@ class Manager(Folder, ManagerFinderMixin, ManagerManageTabsMixin):
         # install Icons (all available will be installed, the mapped will have properties)
         self.manage_installIcons()
 
-        # install dialogs (dialogHandler and containers for each dlg)
-        self.manage_installDialogs()
-
     security.declareProtected(managePermission, "manage_beforeDelete")
 
     def manage_beforeDelete(self, item, container):

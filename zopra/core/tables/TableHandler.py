@@ -10,6 +10,7 @@
 
 from OFS.Folder import Folder
 
+from zopra.core import ZC
 from zopra.core import ZM_PM
 from zopra.core.interfaces import ISecurityManager
 from zopra.core.interfaces import IZopRAProduct
@@ -100,7 +101,7 @@ class TableHandler(Folder):
         """ This method handles the collection getter operator."""
         try:
             return getattr(self, key)
-        except:
+        except Exception:
             raise TypeError('Table "%s" does not exist' % key)
 
     def __setitem__(self, key, value):
