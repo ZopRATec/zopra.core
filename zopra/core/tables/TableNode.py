@@ -23,11 +23,8 @@ MULLISTS = ["multilist", "hierarchylist"]
 
 
 class TablePrivate:
-    """\class TablePrivate
-
-    \brief Contains the static information about a database table.
+    """Contains the static information about a database table.
     """
-
     # TODO: why do we store an own listHandler? This gets cached and updateVersion forgets those.
     # TODO: Either flush searchTreeTemplate Cache on updateVersion or restructure here
     # TODO: get ListHandler on the fly from manager instead of storing it?

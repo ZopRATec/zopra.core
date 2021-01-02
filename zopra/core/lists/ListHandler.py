@@ -1,10 +1,3 @@
-###########################################################################
-#    Copyright (C) 2004 by ZopRATec                                       #
-#    <webmaster@ingo-keller.de>                                           #
-#                                                                         #
-# Copyright: See COPYING file that comes with this distribution           #
-#                                                                         #
-###########################################################################
 from types import ListType
 
 from PyHtmlGUI.kernel.hgTable import hgTable
@@ -21,9 +14,6 @@ from zopra.core.lists.List import List
 from zopra.core.lists.MultiList import MultiList
 from zopra.core.utils import getASTFromXML
 from zopra.core.utils import getParentManager
-
-
-LISTTYPES = ["singlelist", "multilist", "hierarchylist"]
 
 
 class ListHandler(Folder):
@@ -85,7 +75,7 @@ class ListHandler(Folder):
                 column = table.column[column_idx]
                 column_type = column.getType().encode("utf-8")
 
-                if column_type in LISTTYPES:
+                if column_type in ZC.ZCOL_LISTS:
                     lobj = self.connectList(manager, table_name, column, nocreate)
 
                     if not lobj:
@@ -359,7 +349,7 @@ class ListHandler(Folder):
             return self[
                 "%s_%s" % (table, column)
             ]  # self.mapcol2list.get( (table, column), None )
-        except:
+        except Exception:
             msg = "No list found for column [%s] in table [%s]" % (column, table)
             raise ValueError(msg)
 

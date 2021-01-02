@@ -1,4 +1,4 @@
-"""Basic ZopRA list handling and list entry management."""
+"""Basic ZopRA list handling and list entry retrieval for lists connected to a table."""
 
 from types import IntType
 from types import ListType
@@ -112,7 +112,7 @@ class ForeignList(GenericList):
             self.__noteslabel = None
 
     def getNoteslabel(self):
-        """\brief Get noteslabel property"""
+        """Get noteslabel property"""
 
         return self.__noteslabel
 
@@ -140,7 +140,7 @@ class ForeignList(GenericList):
             self.__labelsearch = False
 
     def getLabelSearch(self):
-        """\brief Get labelsearch property"""
+        """Get labelsearch property"""
 
         return self.__labelsearch
 
@@ -246,71 +246,6 @@ class ForeignList(GenericList):
         """True if the List refers to a set of special functions in a foreign manager"""
         return not not self.function
 
-    # NOTE: is it useful to allow add/del of values in foreign lists?
-    def addValue(self, value, notes="", rank="", show="yes", **kwargs):
-        """Adds a value to a list lookup table.
-
-        The function adds a new value to a lookup list. It also checks if
-        the value is already in the list. If so it won't add the new value but
-        also won't give a error message (yet).
-
-        \param list_name The argument \a list_name specifies the list where the
-        entry should be inserted.
-
-        \param value  The argument \a value is a string that should be
-                      inserted.
-
-        \param notes  The argument \a notes contains a comment if there is one.
-        \todo   Handling for comments.
-
-        \param rank  The \a rank should be a number and will be used for
-        ordering the entries in the combobox where it will be shown.
-        \todo  Handling for ordering lookup list ranking.
-
-        \param show  If \a show is \c 'yes' then the entry will be shown in the
-        combobox of the list. If it is no then it won't.
-
-        \throw RuntimeError if list not found.
-        """
-        raise ValueError("addValue is only available in base list")
-
-        if self.function:
-            raise ValueError("Non-simple foreign list doesnt support addValue.")
-
-        manager = self.getForeignManager()
-
-        if not manager:
-            return
-
-        if self.foreign in manager.tableHandler:
-            raise ValueError("Non-simple foreign list doesnt support addValue.")
-        elif self.foreign in manager.listHandler:
-            _list = manager.listHandler[self.foreign]
-            return _list.addValue(value, notes, rank, show, **kwargs)
-        else:
-            raise ValueError("Couldn't find foreign list.")
-
-    def delValue(self, autoid):
-        """Deletes a value from a list lookup table."""
-        raise ValueError("delValue is only available in base list")
-
-        if self.function:
-            message = "Unable to delete from non-simple foreign list %s."
-            raise ValueError(message % self.listname)
-
-        manager = self.getForeignManager()
-
-        if not manager:
-            return
-
-        if self.foreign in manager.tableHandler:
-            message = "Unable to delete from non-simple foreign list %s."
-            raise ValueError(message % self.listname)
-        elif self.foreign in manager.listHandler:
-            manager.listHandler[self.foreign].delValue(autoid)
-        else:
-            raise ValueError("Couldn't find foreign list.")
-
     def getEntry(self, autoid):
         """Fetches a value from an list lookup table. Local function."""
 
@@ -412,24 +347,6 @@ class ForeignList(GenericList):
             return []
 
         return completelist
-
-    def updateEntry(self, descr_dict, entry_id):
-        """changes list values in the database"""
-        raise ValueError("updateEntry is only available in base list")
-
-        if self.function:
-            raise ValueError("Non-simple foreign list doesnt support updateEntry.")
-
-        manager = self.getForeignManager()
-
-        if manager:
-            if self.foreign in manager.tableHandler:
-                raise ValueError("Non-simple foreign list doesnt support updateEntry.")
-            elif self.foreign in manager.listHandler:
-                _list = manager.listHandler[self.foreign]
-                return _list.updateEntry(descr_dict, entry_id)
-            else:
-                raise ValueError("Couldn't find foreign list.")
 
     def getAutoidByValue(self, value, rank=None):
         """Returns the autoid from an specified list entry."""
@@ -566,12 +483,9 @@ class ForeignList(GenericList):
                 raise ValueError("Couldn't find foreign list.")
 
     def getValueCount(self):
-        """Returns the length of a list.
+        """Returns the number of entries in this list.
 
-        \param list_name  The argument \a list_name is the name of the list
-        without the id prefix.
-
-        \return The number of rows, otherwise None
+        :return: The number of entries.
         """
         manager = self.getForeignManager()
 
@@ -596,7 +510,7 @@ class ForeignList(GenericList):
     def getValueByAutoid(self, autoid, lang=None):
         """Returns the value from an specified list entry/entries."""
         # additional check for None to avoid fetching foreign manager etc.
-        if autoid == None:
+        if autoid is None:
             return ""
 
         # NOTE: do not handle lists recursivly since getting the
@@ -677,8 +591,6 @@ class ForeignList(GenericList):
 
     def getViewTabDialog(self, REQUEST):
         """view tab dialog creation is extra for overwriting and extending the dialog in multilist"""
-        message = ""
-
         dlg = getStdDialog("", "viewTab")
         dlg.setHeader("<dtml-var manage_page_header><dtml-var manage_tabs>")
         dlg.setFooter("<dtml-var manage_page_footer>")

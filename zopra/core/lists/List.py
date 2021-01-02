@@ -1,4 +1,4 @@
-"""Basic List Handling and List Entry Management."""
+"""Basic List Handling and List Entry Management for the ZopRA base lists."""
 
 from copy import deepcopy
 from operator import itemgetter
@@ -53,7 +53,7 @@ class List(GenericList):
     _debug_disable_caching = False
 
     def __init__(self, listname, label=None, docache=True, translations=[]):
-        """\brief Constructs a List."""
+        """Constructs a List."""
         GenericList.__init__(self, listname, label)
 
         self.cache = None
@@ -67,7 +67,7 @@ class List(GenericList):
         self._list_definition = ldef
 
     def createTable(self):
-        """\brief Create the database table."""
+        """Create the database table."""
 
         # try to create the list
         mgr = self.getManager()
@@ -78,7 +78,7 @@ class List(GenericList):
         m_product.addTable(mgr.id + self.listname, self._list_definition)
 
     def deleteTable(self, omit_log=None):
-        """\brief Create the database table."""
+        """Create the database table."""
 
         mgr = self.getManager()
         m_product = mgr.getManager(ZC.ZM_PM)
@@ -93,7 +93,7 @@ class List(GenericList):
 
     # noedit property methods
     def setNoEdit(self, noedit):
-        """\brief Set (no-)edit property"""
+        """Set (no-)edit property"""
 
         if noedit:
             self.__noedit = True
@@ -101,14 +101,14 @@ class List(GenericList):
             self.__noedit = False
 
     def getNoEdit(self):
-        """\brief Get (no-)edit property"""
+        """Get (no-)edit property"""
 
         return self.__noedit
 
     noedit = property(getNoEdit, setNoEdit)
 
     def copy(self):
-        """\brief Create a copy of the list."""
+        """Create a copy of the list."""
         cop = self.__class__(self.listname, self.label, self.enableCache)
 
         cop.noedit = self.noedit
@@ -116,32 +116,22 @@ class List(GenericList):
         return cop
 
     def addValue(self, value, notes="", rank=None, show="yes", **kwargs):
-        """\brief Adds a value to a list lookup table.
+        """Adds a value to a list lookup table.
 
         The function adds a new value to a lookup list. It also checks if
         the value is already in the list. If so it won't add the new value but
         also won't give a error message (yet).
 
-        \param list_name The argument \a list_name specifies the list where the
-        entry should be inserted.
+        :param value: Value will be inserted into the list.
 
-        \param value  The argument \a value is a string that should be
-                      inserted.
+        :param notes: A comment (optional)
 
-        \param notes  The argument \a notes contains a comment if there is one.
-        \todo   Handling for comments.
+        :param rank: Int value for ordering the entries in the list display.
 
-        \param rank  The \a rank should be a number and will be used for
-        ordering the entries in the combobox where it will be shown.
-        \todo  Handling for ordering lookup list ranking.
+        :param show: yes/no switch to hide entries.
 
-        \param show  If \a show is \c 'yes' then the entry will be shown in the
-        combobox of the list. If it is no then it won't.
-
-        \param use keyword arguments in the form 'value_en' = '<en_value>' to pass in
-        translated values, that will be evaluated according to the codes in self.translations
-
-        \throw RuntimeError if list not found.
+        :param **kwargs: use keyword arguments in the form 'value_en' = '<en_value>' to pass in
+        translated values, that will be evaluated according to the language codes in self.translations
         """
         mgr = self.getManager()
 
@@ -181,7 +171,7 @@ class List(GenericList):
             return result
 
     def delValue(self, autoid):
-        """\brief Deletes a value from a list lookup table."""
+        """Deletes a value from a list lookup table."""
         mgr = self.getManager()
 
         # now delete
@@ -189,7 +179,7 @@ class List(GenericList):
         self.clearCache()
 
     def getEntry(self, autoid, use_cache=True):
-        """\brief Fetches a value from an list lookup table. Local function.
+        """Fetches a value from an list lookup table. Local function.
         use_cache can be set to false to force db-lookup for example for cache-filling"""
         autoid = int(autoid)
 
@@ -237,7 +227,7 @@ class List(GenericList):
         return entry_dict
 
     def getEntries(self, value=None, with_hidden=False):
-        """\brief Returns all list entries of one list."""
+        """Returns all list entries of one list."""
         mgr = self.getManager()
         completelist = []
 
@@ -283,7 +273,7 @@ class List(GenericList):
         return completelist
 
     def getEntriesByParent(self, parentid=None, with_hidden=False):
-        """\brief Returns all entrys Connected to a Parent, 0 = First Rank Entries without parent"""
+        """Returns all entrys Connected to a Parent, 0 = First Rank Entries without parent"""
         # helper function used for basic lists that are treated as hierarchylists (when one is connected to this list)
         # value - searches are not put in cache and not taken from cache completely
         # only the single entries are later on fetched from cache
@@ -309,7 +299,7 @@ class List(GenericList):
         return completelist
 
     def updateEntry(self, descr_dict, entry_id):
-        """\brief changes list values in the database"""
+        """changes list values in the database"""
         mgr = self.getManager()
 
         if entry_id and descr_dict:
@@ -326,7 +316,7 @@ class List(GenericList):
             return res
 
     def getAutoidByValue(self, value, rank=None, ignore_cache=False):
-        """\brief Returns the autoid from an specified list entry."""
+        """Returns the autoid from an specified list entry."""
         assert (
             isinstance(value, StringType)
             or isinstance(value, ListType)
@@ -401,7 +391,7 @@ class List(GenericList):
 
     # freetextsearch
     def getAutoidsByFreeText(self, value):
-        """\brief Returns the autoid from any fitting list entry."""
+        """Returns the autoid from any fitting list entry."""
         mgr = self.getManager()
         reslist = []
         upval = value.upper()
@@ -422,23 +412,20 @@ class List(GenericList):
         return reslist
 
     def clearCache(self):
-        """\brief Empties all cached objects from list handling."""
+        """Empties all cached objects from list handling."""
         self.cache = None
 
     def getValueCount(self):
-        """\briefs Returns the length of a list.
+        """Returns the number of entries in this list.
 
-        \param list_name  The argument \a list_name is the name of the list
-        without the id prefix.
-
-        \return The number of rows, otherwise None
+        :return: The number of entries.
         """
         mgr = self.getManager()
 
         return mgr.getManager(ZC.ZM_PM).getRowCount(mgr.id + self.listname)
 
     def getValueByAutoid(self, autoid, lang=None):
-        """\brief Returns the value from an specified list entry/entries."""
+        """Returns the value from an specified list entry/entries."""
         if isinstance(autoid, ListType):
             is_list = True
             autoids = autoid
@@ -516,7 +503,7 @@ class List(GenericList):
     ##########################################################################
 
     def editForm(self, REQUEST=None):
-        """\brief Return the html source of the edit list form."""
+        """Return the html source of the edit list form."""
         return "Legacy method. Not implemented."
 
     ##########################################################################
@@ -525,7 +512,7 @@ class List(GenericList):
     #
     ##########################################################################
     def viewTab(self, REQUEST):
-        """\brief List overview tab."""
+        """List overview tab."""
         message = ""
         # test Request for creation button
         if REQUEST.get("create"):
@@ -562,7 +549,7 @@ class List(GenericList):
             if message:
                 tab[4, 0] = hgLabel(message)
                 tab.setCellSpanning(4, 0, colspan=3)
-        except:
+        except Exception:
             # show table creation button for own normal lists
             tab[4, 0] = hgPushButton("Create List Table", "create")
             tab.setCellSpanning(4, 0, colspan=3)
@@ -576,7 +563,7 @@ class List(GenericList):
 
     # TODO: what about translation-columns?
     def editTab(self, REQUEST):
-        """\brief List edit tab."""
+        """List edit tab."""
         message = ""
 
         # test Request for edit
@@ -687,7 +674,7 @@ class List(GenericList):
         return HTML(dlg.getHtml())(self, REQUEST)
 
     def cacheTab(self, REQUEST):
-        """\brief Table listcache tab."""
+        """Table listcache tab."""
 
         dlg = getStdDialog(action="cacheTab")
         dlg.setHeader("<dtml-var manage_page_header><dtml-var manage_tabs>")
@@ -706,7 +693,7 @@ class List(GenericList):
         return HTML(dlg.getHtml())(self, REQUEST)
 
     def showListCache(self):
-        """\brief Show all cached lists belonging to that table."""
+        """Show all cached lists belonging to that table."""
         tab = hgTable()
         tab[0, 0] = "Name"
 
@@ -722,6 +709,6 @@ class List(GenericList):
         return tab
 
     def updateRevision(self):
-        """\brief update this object"""
+        """update this object"""
         self.enableCache = True
         self.cache = None

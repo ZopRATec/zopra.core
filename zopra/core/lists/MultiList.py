@@ -21,7 +21,7 @@ class MultiList(ForeignList):
         map=None,
         docache=True,
     ):
-        """\brief Constructs a MultiList"""
+        """Constructs a MultiList"""
         ForeignList.__init__(self, listname, manager, function, label)
 
         self.enableCache = docache

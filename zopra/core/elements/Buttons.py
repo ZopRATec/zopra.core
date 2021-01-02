@@ -1,31 +1,19 @@
-############################################################################
-#    Copyright (C) 2004 by ZopRATec GbR                                    #
-#    webmaster@ingo-keller.de                                              #
-#                                                                          #
-#    This program is free software; you can redistribute it and#or modify  #
-#    it under the terms of the GNU General Public License as published by  #
-#    the Free Software Foundation; either version 2 of the License, or     #
-#    (at your option) any later version.                                   #
-############################################################################
-
 from PyHtmlGUI.widgets.hgPushButton import hgPushButton
 from zopra.core.elements.Styles.Default import ssiB_BUTTON
 
 
-# dialog prefixe
+# dialog prefixes
 DLG_CUSTOM = "c_"  # to recognize custom fields
 DLG_HIDDEN = "h_"  # to recognize hidden fields
 
-# dialog button prefixe
+# dialog button prefixes
 DLG_FUNCTION = "f_"  # to recognize the pressed buttons
 DLG_SWITCH = "s_"  # to recognize the switch buttons
 DLG_INC = "i_"  # to recognize the increment buttons in the listview
 DLG_DEC = "d_"  # to recognize the decrement buttons in the listview
 DLG_ORDER = "o_"  # to recognize the order buttons
 
-#
 # button labels
-#
 BTN_L_ADD = "Add to Database"
 BTN_L_UPDATE = "Update"
 BTN_L_SEARCH = "Search"
@@ -68,9 +56,8 @@ BTN_BASKET_REMOVEALL = "Remove All"
 BTN_BASKET_ADD = "Add to Basket"
 BTN_BASKET_POP = "Move from Basket"
 BTN_BASKET_GET = "Copy from Basket"
-#
+
 # button definition
-#
 mpfAddButton = hgPushButton(BTN_L_ADD, DLG_FUNCTION + BTN_L_ADD)
 mpfUpdateButton = hgPushButton(BTN_L_UPDATE, DLG_FUNCTION + BTN_L_UPDATE)
 mpfSearchButton = hgPushButton(BTN_L_SEARCH, DLG_FUNCTION + BTN_L_SEARCH)
@@ -106,23 +93,17 @@ mpfRemoveHLButton = hgPushButton(BTN_HL_REMOVE, DLG_FUNCTION + BTN_HL_REMOVE)
 mpfBasketActivateButton = hgPushButton(
     BTN_BASKET_ACTIVATE, DLG_FUNCTION + BTN_BASKET_ACTIVATE
 )
-
 mpfBasketDeactivateButton = hgPushButton(
     BTN_BASKET_DEACTIVATE, DLG_FUNCTION + BTN_BASKET_DEACTIVATE
 )
-
 mpfBasketRemoveButton = hgPushButton(
     BTN_BASKET_REMOVE, DLG_FUNCTION + BTN_BASKET_REMOVE
 )
-
 mpfBasketRemoveAllButton = hgPushButton(
     BTN_BASKET_REMOVEALL, DLG_FUNCTION + BTN_BASKET_REMOVEALL
 )
-
 mpfBasketAddButton = hgPushButton(BTN_BASKET_ADD, DLG_FUNCTION + BTN_BASKET_ADD)
-
 mpfBasketPopButton = hgPushButton(BTN_BASKET_POP, DLG_FUNCTION + BTN_BASKET_POP)
-
 mpfBasketGetButton = hgPushButton(BTN_BASKET_GET, DLG_FUNCTION + BTN_BASKET_GET)
 
 # width style for basket buttons
@@ -136,14 +117,10 @@ mpfBasketDeactivateButton.setSsiName(".basket_button")
 mpfBasketRemoveButton.setSsiName(".basket_button")
 mpfBasketRemoveAllButton.setSsiName(".basket_button")
 
-#
 # Reset Button
-#
 mpfResetButton.setFunction(hgPushButton.PB_RESET)
 
-#
 # button tooltips
-#
 mpfAddButton.setToolTip("Add information to the database")
 mpfUpdateButton.setToolTip("Update information in the database")
 mpfSearchButton.setToolTip("Search for information in the database")
@@ -178,18 +155,15 @@ mpfSelectHLButton.setToolTip("Expand/Add list entry")
 mpfRemoveHLButton.setToolTip("Remove list entry")
 
 
-# TODO: This is a function for a dialog object
-#       if a session oriented dialog class becomes available for ZopRA
-#       it should become a class function instead of procedural function
 def getPressedButton(REQUEST=None, buttonType=DLG_FUNCTION):
-    """\brief Filteres the pressed button out of the REQUEST Handler.
+    """Filteres the pressed button out of the REQUEST Handler.
 
     Assumtions:
     - 2 characters as prefix
     - more than one button with the same name is present, than they have the
       same meaning and so only one can be presented to the outside.
 
-    \return button name list, otherwise None.
+    :return: button name list
     """
     button_dict = {}
     if REQUEST:
@@ -215,14 +189,13 @@ def getPressedButton(REQUEST=None, buttonType=DLG_FUNCTION):
 
 
 def getSpecialField(REQUEST=None, fieldType=DLG_CUSTOM):
-    """\brief Filteres the fields with fieldType prefix out of the REQUEST
-              Handler.
+    """Filteres the fields with fieldType prefix out of the REQUEST Handler.
 
     Assumtions:
     - x characters as prefix
     - unique field names
 
-    \return fieldname->value - dictionary, otherwise None.
+    :return: fieldname->value - dictionary
     """
     field_dict = {}
     if REQUEST:

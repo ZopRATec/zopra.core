@@ -277,6 +277,6 @@ class ZC:
     ############################################################################
     E_CALL_ABSTRACT = "[Error] Call of an abstract method."
     E_PARAM_TYPE = "[Error] Parameter %s has to be %s, but got %s."
-    E_PARAM_FAIL   = '[Error] Parameter %s has to be given, but got None.'
+    E_PARAM_FAIL = "[Error] Parameter %s has to be given, but got None."
 
     checkType = staticmethod(PyHtmlGUI.hg.checkType)

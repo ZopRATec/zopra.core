@@ -3,7 +3,7 @@ from zopra.core.lists.MultiList import MultiList
 
 
 class HierarchyList(MultiList):
-    """ Hierarchical Lists (based on Multilists) """
+    """Hierarchical Lists (Tree Lists) based on Multilists"""
 
     _className = "HierarchyList"
     _classType = MultiList._classType + [_className]
@@ -28,7 +28,8 @@ class HierarchyList(MultiList):
         return int(entry.get(ZC.RANK, 0))
 
     def getHierarchyListAncestors(self, autoid):
-        """utility function for new hierarchylist template handling, retrieves the ancestor line of an entry with the given autoid"""
+        """utility function for new hierarchylist template handling, retrieves
+        the ancestor line of an entry with the given autoid"""
         ancestors = []
         # show / list widgets need an empty list, when no value was given (None or '')
         if autoid in (None, ""):
