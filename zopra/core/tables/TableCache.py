@@ -1,10 +1,5 @@
-###########################################################################
-#    Copyright (C) 2005 by by ZopRATec GbR                                #
-#    <webmaster@ingo-keller.de>                                           #
-# Copyright: See COPYING file that comes with this distribution           #
-#                                                                         #
-###########################################################################
 # TODO: use BTree as Cache to speed up pickle and unpickle
+# TODO: even better: use RAMCache
 from types import ListType
 
 from OFS.SimpleItem import SimpleItem

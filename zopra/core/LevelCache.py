@@ -1,9 +1,3 @@
-###########################################################################
-#    Copyright (C) 2005 by by ZopRATec GbR                                #
-#    <webmaster@ingo-keller.de>                                           #
-# Copyright: See COPYING file that comes with this distribution           #
-#                                                                         #
-###########################################################################
 from zopra.core import SimpleItem
 
 
@@ -11,9 +5,7 @@ ORDER = "$_order"
 
 
 class LevelCache(SimpleItem):
-    """\brief Level Cache
-
-    The Level Cache is a generic hierarchical cache using lists of keys.
+    """The Level Cache is a generic hierarchical cache using lists of keys.
     """
 
     _className = "LevelCache"
@@ -29,7 +21,7 @@ class LevelCache(SimpleItem):
     #
 
     def __init__(self, levels=1, counts=[200], name="cache", nonpersistent=False):
-        """\brief Constructs a LevelCache with <levels> number of
+        """Constructs a LevelCache with <levels> number of
                levels.
         \param levels The number of levels in this cache.
         \param name The variable name of this cache in the
@@ -44,7 +36,7 @@ class LevelCache(SimpleItem):
         self.forcepersistence = not nonpersistent
 
     def invalidateLevel(self, level, key):
-        """\brief Cleares the cache.
+        """Cleares the cache.
         \param level Only removes the items with the given key
                in this level, counting from 0.
         """
@@ -68,7 +60,7 @@ class LevelCache(SimpleItem):
             result.append(cache)
 
     def invalidateItem(self, keys):
-        """\brief Cleares the cache.
+        """Cleares the cache.
         \param level Only removes the items with the given key
                in this level, counting from 0.
         """
@@ -88,7 +80,7 @@ class LevelCache(SimpleItem):
             self.makePersistent()
 
     def invalidate(self):
-        """\brief Cleares the cache."""
+        """Cleares the cache."""
         # clear cache completely
         self.items = {ORDER: []}
 
@@ -97,7 +89,7 @@ class LevelCache(SimpleItem):
             self.makePersistent()
 
     def get(self, keys):
-        """\brief Return a cached item if available."""
+        """Return a cached item if available."""
 
         assert len(keys) == self.levels
 
@@ -110,7 +102,7 @@ class LevelCache(SimpleItem):
         return cache
 
     def insert(self, keys, value):
-        """\brief Insert an item into cache."""
+        """Insert an item into cache."""
         assert len(keys) == self.levels
 
         cache = self.items
@@ -151,7 +143,7 @@ class LevelCache(SimpleItem):
             self.makePersistent()
 
     def makePersistent(self):
-        """\brief Zope persistence needs to be activated... ugly style."""
+        """Zope persistence needs to be activated... ugly style."""
         if self.name:
             # this is the only reason to have simpleitem as superclass
             setattr(self.getParentNode(), self.name, self)

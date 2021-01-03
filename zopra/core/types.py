@@ -1,13 +1,7 @@
-"""
-Created on 6 May 2018
-
-@author: Peter Seifert
-"""
-
 # Python 3 safety switch:
 try:
     UnicodeType = unicode
-except:
+except Exception:
     UnicodeType = str
 IntType = int
 LongType = int

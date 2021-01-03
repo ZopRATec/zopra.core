@@ -1,4 +1,5 @@
-"""The ZopRAProduct is the center of a ZopRA installation and handles the database connection."""
+"""The ZopRAProduct is the center of a ZopRA installation and handles the
+database connection."""
 
 import pickle
 from datetime import datetime

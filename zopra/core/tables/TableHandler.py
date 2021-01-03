@@ -1,13 +1,3 @@
-############################################################################
-#    Copyright (C) 2004 by ZopRATec GbR                                    #
-#    webmaster@ingo-keller.de                                              #
-#                                                                          #
-#    This program is free software; you can redistribute it and#or modify  #
-#    it under the terms of the GNU General Public License as published by  #
-#    the Free Software Foundation; either version 2 of the License, or     #
-#    (at your option) any later version.                                   #
-############################################################################
-
 from OFS.Folder import Folder
 
 from zopra.core import ZC
@@ -17,9 +7,6 @@ from zopra.core.interfaces import IZopRAProduct
 from zopra.core.interfaces import IZopRATable
 from zopra.core.tables.Table import Table
 from zopra.core.utils import getASTFromXML
-
-
-E_TABLE_EXPECTED = "A table object was expected but got %s."
 
 
 class TableHandler(Folder):
@@ -108,7 +95,8 @@ class TableHandler(Folder):
         """ This method handles the collection assignment operator."""
 
         if not IZopRATable.providedBy(value):
-            raise ValueError(E_TABLE_EXPECTED % type(value))
+            errmsg = "A table object was expected but got %s." % type(value)
+            raise ValueError(errmsg)
 
         setattr(self, key, value)
 
