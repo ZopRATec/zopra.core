@@ -302,7 +302,8 @@ class Table(SimpleItem, PropertyManager):
             #                                          5) None-valued singlelist fields are expressed as None
             #                                          6) everything else (other false values) is expressed as None
             # 3 to 6 could not be achieved by boolean expressions, but by inner if
-            def check(x, y):
+            def check(tup):
+                x, y = tup
                 new_y = (
                     hasattr(y, "strftime")
                     and y.strftime("%d.%m.%Y")
