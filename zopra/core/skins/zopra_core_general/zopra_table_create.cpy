@@ -31,18 +31,18 @@ entry["autoid"] = autoid
 
 # add repeatable fields
 autoidlist = [str(autoid)]
-if request.has_key("repeats") and request["repeats"] > 1:
+if "repeats" in request and request["repeats"] > 1:
     fieldsets = context.getLayoutInfo(table, "create")
     # get repeatable fields
     r_fields = []
     for element in fieldsets:
-        if element.has_key("repeatfields"):
+        if "repeatfields" in element:
             r_fields.extend(element["repeatfields"])
 
     for i in range(2, int(request["repeats"]) + 1):
         add = False
         for field in r_fields:
-            if request.has_key(field + "_" + str(i)) and request[field + "_" + str(i)]:
+            if field + "_" + str(i) in request and request[field + "_" + str(i)]:
                 entry[field] = request[field + "_" + str(i)]
                 add = True
         if add:
@@ -134,7 +134,7 @@ if request.get("origtable") and request.get("origid") and request.get("origattri
 # overwrite in request for formcontroller traversal
 request.form["autoid"] = autoid
 request.other["autoid"] = autoid
-if request.form.has_key("form.submitted"):
+if "form.submitted" in request.form:
     del request.form["form.submitted"]
 
 if len(autoidlist) > 1:

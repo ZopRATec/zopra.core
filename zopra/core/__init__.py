@@ -1,6 +1,7 @@
 """Provides module functions to automatically load all available ZopRA
 SubModules and manually add them to Zope-Folders.
 """
+from __future__ import print_function
 import inspect
 import os
 import pkg_resources
@@ -257,7 +258,7 @@ def registerManager(context, managerClass):
 
 def initialize(context):
     """Initialize ZopRA with all Managers"""
-    print "Initializing ZopRA"
+    print("Initializing ZopRA")
 
     from zopra.core.tools.ZopRAProduct import ZopRAProduct
     from zopra.core.Manager import Manager

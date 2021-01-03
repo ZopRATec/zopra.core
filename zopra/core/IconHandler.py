@@ -1,6 +1,6 @@
 from copy import copy
 from os import path
-from types import StringType
+from zopra.core.types import StringType
 
 from zopra.core import BadRequest
 from zopra.core import Folder

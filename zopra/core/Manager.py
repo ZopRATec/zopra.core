@@ -3,9 +3,9 @@
 import os.path
 from copy import deepcopy
 from importlib import import_module
-from types import DictType
-from types import ListType
-from types import TupleType
+from zopra.core.types import DictType
+from zopra.core.types import ListType
+from zopra.core.types import TupleType
 
 from zope.interface import implements
 
@@ -1116,7 +1116,7 @@ class Manager(Folder, ManagerFinderMixin, ManagerManageTabsMixin):
             try:
                 mailHost.simple_send(mto, mfrom, subject, body)
                 return True
-            except Exception, exc:
+            except Exception as exc:
                 msg = "E-Mail Error: Could not send email %s from %s to %s: Error %s"
                 msg = msg % (subject, mfrom, mto, str(exc))
                 self.getManager(ZC.ZM_PM).writeLog(msg)
@@ -1147,7 +1147,7 @@ class Manager(Folder, ManagerFinderMixin, ManagerManageTabsMixin):
                     charset=charset,
                 )
                 return True
-            except Exception, exc:
+            except Exception as exc:
                 msg = "E-Mail Error: Could not send email %s from %s to %s: Error %s"
                 msg = msg % (subject, mfrom, mto, str(exc))
                 self.getManager(ZC.ZM_PM).writeLog(msg)

@@ -1,4 +1,5 @@
-from types import ListType
+from __future__ import print_function
+from zopra.core.types import ListType
 
 from PyHtmlGUI.kernel.hgTable import hgTable
 from PyHtmlGUI.widgets.hgLabel import hgLabel
@@ -137,7 +138,7 @@ class ListHandler(Folder):
                         lobj.listname,
                     )
                     pm.executeDBQuery(sql)
-                except Exception, ex:
+                except Exception as ex:
                     if str(ex).find("Duplicate key name") != -1:
                         pass
                     else:
@@ -150,7 +151,7 @@ class ListHandler(Folder):
                         lobj.listname,
                     )
                     pm.executeDBQuery(sql)
-                except Exception, ex:
+                except Exception as ex:
                     if str(ex).find("Duplicate key name") != -1:
                         pass
                     else:
@@ -168,16 +169,16 @@ class ListHandler(Folder):
                 )
                 pm.executeDBQuery(sql)
 
-            except Exception, ex:
+            except Exception as ex:
                 if str(ex).find("Duplicate key name") != -1:
                     pass
                 else:
                     raise
             counter2 += 1
-        print "created indexes (table-ref, list-ref) for %s multilists, , created indexes (value) for % lists" % (
+        print("created indexes (table-ref, list-ref) for %s multilists, , created indexes (value) for % lists" % (
             counter1,
             counter2,
-        )
+        ))
 
     def getManager(self):
         """This method returns the owning manager.

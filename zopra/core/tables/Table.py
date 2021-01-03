@@ -1,11 +1,11 @@
 from copy import copy
 from copy import deepcopy
 from itertools import izip
-from types import BooleanType
-from types import DictType
-from types import ListType
-from types import StringType
-from types import TupleType
+from zopra.core.types import BooleanType
+from zopra.core.types import DictType
+from zopra.core.types import ListType
+from zopra.core.types import StringType
+from zopra.core.types import TupleType
 
 from zope.interface.declarations import implements
 
@@ -745,7 +745,7 @@ class Table(SimpleItem, PropertyManager):
                             )
                             multilist.addMLRef(autoid, item, notes)
                             res = True
-            except Exception, all_:
+            except Exception as all_:
                 # overwrite the args tuple with a new tuple containing the descr_dict
                 all_.args = all_.args + (descr_dict,)
                 raise

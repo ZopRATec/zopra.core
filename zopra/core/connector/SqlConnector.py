@@ -1,10 +1,10 @@
 from importlib import import_module
 from time import strftime
 from time import strptime
-from types import DictType
-from types import IntType
-from types import ListType
-from types import StringType
+from zopra.core.types import DictType
+from zopra.core.types import IntType
+from zopra.core.types import ListType
+from zopra.core.types import StringType
 
 from zopra.core import ZC
 from zopra.core import SimpleItem

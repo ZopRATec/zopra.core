@@ -2,8 +2,8 @@
 including attached list tables"""
 import string
 from copy import copy
-from types import ListType
-from types import StringType
+from zopra.core.types import ListType
+from zopra.core.types import StringType
 
 from PyHtmlGUI.kernel.hgTable import hgTable
 from PyHtmlGUI.widgets.hgLabel import hgNEWLINE

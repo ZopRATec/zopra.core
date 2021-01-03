@@ -1,7 +1,8 @@
-from types import BooleanType
-from types import DictType
-from types import IntType
-from types import StringType
+from __future__ import print_function
+from zopra.core.types import BooleanType
+from zopra.core.types import DictType
+from zopra.core.types import IntType
+from zopra.core.types import StringType
 
 from zopra.core import ZC
 from zopra.core.connector.SqlConnector import SqlConnector
@@ -76,7 +77,7 @@ class PostgresConnector(SqlConnector):
         try:
             return connection.query(query_text)[1]
         except Exception as e:
-            print query_text
+            print(query_text)
             raise e
 
     def createTable(self, name, cols_dict, edit_tracking=True):

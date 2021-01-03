@@ -9,7 +9,7 @@ from zopra.core.ImageProperties import ImageProperties
 
 if __debug__:
     # import types for asserts
-    from types import StringType, UnicodeType
+    from zopra.core.types import StringType, UnicodeType
 
 
 class Columnlist:

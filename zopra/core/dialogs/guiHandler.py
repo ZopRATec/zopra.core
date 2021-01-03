@@ -1,4 +1,5 @@
-from types import ListType
+from __future__ import print_function
+from zopra.core.types import ListType
 
 from PyHtmlGUI.dialogs.hgWizard import hgWizard
 from PyHtmlGUI.widgets.hgCheckBox import hgCheckBox
@@ -175,8 +176,8 @@ class guiHandler(object):
 
     def performAccepted(self, manager):
         """This function is called after a dialog was accepted."""
-        print "accepted"
+        print("accepted")
 
     def performRejected(self, manager):
         """This function is called after a dialog was rejected."""
-        print "rejected"
+        print("rejected")

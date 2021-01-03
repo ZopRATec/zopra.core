@@ -14,13 +14,13 @@ target_template = "/zopra_manager_main_form"
 if table:
     key = "f_%s_intern_" % table
 
-    if req.form.has_key(key + "create"):
+    if key + "create" in req.form:
         target_template = "/zopra_table_create_form?table=%s" % table
-    elif req.form.has_key(key + "search"):
+    elif key + "search" in req.form:
         target_template = "/zopra_table_search_form?table=%s" % table
-    elif req.form.has_key(key + "list"):
+    elif key + "list" in req.form:
         target_template = "/zopra_table_search_result?table=%s" % table
-    elif req.form.has_key(key + "import"):
+    elif key + "import" in req.form:
         target_template = "/zopra_table_import_form?table=%s" % table
 
 res.redirect(context.absolute_url() + target_template)

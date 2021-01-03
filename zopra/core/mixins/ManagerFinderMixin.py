@@ -1,3 +1,4 @@
+from __future__ import print_function
 from OFS.interfaces import IObjectManager
 
 from zopra.core.constants import ZC
@@ -182,8 +183,8 @@ class ManagerFinderMixin(object):
         one manager of a special type is instantiated.
         :return: a manager object if one was found, otherwise None."""
         assert ZC.checkType("name", name, type(""))
-        print "Search for ", name, obj_id, zopratype
-        print "-------------------------------------"
+        print("Search for ", name, obj_id, zopratype)
+        print("-------------------------------------")
         # go back until we find a folder
         # for older zope versions that have a problem with redirection and
         # getParentNode

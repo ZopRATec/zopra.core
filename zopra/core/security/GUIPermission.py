@@ -1,4 +1,4 @@
-from types import ListType
+from zopra.core.types import ListType
 
 
 class GUIPermission(object):

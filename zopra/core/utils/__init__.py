@@ -1,12 +1,12 @@
 import inspect
 import os.path
 import StringIO
-import types
 from xml.sax import make_parser
 
 import zopra.core
 from zopra.core.utils.Classes import XMLHandler
 from zopra.core.interfaces import IZopRAManager
+from zopra.core.types import StringType
 
 
 def getZopRAPath():
@@ -48,7 +48,7 @@ def getASTFromXML(xml):
     @param xml - string containing the XML
     @result object - the object tree's root element
     """
-    assert isinstance(xml, types.StringType)
+    assert isinstance(xml, StringType)
 
     inputFile = StringIO.StringIO(xml)
 

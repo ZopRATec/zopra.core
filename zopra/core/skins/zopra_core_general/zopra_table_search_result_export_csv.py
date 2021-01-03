@@ -59,5 +59,5 @@ try:
 
     return result
 
-except Exception, e:
+except Exception as e:
     return "Error during export: " + str(e)

@@ -28,13 +28,13 @@ zopra_attr_present = request.get("zopra_attr_present", [])
 for attr in types.keys():
     if attr in zopra_attr_present:
         if types[attr] == "bool":
-            if not copyentry.has_key(attr):
+            if attr not in copyentry:
                 copyentry[attr] = 0
         elif types[attr] == "multilist":
-            if not copyentry.has_key(attr):
+            if attr not in copyentry:
                 copyentry[attr] = []
         elif types[attr] == "float":
-            if copyentry.has_key(attr):
+            if attr in copyentry:
                 copyentry[attr].replace(",", ".")
 
 # check iscopyof (working copy marker) on the db entry (origentry might not include this info)

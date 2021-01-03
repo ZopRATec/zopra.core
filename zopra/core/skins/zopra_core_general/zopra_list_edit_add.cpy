@@ -21,7 +21,7 @@ request = context.REQUEST
 kwargs = {}
 for translation in lobj.translations:
     key = "new_value_" + translation
-    if request.form.has_key(key):
+    if key in request.form:
         kwargs["value_" + translation] = request.form.get(key)
 lobj.addValue(new_value, "", new_rank, **kwargs)
 message = _("zopra_list_edit_added", default=u"Created entry.")

@@ -1,4 +1,4 @@
-from types import ListType
+from zopra.core.types import ListType
 
 from zopra.core import ZC
 from zopra.core import SimpleItem

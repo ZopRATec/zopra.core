@@ -3,7 +3,7 @@
 from copy import copy
 from time import strftime
 from time import strptime
-from types import ListType
+from zopra.core.types import ListType
 
 from PyHtmlGUI.kernel.hgTable import hgTable
 from PyHtmlGUI.widgets.hgLabel import hgNEWLINE

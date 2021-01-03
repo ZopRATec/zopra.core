@@ -9,8 +9,8 @@ from binascii import hexlify
 from copy import deepcopy
 from random import randint
 from sets import Set as set
-from types import ListType
-from types import StringType
+from zopra.core.types import ListType
+from zopra.core.types import StringType
 from urllib import quote
 
 # Zope Imports

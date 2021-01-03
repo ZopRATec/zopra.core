@@ -35,7 +35,7 @@ if len(data) == 0:
     return state.set(status="failure", context=context)
 try:
     data = data.decode(encoding).encode("utf8")
-except UnicodeDecodeError, e:
+except UnicodeDecodeError as e:
     message = _(
         "zopra_twocol_import_encoding_error",
         default=u"CSV: Could not decode the file with the given encoding.",
@@ -45,7 +45,7 @@ except UnicodeDecodeError, e:
     )
     context.plone_utils.addPortalMessage(error_message, "info")
     return state.set(status="failure", context=context)
-except LookupError, e:
+except LookupError as e:
     message = _("zopra_twocol_import_no_encoding", default=u"CSV: Unknown encoding.")
     state.setError(
         "",
@@ -62,7 +62,7 @@ except LookupError, e:
 lines = data.splitlines()
 try:
     parsedLines = manager.csv_read(lines, delim=delim)
-except Exception, e:
+except Exception as e:
     error = _(
         "zopra_twocol_import_cvs_error",
         default=u"CSV: Error during CSV parsing (Error:  ${error})",

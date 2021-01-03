@@ -33,13 +33,13 @@ for attr in types.keys():
     # handling via attr in list is faster for small lists than making a dict
     if attr in zopra_attr_present:
         if types[attr] == "bool":
-            if not copyentry.has_key(attr):
+            if attr not in copyentry:
                 copyentry[attr] = 0
         elif types[attr] == "multilist":
-            if not copyentry.has_key(attr):
+            if attr not in copyentry:
                 copyentry[attr] = []
         elif types[attr] == "float":
-            if copyentry.has_key(attr):
+            if attr in copyentry:
                 copyentry[attr].replace(",", ".")
 
 # merge new values into the copy, oldentry is retained for checks below
