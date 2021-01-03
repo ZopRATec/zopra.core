@@ -17,7 +17,7 @@ from zopra.core import getSecurityManager
 from zopra.core import managePermission
 from zopra.core import modifyPermission
 from zopra.core import viewPermission
-from zopra.core.Classes import Column
+from zopra.core.utils.Classes import Column
 from zopra.core.elements.Buttons import DLG_CUSTOM
 from zopra.core.IconHandler import IconHandler
 from zopra.core.interfaces import IZopRAManager

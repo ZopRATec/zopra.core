@@ -2,14 +2,11 @@ import inspect
 import os.path
 import StringIO
 import types
+from xml.sax import make_parser
 
 import zopra.core
-from zopra.core.Classes import XMLHandler
-from zopra.core.Classes import make_parser
+from zopra.core.utils.Classes import XMLHandler
 from zopra.core.interfaces import IZopRAManager
-
-
-E_FILE_NOT_FOUND = "[Error] File not found: %s"
 
 
 def getZopRAPath():
@@ -26,7 +23,7 @@ def getParentManager(context):
     The method goes up at least one level. It does not check whether the
     given node is already a manager.
 
-    @throws ValueError Exception if no manager could be found
+    @throws ValueError if no manager could be found
 
     @param  context - Zope element
     @param  error_message - a string which might contain a more specific error

@@ -1,35 +1,12 @@
-############################################################################
-#    Copyright (C) 2004 by ZopRATec GbR                                    #
-#    ingo.keller@zopratec.com                                              #
-#                                                                          #
-#    This program is free software; you can redistribute it and#or modify  #
-#    it under the terms of the GNU General Public License as published by  #
-#    the Free Software Foundation; either version 2 of the License, or     #
-#    (at your option) any later version.                                   #
-############################################################################
-
-#
-# Python Imports
-#
 import string
 from time import strftime
 from types import IntType
 
-#
-# PyHtmlGUI Imports
-#
 from PyHtmlGUI.widgets.hgPushButton import hgPushButton
 
 
-# img button shortcuts
-PB_PIXMAPSRC = hgPushButton.PB_PIXMAPSRC
-PB_PIXMAPW = hgPushButton.PB_PIXMAPW
-PB_PIXMAPH = hgPushButton.PB_PIXMAPH
-PB_PIXMAPALT = hgPushButton.PB_PIXMAPALT
-
-
 class ImageProperties(object):
-    """\class ImageProperties"""
+    """ImageProperties for storing image meta ata"""
 
     # class variables
     _className = "ImageProperties"
@@ -63,7 +40,7 @@ class ImageProperties(object):
         width=None,
         height=None,
     ):
-        """\brief Constructs a ImageProperties."""
+        """Constructs a ImageProperties."""
         self.__src = None
         self.__title = None
         self.__pkg = None
@@ -98,7 +75,7 @@ class ImageProperties(object):
 
     # title property methods
     def setTitle(self, title):
-        """\brief Set title property"""
+        """Set title property"""
 
         if title == "":
             title = None
@@ -106,7 +83,7 @@ class ImageProperties(object):
         self.__title = title
 
     def getTitle(self):
-        """\brief Get title property"""
+        """Get title property"""
 
         return self.__title
 
@@ -114,14 +91,14 @@ class ImageProperties(object):
 
     # src property methods
     def setSource(self, src):
-        """\brief Set src property"""
+        """Set src property"""
 
         assert src
 
         self.__src = str(src)
 
     def getSource(self):
-        """\brief Get src property"""
+        """Get src property"""
 
         return self.__src
 
@@ -129,7 +106,7 @@ class ImageProperties(object):
 
     # pkg property methods
     def setPackage(self, pkg):
-        """\brief Set pkg property"""
+        """Set pkg property"""
 
         if pkg == "":
             pkg = None
@@ -137,7 +114,7 @@ class ImageProperties(object):
         self.__pkg = pkg
 
     def getPackage(self):
-        """\brief Get pkg property"""
+        """Get pkg property"""
 
         return self.__pkg
 
@@ -145,7 +122,7 @@ class ImageProperties(object):
 
     # alt property methods
     def setAlt(self, alt):
-        """\brief Set alt property"""
+        """Set alt property"""
 
         if alt == "":
             alt = None
@@ -153,7 +130,7 @@ class ImageProperties(object):
         self.__alt = alt
 
     def getAlt(self):
-        """\brief Get alt property"""
+        """Get alt property"""
 
         return self.__alt
 
@@ -161,7 +138,7 @@ class ImageProperties(object):
 
     # desc property methods
     def setDesc(self, desc):
-        """\brief Set desc property"""
+        """Set desc property"""
 
         if desc == "":
             desc = None
@@ -169,7 +146,7 @@ class ImageProperties(object):
         self.__desc = desc
 
     def getDesc(self):
-        """\brief Get desc property"""
+        """Get desc property"""
 
         return self.__desc
 
@@ -177,7 +154,7 @@ class ImageProperties(object):
 
     # border property methods
     def setBorder(self, border):
-        """\brief Set border property"""
+        """Set border property"""
 
         if border < 0:
             border = None
@@ -185,7 +162,7 @@ class ImageProperties(object):
         self.__border = border
 
     def getBorder(self):
-        """\brief Get border property"""
+        """Get border property"""
 
         return self.__border
 
@@ -193,7 +170,7 @@ class ImageProperties(object):
 
     # width property methods
     def setWidth(self, width):
-        """\brief Set width property"""
+        """Set width property"""
 
         assert isinstance(width, IntType)
         assert width >= 0
@@ -204,7 +181,7 @@ class ImageProperties(object):
         self.__width = width
 
     def getWidth(self):
-        """\brief Get width property"""
+        """Get width property"""
 
         return self.__width
 
@@ -212,7 +189,7 @@ class ImageProperties(object):
 
     # height property methods
     def setHeight(self, height):
-        """\brief Set height property"""
+        """Set height property"""
 
         assert isinstance(height, IntType)
         assert height != ""
@@ -223,7 +200,7 @@ class ImageProperties(object):
         self.__height = height
 
     def getHeight(self):
-        """\brief Get height property"""
+        """Get height property"""
 
         return self.__height
 
@@ -231,7 +208,7 @@ class ImageProperties(object):
 
     # collective info retrieval
     def getPropertyDict(self):
-        """\brief Get all properties as dict"""
+        """Get all properties as dict"""
 
         properties = {}
         properties[ImageProperties.SRC] = self.src
@@ -260,7 +237,7 @@ class ImageProperties(object):
         return properties
 
     def getSetPropertyNames(self):
-        """\brief Get a list of all set properties"""
+        """Get a list of all set properties"""
 
         propertynames = []
 
@@ -290,7 +267,7 @@ class ImageProperties(object):
         return propertynames
 
     def hasProperty(self, name):
-        """\brief Returns whether a property is set or not.
+        """Returns whether a property is set or not.
         always True for ImageProperties.TITLE,
         ImageProperties.SRC and ImageProperties.PACKAGE
         """
@@ -326,20 +303,20 @@ class ImageProperties(object):
     # get a dict that is consistent with  the ones handled by image buttons
     # NOTE: buttons should use this struct for icon description
     def getIconDict(self):
-        """\brief Returns a dict that can be handled by hgPushbutton"""
+        """Returns a dict that can be handled by hgPushbutton"""
 
         icon = {}
 
-        icon[PB_PIXMAPSRC] = self.__src
+        icon[hgPushButton.PB_PIXMAPSRC] = self.__src
 
         if self.__alt:
-            icon[PB_PIXMAPALT] = self.__alt
+            icon[hgPushButton.PB_PIXMAPALT] = self.__alt
 
         if self.__width:
-            icon[PB_PIXMAPW] = str(self.__width)
+            icon[hgPushButton.PB_PIXMAPW] = str(self.__width)
 
         if self.__height:
-            icon[PB_PIXMAPH] = str(self.__height)
+            icon[hgPushButton.PB_PIXMAPH] = str(self.__height)
 
         return icon
 
@@ -376,7 +353,7 @@ class ImageProperties(object):
         ioHandle.write(string.join(tmp_string, "") + "\n")
 
     def getHtml(self, **args):
-        """\brief Returns a html representation"""
+        """Returns a html representation"""
 
         keys = args.keys()
         tag = ["<img "]

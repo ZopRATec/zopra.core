@@ -45,14 +45,6 @@ class IZopRAProduct(IZopRAManager):
 class IGenericManager(IZopRAManager):
     """The IGenericManager interface is deprecated."""
 
-    def installConfig(self, REQUEST):
-        """This hook method gets called after object creation by
-        manageAddGeneric on each install.
-
-        The hook can be used to get DTML-form values from the REQUEST.
-        For database action (only on first install) see startupConfig Hook
-        """
-
 
 class ILegacyManager(IZopRAManager):
     """Interface to mark the legacy managers in the zopra.legacy package and all subclasses."""

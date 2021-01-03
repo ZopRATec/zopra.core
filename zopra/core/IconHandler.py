@@ -1,19 +1,7 @@
-############################################################################
-#    Copyright (C) 2004 by ZopRATec GbR                                    #
-#    ingo.keller@zopratec.com                                              #
-#                                                                          #
-#    This program is free software; you can redistribute it and#or modify  #
-#    it under the terms of the GNU General Public License as published by  #
-#    the Free Software Foundation; either version 2 of the License, or     #
-#    (at your option) any later version.                                   #
-############################################################################
 from copy import copy
 from os import path
 from types import StringType
 
-#
-# ZopRA Imports
-#
 from zopra.core import BadRequest
 from zopra.core import Folder
 from zopra.core import Image
@@ -23,7 +11,7 @@ from zopra.core.utils import getZopRAPath
 
 
 class IconHandler(Folder):
-    """\class IconHandler"""
+    """IconHandler instance will reside in the Manager object and handles the Icons."""
 
     # class variables
     _className = "IconHandler"
@@ -35,7 +23,7 @@ class IconHandler(Folder):
     App = "hgApplication"
 
     def __init__(self, name, package=None):
-        """\brief Constructs a IconHandler."""
+        """Constructs a IconHandler."""
         Folder.__init__(self, name)
 
         self.title2properties = {}
@@ -105,7 +93,7 @@ class IconHandler(Folder):
         )
 
     def xmlInit(self, xml):
-        """\brief Initializes all tables specified in the xml-string"""
+        """Initializes all tables specified in the xml-string"""
         tmp_obj = getASTFromXML(xml)
 
         # iterate over tables
@@ -116,7 +104,7 @@ class IconHandler(Folder):
             self.attach(img_descr)
 
     def manage_delObjects(self, ids=None, REQUEST=None):
-        """\brief replaces ObjectManager's manage_delObjects.
+        """replaces ObjectManager's manage_delObjects.
         Be careful to only use this method to remove images.
         Using _delObject will lead to orphan image_properties lying around"""
 
@@ -126,13 +114,13 @@ class IconHandler(Folder):
         return Folder.manage_delObjects(self, ids, REQUEST)
 
     def has(self, title):
-        """\brief."""
+        """"""
 
         assert isinstance(title, StringType) or isinstance(title, type(unicode("")))
         return title in self.title2properties
 
     def add(self, img_properties):
-        """\brief. Adds an image to the iconHandler and set """
+        """Adds an image to the iconHandler and set """
 
         assert isinstance(img_properties, ImageProperties)
         assert img_properties.title
@@ -167,7 +155,7 @@ class IconHandler(Folder):
         return True
 
     def attach(self, img_properties, remove_empty=False):
-        """\brief. Updates properties for image referenced in img_properties.src with new settings
+        """Updates properties for image referenced in img_properties.src with new settings
         Setting remove_empty to true will remove unset properties in img_properties.
         Note: title cannot be unset
         """
@@ -226,7 +214,7 @@ class IconHandler(Folder):
     # only unique filenames are allowed
 
     def delete(self, title, manage=False):
-        """\brief."""
+        """Delete"""
 
         assert isinstance(title, StringType)
 
@@ -246,7 +234,7 @@ class IconHandler(Folder):
         return img_properties
 
     def get(self, title, path=False):
-        """\brief."""
+        """Get"""
 
         assert isinstance(title, StringType)
 
@@ -266,7 +254,7 @@ class IconHandler(Folder):
         return img_properties
 
     def getImageObject(self, title):
-        """\brief."""
+        """get Image Object"""
 
         img_object = None
         img_properties = self.get(title)
@@ -279,13 +267,9 @@ class IconHandler(Folder):
         return img_object
 
     def getTitleList(self):
-        """\brief."""
+        """Return list of titles."""
         return self.title2properties.keys()
 
-    def empty(self):
-        """\brief."""
-        return len(self.title2properties) == 0
-
     def count(self):
-        """\brief."""
+        """Return number of managed objects."""
         return len(self.title2properties)
