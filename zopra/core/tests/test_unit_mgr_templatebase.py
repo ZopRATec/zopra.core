@@ -10,7 +10,7 @@ class TemplateBaseManagerTest(unittest.TestCase):
 
     def test_TemplateBaseManager(self):
         t = TemplateBaseManager("Testtitle", "testid", nocreate=1, zopratype="")
-        self.assertEqual(t.meta_type, "TemplateBaseManager")
+        self.assertEqual(t.meta_type, "")
         self.assertEqual(t.title, "Testtitle")
 
     # what can we test on the TemplateBaseManager object?

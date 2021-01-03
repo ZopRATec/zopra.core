@@ -66,7 +66,7 @@ class ZopraCoreLayer(PloneSandboxLayer):
             import tud.addons.ckeditorplugins
 
             # Ensure that all dependencies of tud.profiles.webcms are going to be loaded
-            self.loadZCML(name="testing.zcml", package=tud.profiles.webcms)
+            #self.loadZCML(name="testing.zcml", package=tud.profiles.webcms)
             self.loadZCML(name="testing.zcml", package=tud.addons.webcms)
             self.loadZCML(name="testing.zcml", package=tud.content.webcms)
             self.loadZCML(name="testing.zcml", package=tud.boxes.base)
@@ -83,7 +83,7 @@ class ZopraCoreLayer(PloneSandboxLayer):
             z2.installProduct(app, "tud.addons.ckeditorplugins")
             z2.installProduct(app, "Products.DateRecurringIndex")
             z2.installProduct(app, "tud.addons.redirect")
-            z2.installProduct(app, "tud.profiles.webcms")
+            z2.installProduct(app, "tud.theme.webcms2")
 
         import zopra.core
 
@@ -92,9 +92,15 @@ class ZopraCoreLayer(PloneSandboxLayer):
         z2.installProduct(app, "zopra.core")
         z2.installProduct(app, "Products.ZMySQLDA")
 
+        # the mgrTest should only be initialized when running tests
+        # to do that, we need a ProductContext, that in turn needs a
+        # FactoryDispatcher.Product
+        import App.FactoryDispatcher
+        tmpProd = App.FactoryDispatcher.Product("zopra.core")
+        from App.ProductContext import ProductContext
+        pcontext = ProductContext(tmpProd, app, zopra.core)
         from zopra.core.tests.mgrTest import mgrTest
-
-        registerManager(app, mgrTest)
+        registerManager(pcontext, mgrTest)
 
     def setUpPloneSite(self, portal):
         """Method to set up the Plone Site (installing products and applying Profiles)
@@ -105,7 +111,7 @@ class ZopraCoreLayer(PloneSandboxLayer):
         """
         # extra WEBCMS setUp (Content + Theme)
         if HAVE_WEBCMS:
-            self.applyProfile(portal, "tud.profiles.webcms:default")
+            self.applyProfile(portal, "tud.theme.webcms2:default")
         self.applyProfile(portal, "zopra.core:test")
 
     def tearDownPloneSite(self, portal):
