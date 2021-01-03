@@ -10,6 +10,7 @@
 ##
 from zopra.core import zopraMessageFactory as _
 
+
 request = REQUEST
 tobj = context.tableHandler[table]
 

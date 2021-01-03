@@ -11,6 +11,7 @@
 # coding: utf-8
 from zopra.core import zopraMessageFactory as _
 
+
 request = context.REQUEST
 
 entry = context.getTableEntryFromRequest(table, request)

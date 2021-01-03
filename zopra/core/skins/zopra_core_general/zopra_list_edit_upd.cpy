@@ -11,6 +11,7 @@
 # coding: utf-8
 from zopra.core import zopraMessageFactory as _
 
+
 request = context.REQUEST
 if not edit_autoid:
     message = _("zopra_list_edit_nothing", default=u"Nothing changed.")

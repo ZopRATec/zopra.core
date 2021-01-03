@@ -8,8 +8,10 @@
 ##parameters=table, file, encoding, delim
 ##title=
 ##
-from zopra.core import zopraMessageFactory as _
 import logging
+
+from zopra.core import zopraMessageFactory as _
+
 
 logger = logging.getLogger("import")
 request = context.REQUEST

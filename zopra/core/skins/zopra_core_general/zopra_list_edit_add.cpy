@@ -11,6 +11,7 @@
 # coding: utf-8
 from zopra.core import zopraMessageFactory as _
 
+
 if not new_value:
     message = _("zopra_list_edit_nothing", default=u"Nothing changed.")
     context.plone_utils.addPortalMessage(context.translate(message), "info")

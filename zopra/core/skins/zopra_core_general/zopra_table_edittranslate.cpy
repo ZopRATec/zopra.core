@@ -10,6 +10,7 @@
 ##
 from zopra.core import zopraMessageFactory as _
 
+
 request = context.REQUEST
 
 if not context.doesTranslations(table):

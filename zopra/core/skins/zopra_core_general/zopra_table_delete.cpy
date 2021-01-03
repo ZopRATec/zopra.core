@@ -10,6 +10,7 @@
 ##
 from zopra.core import zopraMessageFactory as _
 
+
 autoid = del_autoid
 request = context.REQUEST
 done = False
