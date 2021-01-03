@@ -124,9 +124,8 @@ class ListHandler(Folder):
 
         counter1 = 0
         counter2 = 0
-        tables = manager.tableHandler.keys()
         # create index for multilists / hierarchylists on multi-table
-        for table in tables:
+        for table in manager.tableHandler.keys():
             for lobj in manager.listHandler.getLists(
                 table, ["multilist", "hierarchylist"]
             ):
@@ -297,7 +296,7 @@ class ListHandler(Folder):
         self.mapcol2list[(table, listname)] = listname
 
         # aux var to simplify access to lists
-        if table not in self.maptable2lists.keys():
+        if table not in self.maptable2lists:
             self.maptable2lists[table] = {}
             self.maptable2lists[table]["singlelist"] = []
             self.maptable2lists[table]["multilist"] = []
@@ -379,8 +378,8 @@ class ListHandler(Folder):
 
         return lists
 
-    def references(self):
-        """returns all list-keys."""
+    def getReferences(self):
+        """returns all (table,column)-tuples that reference access lists."""
         return self.mapcol2list.keys()
 
     def emptyListCache(self, listname=None):
@@ -402,7 +401,7 @@ class ListHandler(Folder):
         # \FIXME: edit_dict has to be empty on first call of function.
         if not edit_dict:
             return
-        for (tab, col) in self.mapcol2list.keys():
+        for (tab, col) in self.mapcol2list:
             if tab != table or col not in descr_dict:
                 continue
 
@@ -480,7 +479,7 @@ class ListHandler(Folder):
 
         r += 1
 
-        references = self.mapcol2list.keys()
+        references = self.getReferences()
         references.sort()
 
         for (table, column) in references:

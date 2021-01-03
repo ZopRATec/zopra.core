@@ -155,7 +155,7 @@ class PostgresConnector(SqlConnector):
         cols_list = []
         data_list = []
 
-        for col in entry_dict.keys():
+        for col in entry_dict:
             # don't save NULL values, saves a little bit string length
             # but store 0-values
             val = entry_dict.get(col, None)

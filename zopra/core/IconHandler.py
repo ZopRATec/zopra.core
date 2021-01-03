@@ -1,6 +1,7 @@
 from copy import copy
 from os import path
 from zopra.core.types import StringType
+from zopra.core.types import StringTypes
 
 from zopra.core import BadRequest
 from zopra.core import Folder
@@ -116,7 +117,7 @@ class IconHandler(Folder):
     def has(self, title):
         """"""
 
-        assert isinstance(title, StringType) or isinstance(title, type(unicode("")))
+        assert isinstance(title, StringTypes)
         return title in self.title2properties
 
     def add(self, img_properties):

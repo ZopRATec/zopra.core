@@ -22,7 +22,6 @@ request = context.REQUEST
 manager = context
 tobj = manager.tableHandler[table]
 coltypes = tobj.getColumnDefs(True)
-cols = coltypes.keys()
 error_message = context.translate(
     _("zopra_form_errors", default="Please correct the indicated errors.")
 )
@@ -85,7 +84,7 @@ if not len(header) > 1:
 
 attribute = None
 # determine attribute
-for col in cols:
+for col in coltypes:
     # check for column name and column label
     if header[1].lower() in (col.lower(), coltypes[col]["LABEL"].lower()):
         attribute = col

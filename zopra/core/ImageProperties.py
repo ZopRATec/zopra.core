@@ -355,28 +355,27 @@ class ImageProperties(object):
     def getHtml(self, **args):
         """Returns a html representation"""
 
-        keys = args.keys()
         tag = ["<img "]
 
-        if self.SRC not in keys and self.src:
+        if self.SRC not in args and self.src:
             tag.append('src="%s"' % self.src)
 
-        if self.ALT not in keys and self.alt:
+        if self.ALT not in args and self.alt:
             tag.append('alt="%s"' % self.alt)
 
-        if self.TITLE not in keys and self.title:
+        if self.TITLE not in args and self.title:
             tag.append('title="%s"' % self.title)
 
-        if self.BORDER not in keys and self.border is not None:
+        if self.BORDER not in args and self.border is not None:
             tag.append('border="%s"' % self.border)
 
-        if self.WIDTH not in keys and self.width:
+        if self.WIDTH not in args and self.width:
             tag.append('width="%s"' % self.width)
 
-        if self.HEIGHT not in keys and self.height:
+        if self.HEIGHT not in args and self.height:
             tag.append('height="%s"' % self.height)
 
-        for key in args.keys():
+        for key in args:
             value = args.get(key)
             if value is not None:
                 tag.append('%s="%s"' % (key, value))

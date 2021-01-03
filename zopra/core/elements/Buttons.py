@@ -169,8 +169,8 @@ def getPressedButton(REQUEST=None, buttonType=DLG_FUNCTION):
     if REQUEST:
         length = len(buttonType)
         # this is essential: after deleting something from REQUEST.form, it might still be in REQUEST.keys()
-        # so we use REQUEST.form.keys()
-        for key in REQUEST.form.keys():
+        # so we iterate REQUEST.form
+        for key in REQUEST.form:
             if key[0:length] == buttonType and key[length:] not in button_dict:
                 # FIXME: find a better way to handle img buttons
                 if key[-2:] == ".x":
@@ -200,8 +200,8 @@ def getSpecialField(REQUEST=None, fieldType=DLG_CUSTOM):
     field_dict = {}
     if REQUEST:
         length = len(fieldType)
-        for key in REQUEST.keys():
+        for key in REQUEST.form:
             if key[0:length] == fieldType and (key[length:] not in field_dict):
 
-                field_dict[key[length:]] = REQUEST[key]
+                field_dict[key[length:]] = REQUEST.form[key]
     return field_dict

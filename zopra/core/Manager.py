@@ -526,7 +526,7 @@ class Manager(Folder, ManagerFinderMixin, ManagerManageTabsMixin):
         # for multifield, we need to either break the term apart or simply build a filter for or-search
         # the latter is done for now
         root.setConstraints(cons)
-        if len(cons.keys()) > 1:
+        if len(cons) > 1:
             root.filterTree.setOperator(root.filterTree.OR)
         if order:
             root.setOrder(order)
@@ -976,7 +976,7 @@ class Manager(Folder, ManagerFinderMixin, ManagerManageTabsMixin):
                     pass
 
             # delete list references (multi and hierarchylists get their db tables deleted)
-            for (table, column) in self.listHandler.references():
+            for (table, column) in self.listHandler.getReferences():
                 try:
                     self.listHandler.disconnectList(table, column, True)
                 except Exception:
@@ -1028,7 +1028,7 @@ class Manager(Folder, ManagerFinderMixin, ManagerManageTabsMixin):
             files = []
 
             for zmom_files in [ZC.SORTING_FILES, ZC.LISTING_FILES, ZC.HANDLING_FILES]:
-                for title in zmom_files.keys():
+                for title in zmom_files:
                     filename = zmom_files[title]
                     icons[filename] = title
                     files.append(filename)
@@ -1085,7 +1085,7 @@ class Manager(Folder, ManagerFinderMixin, ManagerManageTabsMixin):
         labels = {"creator": "Creator", "editor": "Editor", "owner": "Owner"}
 
         # set up foreign lists if missing
-        for listname in labels.keys():
+        for listname in labels:
 
             # bind cols for each table
             list_def.setName(listname)

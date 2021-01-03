@@ -596,17 +596,15 @@ class List(GenericList):
                     self.updateEntry({ZC.SHOW: "no"}, changed_id)
             # update function
             elif button == BTN_L_UPDATE:
-                map(
-                    lambda changed_id: self.updateEntry(
+                for changed_id in changedIds:
+                    self.updateEntry(
                         {
                             ZC.VALUE: REQUEST.get(self.listname + changed_id),
                             ZC.RANK: REQUEST.get(ZC.RANK + changed_id),
                             ZC.NOTES: REQUEST.get(ZC.NOTES + changed_id),
                         },
                         changed_id,
-                    ),
-                    changedIds,
-                )
+                    )
 
         # interface building
         entry_list = self.getEntries(with_hidden=True)

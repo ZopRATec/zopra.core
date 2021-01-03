@@ -492,7 +492,7 @@ class Table(SimpleItem, PropertyManager):
 
         # build the table entry
         entry_dict = {}
-        for name in self.tabledict.keys():
+        for name in self.tabledict:
             entry_dict[name] = descr_dict.get(name)
 
         # this is to get date and creator for import correct
@@ -1442,7 +1442,7 @@ class Table(SimpleItem, PropertyManager):
 
                     if isinstance(value, ListType):
                         # flatten list (remove double, remove empty)
-                        value = dict([(unicode(c), None) for c in value if c]).keys()
+                        value = set(unicode(c) for c in value if c)
                         value = multilist_joiner.join(value)
                     # handle None, make empty string
                     if value is None:
@@ -1544,7 +1544,7 @@ class Table(SimpleItem, PropertyManager):
 
         # write data to temporary file
         # build xml
-        export_list.append('<?xml version="1.0"?>')
+        export_list.append(u'<?xml version="1.0"?>')
 
         pad = ""
 
@@ -1553,46 +1553,46 @@ class Table(SimpleItem, PropertyManager):
         rel_url = mgr.absolute_url(relative=True)
 
         if flags & TE_LVLINSTANCE:
-            export_list.append("<instance>")
-            pad += "\t"
+            export_list.append(u"<instance>")
+            pad += u"\t"
 
             # properties
             if flags & TE_WITHPROPERTIES:
                 base_url = abs_url[: -len(rel_url)]
 
-                export_list.append("%s<url>%s</url>" % (pad, base_url))
+                export_list.append(u"%s<url>%s</url>" % (pad, base_url))
 
         if flags & TE_LVLPRODUCT:
-            export_list.append("%s<product id='%s'>" % (pad, m_product.getId()))
+            export_list.append(u"%s<product id='%s'>" % (pad, m_product.getId()))
             pad += "\t"
 
             # properties
             if flags & TE_WITHPROPERTIES:
                 path = m_product.absolute_url(relative=True)
-                export_list.append("%s<title>%s</title>" % (pad, m_product.getTitle()))
-                export_list.append("%s<path>%s</path>" % (pad, path))
+                export_list.append(u"%s<title>%s</title>" % (pad, m_product.getTitle()))
+                export_list.append(u"%s<path>%s</path>" % (pad, path))
 
         if flags & TE_LVLMGR:
-            export_list.append("%s<manager id='%s'>" % (pad, mgr.getId()))
+            export_list.append(u"%s<manager id='%s'>" % (pad, mgr.getId()))
             pad += "\t"
 
             # properties
             if flags & TE_WITHPROPERTIES:
-                export_list.append("%s<title>%s</title>" % (pad, mgr.getTitle()))
-                export_list.append("%s<class>%s</class>" % (pad, mgr.getClassName()))
+                export_list.append(u"%s<title>%s</title>" % (pad, mgr.getTitle()))
+                export_list.append(u"%s<class>%s</class>" % (pad, mgr.getClassName()))
                 export_list.append(
-                    "%s<zopratype>%s</zopratype>" % (pad, mgr.getZopraType())
+                    u"%s<zopratype>%s</zopratype>" % (pad, mgr.getZopraType())
                 )
-                export_list.append("%s<path>%s</path>" % (pad, rel_url))
+                export_list.append(u"%s<path>%s</path>" % (pad, rel_url))
 
         if flags & TE_LVLTABLE:
-            export_list.append("%s<table name='%s'>" % (pad, self.getName()))
+            export_list.append(u"%s<table name='%s'>" % (pad, self.getName()))
             pad += "\t"
 
             # properties
             if flags & TE_WITHPROPERTIES:
-                export_list.append("%s<label>%s</label>" % (pad, self.getLabel()))
-                export_list.append("%s<uid>%s</uid>" % (pad, self.getUId()))
+                export_list.append(u"%s<label>%s</label>" % (pad, self.getLabel()))
+                export_list.append(u"%s<uid>%s</uid>" % (pad, self.getUId()))
 
         for result in autoidList:
 
@@ -1601,7 +1601,7 @@ class Table(SimpleItem, PropertyManager):
             else:
                 entry_id = result
 
-            export_list.append("%s<entry %s='%s'>" % (pad, ZC.TCN_AUTOID, entry_id))
+            export_list.append(u"%s<entry %s='%s'>" % (pad, ZC.TCN_AUTOID, entry_id))
 
             entry = self.getEntry(entry_id)
 
@@ -1621,32 +1621,32 @@ class Table(SimpleItem, PropertyManager):
 
                 if isinstance(value, ListType):
                     # flatten list (remove double, remove empty)
-                    value = dict([(str(c), None) for c in value if c]).keys()
+                    value = set(unicode(c) for c in value if c)
 
                     for item in value:
                         export_list.append(
-                            "\t%s<%s>%s</%s>" % (pad, col, str(item), col)
+                            u"\t%s<%s>%s</%s>" % (pad, col, item, col)
                         )
                 else:
-                    export_list.append("\t%s<%s>%s</%s>" % (pad, col, str(value), col))
+                    export_list.append(u"\t%s<%s>%s</%s>" % (pad, col, unicode(value), col))
 
-            export_list.append("%s</entry>" % pad)
+            export_list.append(u"%s</entry>" % pad)
 
         if flags & TE_LVLTABLE:
             pad = pad[1:]
-            export_list.append("%s</table>" % pad)
+            export_list.append(u"%s</table>" % pad)
 
         if flags & TE_LVLMGR:
             pad = pad[1:]
-            export_list.append("%s</manager>" % pad)
+            export_list.append(u"%s</manager>" % pad)
 
         if flags & TE_LVLPRODUCT:
             pad = pad[1:]
-            export_list.append("%s</product>" % pad)
+            export_list.append(u"%s</product>" % pad)
 
         if flags & TE_LVLINSTANCE:
             pad = pad[1:]
-            export_list.append("</instance>")
+            export_list.append(u"</instance>")
 
         return export_list
 
@@ -1716,7 +1716,7 @@ class Table(SimpleItem, PropertyManager):
 
         row = 2
         offset = 1
-        for col in self.getColumnTypes().keys():
+        for col in self.getColumnTypes():
             col_obj = self.getField(col)
             label = col_obj.get(ZC.COL_LABEL, u"").encode("utf8")
             tab[row + offset, 0] = col

@@ -302,7 +302,7 @@ class Filter:
 
     def getConsCount(self):
         """return number of own and children constraints."""
-        count = len(self.constraints.keys())
+        count = len(self.constraints)
         for child in self.children:
             if child.isConstrained():
                 count += 1
@@ -328,7 +328,7 @@ class Filter:
             # accept entry with NOT_IN flag
             if (
                 len(entry) - 7 == entry.find("_NOT_IN")
-                and entry[: len(entry) - 7] in consdict.keys()
+                and entry[: len(entry) - 7] in consdict
                 and isinstance(consdict[entry[: len(entry) - 7]], ListType)
             ):
                 # check template / tableData
@@ -515,7 +515,7 @@ class Filter:
             # ignore entry with NOT_IN flag
             if (
                 len(cons) - 7 == cons.find("_NOT_IN")
-                and cons[: len(cons) - 7] in self.constraints.keys()
+                and cons[: len(cons) - 7] in self.constraints
             ):
                 continue
             # not for multi/hierarchy lists
@@ -523,7 +523,7 @@ class Filter:
 
                 value, operator = checkType(self.constraints[cons], ctype, True, cons)
 
-                if cons + "_NOT_IN" in self.constraints.keys():
+                if cons + "_NOT_IN" in self.constraints:
                     operator = "NOT " + operator
 
                 conname = "%s%s.%s" % (mgrId, tablename, cons)

@@ -608,7 +608,7 @@ class ZopRAProduct(Manager):
         """need as parameter dictonary, that are serialised with pickle"""
         if isinstance(sdict, unicode):
             sdict = sdict.encode("utf8", "replace")
-        return ", ".join(pickle.loads(sdict).keys())
+        return ", ".join(pickle.loads(sdict))
 
     #
     # the config params section
@@ -729,7 +729,7 @@ class ZopRAProduct(Manager):
             # list references
             # multi lists
             offset = 0
-            for (table, column) in manager.listHandler.references():
+            for (table, column) in manager.listHandler.getReferences():
                 tab[row + offset, col + 4] = str(table) + "->" + column
                 if manager.listHandler.getList(table, column).listtype != "singlelist":
                     tab[row + offset, col + 5] = "X"

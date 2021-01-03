@@ -363,7 +363,7 @@ class TemplateBaseManager(Manager):
         res = tobj.getEntryList(constraints=cons, ignore_permissions=True)
         if res:
             wc = res[0]
-            for key in entry_diff.keys():
+            for key in entry_diff:
                 if key not in ["autoid", "iscopyof"]:
                     wc[key] = entry_diff[key]
             # update the working copy entry
@@ -393,7 +393,7 @@ class TemplateBaseManager(Manager):
             eng = res[0]
             # need a dict for the changed stuff to not accidentally overwrite the working copy values on updateWorkingCopy
             eng_diff = {}
-            for key in entry_diff.keys():
+            for key in entry_diff:
                 if types.get(key) not in ["string", "memo"] and key not in [
                     "autoid",
                     "hastranslation",
@@ -680,18 +680,9 @@ class TemplateBaseManager(Manager):
             return res
 
         # default
-        if action in ["create", "edit", "show"]:
-            fields = (
-                self.tableHandler[table]
-                .getColumnDefs(vis_only=False, edit_tracking=False)
-                .keys()
-            )
-        else:
-            fields = (
-                self.tableHandler[table]
-                .getColumnDefs(vis_only=True, edit_tracking=False)
-                .keys()
-            )
+        vis_only = action not in ["create", "edit", "show"]
+        tobj = self.tableHandler[table]
+        fields = tobj.getColumnDefs(vis_only=vis_only, edit_tracking=False).keys()
         res = [{"label": "Datenfelder", "fields": fields}]
         return res
 
@@ -727,7 +718,7 @@ class TemplateBaseManager(Manager):
     def getDiff(self, entrya, entryb):
         """extract the keys of differences between two complete entries"""
         diff = {}
-        for key in entrya.keys():
+        for key in entrya:
             if key in ["autoid", "permission", "iscopyof", "entrydate", "changedate"]:
                 continue
             vala = entrya[key]
