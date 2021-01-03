@@ -21,14 +21,14 @@ class LevelCache(SimpleItem):
     #
 
     def __init__(self, levels=1, counts=[200], name="cache", nonpersistent=False):
-        """Constructs a LevelCache with <levels> number of
-               levels.
-        \param levels The number of levels in this cache.
-        \param name The variable name of this cache in the
-               containing object (for persistence)
-        \param counts The maximum number of entries per cache level as a
-               list, for levels > 1, the size is counted extra
-               for each cache dict."""
+        """Constructs a LevelCache with <levels> number of levels.
+
+        :param levels: The number of levels in this cache.
+        :param name: The variable name of this cache in the
+        containing object (for persistence)
+        :param counts: The maximum number of entries per cache level as a
+        list, for levels > 1, the size is counted extra for each cache dict.
+        """
         self.levels = levels
         self.counts = counts
         self.name = name
@@ -37,8 +37,10 @@ class LevelCache(SimpleItem):
 
     def invalidateLevel(self, level, key):
         """Cleares the cache.
-        \param level Only removes the items with the given key
+
+        :param level: Only removes the items with the given key
                in this level, counting from 0.
+        :param key: key for removal
         """
         # go through tree, find all items in level, remove key
         caches = []
@@ -60,9 +62,9 @@ class LevelCache(SimpleItem):
             result.append(cache)
 
     def invalidateItem(self, keys):
-        """Cleares the cache.
-        \param level Only removes the items with the given key
-               in this level, counting from 0.
+        """Cleares the cache item that is referenced by the key list.
+
+        :param keys: list of keys for each level, last will be invalidated
         """
         assert len(keys) == self.levels
         # go through tree, find keys
