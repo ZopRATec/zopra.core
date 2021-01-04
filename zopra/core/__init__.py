@@ -155,9 +155,9 @@ def manage_addGeneric(
     # if database gets created (first setup), call startupConfig Hook
     # for initial database entries
     if not nocreate:
-        obj.setContainer(target)
+        # obj needs to know its acquisition parent (to find ZM_PM for database ops)
+        obj = obj.__of__(target)
         obj.startupConfig(REQUEST)
-        obj.delContainer()
 
     return target.manage_main(target, REQUEST)
 

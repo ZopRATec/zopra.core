@@ -21,52 +21,33 @@ class ManagerFinderMixin(object):
         container = self
         # stack = ['start:']
         while not_found:
-            # stack.append('-> ' + str(container))
-            # if hasattr(container, 'id'):
-            #     stack.append(str(container.id))
 
             if not container:
-                # something went wrong, didn't find container
-                # try _container value (set temporarily for startupconfig)
-                if hasattr(self, "_container") and self._container:
-                    return self._container
+                # try to get folder name from physical path
+                foldername = self.getPhysicalPath()[-2]
+                container = None
+
+                if foldername:
+
+                    # getattr uses aquisition
+                    container = getattr(self, foldername)
+
                 else:
-                    # try to get folder name from physical path
-                    foldername = self.getPhysicalPath()[-2]
-                    container = None
 
-                    if foldername:
+                    # top level, get root
+                    container = self.restrictedTraverse("/")
 
-                        # getattr uses aquisition
-                        container = getattr(self, foldername)
+                if not container:
+                    raise ValueError("No Container found.")
 
-                    else:
-
-                        # top level, get root
-                        container = self.restrictedTraverse("/")
-
-                    if not container:
-                        raise ValueError("No Container found.")
-
-                    return container
+                return container
 
             container = container.getParentNode()
             # first folder is returned
             if hasattr(container, "meta_type") and container.meta_type in folder_types:
                 not_found = False
 
-            # TODO: top level check to stop iteration on top level?
-
         return container
-
-    def setContainer(self, container):
-        """Set a reference to the container. Only for temporary container ref!"""
-        self._container = container
-
-    def delContainer(self):
-        """Remove temporary container reference."""
-        if hasattr(self, "_container"):
-            del self._container
 
     def getManager(self, name, obj_id=None):
         """Returns the specified manager.
