@@ -4,9 +4,9 @@ import StringIO
 from xml.sax import make_parser
 
 import zopra.core
-from zopra.core.utils.Classes import XMLHandler
 from zopra.core.interfaces import IZopRAManager
 from zopra.core.types import StringType
+from zopra.core.utils.Classes import XMLHandler
 
 
 def getZopRAPath():

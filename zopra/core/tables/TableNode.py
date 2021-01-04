@@ -2,8 +2,6 @@
 including attached list tables"""
 import string
 from copy import copy
-from zopra.core.types import ListType
-from zopra.core.types import StringType
 
 from PyHtmlGUI.kernel.hgTable import hgTable
 from PyHtmlGUI.widgets.hgLabel import hgNEWLINE
@@ -11,11 +9,13 @@ from zopra.core import ZC
 from zopra.core import SimpleItem
 from zopra.core.elements.Buttons import DLG_CUSTOM
 from zopra.core.tables.Filter import Filter
+from zopra.core.types import ListType
+from zopra.core.types import StringType
 
 
 class TablePrivate:
-    """Contains the static information about a database table.
-    """
+    """Contains the static information about a database table."""
+
     # TODO: why do we store an own listHandler? This gets cached and updateVersion forgets those.
     # TODO: Either flush searchTreeTemplate Cache on updateVersion or restructure here
     # TODO: get ListHandler on the fly from manager instead of storing it?
@@ -80,7 +80,11 @@ class TableNode(SimpleItem):
 
     def setName(self, name):
         """Sets the table name to \a name."""
-        assert isinstance(name, StringType), ZC.E_PARAM_TYPE % ("name", "StringType", name)
+        assert isinstance(name, StringType), ZC.E_PARAM_TYPE % (
+            "name",
+            "StringType",
+            name,
+        )
         self.data.tablename = name
 
     name = property(getName, setName)

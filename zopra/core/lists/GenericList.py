@@ -1,7 +1,6 @@
-from zopra.core.types import ListType
-
 from zopra.core import ZC
 from zopra.core import SimpleItem
+from zopra.core.types import ListType
 from zopra.core.utils import getParentManager
 
 

@@ -1,7 +1,8 @@
 """The default style schema"""
 
-from PyHtmlGUI.stylesheet.hgStyleSheet import hgStyleSheetItem
 from PyHtmlGUI.kernel.hgSize import hgSize
+from PyHtmlGUI.stylesheet.hgStyleSheet import hgStyleSheetItem
+
 
 #
 # Default StyleSheetItems

@@ -1,8 +1,8 @@
 import string
 from time import strftime
-from zopra.core.types import IntType
 
 from PyHtmlGUI.widgets.hgPushButton import hgPushButton
+from zopra.core.types import IntType
 
 
 class ImageProperties(object):

@@ -5,8 +5,7 @@ ORDER = "$_order"
 
 
 class LevelCache(SimpleItem):
-    """The Level Cache is a generic hierarchical cache using lists of keys.
-    """
+    """The Level Cache is a generic hierarchical cache using lists of keys."""
 
     _className = "LevelCache"
     _classType = [_className]

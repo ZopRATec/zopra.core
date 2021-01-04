@@ -2,10 +2,6 @@
 
 from copy import deepcopy
 from operator import itemgetter
-from zopra.core.types import IntType
-from zopra.core.types import ListType
-from zopra.core.types import StringType
-from zopra.core.types import UnicodeType
 
 from PyHtmlGUI.kernel.hgTable import hgTable
 from PyHtmlGUI.widgets.hgCheckBox import hgCheckBox
@@ -30,6 +26,10 @@ from zopra.core.elements.Buttons import mpfReset2Button
 from zopra.core.elements.Buttons import mpfUpdateButton
 from zopra.core.lists.GenericList import GenericList
 from zopra.core.lists.GenericList import _list_definition
+from zopra.core.types import IntType
+from zopra.core.types import ListType
+from zopra.core.types import StringType
+from zopra.core.types import UnicodeType
 
 
 class List(GenericList):

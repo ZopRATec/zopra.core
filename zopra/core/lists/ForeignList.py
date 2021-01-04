@@ -1,16 +1,15 @@
 """Basic ZopRA list handling and list entry retrieval for lists connected to a table."""
 
-from zopra.core.types import IntType
-from zopra.core.types import ListType
-from zopra.core.types import StringType
-from zopra.core.types import UnicodeType
-
 from PyHtmlGUI.kernel.hgTable import hgTable
 from PyHtmlGUI.widgets.hgLabel import hgLabel
 from zopra.core import HTML
 from zopra.core import ZC
 from zopra.core.dialogs import getStdDialog
 from zopra.core.lists.GenericList import GenericList
+from zopra.core.types import IntType
+from zopra.core.types import ListType
+from zopra.core.types import StringType
+from zopra.core.types import UnicodeType
 
 
 # function prefixes for foreign funtions

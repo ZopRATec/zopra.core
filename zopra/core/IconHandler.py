@@ -1,12 +1,12 @@
 from copy import copy
 from os import path
-from zopra.core.types import StringType
-from zopra.core.types import StringTypes
 
 from zopra.core import BadRequest
 from zopra.core import Folder
 from zopra.core import Image
 from zopra.core.ImageProperties import ImageProperties
+from zopra.core.types import StringType
+from zopra.core.types import StringTypes
 from zopra.core.utils import getASTFromXML
 from zopra.core.utils import getZopRAPath
 

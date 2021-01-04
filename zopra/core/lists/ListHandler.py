@@ -1,5 +1,4 @@
 from __future__ import print_function
-from zopra.core.types import ListType
 
 from PyHtmlGUI.kernel.hgTable import hgTable
 from PyHtmlGUI.widgets.hgLabel import hgLabel
@@ -13,6 +12,7 @@ from zopra.core.lists.ForeignList import ForeignList
 from zopra.core.lists.HierarchyList import HierarchyList
 from zopra.core.lists.List import List
 from zopra.core.lists.MultiList import MultiList
+from zopra.core.types import ListType
 from zopra.core.utils import getASTFromXML
 from zopra.core.utils import getParentManager
 
@@ -174,10 +174,13 @@ class ListHandler(Folder):
                 else:
                     raise
             counter2 += 1
-        print("created indexes (table-ref, list-ref) for %s multilists, , created indexes (value) for % lists" % (
-            counter1,
-            counter2,
-        ))
+        print(
+            "created indexes (table-ref, list-ref) for %s multilists, , created indexes (value) for % lists"
+            % (
+                counter1,
+                counter2,
+            )
+        )
 
     def getManager(self):
         """This method returns the owning manager.

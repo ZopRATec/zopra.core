@@ -3,12 +3,13 @@
 from copy import copy
 from time import strftime
 from time import strptime
-from zopra.core.types import ListType
 
 from PyHtmlGUI.kernel.hgTable import hgTable
 from PyHtmlGUI.widgets.hgLabel import hgNEWLINE
 from zopra.core import ZC
 from zopra.core.elements.Buttons import DLG_CUSTOM
+from zopra.core.types import ListType
+
 
 # deprecated module type checking / date conversion
 # date mapping for convertDate

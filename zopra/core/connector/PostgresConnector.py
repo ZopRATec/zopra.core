@@ -1,11 +1,11 @@
 from __future__ import print_function
+
+from zopra.core import ZC
+from zopra.core.connector.SqlConnector import SqlConnector
 from zopra.core.types import BooleanType
 from zopra.core.types import DictType
 from zopra.core.types import IntType
 from zopra.core.types import StringType
-
-from zopra.core import ZC
-from zopra.core.connector.SqlConnector import SqlConnector
 
 
 class PostgresConnector(SqlConnector):

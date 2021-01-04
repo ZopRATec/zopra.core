@@ -9,6 +9,7 @@
 ##
 from zopra.core import zopraMessageFactory as _
 
+
 request = REQUEST
 manager = context
 lang = manager.getCurrentLanguage()

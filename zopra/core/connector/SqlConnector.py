@@ -1,13 +1,13 @@
 from importlib import import_module
 from time import strftime
 from time import strptime
+
+from zopra.core import ZC
+from zopra.core import SimpleItem
 from zopra.core.types import DictType
 from zopra.core.types import IntType
 from zopra.core.types import ListType
 from zopra.core.types import StringType
-
-from zopra.core import ZC
-from zopra.core import SimpleItem
 
 
 # date mapping for convertDate

@@ -1,5 +1,4 @@
 from __future__ import print_function
-from zopra.core.types import ListType
 
 from PyHtmlGUI.dialogs.hgWizard import hgWizard
 from PyHtmlGUI.widgets.hgCheckBox import hgCheckBox
@@ -16,6 +15,7 @@ from PyHtmlGUI.widgets.hgTabBar import hgTab
 from PyHtmlGUI.widgets.hgTextEdit import hgTextEdit
 from PyHtmlGUI.widgets.hgTimeChooser import hgTimeChooser
 from PyHtmlGUI.widgets.hgWidgetStack import hgWidgetStack
+from zopra.core.types import ListType
 
 
 class guiHandler(object):

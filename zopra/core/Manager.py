@@ -3,9 +3,6 @@
 import os.path
 from copy import deepcopy
 from importlib import import_module
-from zopra.core.types import DictType
-from zopra.core.types import ListType
-from zopra.core.types import TupleType
 
 from zope.interface import implements
 
@@ -17,7 +14,6 @@ from zopra.core import getSecurityManager
 from zopra.core import managePermission
 from zopra.core import modifyPermission
 from zopra.core import viewPermission
-from zopra.core.utils.Classes import Column
 from zopra.core.elements.Buttons import DLG_CUSTOM
 from zopra.core.IconHandler import IconHandler
 from zopra.core.interfaces import IZopRAManager
@@ -28,9 +24,13 @@ from zopra.core.mixins.ManagerFinderMixin import ManagerFinderMixin
 from zopra.core.mixins.ManagerManageTabsMixin import ManagerManageTabsMixin
 from zopra.core.security.GUIPermission import GUIPermission
 from zopra.core.tables.TableHandler import TableHandler
+from zopra.core.types import DictType
+from zopra.core.types import ListType
+from zopra.core.types import TupleType
 from zopra.core.utils import getIconsDefinition
 from zopra.core.utils import getTableDefinition
 from zopra.core.utils import getZopRAPath
+from zopra.core.utils.Classes import Column
 
 
 SEARCH_KEYWORDS = ["NULL", "_not_", "_<_", "_>_", "_to_", "__"]

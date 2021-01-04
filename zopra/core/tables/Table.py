@@ -1,11 +1,6 @@
 from copy import copy
 from copy import deepcopy
 from itertools import izip
-from zopra.core.types import BooleanType
-from zopra.core.types import DictType
-from zopra.core.types import ListType
-from zopra.core.types import StringType
-from zopra.core.types import TupleType
 
 from zope.interface.declarations import implements
 
@@ -29,6 +24,11 @@ from zopra.core.tables.Filter import Filter
 from zopra.core.tables.TableCache import TableCache
 from zopra.core.tables.TableNode import TableNode
 from zopra.core.tables.TableNode import TablePrivate
+from zopra.core.types import BooleanType
+from zopra.core.types import DictType
+from zopra.core.types import ListType
+from zopra.core.types import StringType
+from zopra.core.types import TupleType
 from zopra.core.utils import getParentManager
 
 
@@ -1624,11 +1624,11 @@ class Table(SimpleItem, PropertyManager):
                     value = set(unicode(c) for c in value if c)
 
                     for item in value:
-                        export_list.append(
-                            u"\t%s<%s>%s</%s>" % (pad, col, item, col)
-                        )
+                        export_list.append(u"\t%s<%s>%s</%s>" % (pad, col, item, col))
                 else:
-                    export_list.append(u"\t%s<%s>%s</%s>" % (pad, col, unicode(value), col))
+                    export_list.append(
+                        u"\t%s<%s>%s</%s>" % (pad, col, unicode(value), col)
+                    )
 
             export_list.append(u"%s</entry>" % pad)
 

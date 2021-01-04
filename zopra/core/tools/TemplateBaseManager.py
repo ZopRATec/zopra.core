@@ -9,8 +9,6 @@ from binascii import hexlify
 from copy import deepcopy
 from random import randint
 from sets import Set as set
-from zopra.core.types import ListType
-from zopra.core.types import StringType
 from urllib import quote
 
 # Zope Imports
@@ -26,6 +24,8 @@ from zopra.core import ClassSecurityInfo
 from zopra.core import getSecurityManager
 from zopra.core import zopraMessageFactory as _
 from zopra.core.Manager import Manager
+from zopra.core.types import ListType
+from zopra.core.types import StringType
 
 
 protection_expression = re.compile(
