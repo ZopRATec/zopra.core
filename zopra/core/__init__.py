@@ -2,6 +2,7 @@
 SubModules and manually add them to Zope-Folders.
 """
 from __future__ import print_function
+
 import inspect
 import os
 import pkg_resources
@@ -103,6 +104,21 @@ GENERIC_PRODUCT_ADD_FORM = DTMLFile("dtml/GenericProductAdd", globals())
 
 # Testing Constants
 DBDA_ID = "zmysqlconnection"
+
+
+def initialize(context):
+    """Initialize ZopRA with all Managers"""
+    print("Initializing ZopRA")
+
+    from zopra.core.tools.ZopRAProduct import ZopRAProduct
+    from zopra.core.Manager import Manager
+    from zopra.core.tools.mgrTest import mgrTest
+    from zopra.core.tools.TemplateBaseManager import TemplateBaseManager
+
+    registerManager(context, ZopRAProduct)
+    registerManager(context, Manager)
+    registerManager(context, TemplateBaseManager)
+    registerManager(context, mgrTest)
 
 
 def manage_addGeneric(
@@ -254,19 +270,6 @@ def registerManager(context, managerClass):
         permissions=zopra_permissions,
         legacy=(getProductManager,),
     )
-
-
-def initialize(context):
-    """Initialize ZopRA with all Managers"""
-    print("Initializing ZopRA")
-
-    from zopra.core.tools.ZopRAProduct import ZopRAProduct
-    from zopra.core.Manager import Manager
-    from zopra.core.tools.TemplateBaseManager import TemplateBaseManager
-
-    registerManager(context, ZopRAProduct)
-    registerManager(context, Manager)
-    registerManager(context, TemplateBaseManager)
 
 
 def getProductManager(context):

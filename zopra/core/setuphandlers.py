@@ -52,7 +52,7 @@ class ZopRATestEnvironmentMaker:
         self.addManager(
             zoprafolder,
             DBDA_ID,
-            "zopra.core.tests.mgrTest",
+            "zopra.core.tools.mgrTest",
             "mgrTest",
             "testapp",
             "Test Manager",

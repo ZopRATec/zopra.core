@@ -15,7 +15,6 @@ from plone.testing import z2
 
 from zopra.core import DBDA_ID
 from zopra.core import HAVE_WEBCMS
-from zopra.core import registerManager
 from zopra.core.tests import setupCoreSessions
 
 
@@ -53,7 +52,8 @@ class ZopraCoreLayer(PloneSandboxLayer):
         :param configurationContext: ZCML configuration context
         :return:
         """
-        # extra WEBCMS setUp (tud.profiles.webcms and all dependent things including content, addons and theme)
+        # extra WEBCMS setUp (including content, addons and theme) for our zopra packages to use
+        # TODO: move to zopra.ploned when that is ready
         if HAVE_WEBCMS:
             setupCoreSessions(app)
             # Load ZCML
@@ -66,7 +66,6 @@ class ZopraCoreLayer(PloneSandboxLayer):
             import tud.addons.ckeditorplugins
 
             # Ensure that all dependencies of tud.profiles.webcms are going to be loaded
-            #self.loadZCML(name="testing.zcml", package=tud.profiles.webcms)
             self.loadZCML(name="testing.zcml", package=tud.addons.webcms)
             self.loadZCML(name="testing.zcml", package=tud.content.webcms)
             self.loadZCML(name="testing.zcml", package=tud.boxes.base)
@@ -91,16 +90,6 @@ class ZopraCoreLayer(PloneSandboxLayer):
 
         z2.installProduct(app, "zopra.core")
         z2.installProduct(app, "Products.ZMySQLDA")
-
-        # the mgrTest should only be initialized when running tests
-        # to do that, we need a ProductContext, that in turn needs a
-        # FactoryDispatcher.Product
-        import App.FactoryDispatcher
-        tmpProd = App.FactoryDispatcher.Product("zopra.core")
-        from App.ProductContext import ProductContext
-        pcontext = ProductContext(tmpProd, app, zopra.core)
-        from zopra.core.tests.mgrTest import mgrTest
-        registerManager(pcontext, mgrTest)
 
     def setUpPloneSite(self, portal):
         """Method to set up the Plone Site (installing products and applying Profiles)
