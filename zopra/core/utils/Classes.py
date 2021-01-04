@@ -1,8 +1,9 @@
 """handles the xml-definition import"""
 
-import string
 from time import strftime
 from xml.sax.handler import ContentHandler
+
+from builtins import object
 
 from zopra.core.ImageProperties import ImageProperties
 
@@ -12,7 +13,7 @@ if __debug__:
     from zopra.core.types import StringType, UnicodeType
 
 
-class Columnlist:
+class Columnlist(object):
     """Container for Columns"""
 
     __classname__ = "Columnlist"
@@ -45,7 +46,7 @@ class Columnlist:
         ioHandle.write("".join(tmp_string) + "\n")
 
 
-class Column:
+class Column(object):
     __classname__ = "Column"
 
     def __init__(self, name, coltype):
@@ -223,7 +224,7 @@ class Column:
         ioHandle.write("".join(tmp_string) + "\n")
 
 
-class List:
+class List(object):
     __classname__ = "List"
 
     def __init__(self, name):
@@ -311,7 +312,7 @@ class List:
 # FIXME Index, Unique, Foreignkey, Checks do not exist
 
 
-class Constraints:
+class Constraints(object):
     __classname__ = "Constraints"
 
     def __init__(self):
@@ -375,7 +376,7 @@ class Constraints:
         ioHandle.write(tab + "</Constraints>\n")
 
 
-class Table:
+class Table(object):
     __classname__ = "Table"
 
     def __init__(self, name):
@@ -492,7 +493,7 @@ class Table:
         ioHandle.write(tab + "</Table>\n")
 
 
-class Tabledefinition:
+class Tabledefinition(object):
     __classname__ = "Tabledefinition"
 
     def __init__(self):
@@ -544,7 +545,7 @@ class Tabledefinition:
         ioHandle.write(tab + "</Tabledefinition>\n")
 
 
-class Icondefinitions:
+class Icondefinitions(object):
     __classname__ = "Icondefinitions"
 
     def __init__(self):

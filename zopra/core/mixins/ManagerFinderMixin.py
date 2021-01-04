@@ -1,5 +1,7 @@
 from __future__ import print_function
 
+from builtins import object
+
 from zopra.core import IObjectManager
 from zopra.core.constants import ZC
 from zopra.core.interfaces import IZopRAManager
@@ -208,7 +210,7 @@ class ManagerFinderMixin(object):
     ):
         """Helper method to loop through children of a folder.
 
-        :param folder: object that implements IObjectManager
+        :param folder: object that provides IObjectManager
         :param zopratype: string containing the zopratype
         :param result_dict: if provided the results will be added
         :param classname: specifies a particular class

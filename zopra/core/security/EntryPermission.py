@@ -1,7 +1,8 @@
+from builtins import object
+
+
 # TODO: make permission and owner private
-
-
-class EntryPermission:
+class EntryPermission(object):
     """The EntryPermission class provides a permission container for the entry based security
         implementation.
 

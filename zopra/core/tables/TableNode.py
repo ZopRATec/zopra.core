@@ -1,7 +1,9 @@
 """Provides joined Database Searches with complex filters and sorting
 including attached list tables"""
-import string
+
 from copy import copy
+
+from builtins import object
 
 from PyHtmlGUI.kernel.hgTable import hgTable
 from PyHtmlGUI.widgets.hgLabel import hgNEWLINE
@@ -13,7 +15,7 @@ from zopra.core.types import ListType
 from zopra.core.types import StringType
 
 
-class TablePrivate:
+class TablePrivate(object):
     """Contains the static information about a database table."""
 
     # TODO: why do we store an own listHandler? This gets cached and updateVersion forgets those.

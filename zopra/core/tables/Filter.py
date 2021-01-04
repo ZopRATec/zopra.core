@@ -4,6 +4,8 @@ from copy import copy
 from time import strftime
 from time import strptime
 
+from builtins import object
+
 from PyHtmlGUI.kernel.hgTable import hgTable
 from PyHtmlGUI.widgets.hgLabel import hgNEWLINE
 from zopra.core import ZC
@@ -243,7 +245,7 @@ def checkTypeDeprecated(
         return str(value)
 
 
-class Filter:
+class Filter(object):
     """Provides Complex Structures for Where clause for sql generation"""
 
     AND = "AND"

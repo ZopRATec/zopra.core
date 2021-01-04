@@ -1,7 +1,9 @@
+from builtins import object
+
 import PyHtmlGUI
 
 
-class ZC:
+class ZC(object):
 
     # list widget constants for handling
     FCB_DEFAULT_FILTER_TEXT = "<Filter Text>"

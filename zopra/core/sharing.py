@@ -1,3 +1,6 @@
+from builtins import object
+
+
 # Make the ZopRAAuthor role show up on the Sharing tab
 class ZopRAAuthorRoleDelegation(object):
     title = u"ZopRA Author"

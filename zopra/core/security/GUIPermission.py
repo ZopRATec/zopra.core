@@ -1,3 +1,5 @@
+from builtins import object
+
 from zopra.core.types import ListType
 
 

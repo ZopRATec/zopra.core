@@ -2,7 +2,7 @@ from copy import copy
 from copy import deepcopy
 from itertools import izip
 
-from zope.interface.declarations import implements
+from zope.interface import implementer
 
 from PyHtmlGUI.kernel.hgTable import hgTable
 from PyHtmlGUI.widgets.hgLabel import hgLabel
@@ -52,6 +52,7 @@ TE_LVLINSTANCE = 0x01E0
 TE_WITHPROPERTIES = 0x0200
 
 
+@implementer(IZopRATable)
 class Table(SimpleItem, PropertyManager):
     """Main table handling class providing ways to retrieve, filter and order entries"""
 
@@ -61,8 +62,6 @@ class Table(SimpleItem, PropertyManager):
     meta_type = "ZopRATable"
 
     do_cache = True
-
-    implements(IZopRATable)
 
     manage_options = (
         (

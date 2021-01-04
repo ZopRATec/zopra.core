@@ -4,7 +4,7 @@ import os.path
 from copy import deepcopy
 from importlib import import_module
 
-from zope.interface import implements
+from zope.interface import implementer
 
 from zopra.core import ZC
 from zopra.core import ClassSecurityInfo
@@ -36,11 +36,10 @@ from zopra.core.utils.Classes import Column
 SEARCH_KEYWORDS = ["NULL", "_not_", "_<_", "_>_", "_to_", "__"]
 
 
+@implementer(IZopRAManager)
 class Manager(Folder, ManagerFinderMixin, ManagerManageTabsMixin):
     """Manager class provides basic entry and request Handling, manager
     object location and install methods."""
-
-    implements(IZopRAManager)
 
     # _className and _classType are deprecated for Manager classes, we can throw them out in all packages
     # TODO: cleanup _className and _classType for all Manager classes

@@ -2,6 +2,7 @@
 import os
 
 import plone.api
+from builtins import object
 
 from zopra.core import DBDA_ID
 from zopra.core import HAVE_WEBCMS
@@ -27,7 +28,7 @@ def setupTestSzenario(context):
     tenv.setup()
 
 
-class ZopRATestEnvironmentMaker:
+class ZopRATestEnvironmentMaker(object):
     """Test Environment Setup via methods in a class so parts of it can be overwritten for the subpackages"""
 
     def __init__(self, logger, portal):

@@ -6,7 +6,7 @@ from datetime import datetime
 from difflib import HtmlDiff
 from time import strftime
 
-from zope.interface import implements
+from zope.interface import implementer
 
 from PyHtmlGUI.kernel.hgTable import hgTable
 from PyHtmlGUI.widgets.hgCheckBox import hgCheckBox
@@ -43,6 +43,7 @@ TCN_ENTRYID = "entryid"
 TCN_BACKUP = "backup"
 
 
+@implementer(IZopRAProduct)
 class ZopRAProduct(Manager):
     """Product class is based on Manager"""
 
@@ -52,8 +53,6 @@ class ZopRAProduct(Manager):
 
     suggest_id = "pm"
     suggest_name = "Product Manager"
-
-    implements(IZopRAProduct)
 
     # make edit_tracking_cols a class variable for access by other managers
     _edit_tracking_cols = ZC._edit_tracking_cols
@@ -139,8 +138,7 @@ class ZopRAProduct(Manager):
         self.tableHandler["log"].manage_changeProperties(do_cache=False)
 
     def manage_beforeDelete(self, item, container):
-        """Manage the normal manage_beforeDelete method of a SimpleItem.
-        """
+        """Manage the normal manage_beforeDelete method of a SimpleItem."""
 
         if self.delete_tables:
 
@@ -149,8 +147,7 @@ class ZopRAProduct(Manager):
                 self.tableHandler.delTable(table, False)
 
     def manage_afterClone(self, item):
-        """Manage the normal manage_afterClone method of a SimpleItem.
-        """
+        """Manage the normal manage_afterClone method of a SimpleItem."""
         self.nocreate = True
         # call parent method
         Manager.manage_afterClone(self, item)
