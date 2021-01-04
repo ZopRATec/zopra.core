@@ -324,7 +324,7 @@ class ImageProperties(object):
 
         # keeps track of tab level depth
         tab = ""
-        tab += string.join(([" "] * level * 4), "")
+        tab += "".join(([" "] * level * 4))
 
         # start generating xml
         # start generating xml
@@ -350,7 +350,7 @@ class ImageProperties(object):
         if self.height:
             tmp_string.append(' height="%s"' % self.height)
         tmp_string.append("/>")
-        ioHandle.write(string.join(tmp_string, "") + "\n")
+        ioHandle.write("".join(tmp_string) + "\n")
 
     def getHtml(self, **args):
         """Returns a html representation"""

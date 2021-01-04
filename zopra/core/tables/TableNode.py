@@ -663,7 +663,7 @@ class TableNode(SimpleItem):
             where = self.processWhereString(checker)
 
             # FROM and WHERE get cached
-            self.sql = "%s%s" % (string.join(fromlist, ""), where)
+            self.sql = "%s%s" % ("".join(fromlist), where)
             self.valid = True
 
         # SELECT CLAUSE (generated each time)

@@ -31,7 +31,7 @@ class Columnlist:
 
         # keeps track of tab level depth
         tab = ""
-        tab += string.join(([" "] * level * 4), "")
+        tab += "".join(([" "] * level * 4))
 
         # start generating xml
         tmp_string = []
@@ -42,7 +42,7 @@ class Columnlist:
         if self.collist:
             tmp_string.append(' list="%s"' % self.collist)
         tmp_string.append("/>")
-        ioHandle.write(string.join(tmp_string, "") + "\n")
+        ioHandle.write("".join(tmp_string) + "\n")
 
 
 class Column:
@@ -179,7 +179,7 @@ class Column:
 
         # keeps track of tab level depth
         tab = ""
-        tab += string.join(([" "] * level * 4), "")
+        tab += "".join(([" "] * level * 4))
 
         # start generating xml
         tmp_string = []
@@ -220,7 +220,7 @@ class Column:
         if self.map:
             tmp_string.append(' map="%s"' % self.map)
         tmp_string.append("/>")
-        ioHandle.write(string.join(tmp_string, "") + "\n")
+        ioHandle.write("".join(tmp_string) + "\n")
 
 
 class List:
@@ -284,7 +284,7 @@ class List:
 
         # keeps track of tab level depth
         tab = ""
-        tab += string.join(([" "] * level * 4), "")
+        tab += "".join(([" "] * level * 4))
 
         # start generating xml
         tmp_string = []
@@ -305,7 +305,7 @@ class List:
         if self.translations:
             tmp_string.append(' translations="%s"' % self.translations)
         tmp_string.append("/>")
-        ioHandle.write(string.join(tmp_string, "") + "\n")
+        ioHandle.write("".join(tmp_string) + "\n")
 
 
 # FIXME Index, Unique, Foreignkey, Checks do not exist
@@ -343,7 +343,7 @@ class Constraints:
     def storeXML(self, ioHandle, level=0):
         # keeps track of tab level depth
         tab = ""
-        tab += string.join(([" "] * level * 4), "")
+        tab += "".join(([" "] * level * 4))
 
         # start generating xml
         tmp_string = []
@@ -352,7 +352,7 @@ class Constraints:
             ioHandle.write("<!-- Creation date: %s -->\n" % strftime("%d.%m.%Y"))
         tmp_string.append(tab + "<Constraints")
         tmp_string.append(">")
-        ioHandle.write(string.join(tmp_string, "") + "\n")
+        ioHandle.write("".join(tmp_string) + "\n")
 
         # generates sub elements
         for key in self.index:
@@ -450,7 +450,7 @@ class Table:
 
         # keeps track of tab level depth
         tab = ""
-        tab += string.join(([" "] * level * 4), "")
+        tab += "".join(([" "] * level * 4))
 
         # start generating xml
         tmp_string = []
@@ -469,7 +469,7 @@ class Table:
         if self.uid:
             tmp_string.append(' uid="%s"' % self.uid)
         tmp_string.append(">")
-        ioHandle.write(string.join(tmp_string, "") + "\n")
+        ioHandle.write("".join(tmp_string) + "\n")
 
         # generates sub elements
         for key in self.column:
@@ -517,7 +517,7 @@ class Tabledefinition:
 
         # keeps track of tab level depth
         tab = ""
-        tab += string.join(([" "] * level * 4), "")
+        tab += "".join(([" "] * level * 4))
 
         # start generating xml
         tmp_string = []
@@ -526,7 +526,7 @@ class Tabledefinition:
             ioHandle.write("<!-- Creation date: %s -->\n" % strftime("%d.%m.%Y"))
         tmp_string.append(tab + "<Tabledefinition")
         tmp_string.append(">")
-        ioHandle.write(string.join(tmp_string, "") + "\n")
+        ioHandle.write("".join(tmp_string) + "\n")
 
         # generates sub elements
         # tables
@@ -561,7 +561,7 @@ class Icondefinitions:
 
         # keeps track of tab level depth
         tab = ""
-        tab += string.join(([" "] * level * 4), "")
+        tab += "".join(([" "] * level * 4))
 
         # start generating xml
         tmp_string = []
@@ -570,7 +570,7 @@ class Icondefinitions:
             ioHandle.write("<!-- Creation date: %s -->\n" % strftime("%d.%m.%Y"))
         tmp_string.append(tab + "<Icondefinitions")
         tmp_string.append(">")
-        ioHandle.write(string.join(tmp_string, "") + "\n")
+        ioHandle.write("".join(tmp_string) + "\n")
 
         # generates sub elements
         for key in self.image:
