@@ -4,7 +4,7 @@ import unittest
 # used by zopra.core.testing
 from Testing.ZopeTestCase.utils import setupCoreSessions
 
-from zopra.core.tests.mgrTest import mgrTest
+from zopra.core.tools.mgrTest import mgrTest
 
 
 # stub method for faking getManager

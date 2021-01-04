@@ -174,13 +174,6 @@ class ListHandler(Folder):
                 else:
                     raise
             counter2 += 1
-        print(
-            "created indexes (table-ref, list-ref) for %s multilists, , created indexes (value) for % lists"
-            % (
-                counter1,
-                counter2,
-            )
-        )
 
     def getManager(self):
         """This method returns the owning manager.
