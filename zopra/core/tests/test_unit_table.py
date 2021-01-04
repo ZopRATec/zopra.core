@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from zopra.core.tests import StandaloneTestCase
-from zopra.core.tests.mgrTest import mgrTest
+from zopra.core.tools.mgrTest import mgrTest
 
 
 class TableTest(StandaloneTestCase):
