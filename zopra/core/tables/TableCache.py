@@ -1,7 +1,6 @@
 # TODO: use BTree as Cache to speed up pickle and unpickle
 # TODO: even better: use RAMCache
-from OFS.SimpleItem import SimpleItem
-
+from zopra.core import SimpleItem
 from zopra.core.types import ListType
 
 

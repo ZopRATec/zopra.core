@@ -19,6 +19,7 @@ from App.special_dtml import HTML
 from App.special_dtml import DTMLFile
 from OFS.DTMLDocument import DTMLDocument
 from OFS.Folder import Folder
+from OFS.Folder import manage_addFolder
 from OFS.Image import Image
 from OFS.interfaces import IObjectManager
 from OFS.PropertyManager import PropertyManager

@@ -1,24 +1,14 @@
 import json
 import re
-
-# Python Language Imports
-#
 from binascii import hexlify
-
-#
 from copy import deepcopy
 from random import randint
 from sets import Set as set
 from urllib import quote
 
-# Zope Imports
 from zope.component import getMultiAdapter
 
 import icu
-
-#
-# ZopRA Imports
-#
 from zopra.core import ZC
 from zopra.core import ClassSecurityInfo
 from zopra.core import getSecurityManager

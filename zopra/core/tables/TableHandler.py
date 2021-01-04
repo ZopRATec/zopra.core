@@ -1,7 +1,6 @@
-from OFS.Folder import Folder
-
 from zopra.core import ZC
 from zopra.core import ZM_PM
+from zopra.core import Folder
 from zopra.core.interfaces import ISecurityManager
 from zopra.core.interfaces import IZopRAProduct
 from zopra.core.interfaces import IZopRATable

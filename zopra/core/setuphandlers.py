@@ -5,6 +5,7 @@ import plone.api
 
 from zopra.core import DBDA_ID
 from zopra.core import HAVE_WEBCMS
+from zopra.core import manage_addFolder
 
 
 def setupTestSzenario(context):
@@ -77,8 +78,6 @@ class ZopRATestEnvironmentMaker:
         folder = base["zopra"]
 
         # add zope folder app via import and manage_addFolder direct call
-        from OFS.Folder import manage_addFolder
-
         manage_addFolder(folder, "app")
 
         # return the created folder
@@ -102,9 +101,8 @@ class ZopRATestEnvironmentMaker:
         base.invokeFactory("Subsection", "zopra")
         subsection = base["zopra"]
         subsection.setTitle({"en": "ZopRA"})
-        # add zope folder app via import and manage_addFolder direct call
-        from OFS.Folder import manage_addFolder
 
+        # add zope folder app via import and manage_addFolder direct call
         manage_addFolder(subsection, "app")
 
         # return the created folder

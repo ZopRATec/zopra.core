@@ -1,7 +1,6 @@
 from __future__ import print_function
 
-from OFS.interfaces import IObjectManager
-
+from zopra.core import IObjectManager
 from zopra.core.constants import ZC
 from zopra.core.interfaces import IZopRAManager
 from zopra.core.interfaces import IZopRAProduct

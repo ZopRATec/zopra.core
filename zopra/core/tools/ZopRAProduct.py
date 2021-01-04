@@ -139,8 +139,7 @@ class ZopRAProduct(Manager):
         self.tableHandler["log"].manage_changeProperties(do_cache=False)
 
     def manage_beforeDelete(self, item, container):
-        """Manage the normal manage_beforeDelete method of a
-        SimpleItem.
+        """Manage the normal manage_beforeDelete method of a SimpleItem.
         """
 
         if self.delete_tables:
@@ -150,8 +149,7 @@ class ZopRAProduct(Manager):
                 self.tableHandler.delTable(table, False)
 
     def manage_afterClone(self, item):
-        """Manage the normal manage_afterClone method of a
-        SimpleItem.
+        """Manage the normal manage_afterClone method of a SimpleItem.
         """
         self.nocreate = True
         # call parent method
