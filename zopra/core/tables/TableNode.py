@@ -4,11 +4,11 @@ including attached list tables"""
 from copy import copy
 
 from builtins import object
+from Persistence import Persistent
 
 from PyHtmlGUI.kernel.hgTable import hgTable
 from PyHtmlGUI.widgets.hgLabel import hgNEWLINE
 from zopra.core import ZC
-from zopra.core import SimpleItem
 from zopra.core.elements.Buttons import DLG_CUSTOM
 from zopra.core.tables.Filter import Filter
 from zopra.core.types import ListType
@@ -18,36 +18,26 @@ from zopra.core.types import StringType
 class TablePrivate(object):
     """Contains the static information about a database table."""
 
-    # TODO: why do we store an own listHandler? This gets cached and updateVersion forgets those.
-    # TODO: Either flush searchTreeTemplate Cache on updateVersion or restructure here
-    # TODO: get ListHandler on the fly from manager instead of storing it?
     def __init__(self):
         """Constructs a TablePrivate object."""
         self.tablename = None
         self.tabledict = None
-        self.listHandler = None
 
-    def getField(self, name):
+    def getField(self, name, manager):
         """Returns the definition dict for a single column."""
         if not name:
             return {}
-
         # shortcut for ordinary autoid field
         if name == "autoid":
             return {ZC.COL_TYPE: "int", ZC.COL_LABEL: "Automatic No."}
 
         # get field description from manager tables
-        elif self.tabledict.get(name):
+        elif name in self.tabledict:
             return self.tabledict[name]
 
-        elif self.listHandler.hasList(self.tablename, name):
+        elif manager.listHandler.hasList(self.tablename, name):
             lobj = self.listHandler.getList(self.tablename, name)
-            # singlelists are covered above, the other lists
-            # are handled seperately
-            # but this function is used to test for existence,
-            # so we return something!
-            # patch peter 11/2008 we never need the label in sql-statements, so don't try to get it
-            # lead to error on foreign lists anyway (seems stored listhandler forgot its manager)
+            # label is bogus, type is important and existence
             return {ZC.COL_TYPE: lobj.listtype, ZC.COL_LABEL: name}
 
         # get field description from edit tracking fields
@@ -58,7 +48,7 @@ class TablePrivate(object):
         return {}
 
 
-class TableNode(SimpleItem):
+class TableNode(Persistent):
     """Table Node
 
     The Table Node generates SQL for or directly delivers the IDs that
@@ -230,7 +220,9 @@ class TableNode(SimpleItem):
         if not self.filterTree:
             self.filterTree = Filter(Filter.AND)
 
-        change = self.filterTree.setConstraints(consdict, self.prefix, self.data)
+        change = self.filterTree.setConstraints(
+            consdict, self.mgr, self.prefix, self.data
+        )
 
         # check own multi and hierarchy lists for AND-concat, check filter
         # each value has to be joined via extra tableNode with one value
@@ -339,7 +331,7 @@ class TableNode(SimpleItem):
         """set the name of the attribute of this node object
         which is used for joining it to its parent."""
         assert self.data.getField(
-            attribute
+            attribute, self.mgr
         ), "JoinAttribute %s not found in table %s" % (attribute, self.data.tablename)
         self.joinAttrSelf = attribute
 
@@ -418,7 +410,7 @@ class TableNode(SimpleItem):
         if orders != oldorders:
             allorders = list(set(orders).union(set(oldorders)))
             for order in allorders:
-                orderfield = self.data.getField(order)
+                orderfield = self.data.getField(order, self.mgr)
                 if not orderfield:
                     raise ValueError("Unknown order field %s." % str(order))
                 if orderfield[ZC.COL_TYPE] in ZC.ZCOL_LISTS:
@@ -718,10 +710,8 @@ class TableNode(SimpleItem):
         elif col_list:
             sellist = []
             for column in col_list:
-                if (
-                    not self.data.getField(column)
-                    or self.data.getField(column)[ZC.COL_TYPE] in ZC.ZCOL_MLISTS
-                ):
+                field = self.data.getField(column, self.mgr)
+                if not field or field[ZC.COL_TYPE] in ZC.ZCOL_MLISTS:
                     raise ValueError("Internal Column Selection Error: %s." % column)
                 if column == ZC.TCN_AUTOID:
                     # autoid can be appended without change. Even in case of grouping, it is the grouping column
@@ -858,7 +848,7 @@ class TableNode(SimpleItem):
         result = {}
         for index, order in enumerate(self.order):
             orderstring = ""
-            orderfield = self.data.getField(order)
+            orderfield = self.data.getField(order, self.mgr)
             if not orderfield:
                 raise ValueError("Unknown order field: %s" % order)
 
@@ -949,7 +939,7 @@ class TableNode(SimpleItem):
         where = ""
         if self.filterTree:
             newWhere = self.filterTree.getSQL(
-                self.data.tablename, self.mgr.id, self.data, checker
+                self.data.tablename, self.mgr, self.data, checker
             )
             if newWhere:
                 where = " WHERE %s" % (newWhere)

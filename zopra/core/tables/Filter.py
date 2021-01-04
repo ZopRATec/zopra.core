@@ -311,7 +311,7 @@ class Filter(object):
                 count += 1
         return count
 
-    def setConstraints(self, consdict, prefix=None, tableData=None):
+    def setConstraints(self, consdict, manager, prefix=None, tableData=None):
         """Stores matching constraints (including [DLG_CUSTOM+]prefix)
         from the dictionary, propagates it to its children.
         If this filter doesn't have a template, tableData has to be given."""
@@ -336,7 +336,7 @@ class Filter(object):
             ):
                 # check template / tableData
                 if not self.template:
-                    field = tableData.getField(entry[: len(entry) - 7])
+                    field = tableData.getField(entry[: len(entry) - 7], manager)
                 else:
                     field = self.template.get(entry[: len(entry) - 7])
                 if field.get(ZC.COL_TYPE) in ["int"]:
@@ -367,7 +367,7 @@ class Filter(object):
 
                 # check template / tableData
                 if not self.template:
-                    field = tableData.getField(entry[plen:])
+                    field = tableData.getField(entry[plen:], manager)
                 else:
                     field = self.template.get(entry[plen:])
 
@@ -487,8 +487,12 @@ class Filter(object):
             tab.setCellSpanning(0, 0, row, 1)
         return tab
 
-    def getSQL(self, tablename, mgrId, tableData=None, checker=None):
+    def getSQL(self, tablename, manager, tableData=None, checker=None):
         """Build where-string from constraints and children."""
+        # first check for validity and return cached sql
+        if not self.invalid:
+            return self.sql
+        # TODO: check usage and remove the checkTypeDeprecated version
         # test checker or else import
         if checker and hasattr(checker, "forwardCheckType"):
             checkType = checker.forwardCheckType
@@ -502,17 +506,17 @@ class Filter(object):
             err = "Column info missing. Use tableData or template."
             raise ValueError(err)
 
-        if not self.invalid:
-            return self.sql
-
         wherestring = ""
         wherepart = []
+
+        # need mgrId for constraint db names
+        mgrId = manager.id
 
         for cons in self.constraints:
             if self.template:
                 ctype = self.template.get(cons)
             else:
-                field = tableData.getField(cons)
+                field = tableData.getField(cons, manager)
                 ctype = field.get(ZC.COL_TYPE)
 
             # ignore entry with NOT_IN flag
