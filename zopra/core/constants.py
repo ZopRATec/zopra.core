@@ -140,88 +140,88 @@ class ZC:
     #
     # Icons for sort buttons for search result page
     #
-    IMG_SORTDEACT = "Field sorting deactivated"
-    IMG_SORTNONE = "Field not sorted"
-    IMG_SORTASC = "Field sorted ascending"
-    IMG_SORTDESC = "Field sorted descending"
+    IMG_SORTDEACT = u"Field sorting deactivated"
+    IMG_SORTNONE = u"Field not sorted"
+    IMG_SORTASC = u"Field sorted ascending"
+    IMG_SORTDESC = u"Field sorted descending"
 
     SORTING_FILES = {
-        IMG_SORTDEACT: "sort_da_20.png",
-        IMG_SORTNONE: "sort_no_20.png",
-        IMG_SORTASC: "sort_up_20.png",
-        IMG_SORTDESC: "sort_down_20.png",
+        IMG_SORTDEACT: u"sort_da_20.png",
+        IMG_SORTNONE: u"sort_no_20.png",
+        IMG_SORTASC: u"sort_up_20.png",
+        IMG_SORTDESC: u"sort_down_20.png",
     }
 
     #
     # Icons for page buttons for search result page
     #
-    IMG_PAGEFWD = "Page Forward"
-    IMG_PAGEBWD = "Page Backward"
-    IMG_PAGEFIRST = "First Page"
-    IMG_PAGELAST = "Last Page"
-    IMG_PAGEFWD_DEACT = "Page Forward (inactive)"
-    IMG_PAGEBWD_DEACT = "Page Backward (inactive)"
-    IMG_PAGEFIRST_DEACT = "First Page (inactive)"
-    IMG_PAGELAST_DEACT = "Last Page (inactive)"
+    IMG_PAGEFWD = u"Page Forward"
+    IMG_PAGEBWD = u"Page Backward"
+    IMG_PAGEFIRST = u"First Page"
+    IMG_PAGELAST = u"Last Page"
+    IMG_PAGEFWD_DEACT = u"Page Forward (inactive)"
+    IMG_PAGEBWD_DEACT = u"Page Backward (inactive)"
+    IMG_PAGEFIRST_DEACT = u"First Page (inactive)"
+    IMG_PAGELAST_DEACT = u"Last Page (inactive)"
 
     LISTING_FILES = {
-        IMG_PAGEFWD: "page_fwd.png",
-        IMG_PAGEBWD: "page_bwd.png",
-        IMG_PAGEFIRST: "page_first.png",
-        IMG_PAGELAST: "page_last.png",
-        IMG_PAGEFWD_DEACT: "page_fwd_deact.png",
-        IMG_PAGEBWD_DEACT: "page_bwd_deact.png",
-        IMG_PAGEFIRST_DEACT: "page_first_deact.png",
-        IMG_PAGELAST_DEACT: "page_last_deact.png",
+        IMG_PAGEFWD: u"page_fwd.png",
+        IMG_PAGEBWD: u"page_bwd.png",
+        IMG_PAGEFIRST: u"page_first.png",
+        IMG_PAGELAST: u"page_last.png",
+        IMG_PAGEFWD_DEACT: u"page_fwd_deact.png",
+        IMG_PAGEBWD_DEACT: u"page_bwd_deact.png",
+        IMG_PAGEFIRST_DEACT: u"page_first_deact.png",
+        IMG_PAGELAST_DEACT: u"page_last_deact.png",
     }
 
     #
     # Icons for entry handling buttons
     #
-    IMG_CREATE = "Create new"
-    IMG_LIST = "List"
-    IMG_SEARCH = "Search"
-    IMG_IMPORT = "Import"
-    IMG_EXPORT = "Export"
-    IMG_INFO = "Info"
-    IMG_DBADD = "Add to Database"
-    IMG_SHOW_NEXT = "Show next"
-    IMG_SHOW_PREV = "Show previous"
-    IMG_SHOW_NEXT_DEACT = "Show next disabled"
-    IMG_SHOW_PREV_DEACT = "Show previous disabled"
-    IMG_SHOW = "Show"
-    IMG_EDIT = "Edit"
+    IMG_CREATE = u"Create new"
+    IMG_LIST = u"List"
+    IMG_SEARCH = u"Search"
+    IMG_IMPORT = u"Import"
+    IMG_EXPORT = u"Export"
+    IMG_INFO = u"Info"
+    IMG_DBADD = u"Add to Database"
+    IMG_SHOW_NEXT = u"Show next"
+    IMG_SHOW_PREV = u"Show previous"
+    IMG_SHOW_NEXT_DEACT = u"Show next disabled"
+    IMG_SHOW_PREV_DEACT = u"Show previous disabled"
+    IMG_SHOW = u"Show"
+    IMG_EDIT = u"Edit"
 
     HANDLING_FILES = {
-        IMG_CREATE: "ziCreate.png",
-        IMG_LIST: "ziList.png",
-        IMG_SEARCH: "ziSearch.png",
-        IMG_IMPORT: "ziImport.png",
-        IMG_EXPORT: "ziExport.png",
-        IMG_INFO: "ziInfo.png",
-        IMG_DBADD: "ziDBAdd.png",
-        IMG_SHOW_NEXT: "ziNext.png",
-        IMG_SHOW_PREV: "ziPrev.png",
-        IMG_SHOW_NEXT_DEACT: "ziNextDeact.png",
-        IMG_SHOW_PREV_DEACT: "ziPrevDeact.png",
-        IMG_SHOW: "ziShow.png",
-        IMG_EDIT: "ziEdit.png",
+        IMG_CREATE: u"ziCreate.png",
+        IMG_LIST: u"ziList.png",
+        IMG_SEARCH: u"ziSearch.png",
+        IMG_IMPORT: u"ziImport.png",
+        IMG_EXPORT: u"ziExport.png",
+        IMG_INFO: u"ziInfo.png",
+        IMG_DBADD: u"ziDBAdd.png",
+        IMG_SHOW_NEXT: u"ziNext.png",
+        IMG_SHOW_PREV: u"ziPrev.png",
+        IMG_SHOW_NEXT_DEACT: u"ziNextDeact.png",
+        IMG_SHOW_PREV_DEACT: u"ziPrevDeact.png",
+        IMG_SHOW: u"ziShow.png",
+        IMG_EDIT: u"ziEdit.png",
     }
 
     #
     # tooltips
     #
-    TIP_CREATE = "Create new %s entry."
-    TIP_LIST = "List all %s entries."
-    TIP_SEARCH = "Search for %s entries."
-    TIP_IMPORT = "Import data into the database."
-    TIP_EXPORT = "Export data from the database."
-    TIP_INFO = "Get %s info."
-    TIP_DBADD = "Add the %s to the database."
-    TIP_SHOW_NEXT = "Show next %s entry."
-    TIP_SHOW_PREV = "Show previous %s entry."
-    TIP_SHOW = "Show %s entry details."
-    TIP_EDIT = "Edit %s entry."
+    TIP_CREATE = u"Create new %s entry."
+    TIP_LIST = u"List all %s entries."
+    TIP_SEARCH = u"Search for %s entries."
+    TIP_IMPORT = u"Import data into the database."
+    TIP_EXPORT = u"Export data from the database."
+    TIP_INFO = u"Get %s info."
+    TIP_DBADD = u"Add the %s to the database."
+    TIP_SHOW_NEXT = u"Show next %s entry."
+    TIP_SHOW_PREV = u"Show previous %s entry."
+    TIP_SHOW = u"Show %s entry details."
+    TIP_EDIT = u"Edit %s entry."
 
     TOOLTIP_DICT = {
         IMG_CREATE: TIP_CREATE,

@@ -101,7 +101,7 @@ class IconHandler(Folder):
         for icon_idx in tmp_obj.image:
             img_descr = tmp_obj.image[icon_idx]
 
-            # TODO: add descriptions to
+            # add description to self
             self.attach(img_descr)
 
     def manage_delObjects(self, ids=None, REQUEST=None):
@@ -115,8 +115,7 @@ class IconHandler(Folder):
         return Folder.manage_delObjects(self, ids, REQUEST)
 
     def has(self, title):
-        """"""
-
+        """Check it title is known to IconHandler."""
         assert isinstance(title, StringTypes)
         return title in self.title2properties
 
@@ -243,10 +242,6 @@ class IconHandler(Folder):
 
         if self.has(title):
             img_properties = copy(self.title2properties[title])
-
-        # maybe its unicode?
-        if img_properties is None and self.has(unicode(title)):
-            img_properties = copy(self.title2properties[unicode(title)])
 
         # adjust path
         if img_properties and path:

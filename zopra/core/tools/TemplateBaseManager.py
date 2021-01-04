@@ -478,7 +478,7 @@ class TemplateBaseManager(Manager):
         return tobj.requestEntryCount(root)
 
     def calculatePaginationPages(self, rowcount, count):
-        return (rowcount + count - 1) / count
+        return (rowcount + count - 1) // count
 
     def getEntryListProxy(
         self,

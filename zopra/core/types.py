@@ -12,6 +12,6 @@ BooleanType = bool
 FloatType = float
 ClassType = type
 DictType = dict
-StringTypes = (str,)
+StringTypes = (str, UnicodeType)
 # rude basestring setup (py2/3)
 basestring = (type(""), type(u""))

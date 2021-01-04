@@ -83,10 +83,7 @@ class Manager(Folder, ManagerFinderMixin, ManagerManageTabsMixin):
 
     """:generic configuration dict
     usage: _generic_config = {table: {key:value}}
-    keys: basket_to     (True / False) - for showForm/showList-BasketButton
-            basket_from   (True / False) - for newForm-BasketButton
-            basket_active (True / False) - show basket at all
-            visible       (True / False) - visible in zopra_manager_main_form
+    keys: visible       (True / False) - visible in zopra_manager_main_form
             show_fields   ([attrs])      - attributes for search result listing (editorial)
             required      ([attrs])      - required attributes for new/edit
             check_fields  ([{fieldname: function}] - call the module function for the field check when adding / editing an entry, function parameters are: attr_name, entry, mgr
@@ -95,6 +92,10 @@ class Manager(Folder, ManagerFinderMixin, ManagerManageTabsMixin):
             importable    (True / False) - show in importForm for Import
             show_table_options    ({'create':1, 'search':1, 'list':1, 'import': (<target>, <label>), ...}) - define options for generic table overview (on manager_main_form)
             dependent     (True / False) - set to True to not show the create button on zopra_table_show_form / zopra_table_edit_form
+    legacy keys:
+            basket_to     (True / False) - for showForm/showList-BasketButton
+            basket_from   (True / False) - for newForm-BasketButton
+            basket_active (True / False) - show basket at all
     access via getGenericConfig(table)
     """
     _generic_config = {}
@@ -1041,8 +1042,7 @@ class Manager(Folder, ManagerFinderMixin, ManagerManageTabsMixin):
                     if name in files:
                         title = icons[name]
                         # prefix filename to prevent collisions with more specific files
-                        # TODO: find a safe way
-                        name = "ZMOM_" + name
+                        name = u"ZMOM_" + name
                         image = Image(name, title, fHandle.read())
                     else:
                         image = Image(name, "", fHandle.read())
