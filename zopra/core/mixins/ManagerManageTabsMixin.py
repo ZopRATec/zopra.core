@@ -125,7 +125,7 @@ class ManagerManageTabsMixin(object):
                 tab[row + offset, 1] = col
                 colobj = self.tableHandler[table].getField(col)
                 tab[row + offset, 2] = colobj.get(ZC.COL_TYPE)
-                tab[row + offset, 3] = colobj.get(ZC.COL_LABEL, col)
+                tab[row + offset, 3] = colobj.get(ZC.COL_LABEL, col).encode("utf8")
                 offset += 1
             row += offset
         row += 1
@@ -167,17 +167,17 @@ class ManagerManageTabsMixin(object):
         for table in self.tableHandler.keys():
             tablelists = self.listHandler.getLists(table)
 
-            for _list in tablelists:
+            for lobj in tablelists:
                 tab[row, 0] = dlgLabel("<b>%s</b>" % table)
-                tab[row, 1] = dlgLabel(_list.listname)
-                tab[row, 2] = dlgLabel(_list.getLabel())
-                tab[row, 3] = dlgLabel(_list.listtype)
+                tab[row, 1] = dlgLabel(lobj.listname)
+                tab[row, 2] = dlgLabel(lobj.getLabel().encode("utf8"))
+                tab[row, 3] = dlgLabel(lobj.listtype)
                 try:
-                    tab[row, 4] = dlgLabel(_list.getResponsibleManagerId())
+                    tab[row, 4] = dlgLabel(lobj.getResponsibleManagerId())
                 except Exception:
                     tab[row, 4] = dlgLabel('<font color="red">not found</font>')
-                tab[row, 5] = dlgLabel(_list.function)
-                tab[row, 6] = dlgLabel(_list.foreign)
+                tab[row, 5] = dlgLabel(lobj.function)
+                tab[row, 6] = dlgLabel(lobj.foreign)
                 row += 1
 
         html.append(str(tab))

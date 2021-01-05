@@ -1034,7 +1034,7 @@ class Manager(Folder, ManagerFinderMixin, ManagerManageTabsMixin):
                     if name in files:
                         title = icons[name]
                         # prefix filename to prevent collisions with more specific files
-                        name = u"ZMOM_" + name
+                        name = "ZMOM_" + name
                         image = Image(name, title, fHandle.read())
                     else:
                         image = Image(name, "", fHandle.read())

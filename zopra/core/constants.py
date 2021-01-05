@@ -148,10 +148,10 @@ class ZC(object):
     IMG_SORTDESC = u"Field sorted descending"
 
     SORTING_FILES = {
-        IMG_SORTDEACT: u"sort_da_20.png",
-        IMG_SORTNONE: u"sort_no_20.png",
-        IMG_SORTASC: u"sort_up_20.png",
-        IMG_SORTDESC: u"sort_down_20.png",
+        IMG_SORTDEACT: "sort_da_20.png",
+        IMG_SORTNONE: "sort_no_20.png",
+        IMG_SORTASC: "sort_up_20.png",
+        IMG_SORTDESC: "sort_down_20.png",
     }
 
     #
@@ -167,14 +167,14 @@ class ZC(object):
     IMG_PAGELAST_DEACT = u"Last Page (inactive)"
 
     LISTING_FILES = {
-        IMG_PAGEFWD: u"page_fwd.png",
-        IMG_PAGEBWD: u"page_bwd.png",
-        IMG_PAGEFIRST: u"page_first.png",
-        IMG_PAGELAST: u"page_last.png",
-        IMG_PAGEFWD_DEACT: u"page_fwd_deact.png",
-        IMG_PAGEBWD_DEACT: u"page_bwd_deact.png",
-        IMG_PAGEFIRST_DEACT: u"page_first_deact.png",
-        IMG_PAGELAST_DEACT: u"page_last_deact.png",
+        IMG_PAGEFWD: "page_fwd.png",
+        IMG_PAGEBWD: "page_bwd.png",
+        IMG_PAGEFIRST: "page_first.png",
+        IMG_PAGELAST: "page_last.png",
+        IMG_PAGEFWD_DEACT: "page_fwd_deact.png",
+        IMG_PAGEBWD_DEACT: "page_bwd_deact.png",
+        IMG_PAGEFIRST_DEACT: "page_first_deact.png",
+        IMG_PAGELAST_DEACT: "page_last_deact.png",
     }
 
     #
@@ -195,19 +195,19 @@ class ZC(object):
     IMG_EDIT = u"Edit"
 
     HANDLING_FILES = {
-        IMG_CREATE: u"ziCreate.png",
-        IMG_LIST: u"ziList.png",
-        IMG_SEARCH: u"ziSearch.png",
-        IMG_IMPORT: u"ziImport.png",
-        IMG_EXPORT: u"ziExport.png",
-        IMG_INFO: u"ziInfo.png",
-        IMG_DBADD: u"ziDBAdd.png",
-        IMG_SHOW_NEXT: u"ziNext.png",
-        IMG_SHOW_PREV: u"ziPrev.png",
-        IMG_SHOW_NEXT_DEACT: u"ziNextDeact.png",
-        IMG_SHOW_PREV_DEACT: u"ziPrevDeact.png",
-        IMG_SHOW: u"ziShow.png",
-        IMG_EDIT: u"ziEdit.png",
+        IMG_CREATE: "ziCreate.png",
+        IMG_LIST: "ziList.png",
+        IMG_SEARCH: "ziSearch.png",
+        IMG_IMPORT: "ziImport.png",
+        IMG_EXPORT: "ziExport.png",
+        IMG_INFO: "ziInfo.png",
+        IMG_DBADD: "ziDBAdd.png",
+        IMG_SHOW_NEXT: "ziNext.png",
+        IMG_SHOW_PREV: "ziPrev.png",
+        IMG_SHOW_NEXT_DEACT: "ziNextDeact.png",
+        IMG_SHOW_PREV_DEACT: "ziPrevDeact.png",
+        IMG_SHOW: "ziShow.png",
+        IMG_EDIT: "ziEdit.png",
     }
 
     #
