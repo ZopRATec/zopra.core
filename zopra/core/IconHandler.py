@@ -46,9 +46,7 @@ class IconHandler(Folder):
 
         return meta_types
 
-    def _setObject(
-        self, id, object, roles=None, user=None, set_owner=1, suppress_events=False
-    ):
+    def setObject(self, id, object):
         """Set an object into this container."""
 
         assert isinstance(object, Image)
@@ -62,7 +60,7 @@ class IconHandler(Folder):
         key = getattr(object, "title", "")
 
         if not key:
-            key = str(object.id())
+            key = object.getId()
             title = ""
         else:
             title = key
@@ -89,9 +87,7 @@ class IconHandler(Folder):
 
         self.id2title[id] = key
 
-        return Folder._setObject(
-            self, id, object, roles, user, set_owner, suppress_events
-        )
+        return self._setObject(id, object, roles=None, user=None, set_owner=1, suppress_events=False)
 
     def xmlInit(self, xml):
         """Initializes all tables specified in the xml-string"""
@@ -147,7 +143,7 @@ class IconHandler(Folder):
         fHandle = open(filename, "r")
         image = Image(img_properties.src, img_properties.title, fHandle.read())
 
-        self._setObject(img_properties.src, image)
+        self.setObject(img_properties.src, image)
 
         # replace generic properties
         self.title2properties[img_properties.title] = copy(img_properties)

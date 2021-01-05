@@ -45,10 +45,11 @@ class Manager(Folder, ManagerFinderMixin, ManagerManageTabsMixin):
 
     meta_type = ""
 
-    manage_options = Folder.manage_options + (
+    manage_options = (
+        Folder.manage_options[0],
         {"label": "Overview", "action": "viewTab"},
         {"label": "Update", "action": "updateTab"},
-    )
+    ) + tuple(Folder.manage_options[1:])
 
     #
     # Properties
@@ -1039,7 +1040,7 @@ class Manager(Folder, ManagerFinderMixin, ManagerManageTabsMixin):
                     else:
                         image = Image(name, "", fHandle.read())
 
-                    iconHandler._setObject(name, image)
+                    iconHandler.setObject(name, image)
 
         # load local images from managers images directory
         if namespace != "zopra.core":
@@ -1059,7 +1060,7 @@ class Manager(Folder, ManagerFinderMixin, ManagerManageTabsMixin):
                         fHandle = open(filename, "r")
                         image = Image(name, "", fHandle.read())
 
-                        iconHandler._setObject(name, image)
+                        iconHandler.setObject(name, image)
 
         # map icon properties to loaded images
         self.iconHandler.xmlInit(getIconsDefinition(self))

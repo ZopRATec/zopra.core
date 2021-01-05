@@ -75,7 +75,8 @@ class ManagerManageTabsMixin(object):
                 dlg.add(hgLabel("<br/>"))
 
         version = self.zopra_version
-        newver = ManagerManageTabsMixin.zopra_version
+        from zopra.core.Manager import Manager
+        newver = Manager.zopra_version
 
         tab = hgTable()
 
@@ -130,29 +131,25 @@ class ManagerManageTabsMixin(object):
             row += offset
         row += 1
 
-        # show _list information
+        # show db list information
         if len(self.listHandler.keys()) > 0:
-            # NOTE: right now only true _list that are present with db object
-            #       are displayed this way
-            #       foreign lists referencing those lists or lists in other managers
-            #       are omitted right now
+            # here we only show info about the db lists
             tab[row, 0] = dlgLabel("<h3>List (Basic Lists with dbtable) Overview</h3>")
             row += 1
             tab[row, 0] = dlgLabel("List Name")
-            tab[row, 1] = dlgLabel("Value Count")
+            tab[row, 1] = dlgLabel("List Label")
+            tab[row, 2] = dlgLabel("Value Count")
             row += 1
             for list_entry in self.listHandler.keys():
+                lobj = self.listHandler[list_entry]
                 tab[row, 0] = "<b>" + list_entry + "</b>"
-                try:
-                    cnt = self.listHandler[list_entry].getValueCount()
-                    tab[row, 1] = cnt
-                except Exception:
-                    pass
+                tab[row, 1] = lobj.getLabel().encode("utf8")
+                tab[row, 2] = lobj.getValueCount()
                 row += 1
             row += 1
         row += 1
 
-        # show foreign _list information
+        # show access list information
         tab[row, 0] = dlgLabel("<h3>List References Overview</h3>")
         row += 2
         tab[row, 0] = dlgLabel("Table Name")
