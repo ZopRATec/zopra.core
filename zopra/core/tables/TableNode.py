@@ -49,9 +49,7 @@ class TablePrivate(object):
 
 
 class TableNode(Persistent):
-    """Table Node
-
-    The Table Node generates SQL for or directly delivers the IDs that
+    """The Table Node generates SQL for or directly delivers the IDs that
     are the result to a constrained search. To search different tables joined
     together, each node can have child-nodes which results in a search tree.
 
@@ -59,12 +57,6 @@ class TableNode(Persistent):
 
     _className = "TableNode"
     _classType = [_className]
-
-    ##########################################################################
-    #
-    # Property Methods
-    #
-    ##########################################################################
 
     def getName(self):
         """Returns the tableName property."""
@@ -81,11 +73,6 @@ class TableNode(Persistent):
 
     name = property(getName, setName)
 
-    ##########################################################################
-    #
-    # Instance Methods
-    #
-    ##########################################################################
     def __init__(self, data, mgr, prefix=""):
         """Constructs a table."""
         # prefix must not be None!

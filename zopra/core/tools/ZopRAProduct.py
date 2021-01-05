@@ -194,17 +194,13 @@ class ZopRAProduct(Manager):
             # logged_out DTMLDocument
             done = self._createDTMLHelper("logged_out", parent)
             if done:
+                # set View permission for Anonymous
                 try:
                     obj = parent.logged_out
                     obj.manage_permission("View", ["Anonymous"], 1)
                 except Exception:
                     # ignore
                     pass
-        # TODO: check why and for what this is needed
-        # dirHome Property
-        if "dirHome" not in parent.propertyIds():
-            dirHome = parent.virtual_url_path()
-            parent.manage_addProperty("dirHome", dirHome, "string")
 
     def _createDTMLHelper(self, name, parent, content=None):
         """helper method that constructs the dtml objects used by all managers"""
