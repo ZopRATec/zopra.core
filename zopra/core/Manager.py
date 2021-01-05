@@ -1,20 +1,16 @@
 """The Manager is the basic manager class."""
 
-import os.path
 from copy import deepcopy
-from importlib import import_module
 
 from zope.interface import implementer
 
 from zopra.core import ZC
 from zopra.core import ClassSecurityInfo
 from zopra.core import Folder
-from zopra.core import Image
 from zopra.core import managePermission
 from zopra.core import modifyPermission
 from zopra.core import viewPermission
 from zopra.core.elements.Buttons import DLG_CUSTOM
-from zopra.core.IconHandler import IconHandler
 from zopra.core.interfaces import IZopRAManager
 from zopra.core.interfaces import IZopRAProduct
 from zopra.core.lists.ListHandler import ListHandler
@@ -24,9 +20,7 @@ from zopra.core.tables.TableHandler import TableHandler
 from zopra.core.types import DictType
 from zopra.core.types import ListType
 from zopra.core.types import TupleType
-from zopra.core.utils import getIconsDefinition
 from zopra.core.utils import getTableDefinition
-from zopra.core.utils import getZopRAPath
 from zopra.core.utils.Classes import Column
 
 
@@ -110,8 +104,6 @@ class Manager(Folder, ManagerFinderMixin, ManagerManageTabsMixin):
         self.zopratype = zopratype
         self.tableHandler = None
         self.listHandler = None
-        self.dlgHandler = None
-        self.iconHandler = None
 
         # security switches
         self.ebase = False
@@ -946,10 +938,8 @@ class Manager(Folder, ManagerFinderMixin, ManagerManageTabsMixin):
 
         # register manager as child at product manager
         if IZopRAProduct.providedBy(self) and m_product:
+            # we only register additional products as children
             m_product.registerChild(self)
-
-        # install Icons (all available will be installed, the mapped will have properties)
-        self.manage_installIcons()
 
     security.declareProtected(managePermission, "manage_beforeDelete")
 
@@ -987,83 +977,6 @@ class Manager(Folder, ManagerFinderMixin, ManagerManageTabsMixin):
 
         # remove child manager
         m_product.removeChild(self)
-
-    #
-    # Helper Methods for the manage functions
-    #
-
-    security.declareProtected(managePermission, "manage_installIcons")
-
-    def manage_installIcons(self):
-        """This method will be called in manage_afterAdd to install the icon relevant stuff."""
-
-        # init the icon handler
-
-        # icon handler has to be reinstalled
-        if hasattr(self, "iconHandler") and self.iconHandler:
-            # remove the damn thing
-            self.manage_delObjects(["iconHandler"])
-
-        namespace = self.__module__
-        namespace = namespace[: namespace.rfind(".")]
-
-        # setup new icon handler
-        iconHandler = IconHandler("iconHandler", namespace)
-        self._setObject("iconHandler", iconHandler)
-        # to stop pylint from crying
-        self.iconHandler = iconHandler
-
-        # load global sorting images
-        # TODO: make "default" attribute-dependent to be able to set other themes
-        path = os.path.join(getZopRAPath(), "images")
-
-        if os.path.exists(path):
-            icons = {}
-            files = []
-
-            for zmom_files in [ZC.SORTING_FILES, ZC.LISTING_FILES, ZC.HANDLING_FILES]:
-                for title in zmom_files:
-                    filename = zmom_files[title]
-                    icons[filename] = title
-                    files.append(filename)
-
-            for name in os.listdir(path):
-                filename = os.path.join(path, name)
-                if not os.path.isdir(filename):
-                    fHandle = open(filename, "r")
-
-                    if name in files:
-                        title = icons[name]
-                        # prefix filename to prevent collisions with more specific files
-                        name = "ZMOM_" + name
-                        image = Image(name, title, fHandle.read())
-                    else:
-                        image = Image(name, "", fHandle.read())
-
-                    iconHandler.setObject(name, image)
-
-        # load local images from managers images directory
-        if namespace != "zopra.core":
-
-            # re-import class to get the file location
-            module = import_module(self.__module__, self.getClassName())
-            path = module.__file__
-
-            # remove the filename from the path and add the image path location
-            path = os.path.join(os.path.split(path)[0], "images")
-
-            if os.path.exists(path):
-
-                for name in os.listdir(path):
-                    filename = os.path.join(path, name)
-                    if not os.path.isdir(filename):
-                        fHandle = open(filename, "r")
-                        image = Image(name, "", fHandle.read())
-
-                        iconHandler.setObject(name, image)
-
-        # map icon properties to loaded images
-        self.iconHandler.xmlInit(getIconsDefinition(self))
 
     security.declareProtected(managePermission, "createEditTrackingLists")
 

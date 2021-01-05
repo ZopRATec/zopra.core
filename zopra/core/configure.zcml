@@ -45,4 +45,14 @@
       name="ZopRAAdmin"
       />
 
+   <genericsetup:upgradeStep
+      title="reload skins tool"
+      description="Version 2.0 moved the icons from IconHandler to skins"
+      source="*"
+      destination="2.0"
+      handler="zopra.core.upgrades.upgrade_skins"
+      sortkey="1"
+      profile="zopra.core:default"
+      />
+
 </configure>

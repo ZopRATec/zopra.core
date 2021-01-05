@@ -76,6 +76,7 @@ class ManagerManageTabsMixin(object):
 
         version = self.zopra_version
         from zopra.core.Manager import Manager
+
         newver = Manager.zopra_version
 
         tab = hgTable()

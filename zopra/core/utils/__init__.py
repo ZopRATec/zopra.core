@@ -101,21 +101,3 @@ def getTableDefinition(manager):
             return fHandle.read()
 
     return '<?xml version="1.0"?><Tabledefinition />'
-
-
-def getIconsDefinition(manager):
-    """This method returns the icon definition of the given manager.
-
-    @param manager - ZopRA manager
-    @result string - XML containing the icon definition
-    """
-
-    # model loading
-    className = manager.getClassName()
-    _file = os.path.join(getClassPath(manager), "icons", "%s.xml" % className)
-
-    if os.path.exists(_file):
-        with open(_file, "r") as fHandle:
-            return fHandle.read()
-
-    return '<?xml version="1.0"?><Icondefinitions />'
