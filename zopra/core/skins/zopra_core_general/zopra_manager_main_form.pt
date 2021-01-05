@@ -126,7 +126,7 @@
                                           count python: len(lists)">
                         <legend i18n:translate="zopra_main_editable_lists">Editable selection lists</legend>
                         <div class="listing">
-                            <tal:block tal:repeat="listname python: lists[:count/2]">
+                            <tal:block tal:repeat="listname python: lists[:count/2 + (count % 2)]">
                                 <div class="field"
                                      tal:define="lobj python:here.listHandler[listname]"
                                      tal:condition="python:lobj.noedit != True">
@@ -139,7 +139,7 @@
                             </tal:block>
                         </div>
                         <div class="listing">
-                            <tal:block tal:repeat="listname python: lists[count/2:]">
+                            <tal:block tal:repeat="listname python: lists[count/2 + (count % 2):]">
                                 <div class="field"
                                      tal:define="lobj python:here.listHandler[listname]"
                                      tal:condition="python:lobj.noedit != True">
