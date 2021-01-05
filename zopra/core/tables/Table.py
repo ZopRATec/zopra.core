@@ -19,7 +19,6 @@ from zopra.core.elements.Buttons import mpfReset2Button
 from zopra.core.elements.Styles.Default import ssiDLG_LABEL
 from zopra.core.interfaces import ILegacyManager
 from zopra.core.interfaces import IZopRATable
-from zopra.core.security.EntryPermission import EntryPermission
 from zopra.core.tables.Filter import Filter
 from zopra.core.tables.TableCache import TableCache
 from zopra.core.tables.TableNode import TableNode
@@ -220,12 +219,12 @@ class Table(SimpleItem, PropertyManager):
         :param entry_id: the autoid (unique key) for the table.
         :param data_tuple:
         :param col_list:
-        :param ignore_permissions The entry will not have a permission object
+        :param ignore_permissions: Legacy parameter. The entry will not have a permission object
         and thus be useless for the generic GUI and entry functions, this
         option should be used by statistics and the security handling
-        itself only!
+        itself only.
         :return: {<column> : <value>} - a description dictionary for the entry
-        where the column names are the keys, otherwise None."""
+        where the column names are the keys if entry exists, otherwise None."""
         assert entry_id is not None or (data_tuple is not None and col_list is not None)
 
         mgr = self.getManager()
@@ -338,32 +337,6 @@ class Table(SimpleItem, PropertyManager):
                 # TODO: check and remove / replace by 2-level-copy
                 entry = deepcopy(entry)
 
-        # because security settings can change without inducing cache reload,
-        # we decided to not have security objects cached
-        # they have to be reloaded each time, but they use caching too
-        if ignore_permissions:
-            return entry
-
-        # get the entry permissions based on ebase and SBAR security settings
-        perms = mgr.getEntryPermissions(entry.get("acl"), self.tablename)
-
-        owner = self.isOwner(entry)
-
-        # add permissions if the owner is requesting the entry
-        if owner:
-            perms.extend([ZC.SC_READ, ZC.SC_LREAD, ZC.SC_WRITE])
-
-        # create entry permission object
-        pobj = EntryPermission(entry, perms, owner)
-
-        # TODO: raise Error when permissions don't fit? should this be done here?
-        # a lot of testing is necessary before we can activate this in a live system
-        # check permissions
-        # if not (pobj.hasPermission(SC_READ) or pobj.hasPermission(SC_LREAD)):
-        #    pass
-
-        # set entry permission
-        entry["permission"] = pobj
         return entry
 
     def isOwner(self, entry):
@@ -531,14 +504,9 @@ class Table(SimpleItem, PropertyManager):
             error = "Field%s %s required." % (plural, missing)
             raise ValueError(error)
 
-        # TODO: check insert permission
+        # legacy hook
+        self.legacyInsertHook(mgr, entry_dict)
 
-        # check ebase, get acl
-        if mgr.checkEBaSe(self.tablename):
-            m_sec = mgr.getHierarchyUpManager(ZC.ZM_SCM)
-            acl = m_sec.getCreationAcl(self.getUId(), mgr.getZopraType())
-            if acl:
-                entry_dict["acl"] = acl
         lastid = m_product.simpleInsertInto(
             mgr.id + self.tablename, self.tabledict, entry_dict, log, self._uid
         )
@@ -565,6 +533,10 @@ class Table(SimpleItem, PropertyManager):
             self.cache.invalidate()
 
         return lastid
+
+    def legacyInsertHook(self, mgr, entry_dict):
+        """Overwrite/Patch this hook in legacy package for EBaSe acl insertion"""
+        pass
 
     def deleteEntry(self, entry_id, idfield=ZC.TCN_AUTOID):
         """Delete one entry with given id from table.

@@ -130,20 +130,11 @@ def manage_addGeneric(
     pkg,
     nocreate=0,
     zopratype="",
-    ebase=None,
-    accessgroups=None,
     REQUEST=None,
 ):
     """ Create any new Generic Manager and add it to destination. """
     managerClass = getattr(import_module(pkg), manager)
     obj = managerClass(id=zope_id, title=title, nocreate=nocreate, zopratype=zopratype)
-    # set ebase
-    if ebase:
-        obj.activateEBaSe()
-
-    # set access groups
-    if accessgroups:
-        obj.activateSBAR()
 
     target = dispatcher.Destination()
     target._setObject(zope_id, obj)

@@ -45,69 +45,58 @@ class ManagerManageTabsMixin(object):
     security.declareProtected(managePermission, "viewTab")
 
     def viewTab(self, REQUEST=None):
-        """\brief Returns the HTML source for the view form."""
-        perm = self.getGUIPermission()
+        """Returns the HTML source for the view form."""
         dlg = getStdDialog("Debug Output", "%s/viewTab" % self.absolute_url())
         dlg.setHeader("<dtml-var manage_page_header><dtml-var manage_tabs>")
         dlg.setFooter("<dtml-var manage_page_footer>")
 
-        if perm.hasRole(perm.SC_ADMIN):
-            dlg.add(self.getDebugOutput(REQUEST))
-        else:
-            dlg.add(hgLabel("<b>Access denied</b>"))
+        dlg.add(self.getDebugOutput(REQUEST))
         return HTML(dlg.getHtml())(self, REQUEST)
 
     security.declareProtected(managePermission, "updateTab")
 
     def updateTab(self, REQUEST=None):
-        """\brief Returns the html source for the view form."""
-        perm = self.getGUIPermission()
-        if perm.hasRole(perm.SC_ADMIN):
-            dlg = getStdDialog("Update Version", "%s/updateTab" % self.absolute_url())
-            dlg.setHeader("<dtml-var manage_page_header><dtml-var manage_tabs>")
-            dlg.setFooter("<dtml-var manage_page_footer>")
+        """Returns the html source for the view form."""
+        dlg = getStdDialog("Update Version", "%s/updateTab" % self.absolute_url())
+        dlg.setHeader("<dtml-var manage_page_header><dtml-var manage_tabs>")
+        dlg.setFooter("<dtml-var manage_page_footer>")
 
-            #
-            dlg.add(hgLabel("<br/>"))
+        dlg.add(hgLabel("<br/>"))
 
-            # update handling
-            if REQUEST is not None:
-                if REQUEST.form.get("update"):
-                    report = self.updateVersion()
+        # update handling
+        if REQUEST is not None:
+            if REQUEST.form.get("update"):
+                report = self.updateVersion()
 
-                    dlg.add(hgLabel("<b>Update Report</b>"))
-                    dlg.add(hgLabel("<br/>"))
-                    dlg.add(str(report))
-                    dlg.add(hgLabel("<br/>"))
-                    dlg.add(hgLabel("<br/>"))
+                dlg.add(hgLabel("<b>Update Report</b>"))
+                dlg.add(hgLabel("<br/>"))
+                dlg.add(str(report))
+                dlg.add(hgLabel("<br/>"))
+                dlg.add(hgLabel("<br/>"))
 
-            version = self.zopra_version
-            newver = ManagerManageTabsMixin.zopra_version
+        version = self.zopra_version
+        newver = ManagerManageTabsMixin.zopra_version
 
-            tab = hgTable()
+        tab = hgTable()
 
-            tab[0, 0] = hgLabel("<b>Current Manager Version:<b>")
-            tab[0, 1] = hgLabel(str(version))
-            tab[1, 0] = hgLabel("<b>Installed Version:<b>")
-            tab[1, 1] = hgLabel(str(newver))
+        tab[0, 0] = hgLabel("<b>Current Manager Version:<b>")
+        tab[0, 1] = hgLabel(str(version))
+        tab[1, 0] = hgLabel("<b>Installed Version:<b>")
+        tab[1, 1] = hgLabel(str(newver))
 
-            dlg.add(tab)
+        dlg.add(tab)
 
-            if newver > version:
-                dlg.add(hgPushButton("Update", name="update"))
-            else:
-                dlg.add(hgLabel("No update required"))
-
-            return HTML(dlg.getHtml())(self, REQUEST)
+        if newver > version:
+            dlg.add(hgPushButton("Update", name="update"))
         else:
-            raise ValueError(
-                "Access Denied: Insufficient privileges to access this function"
-            )
+            dlg.add(hgLabel("No update required"))
+
+        return HTML(dlg.getHtml())(self, REQUEST)
 
     security.declareProtected(managePermission, "getDebugOutput")
 
     def getDebugOutput(self, REQUEST):
-        """\brief Returns the HTML source of the debug output view."""
+        """Returns the HTML source of the debug output view."""
         html = []
 
         additional = self.setDebugOutput()
@@ -117,15 +106,6 @@ class ManagerManageTabsMixin(object):
             html.append(str(hgNEWLINE))
 
         html.append(str(dlgLabel("<h2> Debug Output </h2>") + hgNEWLINE))
-
-        # security
-        tab = hgTable()
-        html.append(str(dlgLabel("<br>Security Settings")))
-        tab[0, 0] = hgLabel("EBaSe:")
-        tab[0, 1] = hgLabel(str(self.ebase))
-        tab[1, 0] = hgLabel("SBAR:")
-        tab[1, 1] = hgLabel(str(self.checkSBAR()))
-        html.append(str(tab))
 
         tab = hgTable()
 

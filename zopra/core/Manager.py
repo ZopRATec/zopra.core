@@ -10,7 +10,6 @@ from zopra.core import ZC
 from zopra.core import ClassSecurityInfo
 from zopra.core import Folder
 from zopra.core import Image
-from zopra.core import getSecurityManager
 from zopra.core import managePermission
 from zopra.core import modifyPermission
 from zopra.core import viewPermission
@@ -18,11 +17,9 @@ from zopra.core.elements.Buttons import DLG_CUSTOM
 from zopra.core.IconHandler import IconHandler
 from zopra.core.interfaces import IZopRAManager
 from zopra.core.interfaces import IZopRAProduct
-from zopra.core.LevelCache import LevelCache
 from zopra.core.lists.ListHandler import ListHandler
 from zopra.core.mixins.ManagerFinderMixin import ManagerFinderMixin
 from zopra.core.mixins.ManagerManageTabsMixin import ManagerManageTabsMixin
-from zopra.core.security.GUIPermission import GUIPermission
 from zopra.core.tables.TableHandler import TableHandler
 from zopra.core.types import DictType
 from zopra.core.types import ListType
@@ -47,10 +44,6 @@ class Manager(Folder, ManagerFinderMixin, ManagerManageTabsMixin):
     _classType = [_className]
 
     meta_type = ""
-
-    # security switch (can be enabled by __init__)
-    ebase = False
-    sbar = False
 
     manage_options = Folder.manage_options + (
         {"label": "Overview", "action": "viewTab"},
@@ -1171,254 +1164,6 @@ class Manager(Folder, ManagerFinderMixin, ManagerManageTabsMixin):
     security.declareProtected(viewPermission, "getAllManagersHierarchyDown")
     security.declareProtected(viewPermission, "getAllManagers")
     security.declareProtected(viewPermission, "topLevelProduct")
-
-    ###########################################################################
-    #                                                                         #
-    # Security Functions                                                      #
-    #   - EBaSe, SBAR, general permissions (entry / gui), forms               #
-    ###########################################################################
-
-    # EBaSe methods
-    # ATTENTION: EBASE was never finished.
-    # The permission object machinery (secEntryPermission) it brought with it is used throughout ZopRA.
-
-    security.declareProtected(managePermission, "activateEBaSe")
-
-    def activateEBaSe(self):
-        """activate Entry Based Security"""
-        self.ebase = True
-
-    security.declareProtected(viewPermission, "checkEBaSe")
-
-    def checkEBaSe(self, table):
-        """check activated Entry Based Security for table
-        If manager ebase switch is true and the one from the table then return True.
-        """
-        return self.ebase and self.tableHandler[table].ebase
-
-    security.declareProtected(managePermission, "initEBaSe")
-
-    def initEBaSe(self, table):
-        """update show-ebase of all entries of table to match creators ebase-groups.
-        Activate Ebase at all."""
-        self.ebase = True
-        if not self.checkEBaSe(table):
-            raise ValueError("EBaSe not enabled.")
-
-        m_security = self.getHierarchyUpManager(ZC.ZM_SCM)
-        users = {}
-        all_group = m_security.tableHandler["ebasegroup"].getEntryAutoid("All", "name")
-        tobj = self.tableHandler[table]
-        entries = tobj.getEntries()
-        # TODO: create umask
-
-        # TODO: apply umask
-
-        # key = '%s_ebase_show' % table
-        count = 0
-        # for entry in entries:
-        #    creatorid = entry.get(TCN_CREATOR)
-        #    if users.has_key(creatorid):
-        #        user = users.get(creatorid)
-        #    else:
-        #        user = m_security.getUserByCMId(creatorid)
-        #        users[creatorid] = user
-        #    if not user:
-        #        # creator has no login, show to all
-        #        egroups = [all_group]
-        #    else:
-        #        egroups = user.get('ebasegroups')
-        #        if not egroups:
-        #            # forgot to update the user
-        #            egroups = [all_group]
-        #    ddict = {key:egroups}
-        #    tobj.updateEntry(ddict, entry[TCN_AUTOID])
-        #    count += 1
-        return "%s: %s entries updated." % (table, count)
-
-    #
-    # SBAR (Scope Based Access Restrictions) methods
-    # SBAR has been in use in the Plant and Seed Database (PSDB) -> legacy
-    # The permission object machinery (secGUIPermission) it brought with it is used throughout ZopRA.
-
-    security.declareProtected(managePermission, "activateSBAR")
-
-    def activateSBAR(self):
-        """Activates the scope based access restrictions. """
-        self.sbar = True
-
-    security.declareProtected(viewPermission, "checkSBAR")
-
-    def checkSBAR(self):
-        """Returns whether the scope based access restrictions are enabled for a manager or not.
-
-        :return: True if the scope based access restrictions are enabled, otherwise False.
-        :rtype: bool
-        """
-        if not hasattr(self, "sbar"):
-            self.sbar = False
-        return self.sbar
-
-    #
-    # permission check functions
-    #
-
-    security.declareProtected(viewPermission, "getGUIPermission")
-
-    def getGUIPermission(self):
-        """retrieve the gui permission object from the current session (or create one, if it does not exist)."""
-        obj = None
-        session = None
-
-        # get session
-        request = self.REQUEST
-
-        if request and hasattr(request, "SESSION"):
-            session = request.SESSION
-            # test session
-            obj = session.get("GUIPermission")
-
-        if obj:
-            # TODO: test object correctness
-            return obj
-        else:
-            # call creation function
-            obj = self._createGUIPermission()
-            if session:
-                session["GUIPermission"] = obj
-            return obj
-
-    security.declareProtected(viewPermission, "destroyGUIPermission")
-
-    def destroyGUIPermission(self):
-        """empty the session GUIPermission item"""
-        # get session
-        session = self.REQUEST.SESSION
-
-        # test session
-        session["GUIPermission"] = None
-        return True
-
-    security.declarePrivate("_createGUIPermission")
-
-    def _createGUIPermission(self):
-        """Returns a new created GUIPermission object."""
-        # try to get security manager
-        m_sec = self.getHierarchyUpManager(ZC.ZM_SCM)
-        if m_sec:
-
-            # get login
-            login = m_sec.getCurrentLogin()
-
-            # get global roles
-            groles = m_sec.getGlobalRoles()
-
-            # get access roles
-            aroles = m_sec.getAccessRoles()
-
-            # get access roles active managers
-            active = m_sec.getAccessEnabledMgrs()
-
-        else:
-
-            # get login
-            login = getSecurityManager().getUser()
-
-            # no security manager -> everyone is admin
-            groles = ["Admin"]
-            aroles = LevelCache(2, [100, 100], nonpersistent=True)
-            active = {}
-
-        # create object
-        return GUIPermission(login, groles, active, aroles)
-
-    security.declareProtected(viewPermission, "hasGUIPermission")
-
-    def hasGUIPermission(self, table, permission_request):
-        """Checks permission for table."""
-        if table not in self.tableHandler:
-            title = self.getTitle()
-            raise ValueError("Table '%s' does not exist in %s" % (table, title))
-        perm = self.getGUIPermission()
-        ztype = self.getZopraType()
-        tobj = self.tableHandler[table]
-        tabid = tobj.getUId()
-
-        return bool(perm.hasPermission(permission_request, tabid, ztype))
-
-    security.declareProtected(viewPermission, "isSuperUser")
-
-    def isSuperUser(self, tabid=None, anytab=False):
-        """Checks if the actual user is a superuser for table with tabid (or general if no tabid given)"""
-        # check permissions
-        perm = self.getGUIPermission()
-        ztype = self.getZopraType()
-        suser = False
-        if not tabid and anytab:
-            for tab in self.tableHandler.getTableIDs():
-                tabid = self.tableHandler[tab].getUId()
-                suser = suser or perm.hasMinimumRole(perm.SC_SUPER, tabid, ztype)
-        else:
-            # general role check
-            suser = perm.hasMinimumRole(perm.SC_SUPER, tabid, ztype)
-        return suser or perm.hasSpecialRole(ztype + "Superuser")
-
-    security.declareProtected(viewPermission, "hasEntryPermission")
-
-    def hasEntryPermission(
-        self, table, autoid=None, descr_dict=None, permission_request=0
-    ):
-        """Return label for entry, overwrite for special functionality."""
-        if autoid:
-            descr_dict = self.tableHandler[table].getEntry(autoid)
-
-        if not descr_dict:
-            return False
-
-        if "permission" in descr_dict:
-            tobj = descr_dict["permission"]
-            return tobj.isOwner() or tobj.hasPermission(permission_request)
-
-        return True
-
-    security.declareProtected(viewPermission, "getEntryPermissions")
-
-    def getEntryPermissions(self, acl, table):
-        """collect permissions fo an acl"""
-        # function that collects permissions for an acl
-        # get security manager
-        m_sec = self.getHierarchyUpManager(ZC.ZM_SCM)
-        if m_sec:
-            # get GUIPermission object
-            perm = self.getGUIPermission()
-
-            # check ebase
-            if self.checkEBaSe(table):
-
-                # admin sees all? what about superuser?
-                if perm.hasRole(perm.SC_ADMIN):
-                    perms = ZC.SC_L_ALL
-
-                else:
-                    # get permissions
-                    perms = m_sec.getCurrentEBaSePermission(acl)
-
-            else:
-                # no ebase, use gui permission object to get permissions
-                perms = []
-                if perm.hasPermission(perm.SC_VIEW):
-                    perms.append(ZC.SC_READ)
-                    perms.append(ZC.SC_LREAD)
-
-                if perm.hasMinimumRole(perm.SC_SUPER):
-                    perms.append(ZC.SC_DEL)
-                    perms.append(ZC.SC_WRITE)
-
-        else:
-            # everyone does everything
-            perms = ZC.SC_L_ALL
-
-        return perms
 
     ###########################################################################
     #                                                                         #

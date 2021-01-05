@@ -744,82 +744,76 @@ class ZopRAProduct(Manager):
 
     def updateForm(self, REQUEST=None):
         """Returns the html source for the view form."""
-        perm = self.getGUIPermission()
-        if perm.hasRole(perm.SC_ADMIN):
-            dlg = getStdDialog("Update Version", "%s/updateForm" % self.absolute_url())
-            dlg.setHeader("<dtml-var manage_page_header><dtml-var manage_tabs>")
-            dlg.setFooter("<dtml-var manage_page_footer>")
+        dlg = getStdDialog("Update Version", "%s/updateForm" % self.absolute_url())
+        dlg.setHeader("<dtml-var manage_page_header><dtml-var manage_tabs>")
+        dlg.setFooter("<dtml-var manage_page_footer>")
 
-            dlg.add(hgLabel("<br/>"))
+        dlg.add(hgLabel("<br/>"))
 
-            # update handling
-            if REQUEST is not None:
-                if REQUEST.form.get("update"):
-                    report = self.updateVersion(REQUEST.form.get("mgrid"))
+        # update handling
+        if REQUEST is not None:
+            if REQUEST.form.get("update"):
+                report = self.updateVersion(REQUEST.form.get("mgrid"))
 
-                    dlg.add(hgLabel("<b>Update Report</b>"))
-                    dlg.add(hgLabel("<br/>"))
-                    dlg.add(str(report))
-                    dlg.add(hgLabel("<br/>"))
-                    dlg.add(hgLabel("<br/>"))
+                dlg.add(hgLabel("<b>Update Report</b>"))
+                dlg.add(hgLabel("<br/>"))
+                dlg.add(str(report))
+                dlg.add(hgLabel("<br/>"))
+                dlg.add(hgLabel("<br/>"))
 
-            version = self.zopra_version
-            newver = Manager.zopra_version
+        version = self.zopra_version
+        newver = Manager.zopra_version
 
-            update = False
-            if newver > version:
+        update = False
+        if newver > version:
+            update = True
+
+        # the product itself
+        tab = hgTable()
+
+        tab[0, 0] = hgLabel("<b>Current Product Version:<b>")
+        tab[0, 1] = hgLabel(str(version))
+        tab[1, 0] = hgLabel("<b>Installed Version:<b>")
+        tab[1, 1] = hgLabel(str(newver))
+
+        dlg.add(tab)
+
+        dlg.add(hgLabel("<br/>"))
+        dlg.add(hgLabel("<br/>"))
+        dlg.add(hgLabel("<b>Registered Manager:</b>"))
+        dlg.add(hgLabel("<br/>"))
+
+        # the products children
+        tab = hgTable()
+        r = 0
+
+        for child in self.getChildren():
+            if child == self:
+                continue
+
+            ident = child.getId()
+            ident += " (" + child.getTitle() + ") "
+            cb = hgCheckBox("", child.getId(), name="mgrid")
+            if child.zopra_version < newver:
+                info = "Update %s -> %s" % (child.zopra_version, newver)
                 update = True
-
-            # the product itself
-            tab = hgTable()
-
-            tab[0, 0] = hgLabel("<b>Current Product Version:<b>")
-            tab[0, 1] = hgLabel(str(version))
-            tab[1, 0] = hgLabel("<b>Installed Version:<b>")
-            tab[1, 1] = hgLabel(str(newver))
-
-            dlg.add(tab)
-
-            dlg.add(hgLabel("<br/>"))
-            dlg.add(hgLabel("<br/>"))
-            dlg.add(hgLabel("<b>Registered Manager:</b>"))
-            dlg.add(hgLabel("<br/>"))
-
-            # the products children
-            tab = hgTable()
-            r = 0
-
-            for child in self.getChildren():
-                if child == self:
-                    continue
-
-                ident = child.getId()
-                ident += " (" + child.getTitle() + ") "
-                cb = hgCheckBox("", child.getId(), name="mgrid")
-                if child.zopra_version < newver:
-                    info = "Update %s -> %s" % (child.zopra_version, newver)
-                    update = True
-                    cb.setChecked(True)
-                else:
-                    cb.setDisabled()
-                    info = "Version %s" % child.zopra_version
-                tab[r, 0] = cb
-                tab[r, 1] = hgLabel(ident)
-                tab[r, 2] = hgLabel(info)
-                r += 1
-
-            dlg.add(tab)
-
-            if update:
-                dlg.add(hgPushButton("Update", name="update"))
+                cb.setChecked(True)
             else:
-                dlg.add(hgLabel("No update required"))
+                cb.setDisabled()
+                info = "Version %s" % child.zopra_version
+            tab[r, 0] = cb
+            tab[r, 1] = hgLabel(ident)
+            tab[r, 2] = hgLabel(info)
+            r += 1
 
-            return HTML(dlg.getHtml())(self, REQUEST)
+        dlg.add(tab)
+
+        if update:
+            dlg.add(hgPushButton("Update", name="update"))
         else:
-            raise ValueError(
-                "Access Denied: Insufficient privileges to access this function"
-            )
+            dlg.add(hgLabel("No update required"))
+
+        return HTML(dlg.getHtml())(self, REQUEST)
 
     security.declareProtected(managePermission, "updateVersion")
 
