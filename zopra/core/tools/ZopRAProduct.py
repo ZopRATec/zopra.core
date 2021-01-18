@@ -160,14 +160,15 @@ class ZopRAProduct(Manager):
 
         # in plone, most of this is not needed
         if HAVE_PLONE:
-            # use python script for redirect
-            content = "##title=Redirect to ZopRA Editorial\ncontext.REQUEST.RESPONSE.redirect(container.absolute_url() + '/zopra_main_form')"
-            parent.manage_addProduct["PythonScripts"].manage_addPythonScript(
-                "index_html"
-            )
-            script = parent["index_html"]
-            script.write(content)
-            # set the properties for zopra_path in parent
+            if "index_html" not in parent:
+                # use python script for redirect
+                content = "##title=Redirect to ZopRA Editorial\ncontext.REQUEST.RESPONSE.redirect(container.absolute_url() + '/zopra_main_form')"
+                parent.manage_addProduct["PythonScripts"].manage_addPythonScript(
+                    "index_html"
+                )
+                script = parent["index_html"]
+                script.write(content)
+            # set the properties for zopra_path in parent, overwrite if present
             # for more complex setups, zopra_path also needs to be set in the parents parent (do so manually)
             parent.manage_addProperty("zopra_path", self.getId(), "string")
         else:
