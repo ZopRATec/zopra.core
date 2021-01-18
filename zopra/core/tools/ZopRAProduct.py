@@ -170,6 +170,8 @@ class ZopRAProduct(Manager):
                 script.write(content)
             # set the properties for zopra_path in parent, overwrite if present
             # for more complex setups, zopra_path also needs to be set in the parents parent (do so manually)
+            if parent.hasProperty("zopra_path"):
+                parent.manage_delProperties(["zopra_path"])
             parent.manage_addProperty("zopra_path", self.getId(), "string")
         else:
             # standard_html_header DTMLDocument
