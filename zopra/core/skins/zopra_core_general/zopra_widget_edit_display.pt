@@ -10,18 +10,17 @@
     <metal:block metal:use-macro="python:path('here/zopra_widget_edit_display/macros/widget_'+attr_type)" />
 </metal:widget_selector>
 
+<metal:asterisk define-macro="asterisk">
+    <span class="fieldRequired" title="Required"
+          i18n:attributes="title title_required;">*</span>
+</metal:asterisk>
+
 <metal:widget_label define-macro="widget_label">
     <tal:block tal:define="cur_field field|nothing"
                tal:condition="python: cur_field">
         <label tal:attributes="for attr_name">
             <span i18n:translate="" tal:replace="python: cur_field['LABEL']"></span>
-            <span class="fieldRequired"
-                  title="Required"
-                     i18n:attributes="title"
-                     tal:define="isreq python: attr_name in required;"
-                     tal:condition="isreq">
-                *
-            </span>
+            <metal:asterisk tal:condition="python: attr_name in required" use-macro="context/@@form-macros/asterisk|context/zopra_widget_edit_display/macros/asterisk" />
         </label>
         <div class="formHelp"
                  tal:content="helpTexts/?attr_name |nothing">
