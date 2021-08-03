@@ -11,7 +11,7 @@ from zopra.core.types import StringType
 class PostgresConnector(SqlConnector):
     """SQL Connector for POSTGRES"""
 
-    _className = "SqlConnector"
+    _className = "PostgresConnector"
     _classType = SqlConnector._classType + [_className]
 
     LIKEOPERATOR = "ILIKE"
