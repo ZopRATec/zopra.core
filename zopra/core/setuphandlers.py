@@ -173,8 +173,6 @@ class ZopRATestEnvironmentMaker(object):
             module_name,
             nocreate=0,
             zopratype="",
-            ebase=None,
-            accessgroups=None,
             REQUEST=None,
         )
 
