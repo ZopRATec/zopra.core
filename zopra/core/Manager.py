@@ -449,8 +449,22 @@ class Manager(Folder, ManagerFinderMixin, ManagerManageTabsMixin):
         use Table.getSearchTreeTemplate (caching is done there)."""
         return self.tableHandler[table].getTableNode()
 
-    def getLabelString(self, table, autoid=None, descr_dict=None, lang=None):
-        """Return label for entry, overwrite for special functionality."""
+    def prepareDictForLabelString(self, table, autoid, descr_dict, lang):
+        """The entry dict in the correct language is necessary to produce the right label string.
+        This method either resolves the autoid to the entry dict (using table and lang parameters)
+        or checks and possibly resolves the language to finally return the suitable entry dict.
+
+        :param table: the table that the entry belongs to
+        :type table: string
+        :param autoid: the id of the entry that will be retrieved, defaults to None
+        :type autoid: int, optional
+        :param descr_dict: the ready dict containing necessary data, defaults to None
+        :type descr_dict: dict, optional
+        :param lang: language string, defaults to None
+        :type lang: string, optional
+        :return: the entry
+        :rtype: dict
+        """
         # we either get the autoid (to retrieve the ddict) or the descr_dict (which is the ddict, but might be in the wrong language)
         if descr_dict:
             ddict = descr_dict
@@ -480,7 +494,26 @@ class Manager(Folder, ManagerFinderMixin, ManagerManageTabsMixin):
             # directly retrieve the entry in the correct language
             ddict = self.getEntry(table, autoid, lang, ignore_permissions=True)
         else:
-            return ""
+            ddict = {}
+        return ddict
+
+    def getLabelString(self, table, autoid=None, descr_dict=None, lang=None):
+        """Return label for entry represented by either autoid or the ready descr_dict.
+        The default implementation checks and possibly resolves the language and then returns the entry's autoid as string label.
+        Overwrite for special functionality.
+
+        :param table: the table that the entry belongs to
+        :type table: string
+        :param autoid: the id of the entry that will be retrieved for building the label string from its data, defaults to None
+        :type autoid: int, optional
+        :param descr_dict: the ready dict containing necessary data, defaults to None
+        :type descr_dict: dict, optional
+        :param lang: language string, defaults to None
+        :type lang: string, optional
+        :return: the label for the entry
+        :rtype: string
+        """
+        ddict = self.prepareDictForLabelString(table, autoid, descr_dict, lang)
         if not ddict:
             return ""
         # return autoid, no matter what table
