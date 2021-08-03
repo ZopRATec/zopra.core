@@ -570,7 +570,7 @@ class List(GenericList):
         mgr = self.getManager()
 
         buttons = getPressedButton(REQUEST)
-        if len(buttons) > 0:
+        if button:
             button = buttons[0]
             changedIds = mgr.getValueListFromRequest(REQUEST, "entry")
 
