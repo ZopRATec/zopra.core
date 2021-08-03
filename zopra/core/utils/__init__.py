@@ -10,9 +10,10 @@ from zopra.core.utils.Classes import XMLHandler
 
 
 def getZopRAPath():
-    """This method returns the path in of the zopra.core package.
+    """Return the path of the zopra.core package.
 
-    @return String directory name of the zopra.core package
+    :return: directory name of the zopra.core package
+    :rtype: string
     """
     return os.path.dirname(zopra.core.__file__)
 
@@ -23,12 +24,11 @@ def getParentManager(context):
     The method goes up at least one level. It does not check whether the
     given node is already a manager.
 
-    @throws ValueError if no manager could be found
-
-    @param  context - Zope element
-    @param  error_message - a string which might contain a more specific error
-                            message
-    @return Manager
+    :param context: Zope element
+    :type context: object
+    :raises ValueError: if no manager could be found
+    :return: the parent manager
+    :rtype: zopra.core.Manager.Manager
     """
     context = context.getParentNode()
 
@@ -42,11 +42,12 @@ def getParentManager(context):
 
 
 def getASTFromXML(xml):
-    """This method reads a XML-string and converts it into an object tree
-        representation.
+    """Read a XML-string and convert it into an object tree representation.
 
-    @param xml - string containing the XML
-    @result object - the object tree's root element
+    :param xml: the xml string
+    :type xml: string
+    :return: the objects tree's root element
+    :rtype: object
     """
     assert isinstance(xml, StringType)
 
@@ -64,37 +65,28 @@ def getASTFromXML(xml):
     return xsHandler.getObjectTree()
 
 
-def getClassPath(obj):
-    """This method returns the path of the objects class file.
+def getModulePath(obj):
+    """Return the path up to but not including the object's class file (a.k.a the module path).
 
-    @param obj - object for which the class file path should be returned
-    @result path object - contains the path to the class file
+    :param obj: object for which the module path should be returned
+    :type obj: object
+    :return: the module path
+    :rtype: string
     """
     return os.path.split(inspect.getfile(obj.__class__))[0]
 
 
-def getModulePath(cls):
-    """This method returns the path of the object's class file.
-
-    @param cls - class for which the class file path should be returned
-    @result path object - contains the path to the class file
-    """
-    _path = inspect.getfile(cls)
-    if _path.endswith("pyc"):
-        _path = _path[:-1]
-    return _path
-
-
 def getTableDefinition(manager):
-    """This method returns the table definition of the given manager.
+    """Return the table definition of the given manager.
 
-    @param manager - ZopRA manager
-    @result string - XML containing the table definition
+    :param manager: ZopRA Manager
+    :type manager: zopra.core.Manager.Manager
+    :return: the XML table definition
+    :rtype: string
     """
-
     # model loading
     className = manager.getClassName()
-    _file = os.path.join(getClassPath(manager), "model", "%s.xml" % className)
+    _file = os.path.join(getModulePath(manager), "model", "%s.xml" % className)
 
     if os.path.exists(_file):
         with open(_file, "r") as fHandle:
