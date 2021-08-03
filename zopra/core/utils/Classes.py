@@ -572,6 +572,18 @@ class Icondefinitions(object):
         ioHandle.write(tab + "</Icondefinitions>\n")
 
 
+DEF_TYPES = (
+    "Columnlist",
+    "Column",
+    "Table",
+    "List",
+    "Image",
+    "Tabledefinition",
+    "Constraints",
+    "Icondefinitions",
+)
+
+
 class XMLHandler(ContentHandler):
     def __init__(self):
 
@@ -600,16 +612,7 @@ class XMLHandler(ContentHandler):
             self.lvlElement[element] -= 1
 
     def startElement(self, name, attrs):
-        if name not in [
-            "Columnlist",
-            "Column",
-            "Table",
-            "List",
-            "Image",
-            "Tabledefinition",
-            "Constraints",
-            "Icondefinitions",
-        ]:
+        if name not in DEF_TYPES:
             return
 
         self.incElementLevel(name)
@@ -622,7 +625,7 @@ class XMLHandler(ContentHandler):
             if attrs.get("list"):
                 tmpObject.setList(attrs["list"])
 
-        if name == "Column":
+        elif name == "Column":
             tmpObject = Column(
                 attrs.get("name"),
                 attrs.get("type"),
@@ -664,7 +667,7 @@ class XMLHandler(ContentHandler):
             if attrs.get("map"):
                 tmpObject.setMap(attrs["map"])
 
-        if name == "Table":
+        elif name == "Table":
             tmpObject = Table(
                 attrs.get("name"),
             )
@@ -681,7 +684,7 @@ class XMLHandler(ContentHandler):
             if attrs.get("uid"):
                 tmpObject.setUid(attrs["uid"])
 
-        if name == "List":
+        elif name == "List":
             tmpObject = List(attrs.get("name"))
 
             if attrs.get("label"):
@@ -699,7 +702,7 @@ class XMLHandler(ContentHandler):
             if attrs.get("translations"):
                 tmpObject.setTranslations(attrs["translations"])
 
-        if name == "Image":
+        elif name == "Image":
             tmpObject = ImageProperties(attrs.get("src"), attrs.get("title"))
 
             if attrs.get("package"):
@@ -735,29 +738,20 @@ class XMLHandler(ContentHandler):
                 else:
                     tmpObject.setHeight(h)
 
-        if name == "Tabledefinition":
+        elif name == "Tabledefinition":
             tmpObject = Tabledefinition()
 
-        if name == "Constraints":
+        elif name == "Constraints":
             tmpObject = Constraints()
 
-        if name == "Icondefinitions":
+        elif name == "Icondefinitions":
             tmpObject = Icondefinitions()
 
         if tmpObject:
             self.prevList.append(tmpObject)
 
     def endElement(self, name):
-        if name not in [
-            "Columnlist",
-            "Column",
-            "Table",
-            "List",
-            "Image",
-            "Tabledefinition",
-            "Constraints",
-            "Icondefinitions",
-        ]:
+        if name not in DEF_TYPES:
             return
 
         lenList = len(self.prevList)
