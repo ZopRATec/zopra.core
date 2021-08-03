@@ -181,11 +181,11 @@ class TemplateBaseManager(Manager):
         import logging
 
         logger = logging.getLogger("ZopRA")
-        for tablename in self.tableHandler.keys():
-            if self.doesTranslations(tablename):
+        for table in self.tableHandler.keys():
+            if self.doesTranslations(table):
                 count = 0
-                logger.info("Checking {}".format(tablename))
-                tobj = self.tableHandler[tablename]
+                logger.info("Checking {}".format(table))
+                tobj = self.tableHandler[table]
                 coldefs = tobj.getColumnDefs()
                 translations = tobj.getEntryList(
                     constraints={"istranslationof": "_not_NULL", "iscopyof": "NULL"}
@@ -215,13 +215,13 @@ class TemplateBaseManager(Manager):
                         log_diff["autoid"] = orig["autoid"]
                         log_diff["trans_autoid"] = translation["autoid"]
                         if do:
-                            self.updateTranslation(tablename, entry_diff)
+                            self.updateTranslation(table, entry_diff)
                         logger.info("diff found: {}".format(str(log_diff)))
                         count += 1
                 if count:
                     logger.info(
                         "Corrected {} entries with differences for table {}".format(
-                            count, tablename
+                            count, table
                         )
                     )
         logger.info("Done")
@@ -238,7 +238,7 @@ class TemplateBaseManager(Manager):
     # security and permission functions
     #
 
-    def checkTablePermission(self, tablename):
+    def checkTablePermission(self, table):
         """Table permission check for zopra_manager_main_form, when visibility is False"""
         # default: False means False, leave it at that
         return False
@@ -510,8 +510,8 @@ class TemplateBaseManager(Manager):
     def isHierarchyList(self, listname):
         # check if a List with that name is referenced by a table attribute
         hlists = []
-        for tablename in self.tableHandler.keys():
-            hlists.extend(self.listHandler.getLists(tablename, ["hierarchylist"]))
+        for table in self.tableHandler.keys():
+            hlists.extend(self.listHandler.getLists(table, ["hierarchylist"]))
         for lobj in hlists:
             if lobj.listname == listname:
                 return True

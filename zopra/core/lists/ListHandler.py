@@ -350,13 +350,16 @@ class ListHandler(Folder):
         """check access list for column in table"""
         return (table, column) in self.mapcol2list
 
-    def getLists(self, table, types=ZC.ZCOL_LISTS, include=True):
+    def getLists(self, table, types=None, include=True):
         """Get all lists of a table that match"""
         if table not in self.maptable2lists:
             return []
 
         lists = []
-        types = types if isinstance(types, ListType) else [types]
+        if types == None:
+            types = ZC.ZCOL_LISTS
+        elif not isinstance(types, ListType):
+            types = [types]
 
         for listtype in ZC.ZCOL_LISTS:
 

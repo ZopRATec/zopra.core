@@ -569,9 +569,7 @@ class TableNode(Persistent):
                     fromlist.append(tmpsql)
 
             # test all lists whether they need to be joined (for ordering / constraining)
-            tablelists = self.mgr.listHandler.getLists(
-                self.data.tablename, types=[], include=False
-            )
+            tablelists = self.mgr.listHandler.getLists(self.data.tablename)
             for listobj in tablelists:
                 xlist = listobj.listname
                 if listobj.listtype in ZC.ZCOL_MLISTS:
