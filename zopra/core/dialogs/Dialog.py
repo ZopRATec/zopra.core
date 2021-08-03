@@ -1,12 +1,12 @@
 from PyHtmlGUI.dialogs.hgDialog import hgDialog
 from PyHtmlGUI.widgets.hgLabel import hgProperty
 from PyHtmlGUI.widgets.hgPushButton import hgPushButton
-from zopra.core.dialogs.guiHandler import guiHandler
+from zopra.core.dialogs.handler import GUIHandler
 from zopra.core.elements.Styles.Default import ssiA
 from zopra.core.elements.Styles.Default import ssiA_VISITED
 
 
-class Dialog(hgDialog, guiHandler):
+class Dialog(hgDialog, GUIHandler):
     """Dialog Base Class"""
 
     # class variables
@@ -29,7 +29,7 @@ class Dialog(hgDialog, guiHandler):
         title="Dialog",
         parent=None,
         name=None,
-        flags=guiHandler.Standalone,
+        flags=GUIHandler.Standalone,
     ):
         """Constructs a Dialog."""
 

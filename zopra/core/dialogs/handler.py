@@ -20,8 +20,8 @@ from PyHtmlGUI.widgets.hgWidgetStack import hgWidgetStack
 from zopra.core.types import ListType
 
 
-class guiHandler(object):
-    """The guiHandler class provides a mix-in for the GUI handling in the
+class GUIHandler(object):
+    """The GUIHandler class provides a mix-in for the GUI handling in the
     ZopRA infrastructure context."""
 
     _stdHeader = "<dtml-var standard_html_header>"
@@ -145,7 +145,7 @@ class guiHandler(object):
                 self._processEvents(child, form)
 
     def __init__(self, flags=Standalone):
-        """Initialize the guiHandler."""
+        """Initialize the GUIHandler."""
 
         if flags & self.Standalone:
             self.header = self._stdHeader
