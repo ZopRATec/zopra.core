@@ -16,7 +16,7 @@ class IZopRAManager(IFolder):
     """The IZopRAManager interface marks a class to be a ZopRA manager.
 
     The Manager class implements the interface. As your manager class is
-    derived from the zopra.core.Manager you do not have to implement it
+    derived from the zopra.core.Manager.Manager you do not have to implement it
     on your own.
     """
 

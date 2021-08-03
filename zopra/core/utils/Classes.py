@@ -536,6 +536,7 @@ class Tabledefinition(object):
 
 
 class Icondefinitions(object):
+    # This class is not used anymore by the zopra.core. But it has to remain for the legacy package to work.
     __classname__ = "Icondefinitions"
 
     def __init__(self):

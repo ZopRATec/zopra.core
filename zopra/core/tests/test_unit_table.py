@@ -43,8 +43,6 @@ class TableTest(StandaloneTestCase):
     # - deleteEntry
     # - updateEntry
     # - validateEntry
-    # - exportXML
-    # - exportCSV
     # - deleteEntries
     # - filterEntries
     # - requestEntries
@@ -59,6 +57,8 @@ class TableTest(StandaloneTestCase):
     # - getRowCount
     # - getEntryValue
     # - getEntrySelect
+    # - exportXML
+    # - exportCSV
 
     # what can we test on the TableHandler object?
     # - addTable, delTable
