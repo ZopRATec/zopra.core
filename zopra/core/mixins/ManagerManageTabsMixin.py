@@ -173,7 +173,7 @@ class ManagerManageTabsMixin(object):
                 try:
                     tab[row, 4] = dlgLabel(lobj.getResponsibleManagerId())
                 except Exception:
-                    tab[row, 4] = dlgLabel('<font color="red">not found</font>')
+                    tab[row, 4] = dlgLabel('<span style="color:red;">not found</span>')
                 tab[row, 5] = dlgLabel(lobj.function)
                 tab[row, 6] = dlgLabel(lobj.foreign)
                 row += 1

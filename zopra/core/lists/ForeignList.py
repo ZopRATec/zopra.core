@@ -596,7 +596,7 @@ class ForeignList(GenericList):
             lab_mgr = hgLabel(lab, url)
         else:
             # external mgr not present
-            lab_mgr = hgLabel('<font color="red">%s</font>' % self.manager)
+            lab_mgr = hgLabel('<span style="color:red;">%s</span>' % self.manager)
 
         tab[2, 0] = self.listname
         tab[2, 1] = self.listtype
@@ -630,9 +630,9 @@ class ForeignList(GenericList):
                     lab_target = hgLabel(self.foreign, url)
                 else:
                     target_type = "Missing"
-                    lab_target = hgLabel('<font color="red">%s</font>' % self.foreign)
+                    lab_target = hgLabel('<span style="color:red;">%s</span>' % self.foreign)
             else:
-                lab_target = hgLabel('<font color="red">%s</font>' % self.foreign)
+                lab_target = hgLabel('<span style="color:red;">%s</span>' % self.foreign)
 
         tab[2, 5] = target_type
         tab[2, 6] = lab_target

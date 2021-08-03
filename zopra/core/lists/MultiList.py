@@ -209,7 +209,7 @@ class MultiList(ForeignList):
             # error -> dbmultitable missing?
             dlg.add(
                 hgLabel(
-                    '<font color="red">Multitable not found in DB!</font>', parent=dlg
+                    '<span style="color:red;">Multitable not found in DB!</span>', parent=dlg
                 )
             )
             # add create button

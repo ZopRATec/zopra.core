@@ -507,7 +507,7 @@ class ListHandler(Folder):
                     lab_mgr = hgLabel(lab, url)
                 else:
                     # external mgr not present
-                    lab_mgr = hgLabel('<font color="red">%s</font>' % list_obj.manager)
+                    lab_mgr = hgLabel('<span style="color:red;">%s</span>' % list_obj.manager)
             else:
                 list_mgr = manager
                 lab = manager.getId() + " (" + manager.getClassName() + ")"
@@ -525,7 +525,7 @@ class ListHandler(Folder):
                 url = "%s/%s/manage_workspace" % (tobj.absolute_url(), table)
                 lab_table = hgLabel(table, url)
             else:
-                lab_table = hgLabel('<font color="red">%s</font>' % table)
+                lab_table = hgLabel('<span style="color:red;">%s</span>' % table)
 
             # provide info about referenced object and a link to it
             if list_obj.function:
@@ -554,11 +554,11 @@ class ListHandler(Folder):
                     else:
                         target_type = "Missing"
                         lab_target = hgLabel(
-                            '<font color="red">%s</font>' % list_obj.foreign
+                            '<span style="color:red;">%s</span>' % list_obj.foreign
                         )
                 else:
                     lab_target = hgLabel(
-                        '<font color="red">%s</font>' % list_obj.foreign
+                        '<span style="color:red;">%s</span>' % list_obj.foreign
                     )
 
             tab[r, 1] = lab_table
