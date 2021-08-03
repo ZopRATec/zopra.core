@@ -66,7 +66,6 @@ class Column(object):
         self.noteslabel = None
         self.noconnect = None
         self.labelsearch = None
-        self.maxshown = None
         self.map = None
 
     def getName(self):
@@ -162,13 +161,6 @@ class Column(object):
         )
         self.labelsearch = labelsearch
 
-    def getMaxshown(self):
-        return self.maxshown
-
-    def setMaxshown(self, maxshown):
-        assert isinstance(maxshown, UnicodeType) or isinstance(maxshown, StringType)
-        self.maxshown = maxshown
-
     def getMap(self):
         return self.map
 
@@ -216,8 +208,6 @@ class Column(object):
             tmp_string.append(' noconnect="%s"' % self.noconnect)
         if self.labelsearch:
             tmp_string.append(' labelsearch="%s"' % self.labelsearch)
-        if self.maxshown:
-            tmp_string.append(' maxshown="%s"' % self.maxshown)
         if self.map:
             tmp_string.append(' map="%s"' % self.map)
         tmp_string.append("/>")
@@ -670,9 +660,6 @@ class XMLHandler(ContentHandler):
 
             if attrs.get("labelsearch"):
                 tmpObject.setLabelsearch(attrs["labelsearch"])
-
-            if attrs.get("maxshown"):
-                tmpObject.setMaxshown(attrs["maxshown"])
 
             if attrs.get("map"):
                 tmpObject.setMap(attrs["map"])

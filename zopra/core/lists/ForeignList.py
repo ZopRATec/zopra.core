@@ -34,7 +34,6 @@ class ForeignList(GenericList):
     __notes = None
     __noteslabel = None
     __labelsearch = False
-    __maxshown = None
     __invisible = True
 
     listtype = "singlelist"
@@ -51,7 +50,6 @@ class ForeignList(GenericList):
         self.__notes = None
         self.__noteslabel = None
         self.__labelsearch = False
-        self.__maxshown = None
         self.__invisible = True
 
         if not function:
@@ -121,9 +119,9 @@ class ForeignList(GenericList):
     def setLabelSearch(self, labelsearch):
         """Set labelsearch property
         If set, getAutoidByValue will use searchLabelStrings from manager
-        which is supposed to perform a db search based on Value string.
-        Also enables filtering for the list. labelsearch is normally used in conjunction
-        with maxshown to have a reduced size list with searchable values.
+        which performs a db search based on Value string.
+        Also enables filtering for the list (legacy frontend).
+        labelsearch is normally used to have a list with searchable values.
         This should speed up the data retrieval considerably compared
         to the standard method of retrieving all entries from db,
         creating their label string and comparing it to the pattern.
@@ -144,27 +142,6 @@ class ForeignList(GenericList):
         return self.__labelsearch
 
     labelsearch = property(getLabelSearch, setLabelSearch)
-
-    def setMaxShown(self, maxshown):
-        """Set maxshown property
-        If set, list size is reduced to maxshown to increase speed for display.
-        The target widget only gets loaded with the needed entries and offers functions
-        to determine limit and offset. Used in getWidget and MultiList.getComplexWidget
-        to select the target widget (not set -> hgComboBox / hgComplexMultiList or
-        set and len(entries) > maxshown -> hgFilteredRangeList)
-        """
-
-        if maxshown:
-            self.__maxshown = int(maxshown)
-        else:
-            self.__maxshown = None
-
-    def getMaxShown(self):
-        """Get maxshown property"""
-
-        return self.__maxshown
-
-    maxshown = property(getMaxShown, setMaxShown)
 
     # invisible property methods
     def setInvisible(self, invisible):
@@ -187,7 +164,6 @@ class ForeignList(GenericList):
 
         cop.notes = self.notes
         cop.labelsearch = self.labelsearch
-        cop.maxshown = self.maxshown
 
         return cop
 

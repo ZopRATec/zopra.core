@@ -100,9 +100,6 @@ class ListHandler(Folder):
                     if column.getLabelsearch():
                         lobj.labelsearch = True
 
-                    if column.getMaxshown():
-                        lobj.maxshown = int(column.getMaxshown())
-
                     # FIXME: check if this is necessary, only cols should be invisible, not the foreign lists
                     if column.getInvisible():
                         lobj.invisible = True
