@@ -413,7 +413,7 @@ class ZopRAProduct(Manager):
         return self.connector.simpleVal(cols_dict, entry_dict)
 
     def simpleDelete(self, name, autoid, tabid=None, entry=None):
-        """ Deletes an entry in the database. """
+        """Deletes an entry in the database."""
         # prepare delete and write log
         done = self.connector.simpleDel(name, autoid)
         if done:

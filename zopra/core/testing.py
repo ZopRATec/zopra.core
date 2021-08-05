@@ -84,7 +84,7 @@ class ZopraCoreLayer(PloneSandboxLayer):
             z2.installProduct(app, "tud.addons.redirect")
             z2.installProduct(app, "tud.theme.webcms2")
             # do not install profiles to avoid the dependencies on zopra app packages
-            #z2.installProduct(app, "tud.profiles.webcms")
+            # z2.installProduct(app, "tud.profiles.webcms")
 
         import zopra.core
 

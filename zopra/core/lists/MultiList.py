@@ -5,7 +5,7 @@ from zopra.core.lists.ForeignList import ForeignList
 
 
 class MultiList(ForeignList):
-    """ Multilist Class - Data handling for multi-selection lists."""
+    """Multilist Class - Data handling for multi-selection lists."""
 
     _className = "MultiList"
     _classType = ForeignList._classType + [_className]
@@ -105,7 +105,7 @@ class MultiList(ForeignList):
         return [entry[0] for entry in result]
 
     def updateMLNotes(self, tableid, listid, notes):
-        """ change the notes of one entry"""
+        """change the notes of one entry"""
         mgr = self.getManager()
 
         if not tableid or not listid:
@@ -209,7 +209,8 @@ class MultiList(ForeignList):
             # error -> dbmultitable missing?
             dlg.add(
                 hgLabel(
-                    '<span style="color:red;">Multitable not found in DB!</span>', parent=dlg
+                    '<span style="color:red;">Multitable not found in DB!</span>',
+                    parent=dlg,
                 )
             )
             # add create button

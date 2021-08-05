@@ -132,7 +132,7 @@ def manage_addGeneric(
     zopratype="",
     REQUEST=None,
 ):
-    """ Create any new Generic Manager and add it to destination. """
+    """Create any new Generic Manager and add it to destination."""
     managerClass = getattr(import_module(pkg), manager)
     obj = managerClass(id=zope_id, title=title, nocreate=nocreate, zopratype=zopratype)
 

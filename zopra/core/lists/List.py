@@ -33,7 +33,7 @@ from zopra.core.types import UnicodeType
 
 
 class List(GenericList):
-    """ List """
+    """List"""
 
     _className = "List"
     _classType = GenericList._classType + [_className]

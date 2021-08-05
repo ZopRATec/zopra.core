@@ -1,7 +1,7 @@
 import logging
 
 
-PROFILE_ID = 'profile-zopra.core:default'
+PROFILE_ID = "profile-zopra.core:default"
 
 
 def upgrade_skins(context, logger=None):
@@ -15,11 +15,12 @@ def upgrade_skins(context, logger=None):
 
     if logger is None:
         # Called as upgrade step: define our own logger.
-        logger = logging.getLogger('zopra.core')
+        logger = logging.getLogger("zopra.core")
 
     # Run the skins.xml step
     from plone import api
-    setup = api.portal.get_tool('portal_setup')
-    setup.runImportStepFromProfile(PROFILE_ID, 'skins')
 
-    logger.info('Skins reimported.')
+    setup = api.portal.get_tool("portal_setup")
+    setup.runImportStepFromProfile(PROFILE_ID, "skins")
+
+    logger.info("Skins reimported.")

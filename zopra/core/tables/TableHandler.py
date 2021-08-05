@@ -25,7 +25,7 @@ class TableHandler(Folder):
     #
 
     def __init__(self):
-        """ This method constructs a TableHandler object."""
+        """This method constructs a TableHandler object."""
         Folder.__init__(self, "tableHandler")
         self.tableCounter = 0
 
@@ -84,14 +84,14 @@ class TableHandler(Folder):
             )
 
     def __getitem__(self, key):
-        """ This method handles the collection getter operator."""
+        """This method handles the collection getter operator."""
         try:
             return getattr(self, key)
         except Exception:
             raise TypeError('Table "%s" does not exist' % key)
 
     def __setitem__(self, key, value):
-        """ This method handles the collection assignment operator."""
+        """This method handles the collection assignment operator."""
 
         if not IZopRATable.providedBy(value):
             errmsg = "A table object was expected but got %s." % type(value)
@@ -100,7 +100,7 @@ class TableHandler(Folder):
         setattr(self, key, value)
 
     def __contains__(self, key):
-        """ This method handles the collection in-operator."""
+        """This method handles the collection in-operator."""
         return self.hasObject(key)
 
     def get(self, key, default=None):

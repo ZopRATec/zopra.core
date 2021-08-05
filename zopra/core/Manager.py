@@ -165,7 +165,7 @@ class Manager(Folder, ManagerFinderMixin, ManagerManageTabsMixin):
     ###########################################################################
 
     def getGenericConfig(self, table):
-        """ Retrieve the generic config for the table """
+        """Retrieve the generic config for the table"""
         return self._generic_config.get(table, {})
 
     def getConfigShowFields(self, table):
@@ -203,7 +203,7 @@ class Manager(Folder, ManagerFinderMixin, ManagerManageTabsMixin):
     ###########################################################################
 
     def getCurrentLanguage(self):
-        """ Language default is en, overridden in TemplateBaseManager"""
+        """Language default is en, overridden in TemplateBaseManager"""
         return "en"
 
     def doesTranslations(self, table):
@@ -1167,7 +1167,7 @@ class Manager(Folder, ManagerFinderMixin, ManagerManageTabsMixin):
     security.declareProtected(managePermission, "recreateTableHandlers")
 
     def recreateTableHandlers(self):
-        """ Recreate table handler and reload all table objects with XML from table_dict."""
+        """Recreate table handler and reload all table objects with XML from table_dict."""
 
         # remove tableHandler
         self._delObject("tableHandler")

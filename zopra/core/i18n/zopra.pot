@@ -3,7 +3,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ZMOM 1.0\n"
-"POT-Creation-Date: 2021-08-05 16:30+0000\n"
+"POT-Creation-Date: 2021-08-05 16:35+0000\n"
 "PO-Revision-Date: 2010-05-06 14:11+0100\n"
 "Last-Translator: Peter Seifert <peter.seifert@zopra.de>\n"
 "Language-Team: ZMOM i18n <i18n@zopra.de>\n"
@@ -464,12 +464,12 @@ msgid "zopra_list_edit_saved"
 msgstr ""
 
 #. Default: "The marked list entries have been removed."
-#: ./skins/zopra_core_general/zopra_list_value_unifier.py:67
+#: ./skins/zopra_core_general/zopra_list_value_unifier.py:74
 msgid "zopra_list_unifier_done"
 msgstr ""
 
 #. Default: "Attribute ${attr} has been corrected in ${count} table entries."
-#: ./skins/zopra_core_general/zopra_list_value_unifier.py:50
+#: ./skins/zopra_core_general/zopra_list_value_unifier.py:53
 msgid "zopra_list_unifier_entries_corrected"
 msgstr ""
 
@@ -484,7 +484,7 @@ msgid "zopra_list_unifier_param_error"
 msgstr ""
 
 #. Default: "Problem: Some entries seem to have not been corrected."
-#: ./skins/zopra_core_general/zopra_list_value_unifier.py:59
+#: ./skins/zopra_core_general/zopra_list_value_unifier.py:63
 msgid "zopra_list_unifier_unchanged_table_entries"
 msgstr ""
 

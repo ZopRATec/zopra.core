@@ -507,7 +507,9 @@ class ListHandler(Folder):
                     lab_mgr = hgLabel(lab, url)
                 else:
                     # external mgr not present
-                    lab_mgr = hgLabel('<span style="color:red;">%s</span>' % list_obj.manager)
+                    lab_mgr = hgLabel(
+                        '<span style="color:red;">%s</span>' % list_obj.manager
+                    )
             else:
                 list_mgr = manager
                 lab = manager.getId() + " (" + manager.getClassName() + ")"

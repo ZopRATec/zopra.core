@@ -5,7 +5,7 @@ from zopra.core.tools.TemplateBaseManager import TemplateBaseManager
 
 
 class mgrTest(TemplateBaseManager):
-    """ Test Manager """
+    """Test Manager"""
 
     _className = ZM_TEST2
     _classType = TemplateBaseManager._classType + [_className]

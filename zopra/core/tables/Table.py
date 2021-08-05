@@ -941,7 +941,7 @@ class Table(SimpleItem, PropertyManager):
             filter.setMultiConstraint(key, value)
 
     def getEntryCount(self, idvalue=None, idfield=ZC.TCN_AUTOID):
-        """ Returns the count for getEntries - old value-handling (simple attrs only)"""
+        """Returns the count for getEntries - old value-handling (simple attrs only)"""
         assert idfield, ZC.E_PARAM_FAIL % "idfield"
 
         # get TreeRoot
