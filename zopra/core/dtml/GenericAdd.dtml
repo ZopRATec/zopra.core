@@ -34,22 +34,6 @@
           <input type="checkbox"  name="nocreate" value="1">
         </td>
       </tr>
-      <tr>
-        <td>
-          <div class="form-label">activate EBaSe</div>
-        </td>
-        <td>
-          <input type="checkbox"  name="ebase" value="1">
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <div class="form-label">activate AccessGroups</div>
-        </td>
-        <td>
-          <input type="checkbox" name="accessgroups" value="1">
-        </td>
-      </tr>
     </table>
     <br>
       <input type="submit" name="submit"  value="  Add  ">
@@ -58,7 +42,7 @@
   </form>
 <dtml-else>
   <p class="form-text">
-    There is no Product. You need to add a Product Manager 
+    There is no Product. You need to add a Product Manager
     before you can create Product Components.
   </p>
 </dtml-if>

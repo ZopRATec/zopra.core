@@ -67,7 +67,7 @@
     <metal:block metal:use-macro="python:path('here/zopra_widget_edit_display/macros/widget_label')" />
     <input type="text"
            class="numberinput"
-             tal:attributes="value python: context.prepare_zopra_currency_value(attr_value);
+             tal:attributes="value python: context.prepareCurrencyValue(attr_value);
             name attr_name; id attr_name"
     />
 </metal:widget_currency>
@@ -216,7 +216,7 @@
 <metal:widget_hierarchylist define-macro="widget_hierarchylist">
 <tal:comment tal:replace="nothing">
 - this only allows selection of one node (any node on any level, but only one), value is always only one hidden field
--> use GenericManager.getHierarchyListConfig(table, attribute) for the config and allow different settings
+-> use Manager.getHierarchyListConfig(table, attribute) for the config and allow different settings
 </tal:comment>
     <metal:block metal:use-macro="python:path('here/zopra_widget_edit_display/macros/widget_label')" />
     <tal:block tal:define="lobj python:here.listHandler.getList(table, attr_name);
