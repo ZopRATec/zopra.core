@@ -47,9 +47,9 @@ for double in doubles:
     # update
     tobj.updateEntry(double, double["autoid"])
 
-    default = "Attribut ${attr} wurde in ${count} Tabelleneintraegen korrigiert."
-    mapping = {"attr": listname, "count":len(doubles)}
-    message = _("zopra_list_unifier_entries_corrected", default=default mapping=mapping)
+    message = _("zopra_list_unifier_entries_corrected",
+                default="Attribute ${attr} has been corrected in ${count} table entries.",
+                mapping={"attr": listname, "count": len(doubles)})
     context.plone_utils.addPortalMessage(context.translate(message), "info")
 
 )
