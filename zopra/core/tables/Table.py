@@ -1576,9 +1576,9 @@ class Table(SimpleItem, PropertyManager):
 
             entry = self.getEntry(entry_id)
 
-            # check entry permissions
-            pobj = entry["permission"]
-
+            # legacy: check entry permissions
+            # TODO: make dependent on legacy package check, not permission object existence
+            pobj = entry.get("permission")
             if pobj and not pobj.hasPermission(ZC.SC_READ):
                 continue
 
