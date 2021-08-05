@@ -30,14 +30,19 @@ class GenericList(SimpleItem):
         self.label = label if label else u""
 
     def getClassName(self):
-        """This method returns the class name.
+        """Returns the class name.
 
-        :result: string of classes name
+        :rtype: str
+        :return: class name
         """
         return self.__class__.__name__
 
     def getClassType(self):
-        """This method returns a list of the class names of all ancestors and the current class"""
+        """This method returns a list of the class names of all ancestors and the current class
+
+        :rtype: str
+        :return:  list of str containing the class name
+        """
         return [onetype.__name__ for onetype in self.__class__.__bases__] + [
             self.getClassName()
         ]

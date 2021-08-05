@@ -118,15 +118,19 @@ class Manager(Folder, ManagerFinderMixin, ManagerManageTabsMixin):
     ###########################################################################
 
     def getClassName(self):
-        """This method returns the class name.
+        """Returns the class name.
 
-        :result: class name
-        :rtype: string
+        :rtype: str
+        :return: class name
         """
         return self.__class__.__name__
 
     def getClassType(self):
-        """This method returns a list of the class names of all ancestors and the current class"""
+        """This method returns a list of the class names of all ancestors and the current class
+
+        :rtype: str
+        :return:  list of str containing the class name
+        """
         return [onetype.__name__ for onetype in self.__class__.__bases__] + [
             self.getClassName()
         ]
@@ -135,7 +139,8 @@ class Manager(Folder, ManagerFinderMixin, ManagerManageTabsMixin):
         """Returns the title of the object.
 
         :return: the title of the manager if it exists, otherwise an empty string.
-        :rtype: string"""
+        :rtype: str
+        """
         return self.title if hasattr(self, "title") else ""
 
     def getId(self):

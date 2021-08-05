@@ -30,11 +30,16 @@ class IZopRAManager(IFolder):
     def getClassName(self):
         """Returns the class name.
 
-        @result string - class name (self.__class__.__name__)
+        :rtype: str
+        :return: class name
         """
 
     def getClassType(self):
-        """This method returns a list of the class names of all ancestors and the current class"""
+        """This method returns a list of the class names of all ancestors and the current class
+
+        :rtype: str
+        :return:  list of str containing the class name
+        """
 
 
 class IZopRAProduct(IZopRAManager):
