@@ -191,30 +191,6 @@ class Manager(Folder, ManagerFinderMixin, ManagerManageTabsMixin):
 
         return required
 
-    def checkRequiredFields(self, table, dict):
-        """Checks required attributes in dict to be accepted by table"""
-
-        if table not in self.tableHandler:
-            raise ValueError(
-                "Table '%s' does not exist in %s" % (table, self.getTitle())
-            )
-
-        if dict is None or not isinstance(dict, DictType):
-            dict = {}
-
-        missing = []
-        required = self.getRequiredFields(table)
-
-        for field in required:
-            # field is not in entry_dict and no multilist
-            if not dict.get(field):
-                missing.append(field)
-            elif dict.get(field) == "NULL":
-                if self.listHandler.hasList(table, field):
-                    missing.append(field)
-
-        return missing
-
     ###########################################################################
     #                                                                         #
     #  language / translations / working copies switched off                  #
