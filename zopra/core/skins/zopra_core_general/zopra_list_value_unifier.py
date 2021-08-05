@@ -15,16 +15,19 @@ url = context.getParentNode().absolute_url()
 
 # get all entries of all doubleids
 if not doubleid:
-    message = _("zopra_list_unifier_param_error", default="Double list entry IDs are missing.")
-    context.plone_utils.addPortalMessage(context.translate(message), "error")
-    context.REQUEST.RESPONSE.redirect(
-        url + "/zopra_main_form
+    message = _(
+        "zopra_list_unifier_param_error", default="Double list entry IDs are missing."
     )
+    context.plone_utils.addPortalMessage(context.translate(message), "error")
+    context.REQUEST.RESPONSE.redirect(url + "/zopra_main_form")
 else:
     doubles = tobj.getEntryList(constraints={listname: doubleid})
 
 if not doubles:
-    message = _("zopra_list_unifier_no_table_entries", default="No table entries found for the double list entries.")
+    message = _(
+        "zopra_list_unifier_no_table_entries",
+        default="No table entries found for the double list entries.",
+    )
     context.plone_utils.addPortalMessage(context.translate(message), "info")
     # don't return yet, we want to remove the double list entries anyway
 
@@ -47,16 +50,20 @@ for double in doubles:
     # update
     tobj.updateEntry(double, double["autoid"])
 
-    message = _("zopra_list_unifier_entries_corrected",
-                default="Attribute ${attr} has been corrected in ${count} table entries.",
-                mapping={"attr": listname, "count": len(doubles)})
+    message = _(
+        "zopra_list_unifier_entries_corrected",
+        default="Attribute ${attr} has been corrected in ${count} table entries.",
+        mapping={"attr": listname, "count": len(doubles)},
+    )
     context.plone_utils.addPortalMessage(context.translate(message), "info")
 
-)
 # doublecheck that no entries are left
 check = tobj.getEntryList(constraints={listname: doubleid})
 if check:
-    message = _("zopra_list_unifier_unchanged_table_entries", default="Problem: Some entries seem to have not been corrected.")
+    message = _(
+        "zopra_list_unifier_unchanged_table_entries",
+        default="Problem: Some entries seem to have not been corrected.",
+    )
     context.plone_utils.addPortalMessage(context.translate(message), "error")
 
 else:
@@ -64,9 +71,9 @@ else:
     for autoid in doubleid:
         lobj.delValue(autoid)
     msgs.append("Markierte Listeneintraege wurden entfernt.")
-    message = _("zopra_list_unifier_done", default="The marked list entries have been removed.")
+    message = _(
+        "zopra_list_unifier_done", default="The marked list entries have been removed."
+    )
     context.plone_utils.addPortalMessage(context.translate(message), "info")
 
-context.REQUEST.RESPONSE.redirect(
-    url + "/zopra_main_form"
-)
+context.REQUEST.RESPONSE.redirect(url + "/zopra_main_form")
