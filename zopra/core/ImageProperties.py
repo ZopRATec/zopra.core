@@ -7,7 +7,7 @@ from zopra.core.types import IntType
 
 
 class ImageProperties(object):
-    """ImageProperties for storing image meta ata"""
+    """ImageProperties for storing image metadata"""
 
     # class variables
     _className = "ImageProperties"
