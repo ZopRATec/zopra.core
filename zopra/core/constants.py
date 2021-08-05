@@ -5,10 +5,6 @@ import PyHtmlGUI
 
 class ZC(object):
 
-    # list widget constants for handling
-    FCB_DEFAULT_FILTER_TEXT = "<Filter Text>"
-    FILTER_EDIT = "filter_"
-
     # role names
     ROLE_USER = "ZopRAAuthor"
     ROLE_REVIEWER = "ZopRAReviewer"
@@ -28,30 +24,8 @@ class ZC(object):
     SHOW = "show"
     NOTES = "notes"
 
-    WIDGET_CONFIG = "widget_config"
-
-    #
     # Globally interesting Manager Name Constants
-    #
     ZM_PM = "ZopRAProduct"
-    ZM_CM = "ContactManager"
-    ZM_IM = "FileManager"
-    ZM_PNM = "PrintManager"
-    ZM_MM = "MessagingManager"
-    ZM_CTM = "ContentManager"
-    ZM_TEST = "TestManager"
-    ZM_DEBUG = "DebugInfoManager"
-    ZM_SCM = "SecurityManager"
-    ZM_MBM = "MessageBoard"
-
-    # Mask Types
-    MASK_ADD = 0x0001
-    MASK_ADMIN = 0x0002
-    MASK_EDIT = 0x0004
-    MASK_SEARCH = 0x0008
-    MASK_SHOW = 0x0010
-    MASK_HEAD = 0x0020
-    MASK_REDIT = 0x0040
 
     # Database Column Types
     COL_TEXT = "TEXT"
@@ -90,6 +64,63 @@ class ZC(object):
     COL_DEFAULT = "DEFAULT"
     COL_PRIMARY_KEY = "PRIMARY KEY"
 
+    # table definition for edit tracking
+    _edit_tracking_cols = {
+        TCN_CREATOR: {COL_TYPE: "singlelist", COL_LABEL: u"Creator"},
+        TCN_DATE: {COL_TYPE: "date", COL_LABEL: u"Entry Date", COL_DEFAULT: "now()"},
+        TCN_EDITOR: {COL_TYPE: "singlelist", COL_LABEL: u"Last edited by"},
+        TCN_EDATE: {
+            COL_TYPE: "date",
+            COL_LABEL: u"Last edited on",
+            COL_DEFAULT: "now()",
+        },
+        TCN_OWNER: {COL_TYPE: "singlelist", COL_LABEL: u"Owner"},
+    }
+
+    ############################################################################
+    #
+    # Error Messages
+    #
+    ############################################################################
+    E_CALL_ABSTRACT = "[Error] Call of an abstract method."
+    E_PARAM_TYPE = "[Error] Parameter %s has to be %s, but got %s."
+    E_PARAM_FAIL = "[Error] Parameter %s has to be given, but got None."
+
+    checkType = staticmethod(PyHtmlGUI.hg.checkType)
+
+    ############################################################################
+    #
+    # ZopRA Legacy constants (DEPREATED)
+    #
+    ############################################################################
+
+    # list widget constants for handling
+    FCB_DEFAULT_FILTER_TEXT = "<Filter Text>"
+    FILTER_EDIT = "filter_"
+
+    # legacy: widget config name
+    WIDGET_CONFIG = "widget_config"
+
+    # globally interesting manager name constants
+    ZM_CM = "ContactManager"
+    ZM_IM = "FileManager"
+    ZM_PNM = "PrintManager"
+    ZM_MM = "MessagingManager"
+    ZM_CTM = "ContentManager"
+    ZM_TEST = "TestManager"
+    ZM_DEBUG = "DebugInfoManager"
+    ZM_SCM = "SecurityManager"
+    ZM_MBM = "MessageBoard"
+
+    # Mask Types
+    MASK_ADD = 0x0001
+    MASK_ADMIN = 0x0002
+    MASK_EDIT = 0x0004
+    MASK_SEARCH = 0x0008
+    MASK_SHOW = 0x0010
+    MASK_HEAD = 0x0020
+    MASK_REDIT = 0x0040
+
     #
     # some dialog handling constants (legacy)
     #
@@ -126,18 +157,6 @@ class ZC(object):
     SC_READ = 4
     SC_DEL = 8
     SC_L_ALL = [SC_LREAD, SC_WRITE, SC_READ, SC_DEL]
-
-    _edit_tracking_cols = {
-        TCN_CREATOR: {COL_TYPE: "singlelist", COL_LABEL: u"Creator"},
-        TCN_DATE: {COL_TYPE: "date", COL_LABEL: u"Entry Date", COL_DEFAULT: "now()"},
-        TCN_EDITOR: {COL_TYPE: "singlelist", COL_LABEL: u"Last edited by"},
-        TCN_EDATE: {
-            COL_TYPE: "date",
-            COL_LABEL: u"Last edited on",
-            COL_DEFAULT: "now()",
-        },
-        TCN_OWNER: {COL_TYPE: "singlelist", COL_LABEL: u"Owner"},
-    }
 
     #
     # Icons for sort buttons for search result page
@@ -273,14 +292,3 @@ class ZC(object):
         DLG_LIST: IMG_LIST,
         DLG_SHOW: IMG_INFO,
     }
-
-    ############################################################################
-    #
-    # Error Messages
-    #
-    ############################################################################
-    E_CALL_ABSTRACT = "[Error] Call of an abstract method."
-    E_PARAM_TYPE = "[Error] Parameter %s has to be %s, but got %s."
-    E_PARAM_FAIL = "[Error] Parameter %s has to be given, but got None."
-
-    checkType = staticmethod(PyHtmlGUI.hg.checkType)
