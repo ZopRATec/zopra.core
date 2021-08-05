@@ -61,4 +61,4 @@ try:
     return result
 
 except Exception as e:
-    return "Error during export: " + str(e)
+    return "Error during export: " + repr(e)

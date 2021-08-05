@@ -1,4 +1,4 @@
-## Script (Python) "zopra_testExistance"
+## Script (Python) "zopra_testExistence"
 ##bind container=container
 ##bind context=context
 ##bind namespace=
