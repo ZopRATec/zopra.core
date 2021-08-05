@@ -67,7 +67,7 @@
     <metal:block metal:use-macro="python:path('here/zopra_widget_edit_display/macros/widget_label')" />
     <input type="text"
            class="numberinput"
-             tal:attributes="value python: context.prepare_zopra_currency_value(attr_value);
+             tal:attributes="value python: context.prepareCurrencyValue(attr_value);
             name attr_name; id attr_name"
     />
 </metal:widget_currency>

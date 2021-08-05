@@ -703,11 +703,11 @@ class Manager(Folder, ManagerFinderMixin, ManagerManageTabsMixin):
 
         return (autoidlist, total)
 
-    def prepare_zopra_currency_value(self, value):
+    def prepareCurrencyValue(self, value):
         """Format a currency value according to german standard or return as is
         (for edit validation / search validation)
         """
-        if value is None:
+        if value is None or value == "":
             return ""
 
         try:

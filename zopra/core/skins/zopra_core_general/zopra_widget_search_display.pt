@@ -61,7 +61,7 @@
            class="numberinput"
            size="10"
            data-sfarp="_not_NULL"
-             tal:attributes="value python: context.prepare_zopra_currency_value(attr_value);
+             tal:attributes="value python: context.prepareCurrencyValue(attr_value);
                     name python: attr_prefix + attr_name; id python: attr_prefix + attr_name"
     />
 </metal:widget_currency>
