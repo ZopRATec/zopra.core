@@ -1006,8 +1006,6 @@ class Manager(Folder, ManagerFinderMixin, ManagerManageTabsMixin):
                 except Exception:
                     pass
 
-        # fi delete_tables
-
         # remove child manager
         m_product.removeChild(self)
 
