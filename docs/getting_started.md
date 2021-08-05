@@ -165,7 +165,7 @@ Each entry is represented by one line. You can use the "anzeigen"-Link to get a 
 
 \image html show_entry.png
 
-The heading says "Point 1". It is using the table�s label together with the entry�s label (which is the autoid as long as you didn�t overwrite the "getLabelString"-method). You can see that the different types of attributes are rendered differently. Strings will be shown on single lines while memo-attributes are displayed as blocks of text. Singlelists look like normal strings and multilists will be displayed as a list of values.  Push the edit-Button at the bottom of the page to get to the edit display.
+The heading says "Point 1". It is using the table's label together with the entry's label (which is the autoid as long as you didn't overwrite the "getLabelString"-method). You can see that the different types of attributes are rendered differently. Strings will be shown on single lines while memo-attributes are displayed as blocks of text. Singlelists look like normal strings and multilists will be displayed as a list of values.  Push the edit-Button at the bottom of the page to get to the edit display.
 
 \image html edit_entry.png
 
@@ -339,9 +339,9 @@ You can make querys from an template by using getEntryList. The parameter "const
 * const_or: you can use this parameter on lists.s
 
 \code
-    <tal:block tal:define="ilaapp  python: here.ilaapp;
-                tobj               python: ilaapp.tableHandler['tablename'];
-                entries            python: tobj.getEntryList(constraints = query);>
+    <tal:block tal:define="testapp  python: here.testapp;
+                           tobj     python: testapp.tableHandler['test'];
+                           entries  python: tobj.getEntryList(constraints = {});>
 \endcode
 
 \section manager_template Using the manager in a template
@@ -353,20 +353,20 @@ Find the Manager
 mgr here/geometry;
 
 Find the table
-tablename string:point;
-tobj      python: mgr.tableHandler[tablename];
+table string:point;
+tobj  python: mgr.tableHandler[table];
 
 Get all entries and the label for the table
 entries python:    tobj.getEntries();
 label python:      tobj.getLabel();
 attributes python: tobj.getColumnDefs(vis_only=True).keys();
 one_entry python:  tobj.getEntry(1);
-same_entry python: mgr.getEntry(tablename, 1);
+same_entry python: mgr.getEntry(table, 1);
 \endcode
 
 The first statement returns all entries in the table "rectangle". The "getLabel"-method returns the label of the table. You can also use it to get the labels of each attribute of the table by calling it with an attribute name as parameter. To get a list of all columns, use the "getColumnDefs"-method. It returns a dictionary with the column names as keys and the column definition dictionary containing more info about each column as values. Since we only need the names, we use the "keys"-method of the dictionary to get the list of keys.
 
-There are two ways to get one exact entry of a table identified by its autoid: You can request it directly from that table (line 4) or use a function in the manager to do the same for you, by giving it the tablename and autoid as parameters (line 5). The difference is that you can�t alter the ZMOMTable "getEntry"-method, but you can overwrite the manager�s "getEntry"-method. In this way, you are for example able to load related entries and store them inside you entry. Since all operations that are using the cache actually deliver copies instead of the cached entries, you do no need to worry about accidentally cached items, but you also cannot use the cache to store anything else then the plain entry.
+There are two ways to get one exact entry of a table identified by its autoid: You can request it directly from that table (line 4) or use a function in the manager to do the same for you, by giving it the tablename and autoid as parameters (line 5). The difference is that you can't alter the ZMOMTable "getEntry"-method, but you can overwrite the manager's "getEntry"-method. In this way, you are for example able to load related entries and store them inside you entry. Since all operations that are using the cache actually deliver copies instead of the cached entries, you do no need to worry about accidentally cached items, but you also cannot use the cache to store anything else then the plain entry.
 
 The return value of the entry gathering functions like "getEntries" (see chapter 9) are lists of entries. Each entry is a dictionary. To display the label and all attributes of all entries, you could use a TAL-statement as follows (in combination with the previous define statements):
 

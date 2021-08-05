@@ -60,6 +60,7 @@ class ManagerFinderMixin(object):
         :param obj_id: Use obj_id to specify a manager id in an environment where more than
         one manager of a special type is instantiated.
         :return: a manager object if one was found, otherwise None.
+        :rtype: zopra.core.Manager.Manager
         """
         container = self.getContainer()
         if name and hasattr(container, "objectValues"):
@@ -120,7 +121,9 @@ class ManagerFinderMixin(object):
         :param name: The name of the manager
         :param obj_id: Use obj_id to specify a manager id in an environment where more than
         one manager of a special type is instantiated.
-        :return: a manager object if one was found, otherwise None."""
+        :return: a manager object if one was found, otherwise None.
+        :rtype: zopra.core.Manager.Manager
+        """
         if not name:
             return None
 
@@ -162,7 +165,9 @@ class ManagerFinderMixin(object):
         :param name: The name of the manager
         :param obj_id: Use obj_id to specify a manager id in an environment where more than
         one manager of a special type is instantiated.
-        :return: a manager object if one was found, otherwise None."""
+        :return: a manager object if one was found, otherwise None.
+        :rtype: zopra.core.Manager.Manager
+        """
         assert ZC.checkType("name", name, type(""))
         # go back until we find a folder
         # for older zope versions that have a problem with redirection and
@@ -177,7 +182,19 @@ class ManagerFinderMixin(object):
         return self.getManagerDownLoop(folder, name, obj_id, zopratype)
 
     def getManagerDownLoop(self, folder, name, obj_id=None, zopratype=None):
-        """Helper method to loop through children of a folder."""
+        """Helper method to loop through children of a folder.
+
+        :param folder: start folder
+        :type folder: OFS.ObjectManager
+        :param name: Manager Classname
+        :type name: string
+        :param obj_id: target id, defaults to None
+        :type obj_id: string, optional
+        :param zopratype: target zopratype, defaults to None
+        :type zopratype: string, optional
+        :return: target manager
+        :rtype: zopra.core.Manager.Manager
+        """
 
         if not IObjectManager.providedBy(folder):
             return None
@@ -207,11 +224,16 @@ class ManagerFinderMixin(object):
         """Helper method to loop through children of a folder.
 
         :param folder: object that provides IObjectManager
-        :param zopratype: string containing the zopratype
-        :param result_dict: if provided the results will be added
-        :param classname: specifies a particular class
-        :result: { <ID> : <IZopRAManager> }"""
-
+        :type folder: OFS.ObjectManager
+        :param zopratype: string containing the zopratype, defaults to ""
+        :type zopratype: str, optional
+        :param result_dict: if provided, the results will be added, defaults to None
+        :type result_dict: dict, optional
+        :param classname: specifies a particular class, defaults to None
+        :type classname: str, optional
+        :return: a dict with the structure { <ID> : <IZopRAManager> }
+        :rtype: dict
+        """
         # not a folder object return empty dictionary
         if not IObjectManager.providedBy(folder):
             return {}
@@ -241,9 +263,13 @@ class ManagerFinderMixin(object):
     def getAllManagersHierarchyDown(self, zopratype="", classname=None):
         """Returns an unordered list with all manager objects found downward in the hierarchy.
 
-        :param zopratype: string containing the zopratype
-        :param classname: specifies a particular class
-        :return: [ <IZopRAManager>* ]"""
+        :param zopratype: string containing the zopratype, defaults to ""
+        :type zopratype: str, optional
+        :param classname: specifies a particular class, defaults to None
+        :type classname: str, optional
+        :return: list of Manager objects
+        :rtype: list
+        """
         return self.getAllManagersDownLoop(
             self.getParentNode(), zopratype, classname=classname
         ).values()
@@ -251,11 +277,14 @@ class ManagerFinderMixin(object):
     def getAllManagers(self, type_only=True, objects=False):
         """Returns a list with all managers of a special type.
 
-        :param type_only: If True the result contains the meta_types of the manager;
-        otherwise contains the IDs of the managers (default is True).
-        :param objects:If True the result contains the manager objects; otherwise the IDs or meta_types
-        (default is False).
-        :result: A list of meta_types, IDs or objects of the managers from the actual container and above."""
+        :param type_only:  If True the result contains the meta_types of the manager;
+        otherwise contains the IDs of the managers (default is True). Defaults to true.
+        :type type_only: bool, optional
+        :param objects: If True the result contains the manager objects; otherwise the IDs or meta_types. Defaults to False
+        :type objects: bool, optional
+        :return:  A list of meta_types, IDs or objects of the managers from the actual container and above.
+        :rtype: list
+        """
         result_dict = {}
 
         # we use a dictionary to receive only one manager per type
@@ -287,8 +316,14 @@ class ManagerFinderMixin(object):
 
         return result_dict.keys()
 
-    def topLevelProduct(self, zopratype=None):
-        """Returns the hierarchy's topmost product manager."""
+    def topLevelProduct(self, zopratype=""):
+        """Returns the hierarchy's topmost product manager.
+
+        :param zopratype: string containing the zopratype, defaults to ""
+        :type zopratype: str, optional
+        :return: Topmost product manager
+        :rtype: zopra.core.Manager.Manager
+        """
         # TODO: switch to path-related traversal (see getHierarchyUpManager)
         product = None
         folder = self.getContainer()
