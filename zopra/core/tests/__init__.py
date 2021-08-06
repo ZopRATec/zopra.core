@@ -1,34 +1,40 @@
 import unittest
+
 # import from Testing here to work around the testing/Testing problem
 # used by zopra.core.testing
 from Testing.ZopeTestCase.utils import setupCoreSessions
+
 from zopra.core.tools.mgrTest import mgrTest
 
+
 # stub method for faking getManager
-def getManager(self, name, obj_id = None):
+def getManager(self, name, obj_id=None):
     """returning None leads to fallback behaviour. So the tests that do not need database access can work with None"""
     return None
 
+
 def fix_getManager(manager_class):
     """put fake getManager in place"""
-    if not hasattr(mgrTest, 'old_getManager'):
+    if not hasattr(mgrTest, "old_getManager"):
         manager_class.old_getManager = manager_class.getManager
         manager_class.getManager = getManager
 
+
 def unfix_getManager(manager_class):
     """put original getManager back in place"""
-    if hasattr(mgrTest, 'old_getManager'):
+    if hasattr(mgrTest, "old_getManager"):
         manager_class.getManager = manager_class.old_getManager
         del manager_class.old_getManager
 
-#TODO: move the getManager override into a layer setUp (instead Testcase setUp)
+
+# TODO: move the getManager override into a layer setUp (instead Testcase setUp)
+
 
 class StandaloneTestCase(unittest.TestCase):
     """Test Case for Standalone manager testing, overrides getManager to not lookup anything"""
 
     def setUp(self):
-        """This method is called before each single test.
-        """
+        """This method is called before each single test."""
         fix_getManager(mgrTest)
 
     def tearDown(self):

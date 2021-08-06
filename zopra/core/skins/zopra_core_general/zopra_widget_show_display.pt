@@ -24,7 +24,7 @@
 </metal:widget_float>
 
 <metal:widget_currency define-macro="widget_currency">
-    <span tal:content="python: context.prepare_zopra_currency_value(attr_value)">value</span>
+    <span tal:content="python: context.prepareCurrencyValue(attr_value)">value</span>
 </metal:widget_currency>
 
 <metal:widget_date define-macro="widget_date">

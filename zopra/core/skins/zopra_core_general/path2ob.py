@@ -8,11 +8,11 @@
 ##title=Utility Script
 ##
 # use path to navigate to object starting in context
-paths = path.split('/')
+paths = path.split("/")
 step = context
 try:
     for onepath in paths:
-        if onepath in ['Sites', 'TUD']:
+        if onepath in ["Sites", "TUD"]:
             continue
         if onepath:
             step = getattr(step, onepath)

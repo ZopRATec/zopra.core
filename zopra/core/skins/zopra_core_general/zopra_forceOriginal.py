@@ -1,4 +1,4 @@
-## Script (Python) "zopra_testExistance"
+## Script (Python) "zopra_forceOriginal"
 ##bind container=container
 ##bind context=context
 ##bind namespace=
@@ -9,9 +9,11 @@
 ##
 # if the entry is a working copy and force_showcopy is not set in the request, use the original entry instead
 if context.doesWorkingCopies(table) and entry:
-    orig = entry.get('iscopyof')
-    if orig and not request.get('force_showcopy'):
-        entry = context.tableHandler[table].getEntry(orig, ignore_permissions = ignore_permissions)
+    orig = entry.get("iscopyof")
+    if orig and not request.get("force_showcopy"):
+        entry = context.tableHandler[table].getEntry(
+            orig, ignore_permissions=ignore_permissions
+        )
 
 # FIXME: language check should be build in here as well
 

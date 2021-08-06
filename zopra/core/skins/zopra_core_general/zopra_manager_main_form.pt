@@ -23,7 +23,7 @@
                     <tal:block tal:repeat="table tables">
                         <tal:block tal:define="table_visible python: here.getGenericConfig(table).get('visible', True);
                                                tobj python: table_visible and here.tableHandler[table];">
-                            <fieldset tal:define="icon_url here/iconHandler/absolute_url;
+                            <fieldset tal:define="icon_url string:${here/absolute_url}/zopra_images;
                                                   link_url python:here.absolute_url()+'/zopra_table_action_selector?table=%s' % table;
                                                   index repeat/table/index;"
                                       tal:condition="table_visible"
@@ -40,7 +40,7 @@
                                                    tal:define="name python:'f_'+table+'_intern_create';"
                                                    tal:attributes="href python: link_url + '&' + name + '=create'">
                                                     <img class="action_image" alt="Create"
-                                                         tal:attributes="src python:icon_url + '/ZMOM_ziCreate.png'"
+                                                         tal:attributes="src python:icon_url + '/ziCreate.png'"
                                                          i18n:attributes="alt zopra_table_actions_new" />
                                                 </a>
                                             </td><td tal:condition="python: 'search' in options">
@@ -49,7 +49,7 @@
                                                    tal:define="name python:'f_'+table+'_intern_search';"
                                                    tal:attributes="href python: link_url + '&' + name + '=search'">
                                                     <img class="action_image" alt="Search"
-                                                         tal:attributes="src python:icon_url + '/ZMOM_ziSearch.png'"
+                                                         tal:attributes="src python:icon_url + '/ziSearch.png'"
                                                          i18n:attributes="alt zopra_table_actions_search" />
                                                 </a>
                                             </td>
@@ -59,7 +59,7 @@
                                                    tal:define="name python:'f_'+table+'_intern_list';"
                                                    tal:attributes="href python: link_url + '&' + name + '=list'">
                                                     <img class="action_image" alt="List"
-                                                         tal:attributes="src python:icon_url + '/ZMOM_ziList.png'"
+                                                         tal:attributes="src python:icon_url + '/ziList.png'"
                                                          i18n:attributes="alt zopra_table_actions_list" />
                                                 </a>
                                             </td>
@@ -73,7 +73,7 @@
                                                                url   python: import_target[1];"
                                                    tal:attributes="href url; title title">
                                                     <img class="action_image" alt="Import"
-                                                         tal:attributes="src python:icon_url + '/ZMOM_ziImport.png'"
+                                                         tal:attributes="src python:icon_url + '/ziImport.png'"
                                                          i18n:attributes="alt zopra_table_actions_import" />
                                                 </a>
                                             </td>
@@ -88,7 +88,7 @@
                                                                url   python: export_target[1];"
                                                    tal:attributes="href url; title title">
                                                     <img class="action_image" alt="Export"
-                                                         tal:attributes="src python:icon_url + '/ZMOM_ziExport.png'"
+                                                         tal:attributes="src python:icon_url + '/ziExport.png'"
                                                          i18n:attributes="alt zopra_table_actions_export" />
                                                 </a>
                                             </td>
@@ -126,7 +126,7 @@
                                           count python: len(lists)">
                         <legend i18n:translate="zopra_main_editable_lists">Editable selection lists</legend>
                         <div class="listing">
-                            <tal:block tal:repeat="listname python: lists[:count/2]">
+                            <tal:block tal:repeat="listname python: lists[:count/2 + (count % 2)]">
                                 <div class="field"
                                      tal:define="lobj python:here.listHandler[listname]"
                                      tal:condition="python:lobj.noedit != True">
@@ -139,7 +139,7 @@
                             </tal:block>
                         </div>
                         <div class="listing">
-                            <tal:block tal:repeat="listname python: lists[count/2:]">
+                            <tal:block tal:repeat="listname python: lists[count/2 + (count % 2):]">
                                 <div class="field"
                                      tal:define="lobj python:here.listHandler[listname]"
                                      tal:condition="python:lobj.noedit != True">

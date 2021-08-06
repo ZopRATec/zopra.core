@@ -49,7 +49,6 @@
                      dummy python: cols.insert(0,'autoid');
                      order python: ['autoid'] or request.get('sort_attr') or cols;
                      direction python: ['desc'];
-                     quotedcons python: ''#context.quoteConstraints(constraints)#buggy -> string is build below;
                      entries python: tobj.getEntryList(count, offset, None, cons, order, direction=direction);
                      coltypes python:tobj.getColumnDefs();
 
