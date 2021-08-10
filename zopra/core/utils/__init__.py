@@ -1,87 +1,60 @@
-import os.path
 import inspect
+import os.path
 import StringIO
-import types
-
-from OFS.interfaces         import IObjectManager
+from xml.sax import make_parser
 
 import zopra.core
-from zopra.core.interfaces  import IZopRAManager
-from zopra.core.Classes     import XMLHandler, make_parser
-
-
-E_FILE_NOT_FOUND = '[Error] File not found: %s'
+from zopra.core.interfaces import IZopRAManager
+from zopra.core.types import StringType
+from zopra.core.utils.Classes import XMLHandler
 
 
 def getZopRAPath():
-    """ This method returns the path in of the zopra.core package.
+    """Return the path of the zopra.core package.
 
-    @return String directory name of the zopra.core package
+    :return: directory name of the zopra.core package
+    :rtype: string
     """
     return os.path.dirname(zopra.core.__file__)
 
 
-def getParentManager( context,
-                      error_message = 'No Manager found via getParentNode()' ):
-    """ This method returns the parent manager from the given node.
+def getParentManager(context):
+    """This method returns the parent manager from the given node.
 
     The method goes up at least one level. It does not check whether the
     given node is already a manager.
 
-    @throws ValueError Exception if no manager could be found
-
-    @param  context - Zope element
-    @param  error_message - a string which might contain a more specific error
-                            message
-    @return Manager
+    :param context: Zope element
+    :type context: object
+    :raises ValueError: if no manager could be found
+    :return: the parent manager
+    :rtype: zopra.core.Manager.Manager
     """
     context = context.getParentNode()
 
     try:
         while not IZopRAManager.providedBy(context):
             context = context.getParentNode()
-    except:
-        raise ValueError(error_message)
+    except Exception:
+        raise ValueError("No Manager found via getParentNode()")
 
     return context
 
 
-def gatherManagers(context):
-    """ This method finds the Manager instances in the current folder and above
-
-    @return List - unsorted list of IDs
-    """
-    ids = []
-
-    while context:
-
-        if IObjectManager.providedBy(context):
-            for obj in context.objectValues():
-
-                if IZopRAManager.providedBy(obj):
-                    ids.append(obj.getId())
-
-        if hasattr(context, 'aq_parent'):
-            context = context.aq_parent
-        else:
-            context = None
-
-    return ids
-
-
 def getASTFromXML(xml):
-    """ This method reads a XML-string and converts it into an object tree
-        representation.
+    """Read a XML-string and convert it into an object tree representation.
 
-    @param xml - string containing the XML
-    @result object - the object tree's root element
+    :param xml: the xml string
+    :type xml: string
+    :return: the objects tree's root element
+    :rtype: object
     """
-    assert(isinstance(xml, types.StringType))
+    assert isinstance(xml, StringType)
 
     inputFile = StringIO.StringIO(xml)
 
     # XML handling
-    xsHandler  = XMLHandler()
+    xsHandler = XMLHandler()
     saxParser = make_parser()
     saxParser.setContentHandler(xsHandler)
 
@@ -92,60 +65,31 @@ def getASTFromXML(xml):
     return xsHandler.getObjectTree()
 
 
-def getClassPath(obj):
-    """ This method returns the path of the objects class file.
+def getModulePath(obj):
+    """Return the path up to but not including the object's class file (a.k.a the module path).
 
-    @param obj - object for which the class file path should be returned
-    @result path object - contains the path to the class file
+    :param obj: object for which the module path should be returned
+    :type obj: object
+    :return: the module path
+    :rtype: string
     """
     return os.path.split(inspect.getfile(obj.__class__))[0]
 
 
-def getModulePath(cls):
-    """ This method returns the path of the object's class file.
-
-    @param cls - class for which the class file path should be returned
-    @result path object - contains the path to the class file
-    """
-    _path = inspect.getfile(cls)
-    if _path.endswith('pyc'):
-        _path = _path[:-1]
-    return _path
-
-
 def getTableDefinition(manager):
-    """ This method returns the table definition of the given manager.
+    """Return the table definition of the given manager.
 
-    @param manager - ZopRA manager
-    @result string - XML containing the table definition
+    :param manager: ZopRA Manager
+    :type manager: zopra.core.Manager.Manager
+    :return: the XML table definition
+    :rtype: string
     """
-
     # model loading
     className = manager.getClassName()
-    _file     = os.path.join( getClassPath(manager),
-                              'model', '%s.xml' % className )
+    _file = os.path.join(getModulePath(manager), "model", "%s.xml" % className)
 
     if os.path.exists(_file):
-        with open(_file, 'r') as fHandle:
+        with open(_file, "r") as fHandle:
             return fHandle.read()
 
     return '<?xml version="1.0"?><Tabledefinition />'
-
-
-def getIconsDefinition(manager):
-    """ This method returns the icon definition of the given manager.
-
-    @param manager - ZopRA manager
-    @result string - XML containing the icon definition
-    """
-
-    # model loading
-    className = manager.getClassName()
-    _file     = os.path.join( getClassPath(manager),
-                              'icons', '%s.xml' % className )
-
-    if os.path.exists(_file):
-        with open(_file, 'r') as fHandle:
-            return fHandle.read()
-
-    return '<?xml version="1.0"?><Icondefinitions />'

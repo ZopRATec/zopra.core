@@ -19,13 +19,17 @@
       the portal_skins tool, so that they become usable as skin layers.
       -->
 
+ <object name = "zopra_core_css"
+    meta_type = "Filesystem Directory View"
+    directory = "zopra.core:skins/zopra_core_css"/>
+
  <object name = "zopra_core_general"
     meta_type = "Filesystem Directory View"
     directory = "zopra.core:skins/zopra_core_general"/>
 
- <object name = "zopra_core_css"
+<object name = "zopra_core_images"
     meta_type = "Filesystem Directory View"
-    directory = "zopra.core:skins/zopra_core_css"/>
+    directory = "zopra.core:skins/zopra_core_images"/>
 
  <object name = "zopra_core_js"
     meta_type = "Filesystem Directory View"
@@ -49,6 +53,7 @@
        -->
  <skin-path name = "*">
   <layer name = "zopra_core_general"    insert-after = "custom"/>
+  <layer name = "zopra_core_images"     insert-after = "custom"/>
   <layer name = "zopra_core_css"        insert-after = "custom"/>
   <layer name = "zopra_core_js"         insert-after = "custom"/>
   <layer name = "zopra_core_thirdparty" insert-after = "custom"/>

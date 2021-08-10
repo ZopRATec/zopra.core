@@ -21,8 +21,7 @@
           tal:define="errors options/state/getErrors;
                       table request/table;
                       tobj python: here.tableHandler[table];
-                      coltypes python:tobj.getColumnDefs(True);
-                      cols python:coltypes.keys();"
+                      coltypes python:tobj.getColumnDefs(True);"
           tal:attributes="action string:${here/getId}/${template/getId}">
         <h1>
             <span i18n:translate="zopra_import_heading">Import</span>

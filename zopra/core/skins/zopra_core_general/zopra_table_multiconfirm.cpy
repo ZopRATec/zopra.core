@@ -9,47 +9,56 @@
 ##title=
 ##
 from zopra.core import zopraMessageFactory as _
+
+
 request = REQUEST
 tobj = context.tableHandler[table]
 for autoid in confirm_ids:
     copyentry = tobj.getEntry(autoid)
 
-    if not copyentry.get('iscopyof'):
+    if not copyentry.get("iscopyof"):
         label = context.getLabelString(table, None, copyentry)
-        message = _('zopra_multiconfirm_abort_no_copy',
-                    default = u"Only working copies can be published. The entry '${entry_label}' is up-to-date. Publishing was cancelled.",
-                    mapping = {u'entry_label': label})
-        context.plone_utils.addPortalMessage(context.translate(message), 'info')
-        return state.set(status='failure', context=context)
+        message = _(
+            "zopra_multiconfirm_abort_no_copy",
+            default=u"Only working copies can be published. The entry '${entry_label}' is up-to-date. Publishing was cancelled.",
+            mapping={u"entry_label": label},
+        )
+        context.plone_utils.addPortalMessage(context.translate(message), "info")
+        return state.set(status="failure", context=context)
 
-    origentry = context.tableHandler[table].getEntry(copyentry.get('iscopyof'))
+    origentry = context.tableHandler[table].getEntry(copyentry.get("iscopyof"))
 
     if not origentry:
         label = context.getLabelString(table, None, copyentry)
-        message = _('zopra_multiconfirm_abort_not_found',
-                    default = u"Original entry '${entry_label}' could not be found. Publishing was cancelled.",
-                    mapping = {u'entry_label': label})
-        context.plone_utils.addPortalMessage(message, 'info')
-        return state.set(status='failure', context=context)
+        message = _(
+            "zopra_multiconfirm_abort_not_found",
+            default=u"Original entry '${entry_label}' could not be found. Publishing was cancelled.",
+            mapping={u"entry_label": label},
+        )
+        context.plone_utils.addPortalMessage(message, "info")
+        return state.set(status="failure", context=context)
 
-    origautoid = origentry['autoid']
+    origautoid = origentry["autoid"]
 
     # language switch: english language -> only save the text values
-    if not context.doesTranslations(table) or copyentry.get('language') == context.lang_default:
+    if (
+        not context.doesTranslations(table)
+        or copyentry.get("language") == context.lang_default
+    ):
         # original entry is updated
         for key in copyentry.keys():
-            if key not in ['hastranslation', 'language']:
+            if key not in ["hastranslation", "language"]:
                 origentry[key] = copyentry[key]
 
     else:
         # english copy stays the same except for text and string values
         types = tobj.getColumnTypes()
         for key in copyentry.keys():
-            if types.get(key) in ['string', 'memo']:
+            if types.get(key) in ["string", "memo"]:
                 origentry[key] = copyentry[key]
 
-    origentry['autoid'] = origautoid
-    origentry['iscopyof'] = 'NULL'
+    origentry["autoid"] = origautoid
+    origentry["iscopyof"] = "NULL"
 
     # call prepare_hook
     context.prepareDict(table, origentry, request)
@@ -59,17 +68,24 @@ for autoid in confirm_ids:
     done = tobj.updateEntry(origentry, origautoid)
     if done == True:
         # update the nontext values of the english version if it exists
-        en_msg = u''
+        en_msg = u""
         # check for translations
-        if origentry.get('language') == context.lang_default and origentry.get('hastranslation'):
+        if origentry.get("language") == context.lang_default and origentry.get(
+            "hastranslation"
+        ):
             # updateTranslation also updates the working copy of the translation, if it exists
             translated = context.updateTranslation(table, origentry)
             if translated:
-                en_msg = _('zopra_edit_translation_updated',
-                                default = u'Non-text fields of the translated version have been saved additionally. ')
+                en_msg = _(
+                    "zopra_edit_translation_updated",
+                    default=u"Non-text fields of the translated version have been saved additionally. ",
+                )
         # check if this is a translation (for msg only, action done already)
-        elif origentry.get('language') in context.lang_additional:
-            en_msg = _('zopra_edit_translation_saved', default = 'Only the text fields have been saved (because this is a translation). ')
+        elif origentry.get("language") in context.lang_additional:
+            en_msg = _(
+                "zopra_edit_translation_saved",
+                default="Only the text fields have been saved (because this is a translation). ",
+            )
         if en_msg:
             en_msg = context.translate(en_msg)
         # delete copy without deleting anything else (except multilists)
@@ -77,18 +93,32 @@ for autoid in confirm_ids:
         # build and deliver message
         label = context.getLabelString(table, None, origentry)
         if done == True:
-            message = _('zopra_multiconfirm_success',
-                        default = u"Entry '${entry_label}' has been published. ${additional_msg}Internal Id: ${internal_id}.",
-                        mapping = {u'entry_label': label, u'internal_id': origautoid, u'additional_msg': en_msg})
+            message = _(
+                "zopra_multiconfirm_success",
+                default=u"Entry '${entry_label}' has been published. ${additional_msg}Internal Id: ${internal_id}.",
+                mapping={
+                    u"entry_label": label,
+                    u"internal_id": origautoid,
+                    u"additional_msg": en_msg,
+                },
+            )
         else:
-            message = _('zopra_multiconfirm_almost_success',
-                        default = u"Entry '${entry_label}' has been published. ${additional_msg}Error during deletion of working copy. Internal Id: ${internal_id}.",
-                        mapping = {u'entry_label': label, u'internal_id': origautoid, u'additional_msg': en_msg})
-        context.plone_utils.addPortalMessage(context.translate(message), 'info')
+            message = _(
+                "zopra_multiconfirm_almost_success",
+                default=u"Entry '${entry_label}' has been published. ${additional_msg}Error during deletion of working copy. Internal Id: ${internal_id}.",
+                mapping={
+                    u"entry_label": label,
+                    u"internal_id": origautoid,
+                    u"additional_msg": en_msg,
+                },
+            )
+        context.plone_utils.addPortalMessage(context.translate(message), "info")
     else:
-        message = _('zopra_multiconfirm_failure',
-                    default = u"Error during publishing of entry '${entry_label}': ${reason}",
-                    mapping = {u'entry_label': label, u'reason': done})
-        context.plone_utils.addPortalMessage(context.translate(message), 'info')
+        message = _(
+            "zopra_multiconfirm_failure",
+            default=u"Error during publishing of entry '${entry_label}': ${reason}",
+            mapping={u"entry_label": label, u"reason": done},
+        )
+        context.plone_utils.addPortalMessage(context.translate(message), "info")
 # there is only the success state, even if all confirm_ids ended up in error
-return state.set(status = 'success', context = context)
+return state.set(status="success", context=context)

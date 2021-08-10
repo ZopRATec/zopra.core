@@ -33,9 +33,9 @@
     <tal:block tal:condition="isAnon">
         <tal:block replace="context/raiseUnauthorized"></tal:block>
     </tal:block>
-    <ul>
-        <tal:block repeat="error python:path('options/state/getErrors').keys()">
-            <li tal:content="python:path('options/state/getErrors').get(error,'')"></li>
+    <ul tal:define="errors options/state/getErrors">
+        <tal:block repeat="error errors">
+            <li tal:content="python:errors.get(error, '')"></li>
         </tal:block>
     </ul>
     <form name="import_form"
