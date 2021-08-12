@@ -385,7 +385,7 @@ class Filter(object):
                         for listentry in consdict[pre + entry]:
                             child = Filter("AND")
                             child.setConstraints(
-                                {entry[plen:]: listentry}, tableData=tableData
+                                {entry[plen:]: listentry}, manager, tableData=tableData
                             )
                             child.setFinal()
                             parent.addChild(child)
@@ -419,7 +419,7 @@ class Filter(object):
             change = False
 
         for child in self.children:
-            change |= child.setConstraints(consdict, prefix, tableData)
+            change |= child.setConstraints(consdict, manager, prefix, tableData)
 
         if change:
             self.setInvalid()
@@ -557,10 +557,10 @@ class Filter(object):
             for child in self.children:
                 count = child.getConsCount()
                 if count > 1:
-                    ccons = child.getSQL(tablename, mgrId, tableData, checker)
+                    ccons = child.getSQL(tablename, manager, tableData, checker)
                     wherepart.append("(%s)" % ccons)
                 elif count == 1:
-                    ccons = child.getSQL(tablename, mgrId, tableData, checker)
+                    ccons = child.getSQL(tablename, manager, tableData, checker)
                     wherepart.append(ccons)
         if wherepart:
             oper = " %s " % self.operator
