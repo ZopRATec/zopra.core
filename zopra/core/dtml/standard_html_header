@@ -28,7 +28,6 @@
        <br>
        <div class="form-label"><b>Additional Information</b></div>
        <br>
-       <!--<a href="<dtml-var dirHome>MPWiki" target="_blank">Bug Report (Wiki)</a>-->
        <a href="www.zopra.de" target="_blank">ZopRATec</a>
      </dtml-if>
    </td>

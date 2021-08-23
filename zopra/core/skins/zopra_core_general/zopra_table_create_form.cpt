@@ -68,7 +68,7 @@
                         Data fields
                     </legend>
                     <tal:block tal:define="sortables python: fieldset.get('sortables', []);
-                                           fieldlist python: 'repeatfields' in fieldset.keys() and context.listdiff(fieldset['fields'], fieldset['repeatfields']) or fieldset['fields'];"
+                                           fieldlist python: 'repeatfields' in fieldset and context.listdiff(fieldset['fields'], fieldset['repeatfields']) or fieldset['fields'];"
                                tal:repeat="attr_name fieldlist">
                         <tal:check tal:define="dummy python: not coltypes.get(attr_name) and here.zopra_raiser('Field not found: ' + attr_name)"></tal:check>
                         <div class="row">
@@ -88,7 +88,7 @@
                         </div>
                     </tal:block>
                     <tal:repeatfields tal:define="the_start repeat/fieldset/start;"
-                                      condition="python: 'repeatfields' in fieldset.keys() and the_start">
+                                      condition="python: 'repeatfields' in fieldset and the_start">
                         <div class="row">
                             <div class="contentSlot">
                                 <div class="field">

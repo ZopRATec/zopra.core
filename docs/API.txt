@@ -7,14 +7,14 @@ ZopRAProduct
  |-- connector (mysql, postgres etc.)
 
 
-mgrXYZ (->GenericManager)
- |        |- 
+mgrXYZ (->Manager)
+ |        |-
  |        |-
  |        |-
  |        |-
  |        |-
  |-- tableHandler(TableHandler) --- keys()
-     |                               |- get(name), auch [name]  
+     |                               |- get(name), auch [name]
      |-- Table --- getEntry(autoid)
                     |- getEntries(...)
                     |- getEntryAutoidList(...)
@@ -22,7 +22,7 @@ mgrXYZ (->GenericManager)
                     |- updateEntry(autoid, dict)
                     |- deleteEntries([autoid, autoid])
                     |- addEntry(dict)
-                    |- 
+                    |-
 
  |-- listHandler(ListHandler) --- getList(table, name)
      |
