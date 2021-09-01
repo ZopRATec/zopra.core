@@ -16,6 +16,31 @@ class PostgresConnector(SqlConnector):
 
     LIKEOPERATOR = "ILIKE"
 
+    def escapeSQLValue(self, value):
+        """Escape SQL values reusing repr (experimental)
+
+        :param value: value that needs to be sql quoted
+        :type value: str
+        :return: sql quoted string value
+        :rtype: str
+        """
+        # this method only works for basestrings
+        if not isinstance(value, basestring):
+            raise TypeError("%r must be a str or unicode" % (value, ))
+        # use repr to escape the string
+        escaped = repr(value)
+        # remove potential "u" in front of the repr string
+        if isinstance(value, unicode):
+            assert escaped[:1] == 'u'
+            escaped = escaped[1:]
+        # check repr style just to be safe and escape included '-chars
+        if escaped[:1] == '"':
+            escaped = escaped.replace("'", "\\'")
+        elif escaped[:1] != "'":
+            raise AssertionError("unexpected repr: %s", escaped)
+        # now remove the outer "-chars and use the PostgreS escape style, return final product
+        return "E'%s'" % (escaped[1:-1], )
+
     def _createSequence(self, table_name, col_name="autoid"):
         """Creates a sequence for the given column of the given table.
 

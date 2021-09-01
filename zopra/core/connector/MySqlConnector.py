@@ -46,9 +46,28 @@ class MySqlConnector(SqlConnector):
         # added parameter "0" for max_rows to avoid double "LIMIT"-spec
         return conn.query(query_text, 0)[1]
 
-    def escape_sql_name(self, name):
-        """Escape SQL names (cols and tables), overwritten to do escaping"""
+    def escapeSQLName(self, name):
+        """Escape SQL names (cols and tables), overwritten to do escaping
+
+        :param name: column or table name
+        :type name: str
+        :return: escaped name
+        :rtype: str
+        """
         return "`%s`" % name
+
+    def escapeSQLValue(self, value):
+        """intelligent sql escaping utilizes the DB API
+
+        :param value: value that needs to be sql quoted
+        :type value: str
+        :return: sql quoted string value
+        :rtype: str
+        """
+        # get DB adapter
+        zcon = getattr(self, self.connection_id)
+        # method is part of the API, make sure it works for all connectors
+        return zcon.sql_quote__(value)
 
     #
     # table handling
@@ -92,7 +111,7 @@ class MySqlConnector(SqlConnector):
         if primary_keys:
             create_text.append(
                 ", PRIMARY KEY (%s)"
-                % ", ".join([self.escape_sql_name(key) for key in primary_keys])
+                % ", ".join([self.escapeSQLName(key) for key in primary_keys])
             )
         else:
             create_text.append(", PRIMARY KEY (autoid)")
@@ -133,7 +152,7 @@ class MySqlConnector(SqlConnector):
                 continue
 
             # build col_list
-            cols_list.append(self.escape_sql_name(col))
+            cols_list.append(self.escapeSQLName(col))
 
             # build data_list
             # get type of col
@@ -219,7 +238,7 @@ class MySqlConnector(SqlConnector):
                 value_text.append(
                     " %s = %s"
                     % (
-                        self.escape_sql_name(colname),
+                        self.escapeSQLName(colname),
                         self.checkType(
                             val, field.get(ZC.COL_TYPE), False, field.get(ZC.COL_LABEL)
                         ),
