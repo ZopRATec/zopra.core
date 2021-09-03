@@ -134,9 +134,32 @@ class SqlConnector(SimpleItem):
         :param query_text: the complete SQL query string."""
         raise NotImplementedError(ZC.E_CALL_ABSTRACT)
 
-    def escape_sql_name(self, name):
-        """Escape SQL names (cols and tables), default: do nothing"""
+    def escapeSQLName(self, name):
+        """Escape SQL names (cols and tables), default: do nothing
+
+        :param name: column or table name
+        :type name: str
+        :return: escaped name
+        :rtype: str
+        """
         return name
+
+    def escapeSQLValue(self, value):
+        """Escape SQL values, default: do some manual corrections
+
+        :param value: value that needs to be sql quoted
+        :type value: str
+        :return: sql quoted string value
+        :rtype: str
+        """
+        # escape some characters
+        value = value.replace("'", "\\'")
+
+        # remove double escape for ' in text
+        value = value.replace("\\\\'", "\\'")
+
+        # add string escape markers and return
+        return "'{}'".format(value)
 
     #
     # table handling
@@ -279,19 +302,15 @@ class SqlConnector(SimpleItem):
                     # replace wildcards
                     value = value.replace("*", "%")
 
-                # escape some characters
-                value = value.replace("'", "\\'")
-
-                # remove double escape for ' in text
-                value = value.replace("\\\\'", "\\'")
-
                 # we allow not like searches with keyword _not_
                 if value.find("_not_") == 0:
                     value = value[5:].lstrip()
                     oper = "not "
 
                 oper += self.LIKEOPERATOR
-                value = "'" + value + "'"
+
+                # use sql escape method
+                value = self.escapeSQLValue(value)
 
             elif column_type == "date":
                 oper, value = self.checkDateValue(value, labelstr)
@@ -401,7 +420,7 @@ class SqlConnector(SimpleItem):
 
             # join the column statement
             cols_str.append(
-                "%s%s%s%s" % (self.escape_sql_name(col), dbtype, default, reference)
+                "%s%s%s%s" % (self.escapeSQLName(col), dbtype, default, reference)
             )
 
         return ", ".join(cols_str)
@@ -568,7 +587,7 @@ class SqlConnector(SimpleItem):
 
         query.append(
             "SELECT %s FROM %s"
-            % (", ".join(self.escape_sql_name(col) for col in col_list), name)
+            % (", ".join(self.escapeSQLName(col) for col in col_list), name)
         )
         for colname in where_dict:
             if colname in origcols_dict:
