@@ -66,8 +66,20 @@ class MySqlConnector(SqlConnector):
         """
         # get DB adapter
         zcon = getattr(self, self.connection_id)
-        # method is part of the API, make sure it works for all connectors
-        return zcon.sql_quote__(value)
+        # to circumvent a unicode decode error in ZMySQLDA, we encode / decode the value
+        did_encode = False
+        try:
+            if isinstance(value, unicode):
+                value = value.encode('utf-8')
+                did_encode = True
+        except Exception:
+            pass
+        # quote using ZMySQLDA method
+        res = zcon.sql_quote__(value)
+        # decode if we had to encode
+        if did_encode:
+            res = res.decode('utf-8')
+        return res
 
     #
     # table handling
