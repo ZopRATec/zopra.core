@@ -7,13 +7,10 @@
 
     </tal:comment>
 
-    <metal:topslot fill-slot="top_slot">
-        <tal:block tal:define="global isAnon context/@@plone_portal_state/anonymous;"></tal:block>
-    </metal:topslot>
-
     <metal:main fill-slot="main">
+        <tal:block tal:define="global isAnon context/@@plone_portal_state/anonymous;"></tal:block>
         <tal:block tal:condition="python: isAnon or not (user.has_role(('ZopRAReviewer', 'ZopRAAdmin'), here))">
-            <tal:block replace="context/raiseUnauthorized"></tal:block>
+            <tal:block tal:replace="context/raiseUnauthorized"></tal:block>
         </tal:block>
 
         <form name="multiconfirm_form"

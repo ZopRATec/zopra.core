@@ -27,12 +27,9 @@
         </script>
     </metal:javascriptslot>
 
-    <metal:topslot fill-slot="top_slot">
-        <tal:block tal:define="global isAnon context/@@plone_portal_state/anonymous;"></tal:block>
-    </metal:topslot>
-
     <metal:main fill-slot="main"
-         tal:define="table string:log;
+         tal:define="global isAnon context/@@plone_portal_state/anonymous;
+                     table string:log;
                      zpath python: hasattr(here, 'zopra_path') and here.zopra_path or 'app/pm';
                      pm python:here.path2ob(zpath);
                      heck python: pm or here.zopra_raiser('Product not found, check the zopra_path property or name your Product Manager pm.');
