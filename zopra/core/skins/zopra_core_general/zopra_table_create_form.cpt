@@ -19,8 +19,8 @@
 </metal:styleslot>
 
 <metal:main fill-slot="main" tal:define="table request/table;">
-    <tal:block tal:define="global isAnon context/@@plone_portal_state/anonymous;"></tal:block>
-    <tal:block tal:condition="isAnon">
+    <tal:block tal:define="isAnon context/@@plone_portal_state/anonymous;"
+               tal:condition="isAnon">
         <tal:block replace="context/raiseUnauthorized"></tal:block>
     </tal:block>
     <tal:block tal:define="errors options/state/getErrors;

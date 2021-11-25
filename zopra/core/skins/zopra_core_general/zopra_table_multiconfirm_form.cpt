@@ -8,8 +8,8 @@
     </tal:comment>
 
     <metal:main fill-slot="main">
-        <tal:block tal:define="global isAnon context/@@plone_portal_state/anonymous;"></tal:block>
-        <tal:block tal:condition="python: isAnon or not (user.has_role(('ZopRAReviewer', 'ZopRAAdmin'), here))">
+        <tal:block tal:define="isAnon context/@@plone_portal_state/anonymous;"
+                   tal:condition="python: isAnon or not (user.has_role(('ZopRAReviewer', 'ZopRAAdmin'), here))">
             <tal:block tal:replace="context/raiseUnauthorized"></tal:block>
         </tal:block>
 
