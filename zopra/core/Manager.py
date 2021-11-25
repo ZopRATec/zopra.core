@@ -164,7 +164,7 @@ class Manager(Folder, ManagerFinderMixin, ManagerManageTabsMixin):
     def raiseUnauthorized(self):
         """Raises unauthorized. Does nothing else.
 
-        :raises Unauthorized: only always raise Unauthorized
+        :raises Unauthorized: always raise Unauthorized
         """
         raise Unauthorized
 
