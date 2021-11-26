@@ -2,6 +2,7 @@
 
 from copy import deepcopy
 
+from AccessControl import Unauthorized
 from zope.interface import implementer
 
 from zopra.core import ZC
@@ -157,6 +158,16 @@ class Manager(Folder, ManagerFinderMixin, ManagerManageTabsMixin):
         """Returns the internal type of the manager (to have different handling
         for same managers with different type)."""
         return self.zopratype
+
+    security.declarePublic("raiseUnauthorized")
+
+    def raiseUnauthorized(self):
+        """Raises unauthorized. Does nothing else.
+
+        :raises Unauthorized: always raise Unauthorized
+        """
+        raise Unauthorized
+
 
     ###########################################################################
     #                                                                         #

@@ -12,12 +12,12 @@
         <script type="text/javascript" tal:attributes="src string:${portal_url}/dragtable.js"></script>
     </metal:javascriptslot>
 
-    <metal:topslot fill-slot="top_slot">
-          <tal:block tal:define="global isAnon context/@@plone_portal_state/anonymous;"></tal:block>
-    </metal:topslot>
-
     <metal:main fill-slot="main"
-         tal:define="table request/table;
+            tal:define="isAnon context/@@plone_portal_state/anonymous;">
+        <tal:block tal:condition="isAnon">
+            <tal:block tal:replace="context/raiseUnauthorized"></tal:block>
+        </tal:block>
+        <tal:block tal:define="table request/table;
                      tobj python: here.tableHandler[table];
                      offset python:request.get('offset') and int(request.get('offset')) or 0;
                      count python: request.get('count') and int(request.get('count')) or 20;
@@ -44,12 +44,9 @@
                      has_real_constraints python: context.filterRealSearchConstraints(cons);
                      global quotedcons string:;
                      ">
-    <tal:block tal:condition="isAnon">
-        <tal:block replace="context/raiseUnauthorized"></tal:block>
-    </tal:block>
-    <tal:block tal:condition="python: not listall and not listown">
-        <tal:block replace="context/raiseUnauthorized"></tal:block>
-    </tal:block>
+        <tal:block tal:condition="python: not listall and not listown">
+            <tal:block replace="context/raiseUnauthorized"></tal:block>
+        </tal:block>
 <div class="row">
     <div class="contentSlot">
         <h1 class="documentFirstHeading">
@@ -283,6 +280,7 @@
         </form>
     </div>
 </div>
+        </tal:block>
     </metal:main>
 
   </body>

@@ -3,7 +3,6 @@ import re
 from binascii import hexlify
 from copy import deepcopy
 from random import randint
-from sets import Set as set
 from urllib import quote
 
 from zope.component import getMultiAdapter
