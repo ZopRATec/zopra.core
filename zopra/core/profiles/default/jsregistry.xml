@@ -4,17 +4,7 @@
     meta_type="JavaScripts Registry">
 
     <!-- remove old jquery -->
-    <javascript
-        authenticated       = "False"
-        bundle              = "default"
-        cacheable           = "True"
-        compression         = ""
-        conditionalcomment  = ""
-        cookable            = "True"
-        enabled             = "False"
-        expression          = ""
-        id                  = "jquery-1.6.2.min.js"
-        inline              = "False" />
+    <javascript remove="True" id="jquery-1.6.2.min.js" />
 
     <!-- add jquery and libs -->
     <javascript
