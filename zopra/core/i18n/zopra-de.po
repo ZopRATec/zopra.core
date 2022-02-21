@@ -470,7 +470,6 @@ msgstr "Die ausgewählten Listeneinträge wurden entfernt."
 
 #. Default: "Attribute ${attr} has been corrected in ${count} table entries."
 #: ./skins/zopra_core_general/zopra_list_value_unifier.py:53
-#, fuzzy
 msgid "zopra_list_unifier_entries_corrected"
 msgstr "Attribut ${attr} wurde in ${count} Tabelleneintraegen korrigiert."
 
