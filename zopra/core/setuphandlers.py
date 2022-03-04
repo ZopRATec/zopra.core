@@ -208,7 +208,7 @@ class ZopRATestEnvironmentMaker(object):
         user_data = [
             {
                 "username": "user",
-                "password": "user",
+                "password": "useruser",
                 "email": "user@tu-dresden.de",
                 "properties": {"fullname": "User"},
                 "roles": ("ZopRAUser"),
