@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<registry>
+
+    <!-- add jquery and libs -->
+    <records prefix="plone.resources/zopra.core-jquery"
+            interface='Products.CMFPlone.interfaces.IResourceRegistry'>
+        <value key="js">jquery-1.12.4.min.js</value>
+    </records>
+    <records prefix="plone.resources/zopra.core-jquery-ui"
+            interface='Products.CMFPlone.interfaces.IResourceRegistry'>
+        <value key="js">jquery-ui-1.8.16.custom.min.js</value>
+    </records>
+    <records prefix="plone.resources/zopra.core-jquery-lightbox"
+            interface='Products.CMFPlone.interfaces.IResourceRegistry'>
+        <value key="js">jquery.lightbox-0.5.js</value>
+    </records>
+    <records prefix="plone.resources/zopra.core-jquery-tablesorter"
+            interface='Products.CMFPlone.interfaces.IResourceRegistry'>
+        <value key="js">jquery.tablesorter.js</value>
+    </records>
+    <records prefix="plone.resources/zopra.core-jquery-tablesorter-staticrow"
+            interface='Products.CMFPlone.interfaces.IResourceRegistry'>
+        <value key="js">jquery.tablesorter.staticrow.min.js</value>
+    </records>
+
+    <records prefix="plone.bundles/zopra.core"
+            interface='Products.CMFPlone.interfaces.IBundleRegistry'>
+        <value key="resources">
+            <element>zopra.core-jquery</element>
+            <element>zopra.core-jquery-ui</element>
+            <element>zopra.core-jquery-lightbox</element>
+            <element>zopra.core-jquery-tablesorter</element>
+            <element>zopra.core-jquery-tablesorter-staticrow</element>
+        </value>
+        <value key="jscompilation">++plone++zopra.core/zopra.core.js</value>
+        <value key="last_compilation"></value>
+        <value key="depends"></value>
+        <value key="enabled">True</value>
+        <value key="compile">False</value>
+        <value key="merge_with">default</value>
+    </records>
+</registry>
