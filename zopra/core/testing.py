@@ -11,11 +11,13 @@ from plone.app.robotframework.users import Users
 from plone.app.testing import PLONE_FIXTURE
 from plone.app.testing import FunctionalTesting
 from plone.app.testing import PloneSandboxLayer
-from plone.testing import z2
+from plone.app.testing import applyProfile
+from plone.testing.zope import WSGI_SERVER_FIXTURE
+from plone.testing.zope import installProduct
+from ZServer.Testing.utils import setupCoreSessions
 
 from zopra.core import DBDA_ID
 from zopra.core import HAVE_WEBCMS
-from zopra.core.tests import setupCoreSessions
 
 
 # preparation for keywords implemented in python
@@ -63,35 +65,41 @@ class ZopraCoreLayer(PloneSandboxLayer):
             import tud.content.webcms
             import tud.boxes.base
             import tud.boxes.webcms
-            import tud.addons.ckeditorplugins
+            # import tud.addons.ckeditorplugins
+            import tud.addons.datagridfield
+            import tud.migration.plone52
 
             # Ensure that all dependencies of tud.profiles.webcms are going to be loaded
             self.loadZCML(name="testing.zcml", package=tud.addons.webcms)
             self.loadZCML(name="testing.zcml", package=tud.content.webcms)
             self.loadZCML(name="testing.zcml", package=tud.boxes.base)
             self.loadZCML(name="testing.zcml", package=tud.boxes.webcms)
-            self.loadZCML(name="testing.zcml", package=tud.addons.ckeditorplugins)
+            # self.loadZCML(name="testing.zcml", package=tud.addons.ckeditorplugins)
             self.loadZCML(name="testing.zcml", package=tud.theme.webcms2)
+            self.loadZCML(package=tud.migration.plone52)
+            self.loadZCML(package=tud.addons.datagridfield)
 
-            z2.installProduct(app, "raptus.multilanguagefields")
-            z2.installProduct(app, "collective.workspace")
-            z2.installProduct(app, "tud.addons.webcms")
-            z2.installProduct(app, "tud.content.webcms")
-            z2.installProduct(app, "tud.boxes.base")
-            z2.installProduct(app, "tud.boxes.webcms")
-            z2.installProduct(app, "tud.addons.ckeditorplugins")
-            z2.installProduct(app, "Products.DateRecurringIndex")
-            z2.installProduct(app, "tud.addons.redirect")
-            z2.installProduct(app, "tud.theme.webcms2")
+            installProduct(app, 'Products.ATContentTypes')
+            installProduct(app, 'tud.migration.plone52')
+            installProduct(app, "raptus.multilanguagefields")
+            installProduct(app, "collective.workspace")
+            installProduct(app, "tud.addons.webcms")
+            installProduct(app, "tud.content.webcms")
+            installProduct(app, "tud.boxes.base")
+            installProduct(app, "tud.boxes.webcms")
+            # installProduct(app, "tud.addons.ckeditorplugins")
+            installProduct(app, "Products.DateRecurringIndex")
+            installProduct(app, "tud.addons.redirect")
+            installProduct(app, "tud.theme.webcms2")
             # do not install profiles to avoid the dependencies on zopra app packages
-            # z2.installProduct(app, "tud.profiles.webcms")
+            # installProduct(app, "tud.profiles.webcms")
 
         import zopra.core
 
         self.loadZCML(name="testing.zcml", package=zopra.core)
 
-        z2.installProduct(app, "zopra.core")
-        z2.installProduct(app, "Products.ZMySQLDA")
+        installProduct(app, "zopra.core")
+        installProduct(app, "Products.ZMySQLDA")
 
     def setUpPloneSite(self, portal):
         """Method to set up the Plone Site (installing products and applying Profiles)
@@ -102,8 +110,12 @@ class ZopraCoreLayer(PloneSandboxLayer):
         """
         # extra WEBCMS setUp (Content + Theme)
         if HAVE_WEBCMS:
-            self.applyProfile(portal, "tud.theme.webcms2:default")
-        self.applyProfile(portal, "zopra.core:test")
+            applyProfile(portal, "tud.theme.webcms2:test")
+        applyProfile(portal, "zopra.core:test")
+
+        # commit the changes to counteract PloneSandBoxLayer not persisting our changes anymore
+        import transaction
+        transaction.commit()
 
     def tearDownPloneSite(self, portal):
         """Tear down the Plone site.
@@ -142,6 +154,6 @@ class ZopraCoreLayer(PloneSandboxLayer):
 FIXTURE = ZopraCoreLayer()
 
 ROBOT_TESTING = FunctionalTesting(
-    bases=(REMOTE_LIBRARY_BUNDLE_FIXTURE, z2.ZSERVER_FIXTURE, FIXTURE),
+    bases=(REMOTE_LIBRARY_BUNDLE_FIXTURE, WSGI_SERVER_FIXTURE, FIXTURE),
     name="zopra.core:Robot",
 )
