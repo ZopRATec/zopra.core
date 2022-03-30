@@ -23,7 +23,7 @@
  <table width="100%">
   <tr>
    <td width="10%" valign="top" align="center">
-     <dtml-if "_.has_key('navigationMenu')">
+     <dtml-if "'navigationMenu' in _">
        <dtml-var expr="navigationMenu(REQUEST=REQUEST)">
        <br>
        <div class="form-label"><b>Additional Information</b></div>
