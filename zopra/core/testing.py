@@ -65,7 +65,7 @@ class ZopraCoreLayer(PloneSandboxLayer):
             import tud.content.webcms
             import tud.boxes.base
             import tud.boxes.webcms
-            # import tud.addons.ckeditorplugins
+            import tud.addons.ckeditorplugins
             import tud.addons.datagridfield
             import tud.migration.plone52
 
@@ -74,7 +74,7 @@ class ZopraCoreLayer(PloneSandboxLayer):
             self.loadZCML(name="testing.zcml", package=tud.content.webcms)
             self.loadZCML(name="testing.zcml", package=tud.boxes.base)
             self.loadZCML(name="testing.zcml", package=tud.boxes.webcms)
-            # self.loadZCML(name="testing.zcml", package=tud.addons.ckeditorplugins)
+            self.loadZCML(name="testing.zcml", package=tud.addons.ckeditorplugins)
             self.loadZCML(name="testing.zcml", package=tud.theme.webcms2)
             self.loadZCML(package=tud.migration.plone52)
             self.loadZCML(package=tud.addons.datagridfield)
@@ -87,7 +87,7 @@ class ZopraCoreLayer(PloneSandboxLayer):
             installProduct(app, "tud.content.webcms")
             installProduct(app, "tud.boxes.base")
             installProduct(app, "tud.boxes.webcms")
-            # installProduct(app, "tud.addons.ckeditorplugins")
+            installProduct(app, "tud.addons.ckeditorplugins")
             installProduct(app, "Products.DateRecurringIndex")
             installProduct(app, "tud.addons.redirect")
             installProduct(app, "tud.theme.webcms2")
