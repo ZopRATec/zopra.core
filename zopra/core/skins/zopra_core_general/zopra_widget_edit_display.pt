@@ -7,7 +7,10 @@
 </tal:comment>
 
 <metal:widget_selector define-macro="widget_selector">
-    <metal:block metal:use-macro="python:path('here/zopra_widget_edit_display/macros/widget_'+attr_type)" />
+    <metal:block tal:define="local_required required|python:[];
+                             local_attr_required attr_required|nothing;
+                             is_required python: (attr_name in local_required) or local_attr_required"
+                 metal:use-macro="python:path('here/zopra_widget_edit_display/macros/widget_'+attr_type)" />
 </metal:widget_selector>
 
 <metal:asterisk define-macro="asterisk">
@@ -20,7 +23,7 @@
                tal:condition="python: cur_field">
         <label tal:attributes="for attr_name">
             <span i18n:translate="" tal:replace="python: cur_field['LABEL']"></span>
-            <metal:asterisk tal:condition="python: attr_name in required" use-macro="context/@@form-macros/asterisk|context/zopra_widget_edit_display/macros/asterisk" />
+            <metal:asterisk tal:condition="is_required" use-macro="context/@@form-macros/asterisk|context/zopra_widget_edit_display/macros/asterisk" />
         </label>
         <div class="formHelp"
                  tal:content="helpTexts/?attr_name |nothing">
@@ -41,7 +44,7 @@
     <metal:block metal:use-macro="python:path('here/zopra_widget_edit_display/macros/widget_label')" />
     <tal:block tal:define="urllookup python:attr_name.startswith('url') or attr_name.startswith('image_')">
         <input type="text"
-                 tal:attributes="value attr_value; name attr_name; id attr_name"
+               tal:attributes="value attr_value; name attr_name; id attr_name; aria-required is_required"
         />
     </tal:block>
 </metal:widget_string>
@@ -50,7 +53,7 @@
     <metal:block metal:use-macro="python:path('here/zopra_widget_edit_display/macros/widget_label')" />
     <input type="text"
            class="numberinput"
-             tal:attributes="value attr_value; name attr_name; id attr_name"
+           tal:attributes="value attr_value; name attr_name; id attr_name; aria-required is_required"
     />
 </metal:widget_int>
 
@@ -58,8 +61,8 @@
     <metal:block metal:use-macro="python:path('here/zopra_widget_edit_display/macros/widget_label')" />
     <input type="text"
            class="numberinput"
-             tal:attributes="value python: ('%s' % attr_value).replace('.', ',');
-            name attr_name; id attr_name"
+           tal:attributes="value python: ('%s' % attr_value).replace('.', ',');
+                           name attr_name; id attr_name; aria-required is_required"
     />
 </metal:widget_float>
 
@@ -67,8 +70,8 @@
     <metal:block metal:use-macro="python:path('here/zopra_widget_edit_display/macros/widget_label')" />
     <input type="text"
            class="numberinput"
-             tal:attributes="value python: context.prepareCurrencyValue(attr_value);
-            name attr_name; id attr_name"
+           tal:attributes="value python: context.prepareCurrencyValue(attr_value);
+                           name attr_name; id attr_name; aria-required is_required"
     />
 </metal:widget_currency>
 
@@ -76,7 +79,7 @@
     <metal:block metal:use-macro="python:path('here/zopra_widget_edit_display/macros/widget_label')" />
     <input type="text"
            class="numberinput"
-             tal:attributes="value attr_value; name attr_name; id attr_name"
+             tal:attributes="value attr_value; name attr_name; id attr_name; aria-required is_required"
     />
 </metal:widget_date>
 
@@ -87,8 +90,7 @@
                class="checkbox"
                value="1"
                tal:attributes="checked python:bool(attr_value) and attr_value != '0';
-                               name attr_name;
-                               id attr_name"
+                               name attr_name; id attr_name; aria-required is_required"
         />
         <div tal:condition="error" tal:content="error" class="fieldErrorBox" i18n:translate="">
             Validation error output
@@ -108,7 +110,7 @@
     <div data-sync data-has-reveal="true">
         <a class="expand" tal:attributes="data-open string:reveal_${attr_name}"><span class="show-for-sr" i18n:translate="zopra_widget_modal">Click here for a modal text input panel</span></a>
         <textarea cols="50" rows="5"
-                 tal:attributes="name attr_name; id attr_name; data-sync-with string:#clone_${attr_name}"
+                 tal:attributes="name attr_name; id attr_name; aria-required is_required; data-sync-with string:#clone_${attr_name}"
                  tal:content="structure attr_value">value</textarea>
         <div class="reveal large" tal:attributes="id string:reveal_${attr_name}" data-reveal>
             <textarea cols="50" rows="20"
@@ -126,7 +128,7 @@
                         entries python:lobj.getEntries(lang=lang);
                         do_sort attr_sort|nothing;
                         entries python: do_sort and here.sortListEntriesForDisplay(table, attr_name, entries) or entries;"
-            tal:attributes="name attr_name; id attr_name;"
+            tal:attributes="name attr_name; id attr_name; aria-required is_required"
             class="single">
         <option value="" i18n:translate="zopra_widget_choose">-choose-</option>
         <tal:block tal:repeat="entry entries">
@@ -152,7 +154,7 @@
         <select multiple="multiple"
                 class="multi"
                 data-close-on-select="false"
-                tal:attributes="name python:attr_name+':list'; id attr_name">
+                tal:attributes="name python:attr_name+':list'; id attr_name; aria-required is_required">
             <tal:block tal:repeat="entry entries">
                 <tal:block condition="entry/value">
                     <option tal:define="bla python: tmp_store.update([(entry['autoid'], entry['value'])])"
