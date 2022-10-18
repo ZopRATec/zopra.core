@@ -579,12 +579,12 @@ msgid "zopra_multirelease_label"
 msgstr "Mehrfachfreigabe"
 
 #. Default: "Popup: TUD - Editorial"
-#: ./skins/zopra_core_general/zopra_popup.pt:11
+#: ./skins/zopra_core_general/zopra_popup_page.pt:11
 msgid "zopra_popup_title"
 msgstr "Popup: TUD - Redaktion"
 
 #. Default: "Request in progress. Please wait..."
-#: ./skins/zopra_core_general/zopra_popup.pt:49
+#: ./skins/zopra_core_general/zopra_popup_page.pt:49
 msgid "zopra_popup_working"
 msgstr "Bearbeite ihre Anfrage. Bitte warten..."
 

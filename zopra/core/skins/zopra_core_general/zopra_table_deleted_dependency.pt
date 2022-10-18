@@ -10,21 +10,20 @@
 
 <metal:javascriptslot fill-slot="javascript_head_slot">
     <tal:block tal:condition="request/zopra_popup|nothing">
-        <script type="text/javascript" tal:attributes="src string:${portal_url}/zopra_popup.js"></script>
+        <script type="text/javascript" tal:attributes="src string:${portal_url}/zopra_popup/zopra_popup.js"></script>
     </tal:block>
 </metal:javascriptslot>
 
 <metal:styleslot fill-slot="style_slot" tal:condition="request/zopra_popup|nothing">
-    <link rel="stylesheet" type="text/css" media="all" tal:attributes="href python:portal_url + '/zopra_popup.css'">
+    <link rel="stylesheet" type="text/css" media="all" tal:attributes="href python:portal_url + '/zopra_popup/zopra_popup.css'">
 </metal:styleslot>
 
-      <metal:main fill-slot="main"
-                  tal:define="table request/table;
-                              isAnon context/@@plone_portal_state/anonymous;">
-            <tal:block tal:condition="isAnon">
+      <metal:main fill-slot="main">
+            <tal:block tal:condition="context/@@plone_portal_state/anonymous">
                   <tal:block replace="context/raiseUnauthorized"></tal:block>
             </tal:block>
-            <tal:block tal:define="tobj python: here.tableHandler[table]">
+            <tal:block tal:define="table request/table;
+                                   tobj python: here.tableHandler[table]">
 
                 <h1 i18n:translate="zopra_delete_heading">
                     Deletion of

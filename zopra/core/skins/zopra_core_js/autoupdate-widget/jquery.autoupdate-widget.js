@@ -34,7 +34,7 @@
 
                 // ensure that the popup fits into the users screen
                 var popupHeight = Math.min(screen.height - 100, 1000);
-                var wnd = window.open("zopra_popup?url="+encodeURIComponent(link.attr('href')),"","width=910,height=" + popupHeight);
+                var wnd = window.open("zopra_popup_page?url="+encodeURIComponent(link.attr("href")+"&zopra_popup=1"),"","width=910,height=" + popupHeight);
 
                 jQuery.fn.findAndSelf = function(selector) {
                     return this.find(selector).add(this.filter(selector));

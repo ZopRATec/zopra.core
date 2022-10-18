@@ -1,0 +1,3 @@
+/* for popup: hides header and side columns, footer and byline (mixed Plone 2 / Plone 4) */
+body { background-color: white !important; }
+.zopra_special_links, header, #user-information, #portal-column-one, #portal-column-two, header#portal-top, div#user-information, #user-information, #portal-breadcrumbs, #portal-globalnav, footer#portal-footer .contentViews, .contentActions, .documentBottomLine, #portal-footer, #article-byline, #manage-content { display:none !important; }

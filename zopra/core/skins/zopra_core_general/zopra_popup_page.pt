@@ -1,15 +1,22 @@
 <!DOCTYPE html>
-<html i18n:domain="zopra">
+<html i18n:domain="zopra" tal:define="portal_state context/@@plone_portal_state;
+        context_state context/@@plone_context_state;
+        plone_view context/@@plone;
+        plone_layout context/@@plone_layout;
+        lang portal_state/language;
+        view nocall:view | nocall: plone_view;
+        dummy python: plone_layout.mark_view(view);">
 <tal:comment replace="nothing">
     Opens an arbitrary page as popup, makes its representation simpler and add some behaviour by css- and js-injection.
+    The top defines are necessary for the provider:plone.scripts to work.
+    The provider:plone.scripts is necessary to get the portal js (of which we essentially need jquery / jquery-ui)
 </tal:comment>
 <head tal:define="portal_url here/portal_url">
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 
-    <script type="text/javascript" tal:attributes="src string:${portal_url}/jquery-1.12.4.min.js"></script>
+    <div tal:replace="structure provider:plone.scripts" />
     <link rel="stylesheet" type="text/css" tal:attributes="href string:${portal_url}/autoupdate-widget/jquery.autoupdate-widget.css" media="screen" />
     <title i18n:translate="zopra_popup_title">Popup: TUD - Editorial</title>
-    <script language="javascript" tal:content="string:var portal_url = '${portal_url}';"/>
     <script language="javascript">
 
         function resizeIframe() {
