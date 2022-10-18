@@ -44,7 +44,7 @@
                          origtable request/origtable|nothing;"
               tal:attributes="action string:${here/getId}/${template/getId}">
             <input type="hidden" tal:condition="request/zopra_popup|nothing" name="zopra_popup" value="1" />
-            <h1 i18n:translate="zopra_deleteconfirm_heading">
+            <h1 class="documentFirstHeading" i18n:translate="zopra_deleteconfirm_heading">
                 Delete
                 <tal:block i18n:name="entry_type">
                     <span tal:condition="ak" i18n:translate="zopra_workingcopy">working copy</span>

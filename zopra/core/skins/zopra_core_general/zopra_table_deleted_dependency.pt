@@ -25,7 +25,7 @@
             <tal:block tal:define="table request/table;
                                    tobj python: here.tableHandler[table]">
 
-                <h1 i18n:translate="zopra_delete_heading">
+                <h1 class="documentFirstHeading" i18n:translate="zopra_delete_heading">
                     Deletion of
                     <span i18n:name="table" i18n:translate="" tal:content="python: tobj.getLabel()"></span>
                 </h1>
