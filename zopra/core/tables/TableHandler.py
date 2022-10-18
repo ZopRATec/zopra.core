@@ -1,6 +1,6 @@
+from OFS.Folder import Folder
+
 from zopra.core import ZC
-from zopra.core import ZM_PM
-from zopra.core import Folder
 from zopra.core.interfaces import ISecurityManager
 from zopra.core.interfaces import IZopRAProduct
 from zopra.core.interfaces import IZopRATable
@@ -143,7 +143,7 @@ class TableHandler(Folder):
         eventually create it in the database as well
         """
         mgr = self.getParentNode()
-        m_product = mgr.getManager(ZM_PM)
+        m_product = mgr.getManager(ZC.ZM_PM)
 
         # SCM-logging causes loop, turn log off for SCM
         if ISecurityManager.providedBy(mgr):
@@ -184,5 +184,5 @@ class TableHandler(Folder):
             if IZopRAProduct.providedBy(mgr):
                 log = False
 
-            m_product = mgr.getManager(ZM_PM)
+            m_product = mgr.getManager(ZC.ZM_PM)
             m_product.delTable(mgr.id + name, log)
