@@ -23,7 +23,7 @@
                     <tal:block tal:repeat="table tables">
                         <tal:block tal:define="table_visible python: here.getGenericConfig(table).get('visible', True);
                                                tobj python: table_visible and here.tableHandler[table];">
-                            <fieldset tal:define="icon_url string:${here/absolute_url}/zopra_images;
+                            <fieldset tal:define="icon_url string:${portal_url}/zopra_images;
                                                   link_url python:here.absolute_url()+'/zopra_table_action_selector?table=%s' % table;
                                                   index repeat/table/index;"
                                       tal:condition="table_visible"
