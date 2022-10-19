@@ -1,12 +1,11 @@
 from __future__ import print_function
 
+from OFS.Folder import Folder
+
 from PyHtmlGUI.kernel.hgTable import hgTable
 from PyHtmlGUI.widgets.hgLabel import hgLabel
 from zopra.core import HTML
 from zopra.core import ZC
-from zopra.core import ZM_PM
-from zopra.core import ZM_SCM
-from zopra.core import Folder
 from zopra.core.dialogs.Dialog import Dialog
 from zopra.core.lists.ForeignList import ForeignList
 from zopra.core.lists.HierarchyList import HierarchyList
@@ -310,7 +309,7 @@ class ListHandler(Folder):
         lobj = self[listname]
 
         if dboperate:
-            lobj.deleteTable(omit_log=[ZM_SCM, ZM_PM])
+            lobj.deleteTable(omit_log=[ZC.ZM_SCM, ZC.ZM_PM])
 
         self._delObject(listname)
         return True
@@ -327,7 +326,7 @@ class ListHandler(Folder):
             return
 
         if dboperate:
-            lobj.deleteTable(omit_log=[ZM_SCM, ZM_PM])
+            lobj.deleteTable(omit_log=[ZC.ZM_SCM, ZC.ZM_PM])
 
         del self.mapcol2list[(table, column)]
         self.maptable2lists[table][lobj.listtype].remove(lobj.listname)

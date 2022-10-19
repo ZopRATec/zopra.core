@@ -30,9 +30,7 @@
                         <span i18n:translate="zopra_lists_heading">List</span>
                         <span i18n:translate="" tal:content="lobj/getLabel"></span>
                     </h1>
-                    <script type="text/javascript" tal:attributes="src string:${portal_url}/jquery.tablesorter.js"></script>
-                    <script type="text/javascript" tal:attributes="src string:${portal_url}/jquery.tablesorter.staticrow.min.js"></script>
-                    <table class="zopra-table tablesorter">
+                    <table class="zopra-table">
                         <thead>
                             <tr>
                                 <th scope="col" i18n:translate="zopra_lists_change">change</th>

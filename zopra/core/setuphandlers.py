@@ -6,7 +6,7 @@ from builtins import object
 
 from zopra.core import DBDA_ID
 from zopra.core import HAVE_WEBCMS
-from zopra.core import manage_addFolder
+from OFS.Folder import manage_addFolder
 
 
 def setupTestSzenario(context):

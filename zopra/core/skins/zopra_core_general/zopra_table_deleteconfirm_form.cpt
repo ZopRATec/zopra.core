@@ -9,12 +9,12 @@
 
 <metal:javascriptslot fill-slot="javascript_head_slot">
     <tal:block tal:condition="request/zopra_popup|nothing">
-        <script type="text/javascript" tal:attributes="src string:${portal_url}/zopra_popup.js"></script>
+        <script type="text/javascript" tal:attributes="src string:${portal_url}/zopra_popup/zopra_popup.js"></script>
     </tal:block>
 </metal:javascriptslot>
 
 <metal:styleslot fill-slot="style_slot" tal:condition="request/zopra_popup|nothing">
-    <link rel="stylesheet" type="text/css" media="all" tal:attributes="href python:portal_url + '/zopra_popup.css'">
+    <link rel="stylesheet" type="text/css" media="all" tal:attributes="href python:portal_url + '/zopra_popup/zopra_popup.css'">
 </metal:styleslot>
 
     <metal:main fill-slot="main"
@@ -44,7 +44,7 @@
                          origtable request/origtable|nothing;"
               tal:attributes="action string:${here/getId}/${template/getId}">
             <input type="hidden" tal:condition="request/zopra_popup|nothing" name="zopra_popup" value="1" />
-            <h1 i18n:translate="zopra_deleteconfirm_heading">
+            <h1 class="documentFirstHeading" i18n:translate="zopra_deleteconfirm_heading">
                 Delete
                 <tal:block i18n:name="entry_type">
                     <span tal:condition="ak" i18n:translate="zopra_workingcopy">working copy</span>

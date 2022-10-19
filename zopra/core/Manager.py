@@ -3,11 +3,11 @@
 from copy import deepcopy
 
 from AccessControl import Unauthorized
+from OFS.Folder import Folder
 from zope.interface import implementer
 
 from zopra.core import ZC
 from zopra.core import ClassSecurityInfo
-from zopra.core import Folder
 from zopra.core import managePermission
 from zopra.core import modifyPermission
 from zopra.core import viewPermission
@@ -708,38 +708,6 @@ class Manager(Folder, ManagerFinderMixin, ManagerManageTabsMixin):
             res = str(value)
 
         return res
-
-    def getAttributeEditPermissions(self, table):
-        """Return List of editable attributes for current user (used by multiedit)
-        Overwrite to specify which permission is needed to edit which attributes.
-        The dlgMultiEdit uses this function to determine which attributes to
-        display in edit-mode and which not."""
-
-        # get current userlevel
-        m_security = self.getHierarchyUpManager(ZC.ZM_SCM)
-        tobj = self.tableHandler[table]
-        if not m_security:
-            return tobj.getColumnTypes(True).keys()
-
-        # get level
-        level = m_security.getCurrentLevel()
-
-        # < 6 don't edit
-        if level < 6:
-            return []
-
-        # normal attributes available for everybody
-        elif level < 20:
-            return tobj.getColumnTypes(True).keys()
-
-        # admins edit all
-        else:
-            attrs = tobj.getColumnTypes().keys()
-            m_product = self.getManager(ZC.ZM_PM)
-            for column in m_product._edit_tracking_cols:
-                if column not in attrs:
-                    attrs.append(column)
-            return attrs
 
     security.declareProtected(viewPermission, "forwardCheckType")
 
