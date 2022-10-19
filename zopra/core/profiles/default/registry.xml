@@ -2,29 +2,30 @@
 <registry>
 
     <!-- remove all legacy old js junk (for version 2.0, afterwards throw out this file) -->
-    <records prefix="plone.resources/zopra.legacy-jquery"
+    <records prefix="plone.resources/zopra.core-jquery"
             interface='Products.CMFPlone.interfaces.IResourceRegistry'
-            remove="True">
+            remove="true">
     </records>
-    <records prefix="plone.resources/zopra.legacy-jquery-ui"
+    <records prefix="plone.resources/zopra.core-jquery-ui"
             interface='Products.CMFPlone.interfaces.IResourceRegistry'
-            remove="True">
+            remove="true">
     </records>
-    <records prefix="plone.resources/zopra.legacy-jquery-lightbox"
+    <records prefix="plone.resources/zopra.core-jquery-lightbox"
             interface='Products.CMFPlone.interfaces.IResourceRegistry'
-            remove="True">
+            remove="true">
     </records>
-    <records prefix="plone.resources/zopra.legacy-jquery-tablesorter"
+    <records prefix="plone.resources/zopra.core-jquery-tablesorter"
             interface='Products.CMFPlone.interfaces.IResourceRegistry'
-            remove="True">
+            remove="true">
     </records>
-    <records prefix="plone.resources/zopra.legacy-jquery-tablesorter-staticrow"
+    <records prefix="plone.resources/zopra.core-jquery-tablesorter-staticrow"
             interface='Products.CMFPlone.interfaces.IResourceRegistry'
-            remove="True">
+            remove="true">
     </records>
 
-    <records prefix="plone.bundles/zopra.legacy"
+    <records prefix="plone.bundles/zopra.core"
             interface='Products.CMFPlone.interfaces.IBundleRegistry'
-            remove="True">
+            remove="true">
     </records>
+
 </registry>
