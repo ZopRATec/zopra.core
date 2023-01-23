@@ -1,0 +1,5 @@
+graft tud
+graft docs
+include *.md
+include LICENCE.*
+global-exclude *.pyc
