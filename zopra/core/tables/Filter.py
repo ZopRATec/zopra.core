@@ -544,8 +544,9 @@ class Filter(object):
                     # special case: in with NULL -> use COALESQUE
                     if operator == 'IN' and isinstance(constraint, list) and 'NULL' in constraint:
                         # recalculate the value with -1 instead of NULL
-                        constraint[constraint.index('NULL')] = -1
-                        value = checkType(constraint, ctype, False, cons)
+                        new_constraint = copy(constraint)
+                        new_constraint[new_constraint.index('NULL')] = -1
+                        value = checkType(new_constraint, ctype, False, cons)
                         # use coalesce on the column with -1
                         conname = "COALESCE(%s, -1)" % conname
 
