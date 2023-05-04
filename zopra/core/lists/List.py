@@ -218,11 +218,21 @@ class List(GenericList):
         )
         entry_dict = {}
         if results:
-            # language values are in already
+            # entry is complete with translations
             entry_dict = results[0]
-            # just convert the rank type (not entirely sure why, this should be int already)
-            if entry_dict.get(ZC.RANK):
-                entry_dict[ZC.RANK] = int(entry_dict[ZC.RANK])
+            for key in entry_dict:
+                value = entry_dict[key]
+                if key == ZC.RANK:
+                    if value:
+                        value = int(value)
+                    else:
+                        value = 0
+                elif key == ZC.SHOW:
+                    value = bool(value)
+                elif value == None:
+                        value = u""
+                entry_dict[key] = value
+
         # do not put in cache. cache is either complete or empty, regulated by getEntries
         return entry_dict
 
