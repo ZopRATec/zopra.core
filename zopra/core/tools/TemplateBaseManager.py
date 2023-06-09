@@ -413,12 +413,15 @@ class TemplateBaseManager(Manager):
         if self.doesWorkingCopies(table):
             cons["iscopyof"] = "NULL"
         tobj = self.tableHandler[table]
-        res = tobj.getEntryAutoidList(constraints=cons)
-        if res:
-            return res[0]
-        else:
-            # fallback to original entry
-            return autoid
+        try:
+            res = tobj.getEntryAutoidList(constraints=cons)
+            if res:
+                return res[0]
+        except Exception:
+            pass
+
+        # fallback to original entry
+        return autoid
 
     def removeTranslationInfo(self, table, autoid):
         """after deleting a translation entry, the orginal entry needs to be corrected (removing the hastranslation marker)"""
