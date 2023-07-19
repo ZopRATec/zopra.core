@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 
-import plone.api
+from plone import api
 from builtins import object
 
 from zopra.core import DBDA_ID
@@ -229,6 +229,6 @@ class ZopRATestEnvironmentMaker(object):
             },
         ]
         for datum in user_data:
-            user = plone.api.user.get(datum["username"])
+            user = api.user.get(datum["username"])
             if user is None:
-                user = plone.api.user.create(**datum)
+                user = api.user.create(**datum)
