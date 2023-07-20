@@ -527,8 +527,8 @@ class Filter(object):
                 continue
             # not for multi/hierarchy lists
             if ctype not in ZC.ZCOL_MLISTS:
-
-                value, operator = checkType(self.constraints[cons], ctype, True, cons)
+                constraint = self.constraints[cons]
+                value, operator = checkType(constraint, ctype, True, cons)
 
                 if cons + "_NOT_IN" in self.constraints:
                     operator = "NOT " + operator
@@ -541,6 +541,15 @@ class Filter(object):
                         "(%s %s %s OR %s IS NULL)" % (conname, operator, value, conname)
                     )
                 else:
+                    # special case: in with NULL -> use COALESQUE
+                    if operator == 'IN' and isinstance(constraint, list) and 'NULL' in constraint:
+                        # recalculate the value with -1 instead of NULL
+                        new_constraint = copy(constraint)
+                        new_constraint[new_constraint.index('NULL')] = -1
+                        value = checkType(new_constraint, ctype, False, cons)
+                        # use coalesce on the column with -1
+                        conname = "COALESCE(%s, -1)" % conname
+
                     # the default statement
                     wherepart.append("%s %s %s" % (conname, operator, value))
             else:
