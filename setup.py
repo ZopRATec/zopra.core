@@ -38,7 +38,7 @@ setup(
         "PyICU",  # for linguistically better alphabetical sorting
     ],
     extras_require={
-        "test": ["plone.app.robotframework", "Products.ZMySQLDA", "plone.api"]
+        "test": ["plone.app.robotframework", "Products.ZMySQLDA", "plone.api", "MySQLdb"]
     },  # Robot Tests with MySQL Adapter
     entry_points="""
        # -*- Entry points: -*-
