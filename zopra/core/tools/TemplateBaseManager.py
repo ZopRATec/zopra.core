@@ -46,9 +46,8 @@ class TemplateBaseManager(Manager):
 
     def getCurrentLanguage(self):
         try:
-            import plone.api.portal
-
-            return plone.api.portal.get_current_language()
+            from plone import api
+            return api.portal.get_current_language()
         except Exception:
             return self.lang_default
 
