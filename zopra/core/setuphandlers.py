@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import logging
 import os
 from MySQLdb import OperationalError
 
@@ -17,7 +18,7 @@ class HiddenProfiles(object):
     def getNonInstallableProfiles(self):
         """Hide uninstall profile from site-creation and quickinstaller."""
         return [
-            "tud.profiles.webcms:uninstall",
+            "zopra.core:uninstall",
         ]
 
 
@@ -27,18 +28,10 @@ def uninstall(context):
 
 
 def setupTestSzenario(context):
-    """setups various when installing add-on
-
-    Ordinarily, GenericSetup handlers check for the existence of XML files.
-    Here, we are not parsing an XML file, but we use a text file as a
-    flag to check that we actually meant for this import step to be run.
-    The file is found in profiles/default.
+    """test setup post handler
     """
-
-    if context.readDataFile("zopra.core-test.txt") is None:
-        return
-    logger = context.getLogger("zopra.core")
-    portal = context.getSite()
+    logger = logging.getLogger("zopra.core")
+    portal = api.portal.get()
 
     tenv = ZopRATestEnvironmentMaker(logger, portal)
     logger.info("Setting up ZopRA Test Environment")
