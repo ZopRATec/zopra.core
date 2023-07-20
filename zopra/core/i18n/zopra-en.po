@@ -3,7 +3,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ZMOM 1.0\n"
-"POT-Creation-Date: 2021-08-05 16:35+0000\n"
+"POT-Creation-Date: 2023-07-20 19:21+0000\n"
 "PO-Revision-Date: 2010-05-06 14:11+0100\n"
 "Last-Translator: Peter Seifert <peter.seifert@zopra.de>\n"
 "Language-Team: ZMOM i18n <i18n@zopra.de>\n"
@@ -26,7 +26,7 @@ msgstr ""
 msgid "Back"
 msgstr ""
 
-#: ./skins/zopra_core_general/zopra_list_edit_form.cpt:192
+#: ./skins/zopra_core_general/zopra_list_edit_form.cpt:190
 #: ./skins/zopra_core_general/zopra_table_deleteconfirm_form.cpt:110
 #: ./skins/zopra_core_general/zopra_table_import_form.cpt:65
 msgid "Cancel"
@@ -38,7 +38,7 @@ msgstr ""
 msgid "Close"
 msgstr ""
 
-#: ./skins/zopra_core_general/zopra_list_edit_form.cpt:186
+#: ./skins/zopra_core_general/zopra_list_edit_form.cpt:184
 #: ./skins/zopra_core_general/zopra_table_deleteconfirm_form.cpt:105
 msgid "Delete"
 msgstr ""
@@ -62,7 +62,7 @@ msgid "Manager Overview"
 msgstr ""
 
 #: ./skins/zopra_core_general/zopra_button_link_bar.cpt:51
-#: ./skins/zopra_core_general/zopra_table_multiconfirm_form.cpt:67
+#: ./skins/zopra_core_general/zopra_table_multiconfirm_form.cpt:64
 msgid "Publish"
 msgstr ""
 
@@ -72,7 +72,7 @@ msgstr ""
 
 #: ./skins/zopra_core_general/zopra_button_link_bar.cpt:10
 #: ./skins/zopra_core_general/zopra_table_import_form.cpt:60
-#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:87
+#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:85
 msgid "Save"
 msgstr ""
 
@@ -80,9 +80,9 @@ msgstr ""
 msgid "Search"
 msgstr ""
 
-#. Default: "Select…"
+#. Default: "Select"
 #: ./skins/zopra_core_general/zopra_table_import_form.cpt:44
-msgid "Select…"
+msgid "Select"
 msgstr ""
 
 #: ./testing.zcml:15
@@ -93,7 +93,7 @@ msgstr ""
 msgid "Translate"
 msgstr ""
 
-#: ./skins/zopra_core_general/zopra_list_edit_form.cpt:180
+#: ./skins/zopra_core_general/zopra_list_edit_form.cpt:178
 msgid "Update"
 msgstr ""
 
@@ -102,12 +102,12 @@ msgid "copy"
 msgstr ""
 
 #. Default: "Please choose, how often you want to replicate the following fields."
-#: ./skins/zopra_core_general/zopra_table_create_form.cpt:95
+#: ./skins/zopra_core_general/zopra_table_create_form.cpt:92
 msgid "create_repeat_hint"
 msgstr ""
 
 #. Default: "Specify the format of the import file, e.g.: macroman, latin1, utf8. Default is utf8."
-#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:70
+#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:68
 msgid "encoding_help"
 msgstr ""
 
@@ -120,7 +120,7 @@ msgid "search"
 msgstr "Search"
 
 #. Default: "Required"
-#: ./skins/zopra_core_general/zopra_widget_edit_display.pt:14
+#: ./skins/zopra_core_general/zopra_widget_edit_display.pt:17
 msgid "title_required"
 msgstr ""
 
@@ -149,7 +149,7 @@ msgid "zopra_create_dependent_update_wc_success"
 msgstr ""
 
 #. Default: "Create entry ${table}"
-#: ./skins/zopra_core_general/zopra_table_create_form.cpt:46
+#: ./skins/zopra_core_general/zopra_table_create_form.cpt:43
 #: ./skins/zopra_core_general/zopra_table_created_dependency.pt:32
 msgid "zopra_create_heading"
 msgstr ""
@@ -195,7 +195,7 @@ msgid "zopra_delete_failure"
 msgstr ""
 
 #. Default: "Deletion of ${table}"
-#: ./skins/zopra_core_general/zopra_table_deleted_dependency.pt:31
+#: ./skins/zopra_core_general/zopra_table_deleted_dependency.pt:30
 msgid "zopra_delete_heading"
 msgstr ""
 
@@ -235,12 +235,12 @@ msgid "zopra_deleteconfirm_hint_wc"
 msgstr ""
 
 #. Default: "Close this window to update the display of the main entry."
-#: ./skins/zopra_core_general/zopra_table_deleted_dependency.pt:39
+#: ./skins/zopra_core_general/zopra_table_deleted_dependency.pt:38
 msgid "zopra_deleted_dependency_hint"
 msgstr ""
 
 #. Default: "The dependent entry ${table} has been deleted."
-#: ./skins/zopra_core_general/zopra_table_deleted_dependency.pt:36
+#: ./skins/zopra_core_general/zopra_table_deleted_dependency.pt:35
 msgid "zopra_deleted_dependency_message"
 msgstr ""
 
@@ -260,12 +260,12 @@ msgid "zopra_delteconfirm_confirm"
 msgstr ""
 
 #. Default: "Edit ${table} ${label} ${language}"
-#: ./skins/zopra_core_general/zopra_table_edit_form.cpt:55
+#: ./skins/zopra_core_general/zopra_table_edit_form.cpt:51
 msgid "zopra_edit_heading"
 msgstr ""
 
 #. Default: "Language:"
-#: ./skins/zopra_core_general/zopra_table_edit_form.cpt:56
+#: ./skins/zopra_core_general/zopra_table_edit_form.cpt:52
 #: ./skins/zopra_core_general/zopra_table_show_form.cpt:51
 msgid "zopra_edit_language"
 msgstr "Language:"
@@ -335,12 +335,12 @@ msgid "zopra_entry_notfound"
 msgstr ""
 
 #. Default: "Standard Export (CSV)"
-#: ./skins/zopra_core_general/zopra_table_search_result.cpt:273
+#: ./skins/zopra_core_general/zopra_table_search_result.cpt:270
 msgid "zopra_export_button_label"
 msgstr ""
 
 #. Default: "for"
-#: ./skins/zopra_core_general/zopra_widget_edit_display.pt:173
+#: ./skins/zopra_core_general/zopra_widget_edit_display.pt:175
 msgid "zopra_for"
 msgstr "for"
 
@@ -488,12 +488,12 @@ msgid "zopra_list_unifier_unchanged_table_entries"
 msgstr ""
 
 #. Default: "Entry listing"
-#: ./skins/zopra_core_general/zopra_table_search_result.cpt:57
+#: ./skins/zopra_core_general/zopra_table_search_result.cpt:54
 msgid "zopra_listing_heading"
 msgstr ""
 
 #. Default: "change"
-#: ./skins/zopra_core_general/zopra_list_edit_form.cpt:38
+#: ./skins/zopra_core_general/zopra_list_edit_form.cpt:36
 msgid "zopra_lists_change"
 msgstr ""
 
@@ -503,27 +503,27 @@ msgid "zopra_lists_heading"
 msgstr ""
 
 #. Default: "Hierarchical list"
-#: ./skins/zopra_core_general/zopra_list_edit_form.cpt:100
+#: ./skins/zopra_core_general/zopra_list_edit_form.cpt:98
 msgid "zopra_lists_hierarchical_heading"
 msgstr ""
 
 #. Default: "No."
-#: ./skins/zopra_core_general/zopra_list_edit_form.cpt:108
+#: ./skins/zopra_core_general/zopra_list_edit_form.cpt:106
 msgid "zopra_lists_number"
 msgstr ""
 
 #. Default: "parent node"
-#: ./skins/zopra_core_general/zopra_list_edit_form.cpt:110
+#: ./skins/zopra_core_general/zopra_list_edit_form.cpt:108
 msgid "zopra_lists_parents"
 msgstr ""
 
 #. Default: "translation"
-#: ./skins/zopra_core_general/zopra_list_edit_form.cpt:42
+#: ./skins/zopra_core_general/zopra_list_edit_form.cpt:40
 msgid "zopra_lists_translation"
 msgstr ""
 
 #. Default: "value"
-#: ./skins/zopra_core_general/zopra_list_edit_form.cpt:39
+#: ./skins/zopra_core_general/zopra_list_edit_form.cpt:37
 msgid "zopra_lists_value"
 msgstr ""
 
@@ -578,102 +578,102 @@ msgid "zopra_multirelease_label"
 msgstr ""
 
 #. Default: "Popup: TUD - Editorial"
-#: ./skins/zopra_core_general/zopra_popup_page.pt:11
+#: ./skins/zopra_core_general/zopra_popup_page.pt:19
 msgid "zopra_popup_title"
 msgstr ""
 
 #. Default: "Request in progress. Please wait..."
-#: ./skins/zopra_core_general/zopra_popup_page.pt:49
+#: ./skins/zopra_core_general/zopra_popup_page.pt:56
 msgid "zopra_popup_working"
 msgstr ""
 
 #. Default: "Details"
-#: ./skins/zopra_core_general/zopra_table_multiconfirm_form.cpt:46
+#: ./skins/zopra_core_general/zopra_table_multiconfirm_form.cpt:43
 #: ./skins/zopra_core_general/zopra_table_multiconfirm_listing.pt:42
 msgid "zopra_release_details"
 msgstr ""
 
 #. Default: "Diff"
-#: ./skins/zopra_core_general/zopra_table_multiconfirm_form.cpt:37
+#: ./skins/zopra_core_general/zopra_table_multiconfirm_form.cpt:34
 #: ./skins/zopra_core_general/zopra_table_multiconfirm_listing.pt:33
 msgid "zopra_release_diff"
 msgstr ""
 
 #. Default: "Publish"
-#: ./skins/zopra_core_general/zopra_table_multiconfirm_form.cpt:30
+#: ./skins/zopra_core_general/zopra_table_multiconfirm_form.cpt:27
 #: ./skins/zopra_core_general/zopra_table_multiconfirm_listing.pt:18
 msgid "zopra_release_heading"
 msgstr ""
 
 #. Default: "Name"
-#: ./skins/zopra_core_general/zopra_table_multiconfirm_form.cpt:36
+#: ./skins/zopra_core_general/zopra_table_multiconfirm_form.cpt:33
 #: ./skins/zopra_core_general/zopra_table_multiconfirm_listing.pt:32
 msgid "zopra_release_name"
 msgstr ""
 
 #. Default: "No working copies found."
-#: ./skins/zopra_core_general/zopra_table_multiconfirm_form.cpt:63
+#: ./skins/zopra_core_general/zopra_table_multiconfirm_form.cpt:60
 msgid "zopra_release_no_copies"
 msgstr ""
 
 #. Default: "Publish"
-#: ./skins/zopra_core_general/zopra_table_multiconfirm_form.cpt:54
+#: ./skins/zopra_core_general/zopra_table_multiconfirm_form.cpt:51
 #: ./skins/zopra_core_general/zopra_table_multiconfirm_listing.pt:49
 msgid "zopra_release_singlelink_label"
 msgstr ""
 
 #. Default: "Chosen criteria:"
-#: ./skins/zopra_core_general/zopra_table_search_result.cpt:73
+#: ./skins/zopra_core_general/zopra_table_search_result.cpt:70
 msgid "zopra_search_criteria"
 msgstr ""
 
 #. Default: "Search"
-#: ./skins/zopra_core_general/zopra_table_search_form.cpt:50
+#: ./skins/zopra_core_general/zopra_table_search_form.cpt:47
 msgid "zopra_search_heading"
 msgstr ""
 
 #. Default: "Displayed columns:"
-#: ./skins/zopra_core_general/zopra_table_search_result.cpt:208
+#: ./skins/zopra_core_general/zopra_table_search_result.cpt:205
 msgid "zopra_search_result_cols"
 msgstr ""
 
 #. Default: "Number of entries:"
-#: ./skins/zopra_core_general/zopra_table_search_result.cpt:241
+#: ./skins/zopra_core_general/zopra_table_search_result.cpt:238
 msgid "zopra_search_result_count"
 msgstr ""
 
 #. Default: "delete"
-#: ./skins/zopra_core_general/zopra_table_search_result.cpt:197
+#: ./skins/zopra_core_general/zopra_table_search_result.cpt:194
 msgid "zopra_search_result_delete"
 msgstr ""
 
 #. Default: "edit"
-#: ./skins/zopra_core_general/zopra_table_search_result.cpt:161
+#: ./skins/zopra_core_general/zopra_table_search_result.cpt:158
 msgid "zopra_search_result_edit"
 msgstr ""
 
 #. Default: "Export:"
-#: ./skins/zopra_core_general/zopra_table_search_result.cpt:253
+#: ./skins/zopra_core_general/zopra_table_search_result.cpt:250
 msgid "zopra_search_result_export"
 msgstr ""
 
 #. Default: "Entries:"
-#: ./skins/zopra_core_general/zopra_table_search_result.cpt:122
+#: ./skins/zopra_core_general/zopra_table_search_result.cpt:119
 msgid "zopra_search_result_result_range"
 msgstr ""
 
 #. Default: "show"
-#: ./skins/zopra_core_general/zopra_table_search_result.cpt:153
+#: ./skins/zopra_core_general/zopra_table_search_result.cpt:150
 msgid "zopra_search_result_show"
 msgstr ""
 
 #. Default: "Order by:"
-#: ./skins/zopra_core_general/zopra_table_search_result.cpt:225
+#: ./skins/zopra_core_general/zopra_table_search_result.cpt:222
 msgid "zopra_search_result_sorting"
 msgstr ""
 
 #. Default: "Search results"
-#: ./skins/zopra_core_general/zopra_table_search_result.cpt:56
+#: ./skins/zopra_core_general/zopra_table_search_result.cpt:53
 msgid "zopra_search_results_heading"
 msgstr ""
 
@@ -813,12 +813,12 @@ msgid "zopra_twocol_import_cvs_error"
 msgstr ""
 
 #. Default: "The delimiter sign used to separate columns, e.g.: semicolon (;), comma (,), tabulator (\t)"
-#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:78
+#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:76
 msgid "zopra_twocol_import_delimiter_help"
 msgstr ""
 
 #. Default: "Separator"
-#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:77
+#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:75
 msgid "zopra_twocol_import_delimiter_label"
 msgstr ""
 
@@ -828,7 +828,7 @@ msgid "zopra_twocol_import_encoding_error"
 msgstr ""
 
 #. Default: "Encoding"
-#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:69
+#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:67
 msgid "zopra_twocol_import_encoding_label"
 msgstr ""
 
@@ -843,17 +843,17 @@ msgid "zopra_twocol_import_entry_saved"
 msgstr ""
 
 #. Default: "The import file (excel) as separated text (tab or semicolon/comma). First column is the autoid, second column is the attribute. The header must contain the attribute name."
-#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:62
+#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:60
 msgid "zopra_twocol_import_file_help"
 msgstr ""
 
 #. Default: "CVS file"
-#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:61
+#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:59
 msgid "zopra_twocol_import_file_label"
 msgstr ""
 
 #. Default: "Two Column Import"
-#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:47
+#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:45
 msgid "zopra_twocol_import_heading"
 msgstr ""
 
@@ -873,12 +873,12 @@ msgid "zopra_twocol_import_success"
 msgstr ""
 
 #. Default: "Select the table, for which you want to import an attribute."
-#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:50
+#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:48
 msgid "zopra_twocol_import_target_help"
 msgstr ""
 
 #. Default: "target table"
-#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:49
+#: ./skins/zopra_core_general/zopra_table_two_column_import_form.cpt:47
 msgid "zopra_twocol_import_target_label"
 msgstr ""
 
@@ -893,22 +893,22 @@ msgid "zopra_twocol_import_workingcopy"
 msgstr ""
 
 #. Default: "-choose-"
-#: ./skins/zopra_core_general/zopra_widget_edit_display.pt:131
+#: ./skins/zopra_core_general/zopra_widget_edit_display.pt:133
 msgid "zopra_widget_choose"
 msgstr ""
 
 #. Default: "Click here for a modal text input panel"
-#: ./skins/zopra_core_general/zopra_widget_edit_display.pt:109
+#: ./skins/zopra_core_general/zopra_widget_edit_display.pt:111
 msgid "zopra_widget_modal"
 msgstr ""
 
 #. Default: "<not set>"
-#: ./tools/TemplateBaseManager.py:585
+#: ./tools/TemplateBaseManager.py:586
 msgid "zopra_widget_not_set"
 msgstr ""
 
 #. Default: "Please consider updating the translated entry as well."
-#: ./skins/zopra_core_general/zopra_widget_edit_display.pt:29
+#: ./skins/zopra_core_general/zopra_widget_edit_display.pt:32
 msgid "zopra_widget_remember_translation"
 msgstr ""
 
@@ -931,7 +931,7 @@ msgid "zopra_widget_search_bool_not"
 msgstr ""
 
 #. Default: "<any value>"
-#: ./tools/TemplateBaseManager.py:590
+#: ./tools/TemplateBaseManager.py:591
 msgid "zopra_widget_set_any"
 msgstr ""
 
