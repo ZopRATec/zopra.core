@@ -1,9 +1,8 @@
-import os
 from setuptools import find_packages
 from setuptools import setup
 
 
-version = open(os.path.join("zopra", "core", "version.txt")).read().strip()
+version = 2.0
 
 setup(
     name="zopra.core",
