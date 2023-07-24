@@ -20,9 +20,15 @@ CATALOGNAME="zopra"
 # List of languages
 LANGUAGES="de"
 
+# Create locales folder structure for languages
+install -d locales
+for lang in $LANGUAGES; do
+    install -d locales/$lang/LC_MESSAGES
+done
+
 I18NDUDE=~/Plone/zinstance/bin/i18ndude
 if test ! -e $I18NDUDE; then
-        I18NDUDE=../../../../bin/i18ndude
+        I18NDUDE=../../../../../bin/i18ndude
 fi
 
 if test ! -e $I18NDUDE; then
@@ -35,28 +41,31 @@ fi
 # Do we need to merge manual PO entries from a file called manual.pot.
 # this option is later passed to i18ndude
 #
-if test -e i18n/manual.pot; then
+if test -e locales/manual.pot; then
         echo "Manual PO entries detected"
-        MERGE="--merge i18n/manual.pot"
+        MERGE="--merge locales/manual.pot"
 else
         echo "No manual PO entries detected"
         MERGE=""
 fi
 
 # Rebuild .pot
-$I18NDUDE rebuild-pot --pot i18n/$CATALOGNAME.pot $MERGE --create $CATALOGNAME .
+$I18NDUDE rebuild-pot --pot locales/$CATALOGNAME.pot $MERGE --create $CATALOGNAME .
 
 
 # Compile po files
-for langfile in $(find i18n -iname '*.po'); do
+for lang in $(find locales -mindepth 1 -maxdepth 1 -type d); do
 
-        PO=$langfile
+    if test -d $lang/LC_MESSAGES; then
+
+        PO=$lang/LC_MESSAGES/${CATALOGNAME}.po
 
         # Create po file if not exists
         touch $PO
 
         # Sync po file
         echo "Syncing $PO"
-        $I18NDUDE sync --pot i18n/$CATALOGNAME.pot $PO
+        $I18NDUDE sync --pot locales/$CATALOGNAME.pot $PO
+    fi
 done
 #!/bin/sh

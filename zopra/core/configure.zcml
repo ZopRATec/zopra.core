@@ -34,9 +34,7 @@
         name="zopra.core-hiddenprofiles"
         />
 
-    <!-- not yet to retain backward compatibility
-        <i18n:registerTranslations directory="locales" />
-    -->
+    <i18n:registerTranslations directory="locales" />
 
     <cmf:registerDirectory
         name        = "skins"
