@@ -123,33 +123,54 @@ class ZopRATestEnvironmentMaker(object):
         return subsection["app"]
 
     def cleanupSubstructure(self, name):
+        """Remove existing ZopRA project installation of given name, if it exists.
+
+            This will not do any removal from the database.
+
+        :param name: name for the main folder
+        :type name: str
+        """
         if "zopra" in self.portal:
             base = self.portal["zopra"]
             if name in base:
                 base._delObject(name, suppress_events=True)
                 self.logger.info('Deleted {} substructure.'.format(name))
 
-    def readEnvParam(self, name, postfix, default):
-        # first read the param with given postfix
-        if postfix:
-            res = os.environ.get(name + postfix, None)
+    def readEnvParam(self, name, suffix, default):
+        """Try to read an environment parameter with the given name plus suffix.
+
+            If no suffix was given or no environment parameter was found, try to read
+            the original name from the environment. If this fails, return the given default.
+
+        :param name: environment parameter name
+        :type name: str
+        :param suffix: a suffix that will be added to the name directly
+        :type suffix: str
+        :param default: the default for when everything else fails
+        :type default: str
+        :return: the looked up value
+        :rtype: str
+        """
+        # first read the param with given suffix
+        if suffix:
+            res = os.environ.get(name + suffix, None)
             if res:
                 return res
         return os.environ.get(name, default)
 
-    def addDatabaseAdapter(self, zoprafolder, postfix=''):
+    def addDatabaseAdapter(self, zoprafolder, suffix=''):
         """Add zmysql object inside the zopra context to provide database access.
 
         :param zoprafolder: the app folder containing the ZopRA Installation, in which the database adapter will be created
         :type zoprafolder: Folder
-        :param postfix: env lookup for all database params is first done with postfix, then without
-        :type postfix: str
+        :param suffix: env lookup for all database params is first done with suffix, then without
+        :type suffix: str
         """
         title = "Z MySQL Database Connection"
-        db_server = self.readEnvParam("DB_SERVER", postfix, "localhost")
-        db_user = self.readEnvParam("DB_USER", postfix, "zopratest")
-        db_password = self.readEnvParam("DB_PASSWORD", postfix, "zopratest")
-        db_name = self.readEnvParam("DB_NAME", postfix, "zopratest")
+        db_server = self.readEnvParam("DB_SERVER", suffix, "localhost")
+        db_user = self.readEnvParam("DB_USER", suffix, "zopratest")
+        db_password = self.readEnvParam("DB_PASSWORD", suffix, "zopratest")
+        db_name = self.readEnvParam("DB_NAME", suffix, "zopratest")
         connection_string = "{}@{} {} {}".format(
             db_name, db_server, db_user, db_password
         )
