@@ -12,7 +12,7 @@
         directory="profiles/test"
         description="Steps for zopra.core tests"
         provides="Products.GenericSetup.interfaces.EXTENSION"
-        post_handler=".setuphandlers.setupTestSzenario"
+        post_handler=".setuphandlers.setupTestScenario"
         />
 
 </configure>

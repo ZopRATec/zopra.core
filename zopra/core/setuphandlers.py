@@ -27,7 +27,7 @@ def uninstall(context):
     # Do something at the end of the uninstallation of this package.
 
 
-def setupTestSzenario(context):
+def setupTestScenario(context):
     """test setup post handler
     """
     logger = logging.getLogger("zopra.core")
