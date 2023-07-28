@@ -1,7 +1,14 @@
-# TODO: use BTree as Cache to speed up pickle and unpickle
-# TODO: even better: use RAMCache
+# TODO: use RAMCache to loose the write operations
 from zopra.core import SimpleItem
 from zopra.core.types import ListType
+
+
+# soft plone dependency, use plone.protect if it is available
+try:
+    from plone.protect.utils import safeWrite
+except ImportError:
+    def safeWrite(obj, request=None):
+        pass
 
 
 class TableCache(SimpleItem):
@@ -57,6 +64,9 @@ class TableCache(SimpleItem):
         :param autoid: The autoid of the item to remove
         """
         if autoid is not None and self.item.get(int(autoid)):
+            safeWrite(self)
+            safeWrite(self.item)
+            safeWrite(self.item_order)
             del self.item[int(autoid)]
             self.item_order.remove(int(autoid))
             self.make_persistent()
@@ -140,4 +150,16 @@ class TableCache(SimpleItem):
 
     def make_persistent(self):
         """Zope persistence needs to be activated."""
-        self.getParentNode().cache = self
+
+        parent = self.getParentNode()
+        parent.cache = self
+        # all writing methods call make_persistent, so we use it to tell plone.protect that write operations are okay
+        safeWrite(parent)
+        safeWrite(parent.cache)
+        safeWrite(self)
+        safeWrite(self.item)
+        safeWrite(self.idlist)
+        safeWrite(self.alllist)
+        safeWrite(self.item_order)
+        safeWrite(self.idlist_order)
+        safeWrite(self.alllist_order)
