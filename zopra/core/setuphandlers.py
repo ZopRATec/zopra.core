@@ -132,8 +132,10 @@ class ZopRATestEnvironmentMaker(object):
         """
         if "zopra" in self.portal:
             base = self.portal["zopra"]
+            name = name.lower().replace(' ', '-')
             if name in base:
-                base._delObject(name, suppress_events=True)
+                # no need to suppress events anymore when deleting ZopRA installations
+                base._delObject(name)
                 self.logger.info('Deleted {} substructure.'.format(name))
 
     def readEnvParam(self, name, suffix, default):
