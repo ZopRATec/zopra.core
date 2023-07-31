@@ -104,7 +104,10 @@ def manage_addGeneric(
     """Create any new Generic Manager and add it to destination."""
     managerClass = getattr(import_module(pkg), manager)
     obj = managerClass(id=zope_id, title=title, nocreate=nocreate, zopratype=zopratype)
-
+    if not REQUEST:
+        # set a marker to suppress redirection in manage_afterAdd when there is no REQUEST
+        # which means test-installation or showcase installation
+        obj.NO_REDIRECT = True
     target = dispatcher.Destination()
     target._setObject(zope_id, obj)
 
@@ -119,7 +122,10 @@ def manage_addGeneric(
         obj = obj.__of__(target)
         obj.startupConfig(REQUEST)
 
-    return target.manage_main(target, REQUEST)
+    if not REQUEST:
+        del obj.NO_REDIRECT
+    else:
+        return target.manage_main(target, REQUEST)
 
 
 def manage_addProductGeneric(
@@ -147,7 +153,8 @@ def manage_addProductGeneric(
 
     target = dispatcher.Destination()
     target._setObject(zope_id, obj)
-    return target.manage_main(target, REQUEST)
+    if REQUEST:
+        return target.manage_main(target, REQUEST)
 
 
 def registerManager(context, managerClass):

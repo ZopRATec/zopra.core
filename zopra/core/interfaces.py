@@ -2,7 +2,7 @@ from OFS.interfaces import IFolder
 from zope.interface import Interface
 
 
-class IAddOnInstalled(Interface):
+class IAddonInstalled(Interface):
     """A layer specific for this add-on product.
 
     This interface is referred in browserlayer.xml.

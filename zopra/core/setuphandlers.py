@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
+import logging
 import os
+from MySQLdb import OperationalError
 
 from plone import api
 from builtins import object
@@ -7,21 +9,29 @@ from builtins import object
 from zopra.core import DBDA_ID
 from zopra.core import HAVE_WEBCMS
 from OFS.Folder import manage_addFolder
+from Products.CMFPlone.interfaces import INonInstallable
+from zope.interface import implementer
 
 
-def setupTestSzenario(context):
-    """setups various when installing add-on
+@implementer(INonInstallable)
+class HiddenProfiles(object):
+    def getNonInstallableProfiles(self):
+        """Hide uninstall profile from site-creation and quickinstaller."""
+        return [
+            "zopra.core:uninstall",
+        ]
 
-    Ordinarily, GenericSetup handlers check for the existence of XML files.
-    Here, we are not parsing an XML file, but we use a text file as a
-    flag to check that we actually meant for this import step to be run.
-    The file is found in profiles/default.
+
+def uninstall(context):
+    """Uninstall script"""
+    # Do something at the end of the uninstallation of this package.
+
+
+def setupTestScenario(context):
+    """test setup post handler
     """
-
-    if context.readDataFile("zopra.core-test.txt") is None:
-        return
-    logger = context.getLogger("zopra.core")
-    portal = context.getSite()
+    logger = logging.getLogger("zopra.core")
+    portal = api.portal.get()
 
     tenv = ZopRATestEnvironmentMaker(logger, portal)
     logger.info("Setting up ZopRA Test Environment")
@@ -40,11 +50,11 @@ class ZopRATestEnvironmentMaker(object):
         self.createInitialUsers()
         # build zopra environment down to the app folder
         if HAVE_WEBCMS:
-            zoprafolder = self.buildWebCMSEnvironment()
+            zoprafolder = self.buildWebCMSEnvironment("test")
         else:
-            zoprafolder = self.buildEnvironment()
+            zoprafolder = self.buildEnvironment("test")
         # add database Adapter
-        self.addDatabaseAdapter(zoprafolder)
+        self.addDatabaseAdapter(zoprafolder, "_ZOPRA")
         # add the zopra Product
         self.addProductManager(zoprafolder, DBDA_ID, "pm", "ZopRA Product Manager")
         # set zopra_path in upper structure
@@ -53,17 +63,16 @@ class ZopRATestEnvironmentMaker(object):
         # add the test manager
         self.addManager(
             zoprafolder,
-            DBDA_ID,
             "zopra.core.tools.mgrTest",
             "mgrTest",
             "testapp",
             "Test Manager",
         )
 
-    def buildEnvironment(self):
+    def buildEnvironment(self, name):
         """Create container structure down to the ZopRA container and the app folder inside.
         Overwrite for special handling (applying interfaces or using special containers).
-        Resulting structure should be /base/zopra/app.
+        Resulting structure is /zopra/<name>/app.
 
         :param portal: Plone Site
         :type portal: Products.CMFPlone.Portal.PloneSite
@@ -71,11 +80,11 @@ class ZopRATestEnvironmentMaker(object):
         """
 
         # add plone folder ZopRATest
-        self.portal.invokeFactory("Folder", "base")
+        self.portal.invokeFactory("Folder", "zopra")
         base = self.portal["base"]
 
         # add plone folder ZopRATest
-        base.invokeFactory("Folder", "zopra")
+        base.invokeFactory("Folder", name)
         folder = base["zopra"]
 
         # add zope folder app via import and manage_addFolder direct call
@@ -84,48 +93,89 @@ class ZopRATestEnvironmentMaker(object):
         # return the created folder
         return folder["app"]
 
-    def buildWebCMSEnvironment(self):
+    def buildWebCMSEnvironment(self, name):
         """Create container structure down to the ZopRA container and the app folder inside.
         Overwrite for special handling (applying interfaces or using special containers).
-        Resulting structure should be /base/zopra/app.
+        Resulting structure is /zopra/<name>/app.
 
         :param portal: Plone Site
         :type portal: Products.CMFPlone.Portal.PloneSite
         :return:
         """
-        # add Section
-        self.portal.invokeFactory("MainTopicSubsection", "base")
-        base = self.portal["base"]
-        base.setTitle({"en": "Base"})
-
+        # add MainTopicSubsection
+        if "zopra" in self.portal:
+            base = self.portal["zopra"]
+        else:
+            base = api.content.create(type="MainTopicSubsection", title="ZopRA", container=self.portal)
+            api.content.transition(obj=base, transition="publish")
         # add Subsection
-        base.invokeFactory("Subsection", "zopra")
-        subsection = base["zopra"]
-        subsection.setTitle({"en": "ZopRA"})
+        if name.islower():
+            title = name.capitalize()
+        else:
+            title = name
+        subsection = api.content.create(type="Subsection", title=title, container=base)
+        api.content.transition(obj=subsection, transition="publish")
 
-        # add zope folder app via import and manage_addFolder direct call
+        # add zope folder
         manage_addFolder(subsection, "app")
 
         # return the created folder
         return subsection["app"]
 
-    def addDatabaseAdapter(self, zoprafolder):
+    def cleanupSubstructure(self, name):
+        """Remove existing ZopRA project installation of given name, if it exists.
+
+            This will not do any removal from the database.
+
+        :param name: name for the main folder
+        :type name: str
+        """
+        if "zopra" in self.portal:
+            base = self.portal["zopra"]
+            name = name.lower().replace(' ', '-')
+            if name in base:
+                # no need to suppress events anymore when deleting ZopRA installations
+                base._delObject(name)
+                self.logger.info('Deleted {} substructure.'.format(name))
+
+    def readEnvParam(self, name, suffix, default):
+        """Try to read an environment parameter with the given name plus suffix.
+
+            If no suffix was given or no environment parameter was found, try to read
+            the original name from the environment. If this fails, return the given default.
+
+        :param name: environment parameter name
+        :type name: str
+        :param suffix: a suffix that will be added to the name directly
+        :type suffix: str
+        :param default: the default for when everything else fails
+        :type default: str
+        :return: the looked up value
+        :rtype: str
+        """
+        # first read the param with given suffix
+        if suffix:
+            res = os.environ.get(name + suffix, None)
+            if res:
+                return res
+        return os.environ.get(name, default)
+
+    def addDatabaseAdapter(self, zoprafolder, suffix=''):
         """Add zmysql object inside the zopra context to provide database access.
 
         :param zoprafolder: the app folder containing the ZopRA Installation, in which the database adapter will be created
         :type zoprafolder: Folder
+        :param suffix: env lookup for all database params is first done with suffix, then without
+        :type suffix: str
         """
         title = "Z MySQL Database Connection"
-        db_server = os.environ.get("DB_SERVER", "localhost")
-        db_user = os.environ.get("DB_USER", "zopratest")
-        db_password = os.environ.get("DB_PASSWORD", "zopratest")
-        db_name = os.environ.get("DB_NAME", "zopratest")
+        db_server = self.readEnvParam("DB_SERVER", suffix, "localhost")
+        db_user = self.readEnvParam("DB_USER", suffix, "zopratest")
+        db_password = self.readEnvParam("DB_PASSWORD", suffix, "zopratest")
+        db_name = self.readEnvParam("DB_NAME", suffix, "zopratest")
         connection_string = "{}@{} {} {}".format(
             db_name, db_server, db_user, db_password
         )
-        # tests are dependent on MySQLdb
-        from MySQLdb import OperationalError
-
         try:
             return zoprafolder.manage_addProduct["ZMySQLDA"].manage_addZMySQLConnection(
                 DBDA_ID,
@@ -143,19 +193,17 @@ class ZopRATestEnvironmentMaker(object):
     def addManager(
         self,
         zoprafolder,
-        dbda_id,
         module_name,
         manager_classname,
         manager_id,
         manager_title,
+        nocreate=False
     ):
         """Add the ZopRA Manager object to zoprafolder using the manage_addGeneric method from zopra.core.__init__.
         Use module_name and manager_classname to identify your module and class. Reuse for installing all ZopRA Managers.
 
         :param zoprafolder: the app folder containing the ZopRA Installation, in which the database adapter will be created
         :type zoprafolder: Folder
-        :param dbda_id: ID of the Database Adapter Object in the ZODB
-        :type dbda_id: string
         :param module_name: Module path in dot-notation of the Manager Module (down to the py-file)
         :type module_name: string
         :param manager_classname: Class name of the Manager
@@ -171,12 +219,12 @@ class ZopRATestEnvironmentMaker(object):
             manager_title,
             manager_classname,
             module_name,
-            nocreate=0,
+            nocreate=nocreate,
             zopratype="",
             REQUEST=None,
         )
 
-    def addProductManager(self, zoprafolder, dbda_id, pm_id, pm_title):
+    def addProductManager(self, zoprafolder, dbda_id, pm_id, pm_title, nocreate=False):
         """
 
         :param zoprafolder: the app folder containing the ZopRA Installation, in which the database adapter will be created
@@ -195,7 +243,7 @@ class ZopRATestEnvironmentMaker(object):
             "ZopRAProduct",
             "zopra.core.tools.ZopRAProduct",
             dbda_id,
-            nocreate=0,
+            nocreate=nocreate,
             zopratype="",
             REQUEST=None,
         )

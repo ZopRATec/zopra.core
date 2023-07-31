@@ -12,6 +12,7 @@ from plone.app.testing import PLONE_FIXTURE
 from plone.app.testing import FunctionalTesting
 from plone.app.testing import PloneSandboxLayer
 from plone.app.testing import applyProfile
+from plone.app.testing import IntegrationTesting
 from plone.testing.zope import WSGI_SERVER_FIXTURE
 from plone.testing.zope import installProduct
 from ZServer.Testing.utils import setupCoreSessions
@@ -124,7 +125,7 @@ class ZopraCoreLayer(PloneSandboxLayer):
         ``setUpPloneSite()`` method were confined to the ZODB and the global
         component regsitry, those changes will be torn down automatically.
         """
-        zoprafolder = "base/zopra/app"
+        zoprafolder = "zopra/test/app"
         zfobj = portal.unrestrictedTraverse(zoprafolder)
         self.clearDatabase(zfobj)
 
@@ -152,6 +153,10 @@ class ZopraCoreLayer(PloneSandboxLayer):
 
 
 FIXTURE = ZopraCoreLayer()
+
+INTEGRATION_TESTING = IntegrationTesting(
+    bases=(FIXTURE,),
+    name="zopra.core:Integration")
 
 ROBOT_TESTING = FunctionalTesting(
     bases=(REMOTE_LIBRARY_BUNDLE_FIXTURE, WSGI_SERVER_FIXTURE, FIXTURE),

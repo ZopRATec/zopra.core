@@ -32,6 +32,14 @@ from zopra.core.types import StringType
 from zopra.core.types import UnicodeType
 
 
+# soft plone dependency, use plone.protect if it is available
+try:
+    from plone.protect.utils import safeWrite
+except ImportError:
+    def safeWrite(obj, request=None):
+        pass
+
+
 class List(GenericList):
     """List"""
 
@@ -218,11 +226,21 @@ class List(GenericList):
         )
         entry_dict = {}
         if results:
-            # language values are in already
+            # entry is complete with translations
             entry_dict = results[0]
-            # just convert the rank type (not entirely sure why, this should be int already)
-            if entry_dict.get(ZC.RANK):
-                entry_dict[ZC.RANK] = int(entry_dict[ZC.RANK])
+            for key in entry_dict:
+                value = entry_dict[key]
+                if key == ZC.RANK:
+                    if value:
+                        value = int(value)
+                    else:
+                        value = 0
+                elif key == ZC.SHOW:
+                    value = bool(value)
+                elif value == None:
+                        value = u""
+                entry_dict[key] = value
+
         # do not put in cache. cache is either complete or empty, regulated by getEntries
         return entry_dict
 
@@ -264,6 +282,9 @@ class List(GenericList):
             self.cache = {}
             for entry in completelist:
                 self.cache[entry[ZC.TCN_AUTOID]] = entry
+            # allow writing the caches (for plone.protect)
+            safeWrite(self)
+            safeWrite(self.cache)
 
         if not with_hidden:
             completelist = [

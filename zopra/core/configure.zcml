@@ -20,16 +20,28 @@
         provides      = "Products.GenericSetup.interfaces.EXTENSION"
         />
 
-    <!-- not yet to retain backward compatibility
-        <i18n:registerTranslations directory="locales" />
-    -->
+    <genericsetup:registerProfile
+        name="uninstall"
+        title="zopra.core (uninstall)"
+        directory="profiles/uninstall"
+        description="Uninstalls the zopra.core add-on."
+        provides="Products.GenericSetup.interfaces.EXTENSION"
+        post_handler=".setuphandlers.uninstall"
+        />
+
+    <utility
+        factory=".setuphandlers.HiddenProfiles"
+        name="zopra.core-hiddenprofiles"
+        />
+
+    <i18n:registerTranslations directory="locales" />
 
     <cmf:registerDirectory
         name        = "skins"
         directory   = "skins"
         recursive   = "True"
         />
-    
+
     <plone:static
         name        = "zopra.core"
         type        = "plone"
