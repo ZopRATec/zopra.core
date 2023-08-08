@@ -48,17 +48,12 @@ class ZopraCoreLayer(PloneSandboxLayer):
 
     defaultBases = (PLONE_FIXTURE,)
 
-    def setUpZope(self, app, configurationContext):
-        """Method to set up a Zope instance (importing, product installation and loading zcml)
-
-        :param app: Zope application root
-        :param configurationContext: ZCML configuration context
-        :return:
-        """
-        # extra WEBCMS setUp (including content, addons and theme) for our zopra packages to use
-        # TODO: move to zopra.ploned when that is ready
+    def setUpZopRA(self, app):
+        """Install all packages needed for basic WebCMS functionality
+            without tud.profiles.webcms dependencies to all ZopRA packages."""
         if HAVE_WEBCMS:
             setupCoreSessions(app)
+
             # Load ZCML
             import tud.profiles.webcms
             import tud.addons.webcms
@@ -95,12 +90,35 @@ class ZopraCoreLayer(PloneSandboxLayer):
             # do not install profiles to avoid the dependencies on zopra app packages
             # installProduct(app, "tud.profiles.webcms")
 
+        # install zopra package and database adapter
         import zopra.core
 
         self.loadZCML(name="testing.zcml", package=zopra.core)
 
         installProduct(app, "zopra.core")
         installProduct(app, "Products.ZMySQLDA")
+
+    def setUpZopRAProfiles(self, portal):
+        """Install tud.theme.webcms2:test if available. Then install the zopra.core:default profile.
+
+        :param portal: _description_
+        :type portal: _type_
+        """
+        # extra WEBCMS setUp (Theme with content and addons)
+        if HAVE_WEBCMS:
+            applyProfile(portal, "tud.theme.webcms2:test")
+        applyProfile(portal, "zopra.core:default")
+
+    def setUpZope(self, app, configurationContext):
+        """Method to set up a Zope instance (importing, product installation and loading zcml)
+
+        :param app: Zope application root
+        :param configurationContext: ZCML configuration context
+        :return:
+        """
+        # extra WEBCMS setUp (including content, addons and theme) for our zopra packages to use
+        # TODO: move to zopra.ploned when that is ready
+        self.setUpZopRA(app)
 
     def setUpPloneSite(self, portal):
         """Method to set up the Plone Site (installing products and applying Profiles)
@@ -109,9 +127,9 @@ class ZopraCoreLayer(PloneSandboxLayer):
         :type portal: Products.CMFPlone.Portal.PloneSite
         :return:
         """
-        # extra WEBCMS setUp (Content + Theme)
-        if HAVE_WEBCMS:
-            applyProfile(portal, "tud.theme.webcms2:test")
+        self.setUpZopRAProfiles(portal)
+        # installs a test environment and database connectivity
+        # (which we do not need in this form for the other apps)
         applyProfile(portal, "zopra.core:test")
 
         # commit the changes to counteract PloneSandBoxLayer not persisting our changes anymore
@@ -125,22 +143,21 @@ class ZopraCoreLayer(PloneSandboxLayer):
         ``setUpPloneSite()`` method were confined to the ZODB and the global
         component regsitry, those changes will be torn down automatically.
         """
-        zoprafolder = "zopra/test/app"
-        zfobj = portal.unrestrictedTraverse(zoprafolder)
-        self.clearDatabase(zfobj)
-
-    def clearDatabase(self, zoprafolder):
-        """
-        Removes all tables in database of zmysql object, which is determined from given zmysql id.
-
-        :param zoprafolder: the app folder containing the ZopRA Installation, in which the database adapter will be created
-        :type zoprafolder: Folder
-        """
+        zoprapath = "zopra/test/app"
+        zoprafolder = portal.unrestrictedTraverse(zoprapath)
         zmysql = getattr(zoprafolder, DBDA_ID, None)
         if zmysql is None:
             raise Exception("Z MySQL object not found!")
+        self.clearDatabase(zmysql)
 
-        dbc = zmysql()
+    def clearDatabase(self, database_adapter):
+        """
+        Removes all tables in database of given database_adapter.
+
+        :param database_adapter: the app folder containing the ZopRA Installation, in which the database adapter will be created
+        :type database_adapter: Products.ZMySQLDA.DA.Connection
+        """
+        dbc = database_adapter()
 
         tables = [
             table["table_name"]
