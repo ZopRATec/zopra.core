@@ -255,25 +255,25 @@ class ZopRATestEnvironmentMaker(object):
         """
         user_data = [
             {
-                "username": "user",
-                "password": "useruser",
-                "email": "user@tu-dresden.de",
-                "properties": {"fullname": "User"},
-                "roles": ("ZopRAUser"),
+                "username": "redakteur",
+                "password": "redakteur",
+                "email": "redakteur@tu-dresden.de",
+                "properties": {"fullname": "Redakteur"},
+                "roles": ("Contributor", "Editor"),
             },
             {
-                "username": "reviewer",
-                "password": "reviewer",
-                "email": "reviewer@zopratec.de",
+                "username": "chefredakteur",
+                "password": "chefredakteur",
+                "email": "chefredakteur@tu-dresden.de",
                 "properties": {"fullname": "Chefredakteur"},
-                "roles": ("ZopRAUser", "ZopRAReviewer"),
+                "roles": ("Contributor", "Editor", "Reviewer"),
             },
             {
-                "username": "zopraadmin",
-                "password": "zopraadmin",
-                "email": "zopraadmin@zopratec.de",
-                "properties": {"fullname": "ZopRAAdmin"},
-                "roles": (),
+                "username": "testadmin",
+                "password": "testadmin",
+                "email": "testadmin@tu-dresden.de",
+                "properties": {"fullname": "Testadmin"},
+                "roles": ("Contributor", "Editor", "Reviewer", "Section Administrator"),
             },
         ]
         for datum in user_data:
