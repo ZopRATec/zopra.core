@@ -101,8 +101,8 @@ class ZopraCoreLayer(PloneSandboxLayer):
     def setUpZopRAProfiles(self, portal):
         """Install tud.theme.webcms2:test if available. Then install the zopra.core:default profile.
 
-        :param portal: _description_
-        :type portal: _type_
+        :param portal: the portal
+        :type portal: Products.CMFPlone.Portal.PloneSite
         """
         # extra WEBCMS setUp (Theme with content and addons)
         if HAVE_WEBCMS:
@@ -151,8 +151,7 @@ class ZopraCoreLayer(PloneSandboxLayer):
         self.clearDatabase(zmysql)
 
     def clearDatabase(self, database_adapter):
-        """
-        Removes all tables in database of given database_adapter.
+        """Removes all tables in database of given database_adapter.
 
         :param database_adapter: the app folder containing the ZopRA Installation, in which the database adapter will be created
         :type database_adapter: Products.ZMySQLDA.DA.Connection
