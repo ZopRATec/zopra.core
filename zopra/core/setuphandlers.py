@@ -44,14 +44,14 @@ class ZopRATestEnvironmentMaker(object):
     def __init__(self, logger, portal):
         self.logger = logger
         self.portal = portal
-        self.TEST = False
+        self.is_test_mode = False
 
     def activateTestDatabaseUsage(self):
         """Use this method to activate Test mode for the database connector. The env params used for
         database connectivity will then always use the prefix "ZOPRA_" (instead of individual prefixes for different
         zopra packages)
         """
-        self.TEST = True
+        self.is_test_mode = True
 
     def setup(self):
         """Main method calling all other methods."""
@@ -177,7 +177,7 @@ class ZopRATestEnvironmentMaker(object):
         :type suffix: str
         """
         title = "Z MySQL Database Connection"
-        if self.TEST:
+        if self.is_test_mode:
             # override the given suffix, always use _ZOPRA
             suffix = "_ZOPRA"
         db_server = self.readEnvParam("DB_SERVER", suffix, "localhost")
