@@ -19,7 +19,7 @@ from ZServer.Testing.utils import setupCoreSessions
 
 from zopra.core import DBDA_ID
 from zopra.core import HAVE_WEBCMS
-
+from zopra.core.setuphandlers import ZopRATestEnvironmentMaker
 
 # preparation for keywords implemented in python
 class Keywords(RemoteLibrary):
@@ -47,6 +47,8 @@ class ZopraCoreLayer(PloneSandboxLayer):
     """Testing Layer for this add-on."""
 
     defaultBases = (PLONE_FIXTURE,)
+
+    zoprapath = "zopra/test/app"
 
     def setUpZopRA(self, app):
         """Install all packages needed for basic WebCMS functionality
@@ -143,29 +145,11 @@ class ZopraCoreLayer(PloneSandboxLayer):
         ``setUpPloneSite()`` method were confined to the ZODB and the global
         component regsitry, those changes will be torn down automatically.
         """
-        zoprapath = "zopra/test/app"
-        zoprafolder = portal.unrestrictedTraverse(zoprapath)
+        zoprafolder = portal.unrestrictedTraverse(self.zoprapath)
         zmysql = getattr(zoprafolder, DBDA_ID, None)
         if zmysql is None:
             raise Exception("Z MySQL object not found!")
-        self.clearDatabase(zmysql)
-
-    def clearDatabase(self, database_adapter):
-        """Removes all tables in database of given database_adapter.
-
-        :param database_adapter: the app folder containing the ZopRA Installation, in which the database adapter will be created
-        :type database_adapter: Products.ZMySQLDA.DA.Connection
-        """
-        dbc = database_adapter()
-
-        tables = [
-            table["table_name"]
-            for table in dbc.tables()
-            if table["table_type"] == "table"
-        ]
-
-        for table in tables:
-            dbc.query("DROP TABLE {}".format(table.encode("utf-8")))
+        ZopRATestEnvironmentMaker.clearDatabase(zmysql)
 
 
 FIXTURE = ZopraCoreLayer()

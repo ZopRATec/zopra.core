@@ -291,3 +291,22 @@ class ZopRATestEnvironmentMaker(object):
             user = api.user.get(datum["username"])
             if user is None:
                 user = api.user.create(**datum)
+
+    @classmethod
+    def clearDatabase(cls, database_adapter):
+        """Removes all tables in database of given database_adapter.
+
+        :param database_adapter: the app folder containing the ZopRA Installation, in which the database adapter will be created
+        :type database_adapter: Products.ZMySQLDA.DA.Connection
+        """
+        dbc = database_adapter()
+
+        tables = [
+            table["table_name"]
+            for table in dbc.tables()
+            if table["table_type"] == "table"
+        ]
+
+        for table in tables:
+            dbc.query("DROP TABLE {}".format(table.encode("utf-8")))
+
