@@ -390,7 +390,7 @@ msgstr ""
 msgid "zopra_links_edit_edit"
 msgstr ""
 
-#. Default: "Export LaTex"
+#. Default: "Export LaTeX"
 #: ./skins/zopra_core_general/zopra_button_link_bar.cpt:121
 msgid "zopra_links_edit_latex_export"
 msgstr ""

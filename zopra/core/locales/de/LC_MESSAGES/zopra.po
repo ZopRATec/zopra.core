@@ -391,10 +391,10 @@ msgstr "Neuer Eintrag"
 msgid "zopra_links_edit_edit"
 msgstr "Eintrag bearbeiten"
 
-#. Default: "Export LaTex"
+#. Default: "Export LaTeX"
 #: ./skins/zopra_core_general/zopra_button_link_bar.cpt:121
 msgid "zopra_links_edit_latex_export"
-msgstr "LaTex exportieren"
+msgstr "LaTeX exportieren"
 
 #. Default: "Disable tabs"
 #: ./skins/zopra_core_general/zopra_button_link_bar.cpt:140
