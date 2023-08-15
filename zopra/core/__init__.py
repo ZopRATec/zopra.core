@@ -77,8 +77,7 @@ DBDA_ID = "zmysqlconnection"
 
 
 def initialize(context):
-    """Initialize ZopRA with all Managers"""
-    print("Initializing ZopRA")
+    """Initialize ZopRA with all managers"""
 
     from zopra.core.tools.ZopRAProduct import ZopRAProduct
     from zopra.core.Manager import Manager
