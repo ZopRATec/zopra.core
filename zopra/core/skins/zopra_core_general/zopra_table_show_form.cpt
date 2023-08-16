@@ -9,6 +9,9 @@
     Changes: notabs - Button to disable tabs, notabs-Display also shows no helptexts (for print)
 </tal:comment>
 
+    <metal:block fill-slot="top_slot"
+             tal:define="dummy python:request.set('disable_toolbar',1)" />
+
 <metal:javascriptslot fill-slot="javascript_head_slot">
     <script type="text/javascript" tal:attributes="src string:${portal_url}/autoupdate-widget/jquery.autoupdate-widget.js"></script>
     <tal:block tal:condition="request/zopra_popup|nothing">

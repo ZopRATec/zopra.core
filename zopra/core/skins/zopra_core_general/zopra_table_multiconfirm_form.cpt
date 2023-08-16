@@ -7,6 +7,9 @@
 
     </tal:comment>
 
+    <metal:block fill-slot="top_slot"
+             tal:define="dummy python:request.set('disable_toolbar',1)" />
+
     <metal:main fill-slot="main">
         <tal:block tal:define="isAnon context/@@plone_portal_state/anonymous;"
                    tal:condition="python: isAnon or not (user.has_role(('ZopRAReviewer', 'ZopRAAdmin'), here))">

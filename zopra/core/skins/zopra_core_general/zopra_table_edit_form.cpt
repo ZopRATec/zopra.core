@@ -8,6 +8,9 @@
     zopra edit form for entries
 </tal:comment>
 
+    <metal:block fill-slot="top_slot"
+             tal:define="dummy python:request.set('disable_toolbar',1)" />
+
 <metal:javascriptslot fill-slot="javascript_head_slot">
     <script type="text/javascript" tal:attributes="src string:${portal_url}/zopra_workflow.js"></script>
     <script type="text/javascript" tal:attributes="src string:${portal_url}/autoupdate-widget/jquery.autoupdate-widget.js"></script>

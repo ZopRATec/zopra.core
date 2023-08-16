@@ -6,6 +6,8 @@
 <tal:comment tal:replace="nothing">
 
 </tal:comment>
+<metal:block fill-slot="top_slot"
+             tal:define="dummy python:request.set('disable_toolbar',1)" />
 <metal:main fill-slot="main"
             tal:define="isAnon context/@@plone_portal_state/anonymous;
                         listname request/listname;

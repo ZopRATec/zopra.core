@@ -8,6 +8,9 @@
 
   <body>
 
+    <metal:block fill-slot="top_slot"
+             tal:define="dummy python:request.set('disable_toolbar',1)" />
+
       <metal:javascriptslot fill-slot="javascript_head_slot">
             <script language="javascript">
                   <!--
