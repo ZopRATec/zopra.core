@@ -39,19 +39,30 @@ def setupTestScenario(context):
 
 
 class ZopRATestEnvironmentMaker(object):
-    """Test Environment Setup via methods in a class so parts of it can be overwritten for the subpackages"""
+    """Test Environment Setup via methods in a class so parts of it can be reused and even overwritten
+    for the subpackages. The database adapter env settings used depend on whether the Maker is used
+    in a testing setup or in a normal setup (e.g. for showcase creation)"""
 
     def __init__(self, logger, portal):
         self.logger = logger
         self.portal = portal
-        self.is_test_mode = False
+        self.manual_test_mode = None
 
-    def activateTestDatabaseUsage(self):
-        """Use this method to activate Test mode for the database connector. The env params used for
-        database connectivity will then always use the prefix "ZOPRA_" (instead of individual prefixes for different
-        zopra packages)
+    def overrideTestMode(self, test_mode):
+        """Test mode is determined via api.env.test_mode. You can override this by setting True or False
+        with this method. In test mode, the env params used for database connectivity will always use
+        the prefix "ZOPRA_" (instead of individual prefixes for different ZopRA packages).
+
+        :param test_mode: override test mode setting (with True or False)
+        :type test_mode: bool
         """
-        self.is_test_mode = True
+        self.manual_test_mode = test_mode
+
+    def getTestMode(self):
+        if self.manual_test_mode is None:
+            return api.env.test_mode()
+        else:
+            return self.manual_test_mode
 
     def setup(self):
         """Main method calling all other methods."""
@@ -177,7 +188,7 @@ class ZopRATestEnvironmentMaker(object):
         :type suffix: str
         """
         title = "Z MySQL Database Connection"
-        if self.is_test_mode:
+        if self.getTestMode():
             # override the given suffix, always use _ZOPRA
             suffix = "_ZOPRA"
         db_server = self.readEnvParam("DB_SERVER", suffix, "localhost")
