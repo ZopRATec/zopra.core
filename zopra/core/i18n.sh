@@ -28,7 +28,7 @@ done
 
 I18NDUDE=~/Plone/zinstance/bin/i18ndude
 if test ! -e $I18NDUDE; then
-        I18NDUDE=../../../../../bin/i18ndude
+        I18NDUDE=../../../../bin/i18ndude
 fi
 
 if test ! -e $I18NDUDE; then
