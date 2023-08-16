@@ -479,7 +479,22 @@ class TemplateBaseManager(Manager):
         return tobj.requestEntryCount(root)
 
     def calculatePaginationPages(self, rowcount, count):
+        """calculate how many pages pagination will display to fit rowcount entries
+        when one page contains count entries."""
         return (rowcount + count - 1) // count
+
+    def calculateActivePages(self, pagecount, offset, pagesize):
+        """When there are too many pages, this method is used to calculate, which ones (including first and last)
+        should be displayed."""
+        pages_offset = offset // pagesize
+        first = max(0, pages_offset - 6)
+        last = min(pagecount, pages_offset + 6)
+        pages = list(xrange(first, last))
+        if 0 not in pages:
+            pages.insert(0,0)
+        if (pagecount - 1) not in pages:
+            pages.append(pagecount - 1)
+        return pages
 
     def getEntryListProxy(
         self,
