@@ -1,14 +1,7 @@
 # TODO: use RAMCache to loose the write operations
 from zopra.core import SimpleItem
 from zopra.core.types import ListType
-
-
-# soft plone dependency, use plone.protect if it is available
-try:
-    from plone.protect.utils import safeWrite
-except ImportError:
-    def safeWrite(obj, request=None):
-        pass
+from zopra.core.utils import safeWrite
 
 
 class TableCache(SimpleItem):
