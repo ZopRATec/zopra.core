@@ -20,6 +20,13 @@ msgstr ""
 msgid "search"
 msgstr ""
 
+# search result pagination
+msgid "first"
+msgstr ""
+
+msgid "last"
+msgstr ""
+
 # Edit-tracking Cols
 msgid "Automatic No."
 msgstr ""

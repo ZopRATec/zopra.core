@@ -7,6 +7,9 @@
     Standard import form with result display (below)
 </tal:comment>
 
+    <metal:block fill-slot="top_slot"
+             tal:define="dummy python:request.set('disable_toolbar',1)" />
+
 <metal:main fill-slot="main"
             tal:define="isAnon context/@@plone_portal_state/anonymous;">
 
@@ -25,7 +28,7 @@
           tal:attributes="action string:${here/getId}/${template/getId}">
         <h1>
             <span i18n:translate="zopra_import_heading">Import</span>
-            <span tal:content="python: tobj.getLabel()">label</span>
+            <span tal:content="structure python: tobj.getLabel()">label</span>
         </h1>
         <fieldset>
             <legend i18n:translate="zopra_import_legend">File import</legend>

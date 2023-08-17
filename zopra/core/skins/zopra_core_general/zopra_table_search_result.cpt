@@ -8,6 +8,9 @@
 
   <body>
 
+    <metal:block fill-slot="top_slot"
+             tal:define="dummy python:request.set('disable_toolbar',1)" />
+
     <metal:javascriptslot fill-slot="javascript_head_slot">
         <script type="text/javascript" tal:attributes="src string:${portal_url}/dragtable.js"></script>
     </metal:javascriptslot>
@@ -21,6 +24,7 @@
                      tobj python: here.tableHandler[table];
                      offset python:request.get('offset') and int(request.get('offset')) or 0;
                      count python: request.get('count') and int(request.get('count')) or 20;
+                     offset python: (offset // count * count == offset) and offset or 0;
                      constraints python: context.getTableEntryFromRequest(table, request, search=True);
                      cons python: {};
                      dummy python: cons.update(constraints);
@@ -52,7 +56,7 @@
         <h1 class="documentFirstHeading">
                 <span tal:condition="has_real_constraints" i18n:translate="zopra_search_results_heading">Search results</span>
                 <span tal:condition="not:has_real_constraints" i18n:translate="zopra_listing_heading">Entry listing</span>
-                <span i18n:translate="" tal:content="python: tobj.getLabel()">TableX</span>
+                <span i18n:translate="" tal:content="structure python: tobj.getLabel()">TableX</span>
         </h1>
         <form id="search_result_form"
               tal:define="global quotedcons string:;"

@@ -8,6 +8,9 @@
 
     </tal:comment>
 
+    <metal:block fill-slot="top_slot"
+             tal:define="dummy python:request.set('disable_toolbar',1)" />
+
 <metal:javascriptslot fill-slot="javascript_head_slot">
     <tal:block tal:condition="request/zopra_popup|nothing">
         <script type="text/javascript" tal:attributes="src string:${portal_url}/zopra_popup/zopra_popup.js"></script>
@@ -27,12 +30,12 @@
 
                 <h1 class="documentFirstHeading" i18n:translate="zopra_delete_heading">
                     Deletion of
-                    <span i18n:name="table" i18n:translate="" tal:content="python: tobj.getLabel()"></span>
+                    <span i18n:name="table" i18n:translate="" tal:content="structure python: tobj.getLabel()"></span>
                 </h1>
 
                 <p i18n:translate="zopra_deleted_dependency_message">
                       The dependent entry
-                      <span i18n:name="table" i18n:translate="" tal:content="python: tobj.getLabel()"></span>
+                      <span i18n:name="table" i18n:translate="" tal:content="structure python: tobj.getLabel()"></span>
                       has been deleted.
                 </p>
                 <p i18n:translate="zopra_deleted_dependency_hint">Close this window to update the display of the main entry.</p>

@@ -6,6 +6,8 @@
 <tal:comment tal:replace="nothing">
 
 </tal:comment>
+<metal:block fill-slot="top_slot"
+             tal:define="dummy python:request.set('disable_toolbar',1)" />
 <metal:main fill-slot="main"
             tal:define="isAnon context/@@plone_portal_state/anonymous;
                         listname request/listname;
@@ -28,7 +30,7 @@
                 <tal:block tal:condition="not: is_hierarchy_list">
                     <h1>
                         <span i18n:translate="zopra_lists_heading">List</span>
-                        <span i18n:translate="" tal:content="lobj/getLabel"></span>
+                        <span i18n:translate="" tal:content="structure lobj/getLabel"></span>
                     </h1>
                     <table class="zopra-table">
                         <thead>
@@ -96,7 +98,7 @@
                 <tal:block tal:condition="is_hierarchy_list">
                     <h1>
                         <span i18n:translate="zopra_lists_hierarchical_heading">Hierarchical list</span>
-                        <span tal:content="lobj/getLabel"></span>
+                        <span tal:content="structure lobj/getLabel"></span>
                     </h1>
                     <table class="zopra-table"
                            tal:define="entries python: here.prepareHierarchylistDisplayEntries(entries)">

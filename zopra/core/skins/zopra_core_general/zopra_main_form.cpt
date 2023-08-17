@@ -6,6 +6,10 @@
     <tal:comment tal:replace="nothing">
         Main editorial entry point with info-part per manager.
     </tal:comment>
+
+    <metal:block fill-slot="top_slot"
+             tal:define="dummy python:request.set('disable_toolbar',1)" />
+
     <metal:main fill-slot="main"
                 tal:define="isAnon context/@@plone_portal_state/anonymous;">
         <tal:block tal:condition="python: isAnon or not (user.has_role(('ZopRAAuthor', 'ZopRAReviewer', 'ZopRAAdmin'), here))">

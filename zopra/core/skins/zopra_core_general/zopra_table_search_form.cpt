@@ -8,6 +8,9 @@
 
   <body>
 
+    <metal:block fill-slot="top_slot"
+             tal:define="dummy python:request.set('disable_toolbar',1)" />
+
       <metal:javascriptslot fill-slot="javascript_head_slot">
             <script language="javascript">
                   <!--
@@ -45,7 +48,7 @@
                      default python: here.getDefaultSearchValues(table);">
         <h1>
             <span i18n:translate="zopra_search_heading">Search</span>
-            <span i18n:translate="" tal:content="python: tobj.getLabel()">TableX</span>
+            <span i18n:translate="" tal:content="structure python: tobj.getLabel()">TableX</span>
         </h1>
         <form name="search_form"
               id="search_form"

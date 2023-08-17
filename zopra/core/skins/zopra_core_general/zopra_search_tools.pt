@@ -3,25 +3,6 @@
       i18n:domain="zopra">
 
 <body>
-    <!-- old pagination, used by sins search -->
-    <metal:block metal:define-macro="pagelinks">
-        <div id="pagelinks"
-             tal:define="url python: '%s/sins_suchergebnisse' % (context.absolute_url());
-                         url python: url + getparam + '&offset=';
-                         pages python: context.calculatePaginationPages(rowcount, count)">
-            <span i18n:translate="zopra_sr_label_pages">Pages:</span>
-            <span tal:repeat="page python: xrange(pages)">
-                <a tal:define="thisurl python: url + str(page*count);
-                               thisclass python: page * count == offset and 'selected_pagelink' or 'pagelink'"
-                   tal:attributes="href thisurl;
-                                   class thisclass;
-                                   title python: 'Page ' + str(page + 1);"
-                   tal:content="python: page + 1">
-                  1
-                </a>
-            </span>
-        </div>
-    </metal:block>
 
     <tal:comment tal:replace="nothing">
     New pageination used by ILA.
@@ -98,18 +79,38 @@
                          url python: url + quotedcons + '%s&offset=' % ''.join(['&order:list=%s' % oneorder for oneorder in order]);
                          pages python: context.calculatePaginationPages(rowcount, count)">
             <span i18n:translate="zopra_sr_label_pages">Pages:</span>
-            <span tal:repeat="page python: xrange(pages)">
-                <a tal:define="pageoffset python: page*count;
-                           thisurl python: url + str(pageoffset);
-                           thisclass python: pageoffset == offset and 'pagelink selected' or 'pagelink';
-                           onclick string:$$('input#offset').val(${pageoffset});;$$('#search_result_form button[&quot;submit&quot;]').first().submit();;return false;;;"
-                   tal:attributes="href thisurl;
-                               class thisclass;
-                               onclick onclick;"
-                   tal:content="python: page + 1">
-                    1
-                </a>
-            </span>
+            <tal:block tal:condition="python: pages < 21">
+                <span tal:repeat="page python: xrange(pages)">
+                    <a tal:define="pageoffset python: page*count;
+                            thisurl python: url + str(pageoffset);
+                            thisclass python: pageoffset == offset and 'pagelink selected' or 'pagelink';
+                            onclick string:$$('input#offset').val(${pageoffset});;$$('#search_result_form button[&quot;submit&quot;]').first().submit();;return false;;;"
+                    tal:attributes="href thisurl;
+                                class thisclass;
+                                onclick onclick;"
+                    tal:content="python: page + 1">
+                        1
+                    </a>
+                </span>
+            </tal:block>
+            <tal:block tal:condition="python: pages >= 21">
+                <span tal:repeat="page python: context.calculateActivePages(pages, offset, count)">
+                    <span tal:condition="python: page == -1">&#8230;</span>
+                    <tal:block tal:condition="python: page != -1">
+                        <a i18n:translate=""
+                        tal:define="pageoffset python: page*count;
+                                thisurl python: url + str(pageoffset);
+                                thisclass python: pageoffset == offset and 'pagelink selected' or 'pagelink';
+                                onclick string:$$('input#offset').val(${pageoffset});;$$('#search_result_form button[&quot;submit&quot;]').first().submit();;return false;;;"
+                        tal:attributes="href thisurl;
+                                    class thisclass;
+                                    onclick onclick;"
+                        tal:content="python: repeat.page.start and 'first' or repeat.page.end and 'last' or page + 1">
+                            1
+                        </a>
+                    </tal:block>
+                </span>
+            </tal:block>
         </div>
     </metal:block>
 

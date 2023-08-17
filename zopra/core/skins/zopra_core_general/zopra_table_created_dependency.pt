@@ -8,6 +8,9 @@
 
     </tal:comment>
 
+    <metal:block fill-slot="top_slot"
+             tal:define="dummy python:request.set('disable_toolbar',1)" />
+
 <metal:javascriptslot fill-slot="javascript_head_slot">
     <tal:block tal:condition="request/zopra_popup|nothing">
         <script type="text/javascript" tal:attributes="src string:${portal_url}/zopra_popup/zopra_popup.js"></script>
@@ -29,7 +32,7 @@
                                entry python: request.get('autoid') and tobj.getEntry(request.get('autoid')) or here.getDefaultCreateValues(table);">
             <h1 class="documentFirstHeading" i18n:translate="zopra_create_heading">
                 Create entry
-                <span i18n:name="table" i18n:translate="" tal:content="python: tobj.getLabel()"></span>
+                <span i18n:name="table" i18n:translate="" tal:content="structure python: tobj.getLabel()"></span>
             </h1>
             <p i18n:translate="zopra_created_dependency_message">
                   The dependent entry

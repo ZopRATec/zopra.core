@@ -121,7 +121,7 @@
             <a class="button  small"
                tal:attributes="href python: here.absolute_url() + '/integrale_export_veranstaltung?autoid=%s' % (autoid)"
                i18n:translate="zopra_links_edit_latex_export">
-                Export LaTex
+                Export LaTeX
             </a>
         </tal:block>
         <tal:block tal:condition="not:request/origid|nothing">

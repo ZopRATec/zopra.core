@@ -39,11 +39,30 @@ def setupTestScenario(context):
 
 
 class ZopRATestEnvironmentMaker(object):
-    """Test Environment Setup via methods in a class so parts of it can be overwritten for the subpackages"""
+    """Test Environment Setup via methods in a class so parts of it can be reused and even overwritten
+    for the subpackages. The database adapter env settings used depend on whether the Maker is used
+    in a testing setup or in a normal setup (e.g. for showcase creation)"""
 
     def __init__(self, logger, portal):
         self.logger = logger
         self.portal = portal
+        self.manual_test_mode = None
+
+    def overrideTestMode(self, test_mode):
+        """Test mode is determined via api.env.test_mode. You can override this by setting True or False
+        with this method. In test mode, the env params used for database connectivity will always use
+        the prefix "ZOPRA_" (instead of individual prefixes for different ZopRA packages).
+
+        :param test_mode: override test mode setting (with True or False)
+        :type test_mode: bool
+        """
+        self.manual_test_mode = test_mode
+
+    def getTestMode(self):
+        if self.manual_test_mode is None:
+            return api.env.test_mode()
+        else:
+            return self.manual_test_mode
 
     def setup(self):
         """Main method calling all other methods."""
@@ -106,7 +125,8 @@ class ZopRATestEnvironmentMaker(object):
         if "zopra" in self.portal:
             base = self.portal["zopra"]
         else:
-            base = api.content.create(type="MainTopicSubsection", title="ZopRA", container=self.portal)
+            api.content.create(type="MainTopicSubsection", title="ZopRA", container=self.portal)
+            base = self.portal["zopra"]
             api.content.transition(obj=base, transition="publish")
         # add Subsection
         if name.islower():
@@ -117,7 +137,7 @@ class ZopRATestEnvironmentMaker(object):
         api.content.transition(obj=subsection, transition="publish")
 
         # add zope folder
-        manage_addFolder(subsection, "app")
+        manage_addFolder(subsection, "app", "app")
 
         # return the created folder
         return subsection["app"]
@@ -169,6 +189,9 @@ class ZopRATestEnvironmentMaker(object):
         :type suffix: str
         """
         title = "Z MySQL Database Connection"
+        if self.getTestMode():
+            # override the given suffix, always use _ZOPRA
+            suffix = "_ZOPRA"
         db_server = self.readEnvParam("DB_SERVER", suffix, "localhost")
         db_user = self.readEnvParam("DB_USER", suffix, "zopratest")
         db_password = self.readEnvParam("DB_PASSWORD", suffix, "zopratest")
@@ -255,28 +278,47 @@ class ZopRATestEnvironmentMaker(object):
         """
         user_data = [
             {
-                "username": "user",
-                "password": "useruser",
-                "email": "user@tu-dresden.de",
-                "properties": {"fullname": "User"},
-                "roles": ("ZopRAUser"),
+                "username": "redakteur",
+                "password": "redakteur",
+                "email": "redakteur@tu-dresden.de",
+                "properties": {"fullname": "Redakteur"},
+                "roles": ("Contributor", "Editor"),
             },
             {
-                "username": "reviewer",
-                "password": "reviewer",
-                "email": "reviewer@zopratec.de",
+                "username": "chefredakteur",
+                "password": "chefredakteur",
+                "email": "chefredakteur@tu-dresden.de",
                 "properties": {"fullname": "Chefredakteur"},
-                "roles": ("ZopRAUser", "ZopRAReviewer"),
+                "roles": ("Contributor", "Editor", "Reviewer"),
             },
             {
-                "username": "zopraadmin",
-                "password": "zopraadmin",
-                "email": "zopraadmin@zopratec.de",
-                "properties": {"fullname": "ZopRAAdmin"},
-                "roles": (),
+                "username": "testadmin",
+                "password": "testadmin",
+                "email": "testadmin@tu-dresden.de",
+                "properties": {"fullname": "Testadmin"},
+                "roles": ("Contributor", "Editor", "Reviewer", "Section Administrator"),
             },
         ]
         for datum in user_data:
             user = api.user.get(datum["username"])
             if user is None:
                 user = api.user.create(**datum)
+
+    @classmethod
+    def clearDatabase(cls, database_adapter):
+        """Removes all tables in database of given database_adapter.
+
+        :param database_adapter: the app folder containing the ZopRA Installation, in which the database adapter will be created
+        :type database_adapter: Products.ZMySQLDA.DA.Connection
+        """
+        dbc = database_adapter()
+
+        tables = [
+            table["table_name"]
+            for table in dbc.tables()
+            if table["table_type"] == "table"
+        ]
+
+        for table in tables:
+            dbc.query("DROP TABLE {}".format(table.encode("utf-8")))
+

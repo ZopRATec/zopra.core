@@ -478,8 +478,54 @@ class TemplateBaseManager(Manager):
             root.setConstraints(constraints)
         return tobj.requestEntryCount(root)
 
-    def calculatePaginationPages(self, rowcount, count):
-        return (rowcount + count - 1) // count
+    def calculatePaginationPages(self, rowcount, pagesize):
+        """calculate how many pages pagination will display to fit rowcount entries
+        when one page contains count entries.
+
+        :param rowcount: total number of entries in the result
+        :type rowcount: int
+        :param count: number of entries per page
+        :type count: int
+        :return: number of pages needed for display
+        """
+        return (rowcount + pagesize - 1) // pagesize
+
+    def calculateActivePages(self, pagecount, offset, pagesize):
+        """When there are too many pages, this method is used to calculate, which ones (including first and last)
+        should be displayed.
+
+        :param pagecount: number of pages
+        :type pagecount: int
+        :param offset: current offset
+        :type offset: int
+        :param pagesize: number of entries per page
+        :type pagesize: int
+        :return: list of page numbers and ellipsis markers
+        :rtype: list
+        """
+        # how many pages is the offset
+        pages_offset = offset // pagesize
+        # start of display range
+        first = max(0, pages_offset - 5)
+        # end of display range
+        last = min(pagecount, pages_offset + 6)
+        # list of pagenumbers in the range
+        pages = list(xrange(first, last))
+
+        # add special stuff
+        # ellipsis marker between first page and first page in range (unless range starts at 2)
+        if 1 not in pages:
+            pages.insert(0, -1)
+        # first page
+        if 0 not in pages:
+            pages.insert(0, 0)
+        # ellipsis marker between last page and last page in range (unless range ends at -2)
+        if pagecount > 6 and (pagecount - 2) not in pages:
+            pages.append(-1)
+        # last page
+        if (pagecount - 1) not in pages:
+            pages.append(pagecount - 1)
+        return pages
 
     def getEntryListProxy(
         self,
@@ -493,20 +539,29 @@ class TemplateBaseManager(Manager):
         constr_or=False,
     ):
         """Proxy for Table.getEntryList using searchTreeTemplate"""
-        tobj = self.tableHandler[table]
-        root = tobj.getSearchTreeTemplate()
-        if order:
-            root.setOrder(order, direction)
-        else:
-            root.setOrder(idfield, direction)
-        if constraints:
-            root.setConstraints(constraints)
-        if constr_or:
-            fi = root.getFilter()
-            fi.setOperator(fi.OR)
-        return tobj.requestEntries(
-            root, show_number, start_number, ignore_permissions=True
-        )
+        try:
+            tobj = self.tableHandler[table]
+            root = tobj.getSearchTreeTemplate()
+            if order:
+                root.setOrder(order, direction)
+            else:
+                root.setOrder(idfield, direction)
+            if constraints:
+                root.setConstraints(constraints)
+            if constr_or:
+                fi = root.getFilter()
+                fi.setOperator(fi.OR)
+            return tobj.requestEntries(
+                root, show_number, start_number, ignore_permissions=True
+            )
+        except Exception as ex:
+            # try portal messaging
+            try:
+                msg = ex[0]
+                self.plone_utils.addPortalMessage(msg, 'error')
+            except Exception:
+                pass
+            raise
 
     def isHierarchyList(self, listname):
         # check if a List with that name is referenced by a table attribute

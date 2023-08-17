@@ -9,6 +9,7 @@ from Persistence import Persistent
 from PyHtmlGUI.kernel.hgTable import hgTable
 from PyHtmlGUI.widgets.hgLabel import hgNEWLINE
 from zopra.core import ZC
+from zopra.core import _
 from zopra.core.elements.Buttons import DLG_CUSTOM
 from zopra.core.tables.Filter import Filter
 from zopra.core.types import ListType
@@ -592,7 +593,10 @@ class TableNode(Persistent):
                 # all lists that are used for ordering have to  be joined (listtable)
                 if xlist in self.order:
                     if listobj.isFunctionReference():
-                        msg = "Sorting results by %s is not possible." % self.order
+                        msg = _("zopra_sorting_error",
+                                default=u"Sorting results by ${list} is not possible.",
+                                mapping={"list": listobj.getLabel()}
+                                )
                         raise ValueError(msg)
 
                     else:

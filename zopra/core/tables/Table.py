@@ -29,6 +29,7 @@ from zopra.core.types import ListType
 from zopra.core.types import StringType
 from zopra.core.types import TupleType
 from zopra.core.utils import getParentManager
+from zopra.core.utils import safeWrite
 
 
 # deprecated -> Table.ExportFlags
@@ -1226,6 +1227,8 @@ class Table(SimpleItem, PropertyManager):
 
         if not self.treeTemplate:
             self.treeTemplate = mgr.generateTableSearchTreeTemplate(self.tablename)
+            safeWrite(self)
+            safeWrite(self.treeTemplate)
 
         return self.treeTemplate.copy(mgr, mgr.getZopraType())
 
