@@ -119,7 +119,6 @@ class ZopraCoreLayer(PloneSandboxLayer):
         :return:
         """
         # extra WEBCMS setUp (including content, addons and theme) for our zopra packages to use
-        # TODO: move to zopra.ploned when that is ready
         self.setUpZopRA(app)
 
     def setUpPloneSite(self, portal):
