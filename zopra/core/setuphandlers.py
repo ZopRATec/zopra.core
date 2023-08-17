@@ -125,7 +125,8 @@ class ZopRATestEnvironmentMaker(object):
         if "zopra" in self.portal:
             base = self.portal["zopra"]
         else:
-            base = api.content.create(type="MainTopicSubsection", title="ZopRA", container=self.portal)
+            api.content.create(type="MainTopicSubsection", title="ZopRA", container=self.portal)
+            base = self.portal["zopra"]
             api.content.transition(obj=base, transition="publish")
         # add Subsection
         if name.islower():
@@ -136,7 +137,7 @@ class ZopRATestEnvironmentMaker(object):
         api.content.transition(obj=subsection, transition="publish")
 
         # add zope folder
-        manage_addFolder(subsection, "app")
+        manage_addFolder(subsection, "app", "app")
 
         # return the created folder
         return subsection["app"]

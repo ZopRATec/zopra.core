@@ -160,7 +160,8 @@ class ZopRAProduct(Manager):
                 # use python script for redirect
                 content = "##title=Redirect to ZopRA Editorial\ncontext.REQUEST.RESPONSE.redirect(container.absolute_url() + '/zopra_main_form')"
                 parent.manage_addProduct["PythonScripts"].manage_addPythonScript(
-                    "index_html"
+                    "index_html",
+                    "forward"
                 )
                 script = parent["index_html"]
                 script.write(content)
