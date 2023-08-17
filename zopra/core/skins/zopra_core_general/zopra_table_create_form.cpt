@@ -41,7 +41,7 @@
         <h1 class="documentFirstHeading"
             i18n:translate="zopra_create_heading">
           Create entry
-          <span i18n:name="table" i18n:translate="" tal:content="python: tobj.getLabel()"></span>
+          <span i18n:name="table" i18n:translate="" tal:content="structure python: tobj.getLabel()"></span>
         </h1>
         <form name="edit_form"
               id="edit_form"

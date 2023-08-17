@@ -30,12 +30,12 @@
 
                 <h1 class="documentFirstHeading" i18n:translate="zopra_delete_heading">
                     Deletion of
-                    <span i18n:name="table" i18n:translate="" tal:content="python: tobj.getLabel()"></span>
+                    <span i18n:name="table" i18n:translate="" tal:content="structure python: tobj.getLabel()"></span>
                 </h1>
 
                 <p i18n:translate="zopra_deleted_dependency_message">
                       The dependent entry
-                      <span i18n:name="table" i18n:translate="" tal:content="python: tobj.getLabel()"></span>
+                      <span i18n:name="table" i18n:translate="" tal:content="structure python: tobj.getLabel()"></span>
                       has been deleted.
                 </p>
                 <p i18n:translate="zopra_deleted_dependency_hint">Close this window to update the display of the main entry.</p>

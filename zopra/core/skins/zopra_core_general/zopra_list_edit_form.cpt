@@ -30,7 +30,7 @@
                 <tal:block tal:condition="not: is_hierarchy_list">
                     <h1>
                         <span i18n:translate="zopra_lists_heading">List</span>
-                        <span i18n:translate="" tal:content="lobj/getLabel"></span>
+                        <span i18n:translate="" tal:content="structure lobj/getLabel"></span>
                     </h1>
                     <table class="zopra-table">
                         <thead>
@@ -98,7 +98,7 @@
                 <tal:block tal:condition="is_hierarchy_list">
                     <h1>
                         <span i18n:translate="zopra_lists_hierarchical_heading">Hierarchical list</span>
-                        <span tal:content="lobj/getLabel"></span>
+                        <span tal:content="structure lobj/getLabel"></span>
                     </h1>
                     <table class="zopra-table"
                            tal:define="entries python: here.prepareHierarchylistDisplayEntries(entries)">

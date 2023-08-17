@@ -54,8 +54,8 @@
                     <span tal:condition="python: not ak and not sk" i18n:translate="zopra_entry">entry</span>
                     <span tal:condition="python: not ak and sk" i18n:translate="zopra_translation">translation</span>
                 </tal:block>
-                <span i18n:name="table" i18n:translate="" tal:content="python: tobj.getLabel()"></span>
-                <span i18n:name="label" tal:content="python: here.getLabelString(table, autoid, entry)"></span>
+                <span i18n:name="table" i18n:translate="" tal:content="structure python: tobj.getLabel()"></span>
+                <span i18n:name="label" tal:content="structure python: here.getLabelString(table, autoid, entry)"></span>
             </h1>
 
             <!-- table cons set as hidden inputs for the form to be able to traverse back to search result afterwards (if button_res is set) -->

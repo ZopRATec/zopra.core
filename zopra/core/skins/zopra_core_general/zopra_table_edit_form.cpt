@@ -49,8 +49,8 @@
         </tal:block>
         <h1 class="documentFirstHeading" i18n:translate="zopra_edit_heading">
             Edit
-            <span i18n:name="table" i18n:translate="" tal:content="python: tobj.getLabel()"></span>
-            <span i18n:name="label" tal:content="python: here.getLabelString(table, autoid, entry)"></span>
+            <span i18n:name="table" i18n:translate="" tal:content="structure python: tobj.getLabel()"></span>
+            <span i18n:name="label" tal:content="structure python: here.getLabelString(table, autoid, entry)"></span>
             <span tal:condition="edit_lang" i18n:name="language">
                 (<span i18n:translate="zopra_edit_language">Language:</span>
                 <span tal:content="edit_lang"></span>)
