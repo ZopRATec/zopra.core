@@ -24,6 +24,7 @@
                      tobj python: here.tableHandler[table];
                      offset python:request.get('offset') and int(request.get('offset')) or 0;
                      count python: request.get('count') and int(request.get('count')) or 20;
+                     offset python: (offset // count * count == offset) and offset or 0;
                      constraints python: context.getTableEntryFromRequest(table, request, search=True);
                      cons python: {};
                      dummy python: cons.update(constraints);
