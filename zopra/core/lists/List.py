@@ -261,7 +261,7 @@ class List(GenericList):
                 value = value.replace("*", "%").replace("'", "")
                 where = " WHERE value like '%s'" % value
 
-            sql = "SELECT %s FROM %s%s%s;"
+            sql = "SELECT %s FROM %s%s%s ORDER BY autoid ASC;"
             sql = sql % (ZC.TCN_AUTOID, mgr.id, self.listname, where)
             results = mgr.getManager(ZC.ZM_PM).executeDBQuery(sql)
             for result in results:
