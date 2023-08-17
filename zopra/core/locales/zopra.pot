@@ -3,7 +3,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ZMOM 1.0\n"
-"POT-Creation-Date: 2023-08-17 14:51+0000\n"
+"POT-Creation-Date: 2023-08-17 19:16+0000\n"
 "PO-Revision-Date: 2010-05-06 14:11+0100\n"
 "Last-Translator: Peter Seifert <peter.seifert@zopra.de>\n"
 "Language-Team: ZMOM i18n <i18n@zopra.de>\n"
@@ -699,6 +699,11 @@ msgstr ""
 msgid "zopra_show_heading"
 msgstr ""
 
+#. Default: "Sorting results by ${list} is not possible."
+#: ./tables/TableNode.py:596
+msgid "zopra_sorting_error"
+msgstr ""
+
 #. Default: "Pages:"
 #: ./skins/zopra_core_general/zopra_search_tools.pt:25
 msgid "zopra_sr_label_pages"
@@ -915,7 +920,7 @@ msgid "zopra_widget_modal"
 msgstr ""
 
 #. Default: "<not set>"
-#: ./tools/TemplateBaseManager.py:601
+#: ./tools/TemplateBaseManager.py:641
 msgid "zopra_widget_not_set"
 msgstr ""
 
@@ -942,7 +947,7 @@ msgid "zopra_widget_search_bool_not"
 msgstr ""
 
 #. Default: "<any value>"
-#: ./tools/TemplateBaseManager.py:606
+#: ./tools/TemplateBaseManager.py:646
 msgid "zopra_widget_set_any"
 msgstr ""
 

@@ -50,7 +50,7 @@ except pkg_resources.DistributionNotFound:
 allow_module("zExceptions.Redirect")
 
 # build message factory
-zopraMessageFactory = MessageFactory("zopra")
+zopraMessageFactory = _ = MessageFactory("zopra")
 # make import of MessageFactory possible from PythonScripts
 allow_module("zopra.core.zopraMessageFactory")
 # make import of plone.api.portal possible from PythonScripts (for getting current language)

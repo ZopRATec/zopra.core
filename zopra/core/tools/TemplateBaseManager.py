@@ -539,20 +539,29 @@ class TemplateBaseManager(Manager):
         constr_or=False,
     ):
         """Proxy for Table.getEntryList using searchTreeTemplate"""
-        tobj = self.tableHandler[table]
-        root = tobj.getSearchTreeTemplate()
-        if order:
-            root.setOrder(order, direction)
-        else:
-            root.setOrder(idfield, direction)
-        if constraints:
-            root.setConstraints(constraints)
-        if constr_or:
-            fi = root.getFilter()
-            fi.setOperator(fi.OR)
-        return tobj.requestEntries(
-            root, show_number, start_number, ignore_permissions=True
-        )
+        try:
+            tobj = self.tableHandler[table]
+            root = tobj.getSearchTreeTemplate()
+            if order:
+                root.setOrder(order, direction)
+            else:
+                root.setOrder(idfield, direction)
+            if constraints:
+                root.setConstraints(constraints)
+            if constr_or:
+                fi = root.getFilter()
+                fi.setOperator(fi.OR)
+            return tobj.requestEntries(
+                root, show_number, start_number, ignore_permissions=True
+            )
+        except Exception as ex:
+            # try portal messaging
+            try:
+                msg = ex[0]
+                self.plone_utils.addPortalMessage(msg, 'error')
+            except Exception:
+                pass
+            raise
 
     def isHierarchyList(self, listname):
         # check if a List with that name is referenced by a table attribute
