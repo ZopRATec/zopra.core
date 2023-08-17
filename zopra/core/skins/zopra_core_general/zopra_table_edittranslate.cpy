@@ -79,7 +79,7 @@ request.form["autoid"] = newautoid
 request.other["autoid"] = newautoid
 message = _(
     "zopra_translation_created",
-    default=u"Translation created. ${additional_message}Translation Id: ${translation_id}",
+    default=u"Translation created. Translation Id: ${translation_id}",
     mapping={u"translation_id": newautoid},
 )
 context.plone_utils.addPortalMessage(context.translate(message), "info")
