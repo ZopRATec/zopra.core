@@ -954,8 +954,16 @@ class TemplateBaseManager(Manager):
                     cons[key] = 0
                 if cons[key] == "True":
                     cons[key] = 1
-            # TODO: this might not work for subtable constraints -> make it work (ERP Positions)
-            autoids = self.tableHandler[table].getEntryAutoidList(constraints=cons, order=order)
+            # subtable constrained autoid list generation
+            # TODO: simplify by using getEntryAutoidList and switching that method from getTableNode to getSearchTreeTemplate
+            # autoids = self.tableHandler[table].getEntryAutoidList(constraints=cons, order=order) # does not respect subtables yet
+            tobj = self.tableHandler[table]
+            root = tobj.getSearchTreeTemplate()
+            root.setOrder(order or ZC.TCN_AUTOID)
+            if cons:
+                root.setConstraints(cons)
+            autoids = tobj.requestEntries(root, None, None, ZC.TCN_AUTOID)
+            # end subtable constrained autoid list generation
 
         if request.get("form.button.Export"):
             return self.zopra_table_search_result_export_csv(
