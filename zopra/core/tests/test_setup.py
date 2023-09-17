@@ -11,7 +11,7 @@ from zopra.core.testing import INTEGRATION_TESTING
 
 
 class TestSetup(unittest.TestCase):
-    """Test that tud.profiles.webcms is properly installed."""
+    """Test that zopra.core is properly installed."""
 
     layer = INTEGRATION_TESTING
 
@@ -21,7 +21,7 @@ class TestSetup(unittest.TestCase):
         self.installer = get_installer(self.portal, self.layer["request"])
 
     def test_product_installed(self):
-        """Test if tud.profiles.webcms is installed."""
+        """Test if zopra.core is installed."""
         self.assertTrue(self.installer.is_product_installed("zopra.core"))
 
     def test_browserlayer(self):
@@ -45,7 +45,7 @@ class TestUninstall(unittest.TestCase):
         setRoles(self.portal, TEST_USER_ID, roles_before)
 
     def test_product_uninstalled(self):
-        """Test if tud.boxes.webcms is cleanly uninstalled."""
+        """Test if zopra.core is cleanly uninstalled."""
         self.assertFalse(self.installer.is_product_installed("zopra.core"))
 
     def test_browserlayer_removed(self):
