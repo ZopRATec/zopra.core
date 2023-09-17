@@ -59,6 +59,7 @@ class ZopraCoreLayer(PloneSandboxLayer):
             # Load ZCML
             import tud.profiles.webcms
             import tud.addons.webcms
+            import collective.js.jqueryui
             import tud.theme.webcms2
             import tud.content.webcms
             import tud.boxes.base
@@ -73,6 +74,7 @@ class ZopraCoreLayer(PloneSandboxLayer):
             self.loadZCML(name="testing.zcml", package=tud.boxes.base)
             self.loadZCML(name="testing.zcml", package=tud.boxes.webcms)
             self.loadZCML(name="testing.zcml", package=tud.addons.ckeditorplugins)
+            self.loadZCML(package=collective.js.jqueryui)
             self.loadZCML(name="testing.zcml", package=tud.theme.webcms2)
             self.loadZCML(package=tud.migration.plone52)
             self.loadZCML(package=tud.addons.datagridfield)
@@ -88,6 +90,7 @@ class ZopraCoreLayer(PloneSandboxLayer):
             installProduct(app, "tud.addons.ckeditorplugins")
             installProduct(app, "Products.DateRecurringIndex")
             installProduct(app, "tud.addons.redirect")
+            installProduct(app, "collective.js.jqueryui")
             installProduct(app, "tud.theme.webcms2")
             # do not install profiles to avoid the dependencies on zopra app packages
             # installProduct(app, "tud.profiles.webcms")
