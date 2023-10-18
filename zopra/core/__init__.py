@@ -55,6 +55,8 @@ zopraMessageFactory = _ = MessageFactory("zopra")
 allow_module("zopra.core.zopraMessageFactory")
 # make import of plone.api.portal possible from PythonScripts (for getting current language)
 allow_module("plone.api.portal")
+# allow type import from skin scripts for type checks with isinstance (shortcuts like 'list' wont work)
+allow_module("types.ListType")
 
 modifyPermission = "Modify ZopRA Content"
 addPermission = "Add ZopRA Managers"

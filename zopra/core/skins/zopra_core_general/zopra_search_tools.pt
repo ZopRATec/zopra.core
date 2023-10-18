@@ -75,7 +75,8 @@
     <metal:block metal:define-macro="editorial_pagelinks">
         <div class="zopra-pagelinks"
              tal:define="url python: '%s/zopra_table_search_result?' % (here.absolute_url());
-                         order python: same_type(order, []) and order or [order];
+                         ListType nocall: modules/types/ListType;
+                         order python: isinstance(order, ListType) and order or [order];
                          url python: url + quotedcons + '%s&offset=' % ''.join(['&order:list=%s' % oneorder for oneorder in order]);
                          pages python: context.calculatePaginationPages(rowcount, count)">
             <span i18n:translate="zopra_sr_label_pages">Pages:</span>

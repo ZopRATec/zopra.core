@@ -255,16 +255,17 @@
                     Export:
                 </h2>
                 <div class="result_options_subfield"
-                     tal:define="buttons python: here.getGenericConfig(table).get('ownButtonActions') or []">
+                     tal:define="buttons python: here.getGenericConfig(table).get('ownButtonActions') or [];
+                                 ListType nocall: modules/types/ListType">
                     <tal:block repeat="cons_key python:cons.keys()">
                         <input type="hidden" name="cons_key:list" tal:attributes="value cons_key" />
-                        <tal:if condition="python:same_type(cons[cons_key], [])">
+                        <tal:if condition="python:isinstance(cons[cons_key], ListType)">
                             <tal:block repeat="val python:cons[cons_key]">
                                 <input type="hidden" tal:attributes="name python:cons_key+'_values:list';
                                                                                  value val" />
                             </tal:block>
                         </tal:if>
-                        <tal:else condition="python:not same_type(cons[cons_key], [])">
+                        <tal:else condition="python:not isinstance(cons[cons_key], ListType)">
                                 <input type="hidden" tal:attributes="name python:cons_key+'_values';
                                                                      value python:cons[cons_key]" />
                         </tal:else>
