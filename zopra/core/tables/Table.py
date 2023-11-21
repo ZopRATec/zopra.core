@@ -1012,10 +1012,7 @@ class Table(SimpleItem, PropertyManager):
         """Returns a list of autoids."""
         # caching is done by requestEntries
         root = self.getTableNode()
-        if order:
-            root.setOrder(order, direction)
-        else:
-            root.setOrder(idfield, direction)
+        root.setOrder(order or idfield, direction)
         if constraints:
             root.setConstraints(constraints)
         if constr_or:
