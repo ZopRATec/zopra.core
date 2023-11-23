@@ -59,6 +59,7 @@ class ZopraCoreLayer(PloneSandboxLayer):
             # Load ZCML
             import tud.profiles.webcms
             import tud.addons.webcms
+            import tud.addons.deepl
             import collective.js.jqueryui
             import tud.theme.webcms2
             import tud.content.webcms
@@ -70,6 +71,7 @@ class ZopraCoreLayer(PloneSandboxLayer):
 
             # Ensure that all dependencies of tud.profiles.webcms are going to be loaded
             self.loadZCML(name="testing.zcml", package=tud.addons.webcms)
+            self.loadZCML(name="testing.zcml", package=tud.addons.deepl)
             self.loadZCML(name="testing.zcml", package=tud.content.webcms)
             self.loadZCML(name="testing.zcml", package=tud.boxes.base)
             self.loadZCML(name="testing.zcml", package=tud.boxes.webcms)
@@ -84,6 +86,7 @@ class ZopraCoreLayer(PloneSandboxLayer):
             installProduct(app, "raptus.multilanguagefields")
             installProduct(app, "collective.workspace")
             installProduct(app, "tud.addons.webcms")
+            installProduct(app, "tud.addons.deepl")
             installProduct(app, "tud.content.webcms")
             installProduct(app, "tud.boxes.base")
             installProduct(app, "tud.boxes.webcms")
