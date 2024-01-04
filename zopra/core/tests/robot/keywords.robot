@@ -13,7 +13,7 @@ Library  Remote  ${PLONE_URL}/RobotRemote
 *** Variables ***
 
 ${DEFAULT_LANG}  en
-${ZOPRA_BASE}  ${PLONE_URL}/base/zopra/app
+${ZOPRA_BASE}  ${PLONE_URL}/zopra/test/app
 
 *** Keywords ***
 

@@ -6,6 +6,7 @@ from datetime import datetime
 from difflib import HtmlDiff
 from time import strftime
 
+from AccessControl import getSecurityManager
 from zope.interface import implementer
 
 from PyHtmlGUI.kernel.hgTable import hgTable
@@ -16,12 +17,7 @@ from PyHtmlGUI.widgets.hgVBox import hgVBox
 from zopra.core import HAVE_PLONE
 from zopra.core import HTML
 from zopra.core import ZC
-from zopra.core import ZM_CM
-from zopra.core import ZM_IM
-from zopra.core import ZM_PM
-from zopra.core import ZM_PNM
 from zopra.core import ClassSecurityInfo
-from zopra.core import getSecurityManager
 from zopra.core import managePermission
 from zopra.core import modifyPermission
 from zopra.core import viewPermission
@@ -47,7 +43,7 @@ TCN_BACKUP = "backup"
 class ZopRAProduct(Manager):
     """Product class is based on Manager"""
 
-    _className = ZM_PM
+    _className = ZC.ZM_PM
     _classType = Manager._classType + [_className]
     meta_type = _className
 
@@ -164,7 +160,8 @@ class ZopRAProduct(Manager):
                 # use python script for redirect
                 content = "##title=Redirect to ZopRA Editorial\ncontext.REQUEST.RESPONSE.redirect(container.absolute_url() + '/zopra_main_form')"
                 parent.manage_addProduct["PythonScripts"].manage_addPythonScript(
-                    "index_html"
+                    "index_html",
+                    "forward"
                 )
                 script = parent["index_html"]
                 script.write(content)
@@ -328,7 +325,8 @@ class ZopRAProduct(Manager):
                 return False
             if ZC.ZM_PM in mgr.getClassType():
                 return False
-            return mgr.getClassName() not in [ZM_PNM, ZM_IM] or admin
+            # Legacy check for PrintManager/FileManager
+            return mgr.getClassName() not in ["PrintManager", "FileManager"] or admin
 
         if tmp_list:
             for mgr in tmp_list:
@@ -395,8 +393,8 @@ class ZopRAProduct(Manager):
         # set changedate
         entry_dict[ZC.TCN_EDATE] = strftime("%d.%m.%Y")
 
-        # set editor
-        m_contact = self.getHierarchyUpManager(ZM_CM)
+        # set editor (Legacy, DEPRECATED)
+        m_contact = self.getHierarchyUpManager("ContactManager")
         if m_contact:
 
             # process all fields in descr_dict
@@ -423,8 +421,8 @@ class ZopRAProduct(Manager):
 
     def simpleInsertInto(self, name, origcols_dict, entry_dict, log=True, tabid=None):
         # prepare insert and write log
-        # edit tracking
-        m_contact = self.getHierarchyUpManager(ZM_CM)
+        # edit tracking (Legacy, DEPRECATED)
+        m_contact = self.getHierarchyUpManager("ContactManager")
         if m_contact:
             uid = m_contact.getCurrentUserId()
             # creator field

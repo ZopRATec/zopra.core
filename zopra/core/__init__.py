@@ -8,9 +8,7 @@ import os
 import pkg_resources
 from importlib import import_module
 
-#
-# Zope Imports for reimport
-#
+# Zope Imports (some for reimport)
 from AccessControl import ClassSecurityInfo
 from AccessControl import allow_module
 from AccessControl import getSecurityManager
@@ -18,13 +16,8 @@ from AccessControl.class_init import InitializeClass
 from App.special_dtml import HTML
 from App.special_dtml import DTMLFile
 from OFS.DTMLDocument import DTMLDocument
-from OFS.Folder import Folder
-from OFS.Folder import manage_addFolder
-from OFS.Image import Image
 from OFS.interfaces import IObjectManager
-from OFS.PropertyManager import PropertyManager
 from OFS.SimpleItem import SimpleItem
-from zExceptions import BadRequest
 from zope.i18nmessageid import MessageFactory
 
 from zopra.core.constants import ZC
@@ -57,35 +50,13 @@ except pkg_resources.DistributionNotFound:
 allow_module("zExceptions.Redirect")
 
 # build message factory
-zopraMessageFactory = MessageFactory("zopra")
+zopraMessageFactory = _ = MessageFactory("zopra")
 # make import of MessageFactory possible from PythonScripts
 allow_module("zopra.core.zopraMessageFactory")
 # make import of plone.api.portal possible from PythonScripts (for getting current language)
 allow_module("plone.api.portal")
-#
-# Globally interesting Manager Name Constants
-#
-ZM_PM = "ZopRAProduct"
-ZM_SM = "SeedManager"
-ZM_CM = "ContactManager"
-ZM_PLASMID = "PlasmidManager"
-ZM_PLM = "PlantManager"
-ZM_SCM = "SecurityManager"
-ZM_IM = "FileManager"
-ZM_PNM = "PrintManager"
-ZM_MM = "MessagingManager"
-ZM_L_SEQADM = "SequencingAdministration"
-ZM_S_SM = "StorageManager"
-ZM_MBM = "MessageBoard"
-ZM_T_PGM = "PrimerGenManager"
-ZM_T_GLM = "GelManager"
-ZM_S_SGM = "SequencingManager"
-ZM_S_SNM = "SnpManager"
-ZM_CTM = "ContentManager"
-ZM_TEST = "TestManager"
-ZM_TEST2 = "mgrTest"
-ZM_DEBUG = "DebugInfoManager"
-
+# allow type import from skin scripts for type checks with isinstance (shortcuts like 'list' wont work)
+allow_module("types.ListType")
 
 modifyPermission = "Modify ZopRA Content"
 addPermission = "Add ZopRA Managers"
@@ -108,8 +79,7 @@ DBDA_ID = "zmysqlconnection"
 
 
 def initialize(context):
-    """Initialize ZopRA with all Managers"""
-    print("Initializing ZopRA")
+    """Initialize ZopRA with all managers"""
 
     from zopra.core.tools.ZopRAProduct import ZopRAProduct
     from zopra.core.Manager import Manager
@@ -135,7 +105,10 @@ def manage_addGeneric(
     """Create any new Generic Manager and add it to destination."""
     managerClass = getattr(import_module(pkg), manager)
     obj = managerClass(id=zope_id, title=title, nocreate=nocreate, zopratype=zopratype)
-
+    if not REQUEST:
+        # set a marker to suppress redirection in manage_afterAdd when there is no REQUEST
+        # which means test-installation or showcase installation
+        obj.NO_REDIRECT = True
     target = dispatcher.Destination()
     target._setObject(zope_id, obj)
 
@@ -150,7 +123,10 @@ def manage_addGeneric(
         obj = obj.__of__(target)
         obj.startupConfig(REQUEST)
 
-    return target.manage_main(target, REQUEST)
+    if not REQUEST:
+        del obj.NO_REDIRECT
+    else:
+        return target.manage_main(target, REQUEST)
 
 
 def manage_addProductGeneric(
@@ -178,7 +154,8 @@ def manage_addProductGeneric(
 
     target = dispatcher.Destination()
     target._setObject(zope_id, obj)
-    return target.manage_main(target, REQUEST)
+    if REQUEST:
+        return target.manage_main(target, REQUEST)
 
 
 def registerManager(context, managerClass):

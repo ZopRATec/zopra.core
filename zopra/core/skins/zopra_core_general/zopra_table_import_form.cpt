@@ -7,6 +7,9 @@
     Standard import form with result display (below)
 </tal:comment>
 
+    <metal:block fill-slot="top_slot"
+             tal:define="dummy python:request.set('disable_toolbar',1)" />
+
 <metal:main fill-slot="main"
             tal:define="isAnon context/@@plone_portal_state/anonymous;">
 
@@ -41,7 +44,7 @@
                            id="file" />
                     <span class="button">
                         <i class="icon-upload"></i>
-                        <tal:translate i18n:translate="Select&hellip;">Select&hellip;</tal:translate>
+                        <tal:translate i18n:translate="">Select</tal:translate>
                     </span>
                     <span class="filename" i18n:translate="no_file">No file</span>
                 </label>

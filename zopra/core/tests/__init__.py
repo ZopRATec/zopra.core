@@ -1,9 +1,5 @@
 import unittest
 
-# import from Testing here to work around the testing/Testing problem
-# used by zopra.core.testing
-from Testing.ZopeTestCase.utils import setupCoreSessions
-
 from zopra.core.tools.mgrTest import mgrTest
 
 

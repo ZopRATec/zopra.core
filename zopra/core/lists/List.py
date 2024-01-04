@@ -30,6 +30,7 @@ from zopra.core.types import IntType
 from zopra.core.types import ListType
 from zopra.core.types import StringType
 from zopra.core.types import UnicodeType
+from zopra.core.utils import safeWrite
 
 
 class List(GenericList):
@@ -260,7 +261,7 @@ class List(GenericList):
                 value = value.replace("*", "%").replace("'", "")
                 where = " WHERE value like '%s'" % value
 
-            sql = "SELECT %s FROM %s%s%s;"
+            sql = "SELECT %s FROM %s%s%s ORDER BY autoid ASC;"
             sql = sql % (ZC.TCN_AUTOID, mgr.id, self.listname, where)
             results = mgr.getManager(ZC.ZM_PM).executeDBQuery(sql)
             for result in results:
@@ -274,6 +275,9 @@ class List(GenericList):
             self.cache = {}
             for entry in completelist:
                 self.cache[entry[ZC.TCN_AUTOID]] = entry
+            # allow writing the caches (for plone.protect)
+            safeWrite(self)
+            safeWrite(self.cache)
 
         if not with_hidden:
             completelist = [

@@ -7,6 +7,9 @@
         Two column import (admin only)
     </tal:comment>
 
+    <metal:block fill-slot="top_slot"
+             tal:define="dummy python:request.set('disable_toolbar',1)" />
+
 <metal:javascriptslot fill-slot="javascript_head_slot">
     <script language="javascript">
     <!--
@@ -25,11 +28,9 @@
     </script>
 </metal:javascriptslot>
 
-<metal:topslot fill-slot="top_slot">
-    <tal:block tal:define="global isAnon context/@@plone_portal_state/anonymous;"></tal:block>
-</metal:topslot>
-
-<metal:main fill-slot="main" tal:define="global importresult nothing;">
+<metal:main fill-slot="main"
+            tal:define="global importresult nothing;
+                        global isAnon context/@@plone_portal_state/anonymous;">
     <tal:block tal:condition="isAnon">
         <tal:block replace="context/raiseUnauthorized"></tal:block>
     </tal:block>

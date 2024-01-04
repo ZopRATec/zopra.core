@@ -252,7 +252,7 @@ You can define the fields of a form for each table with the "getLayoutInfoHook".
                             ]
                }
 
-        if tmp.has_key(table):
+        if table in tmp:
             res = tmp[table]
             return res
 \endcode
@@ -315,7 +315,7 @@ You can sort a list simply by adding the "sortables" key within the dictionary t
                             ]
                }
 
-        if tmp.has_key(table):
+        if table in tmp:
             res = tmp[table]
             return res
 \endcode

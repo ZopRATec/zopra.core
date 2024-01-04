@@ -10,14 +10,14 @@
 ##
 # coding: utf-8
 from zopra.core import zopraMessageFactory as _
-
+from types import ListType
 
 request = context.REQUEST
 if not edit_autoid:
     message = _("zopra_list_edit_nothing", default=u"Nothing changed.")
     context.plone_utils.addPortalMessage(context.translate(message), "info")
     return state.set(status="success", context=context)
-if not same_type(edit_autoid, []):
+if not isinstance(edit_autoid, ListType):
     edit_autoid = [edit_autoid]
 lobj = context.listHandler[listname]
 done = False

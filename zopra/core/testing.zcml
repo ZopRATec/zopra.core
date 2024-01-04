@@ -12,12 +12,7 @@
         directory="profiles/test"
         description="Steps for zopra.core tests"
         provides="Products.GenericSetup.interfaces.EXTENSION"
+        post_handler=".setuphandlers.setupTestScenario"
         />
-
-    <genericsetup:importStep
-        name            = "zopra.core-install-testcontent"
-        title           = "zopra.core: install test content"
-        description     = "This import step uses the setuphandlers to install a ZopRA environment in Plone"
-        handler         = ".setuphandlers.setupTestSzenario" />
 
 </configure>

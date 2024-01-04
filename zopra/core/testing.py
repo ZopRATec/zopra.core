@@ -11,12 +11,15 @@ from plone.app.robotframework.users import Users
 from plone.app.testing import PLONE_FIXTURE
 from plone.app.testing import FunctionalTesting
 from plone.app.testing import PloneSandboxLayer
-from plone.testing import z2
+from plone.app.testing import applyProfile
+from plone.app.testing import IntegrationTesting
+from plone.testing.zope import WSGI_SERVER_FIXTURE
+from plone.testing.zope import installProduct
+from ZServer.Testing.utils import setupCoreSessions
 
 from zopra.core import DBDA_ID
 from zopra.core import HAVE_WEBCMS
-from zopra.core.tests import setupCoreSessions
-
+from zopra.core.setuphandlers import ZopRATestEnvironmentMaker
 
 # preparation for keywords implemented in python
 class Keywords(RemoteLibrary):
@@ -45,6 +48,75 @@ class ZopraCoreLayer(PloneSandboxLayer):
 
     defaultBases = (PLONE_FIXTURE,)
 
+    zoprapath = "zopra/test/app"
+
+    def setUpZopRA(self, app):
+        """Install all packages needed for basic WebCMS functionality
+            without tud.profiles.webcms dependencies to all ZopRA packages."""
+        if HAVE_WEBCMS:
+            setupCoreSessions(app)
+
+            # Load ZCML
+            import tud.profiles.webcms
+            import tud.addons.webcms
+            import tud.addons.deepl
+            import collective.js.jqueryui
+            import tud.theme.webcms2
+            import tud.content.webcms
+            import tud.boxes.base
+            import tud.boxes.webcms
+            import tud.addons.ckeditorplugins
+            import tud.addons.datagridfield
+            import tud.migration.plone52
+
+            # Ensure that all dependencies of tud.profiles.webcms are going to be loaded
+            self.loadZCML(name="testing.zcml", package=tud.addons.webcms)
+            self.loadZCML(name="testing.zcml", package=tud.addons.deepl)
+            self.loadZCML(name="testing.zcml", package=tud.content.webcms)
+            self.loadZCML(name="testing.zcml", package=tud.boxes.base)
+            self.loadZCML(name="testing.zcml", package=tud.boxes.webcms)
+            self.loadZCML(name="testing.zcml", package=tud.addons.ckeditorplugins)
+            self.loadZCML(package=collective.js.jqueryui)
+            self.loadZCML(name="testing.zcml", package=tud.theme.webcms2)
+            self.loadZCML(package=tud.migration.plone52)
+            self.loadZCML(package=tud.addons.datagridfield)
+
+            installProduct(app, 'Products.ATContentTypes')
+            installProduct(app, 'tud.migration.plone52')
+            installProduct(app, "raptus.multilanguagefields")
+            installProduct(app, "collective.workspace")
+            installProduct(app, "tud.addons.webcms")
+            installProduct(app, "tud.addons.deepl")
+            installProduct(app, "tud.content.webcms")
+            installProduct(app, "tud.boxes.base")
+            installProduct(app, "tud.boxes.webcms")
+            installProduct(app, "tud.addons.ckeditorplugins")
+            installProduct(app, "Products.DateRecurringIndex")
+            installProduct(app, "tud.addons.redirect")
+            installProduct(app, "collective.js.jqueryui")
+            installProduct(app, "tud.theme.webcms2")
+            # do not install profiles to avoid the dependencies on zopra app packages
+            # installProduct(app, "tud.profiles.webcms")
+
+        # install zopra package and database adapter
+        import zopra.core
+
+        self.loadZCML(name="testing.zcml", package=zopra.core)
+
+        installProduct(app, "zopra.core")
+        installProduct(app, "Products.ZMySQLDA")
+
+    def setUpZopRAProfiles(self, portal):
+        """Install tud.theme.webcms2:test if available. Then install the zopra.core:default profile.
+
+        :param portal: the portal
+        :type portal: Products.CMFPlone.Portal.PloneSite
+        """
+        # extra WEBCMS setUp (Theme with content and addons)
+        if HAVE_WEBCMS:
+            applyProfile(portal, "tud.theme.webcms2:test")
+        applyProfile(portal, "zopra.core:default")
+
     def setUpZope(self, app, configurationContext):
         """Method to set up a Zope instance (importing, product installation and loading zcml)
 
@@ -53,45 +125,7 @@ class ZopraCoreLayer(PloneSandboxLayer):
         :return:
         """
         # extra WEBCMS setUp (including content, addons and theme) for our zopra packages to use
-        # TODO: move to zopra.ploned when that is ready
-        if HAVE_WEBCMS:
-            setupCoreSessions(app)
-            # Load ZCML
-            import tud.profiles.webcms
-            import tud.addons.webcms
-            import tud.theme.webcms2
-            import tud.content.webcms
-            import tud.boxes.base
-            import tud.boxes.webcms
-            import tud.addons.ckeditorplugins
-
-            # Ensure that all dependencies of tud.profiles.webcms are going to be loaded
-            self.loadZCML(name="testing.zcml", package=tud.addons.webcms)
-            self.loadZCML(name="testing.zcml", package=tud.content.webcms)
-            self.loadZCML(name="testing.zcml", package=tud.boxes.base)
-            self.loadZCML(name="testing.zcml", package=tud.boxes.webcms)
-            self.loadZCML(name="testing.zcml", package=tud.addons.ckeditorplugins)
-            self.loadZCML(name="testing.zcml", package=tud.theme.webcms2)
-
-            z2.installProduct(app, "raptus.multilanguagefields")
-            z2.installProduct(app, "collective.workspace")
-            z2.installProduct(app, "tud.addons.webcms")
-            z2.installProduct(app, "tud.content.webcms")
-            z2.installProduct(app, "tud.boxes.base")
-            z2.installProduct(app, "tud.boxes.webcms")
-            z2.installProduct(app, "tud.addons.ckeditorplugins")
-            z2.installProduct(app, "Products.DateRecurringIndex")
-            z2.installProduct(app, "tud.addons.redirect")
-            z2.installProduct(app, "tud.theme.webcms2")
-            # do not install profiles to avoid the dependencies on zopra app packages
-            # z2.installProduct(app, "tud.profiles.webcms")
-
-        import zopra.core
-
-        self.loadZCML(name="testing.zcml", package=zopra.core)
-
-        z2.installProduct(app, "zopra.core")
-        z2.installProduct(app, "Products.ZMySQLDA")
+        self.setUpZopRA(app)
 
     def setUpPloneSite(self, portal):
         """Method to set up the Plone Site (installing products and applying Profiles)
@@ -100,10 +134,14 @@ class ZopraCoreLayer(PloneSandboxLayer):
         :type portal: Products.CMFPlone.Portal.PloneSite
         :return:
         """
-        # extra WEBCMS setUp (Content + Theme)
-        if HAVE_WEBCMS:
-            self.applyProfile(portal, "tud.theme.webcms2:default")
-        self.applyProfile(portal, "zopra.core:test")
+        self.setUpZopRAProfiles(portal)
+        # installs a test environment and database connectivity
+        # (which we do not need in this form for the other apps)
+        applyProfile(portal, "zopra.core:test")
+
+        # commit the changes to counteract PloneSandBoxLayer not persisting our changes anymore
+        import transaction
+        transaction.commit()
 
     def tearDownPloneSite(self, portal):
         """Tear down the Plone site.
@@ -112,36 +150,20 @@ class ZopraCoreLayer(PloneSandboxLayer):
         ``setUpPloneSite()`` method were confined to the ZODB and the global
         component regsitry, those changes will be torn down automatically.
         """
-        zoprafolder = "base/zopra/app"
-        zfobj = portal.unrestrictedTraverse(zoprafolder)
-        self.clearDatabase(zfobj)
-
-    def clearDatabase(self, zoprafolder):
-        """
-        Removes all tables in database of zmysql object, which is determined from given zmysql id.
-
-        :param zoprafolder: the app folder containing the ZopRA Installation, in which the database adapter will be created
-        :type zoprafolder: Folder
-        """
+        zoprafolder = portal.unrestrictedTraverse(self.zoprapath)
         zmysql = getattr(zoprafolder, DBDA_ID, None)
         if zmysql is None:
             raise Exception("Z MySQL object not found!")
-
-        dbc = zmysql()
-
-        tables = [
-            table["table_name"]
-            for table in dbc.tables()
-            if table["table_type"] == "table"
-        ]
-
-        for table in tables:
-            dbc.query("DROP TABLE {}".format(table.encode("utf-8")))
+        ZopRATestEnvironmentMaker.clearDatabase(zmysql)
 
 
 FIXTURE = ZopraCoreLayer()
 
+INTEGRATION_TESTING = IntegrationTesting(
+    bases=(FIXTURE,),
+    name="zopra.core:Integration")
+
 ROBOT_TESTING = FunctionalTesting(
-    bases=(REMOTE_LIBRARY_BUNDLE_FIXTURE, z2.ZSERVER_FIXTURE, FIXTURE),
+    bases=(REMOTE_LIBRARY_BUNDLE_FIXTURE, WSGI_SERVER_FIXTURE, FIXTURE),
     name="zopra.core:Robot",
 )
