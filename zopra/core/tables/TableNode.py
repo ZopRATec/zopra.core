@@ -117,9 +117,7 @@ class TableNode(Persistent):
             if not zopratype:
                 errstr = "Manager not found and no zopratype available."
                 raise ValueError(errstr)
-            ownMgr = mgr.getHierarchyDownManager(
-                self.mgrType, obj_id=self.mgrId, zopratype=zopratype
-            )
+            ownMgr = mgr.getHierarchyDownManager(self.mgrType, obj_id=self.mgrId, zopratype=zopratype)
         if not ownMgr:
             raise ValueError("Manager not found. Aborting.")
 
@@ -131,9 +129,7 @@ class TableNode(Persistent):
         if self.filterTree:
             cop.setFilter(self.filterTree.copy())
         for entry in self.children:
-            cop.addChild(
-                entry.copy(ownMgr, zopratype), entry.joinAttrParent, entry.joinAttrSelf
-            )
+            cop.addChild(entry.copy(ownMgr, zopratype), entry.joinAttrParent, entry.joinAttrSelf)
         return cop
 
     def reset(self):
@@ -208,18 +204,14 @@ class TableNode(Persistent):
         if not self.filterTree:
             self.filterTree = Filter(Filter.AND)
 
-        change = self.filterTree.setConstraints(
-            consdict, self.mgr, self.prefix, self.data
-        )
+        change = self.filterTree.setConstraints(consdict, self.mgr, self.prefix, self.data)
 
         # check own multi and hierarchy lists for AND-concat, check filter
         # each value has to be joined via extra tableNode with one value
         # values have to be removed / double-checked in filter.setConstraints
 
         tobj = self.mgr.tableHandler[self.data.tablename]
-        multilists = self.mgr.listHandler.getLists(
-            self.data.tablename, types=["multilist", "hierarchylist"]
-        )
+        multilists = self.mgr.listHandler.getLists(self.data.tablename, types=["multilist", "hierarchylist"])
 
         for lobj in multilists:
             lname = lobj.listname
@@ -318,9 +310,10 @@ class TableNode(Persistent):
     def setJoinAttrSelf(self, attribute):
         """set the name of the attribute of this node object
         which is used for joining it to its parent."""
-        assert self.data.getField(
-            attribute, self.mgr
-        ), "JoinAttribute %s not found in table %s" % (attribute, self.data.tablename)
+        assert self.data.getField(attribute, self.mgr), "JoinAttribute %s not found in table %s" % (
+            attribute,
+            self.data.tablename,
+        )
         self.joinAttrSelf = attribute
 
     def addChild(self, node, joinAttrParent, joinAttrChild):
@@ -420,15 +413,7 @@ class TableNode(Persistent):
     def getStructureHtml(self):
         """Generates an html-overview of the tree structure"""
         tab = hgTable(border=1)
-        tab[0, 0] = (
-            self.getName()
-            + hgNEWLINE
-            + self.mgrType
-            + hgNEWLINE
-            + self.prefix
-            + hgNEWLINE
-            + self.mgr.id
-        )
+        tab[0, 0] = self.getName() + hgNEWLINE + self.mgrType + hgNEWLINE + self.prefix + hgNEWLINE + self.mgr.id
         if self.filterTree:
             tab[0, 0] += hgNEWLINE + self.filterTree.getStructureHtml()
         if self.children:
@@ -480,15 +465,8 @@ class TableNode(Persistent):
                     if self.mgr.listHandler.hasList(self.data.tablename, pJoin):
                         plist = self.mgr.listHandler.getList(self.data.tablename, pJoin)
                     if child.mgr.listHandler.hasList(child.data.tablename, cJoin):
-                        clist = child.mgr.listHandler.getList(
-                            child.data.tablename, cJoin
-                        )
-                    if (
-                        plist
-                        and clist
-                        and plist.listtype in ZC.ZCOL_MLISTS
-                        and clist.listtype in ZC.ZCOL_MLISTS
-                    ):
+                        clist = child.mgr.listHandler.getList(child.data.tablename, cJoin)
+                    if plist and clist and plist.listtype in ZC.ZCOL_MLISTS and clist.listtype in ZC.ZCOL_MLISTS:
                         # double mullist join on multitables (no value comparison)
                         # three joins for this child
                         # multi table
@@ -593,10 +571,11 @@ class TableNode(Persistent):
                 # all lists that are used for ordering have to  be joined (listtable)
                 if xlist in self.order:
                     if listobj.isFunctionReference():
-                        msg = _("zopra_sorting_error",
-                                default=u"Sorting results by ${list} is not possible.",
-                                mapping={"list": listobj.getLabel()}
-                                )
+                        msg = _(
+                            "zopra_sorting_error",
+                            default=u"Sorting results by ${list} is not possible.",
+                            mapping={"list": listobj.getLabel()},
+                        )
                         raise ValueError(msg)
 
                     else:
@@ -666,9 +645,7 @@ class TableNode(Persistent):
             # joinAttr test
             jlist = None
             if self.mgr.listHandler.hasList(self.data.tablename, self.joinAttrSelf):
-                jlist = self.mgr.listHandler.getList(
-                    self.data.tablename, self.joinAttrSelf
-                )
+                jlist = self.mgr.listHandler.getList(self.data.tablename, self.joinAttrSelf)
             if jlist and jlist.listtype in ZC.ZCOL_MLISTS:
                 # joinAttr is a list, select autoid
                 select = "SELECT %s%s%s.%s" % (
@@ -781,9 +758,7 @@ class TableNode(Persistent):
         # finish
         return finalsql
 
-    def getIDs(
-        self, limit=None, offset=None, function=None, col_list=None, distinct=True
-    ):
+    def getIDs(self, limit=None, offset=None, function=None, col_list=None, distinct=True):
         """generate an sql query and use it to generate a list of autoids
         (for databases without join-operators)"""
         # FIXME: implement!
@@ -815,9 +790,7 @@ class TableNode(Persistent):
                 # direction can be None
                 dirstring = direction and (" %s" % direction) or ""
                 if isinstance(orderstr, ListType):
-                    orderstring = ", ".join(
-                        ["%s%s" % (one, dirstring) for one in orderstr]
-                    )
+                    orderstring = ", ".join(["%s%s" % (one, dirstring) for one in orderstr])
                 else:
                     orderstring = "%s%s" % (orderstr, dirstring)
                 orders.append(orderstring)
@@ -876,10 +849,7 @@ class TableNode(Persistent):
                             order,
                         )
                 else:
-                    orderstring = [
-                        "%s%s.%s" % (othermgr, listobj.foreign, col)
-                        for col in listobj.cols
-                    ]
+                    orderstring = ["%s%s.%s" % (othermgr, listobj.foreign, col) for col in listobj.cols]
 
             elif orderfield[ZC.COL_TYPE] in ZC.ZCOL_MLISTS:
                 # multilists, but complex foreign list, so we order by id
@@ -914,9 +884,7 @@ class TableNode(Persistent):
                 # have to use min() or max() for ordering acc. to multilists
                 # -> selection handling will use grouping
                 if isinstance(orderstring, ListType):
-                    orderstring = [
-                        "%s(%s)" % (minmax, oneorder) for oneorder in orderstring
-                    ]
+                    orderstring = ["%s(%s)" % (minmax, oneorder) for oneorder in orderstring]
                 else:
                     orderstring = "%s(%s)" % (minmax, orderstring)
                 order["orderstr"] = orderstring
@@ -927,9 +895,7 @@ class TableNode(Persistent):
         """Build where-string"""
         where = ""
         if self.filterTree:
-            newWhere = self.filterTree.getSQL(
-                self.data.tablename, self.mgr, self.data, checker
-            )
+            newWhere = self.filterTree.getSQL(self.data.tablename, self.mgr, self.data, checker)
             if newWhere:
                 where = " WHERE %s" % (newWhere)
 

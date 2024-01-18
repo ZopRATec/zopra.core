@@ -214,7 +214,5 @@ class MultiList(ForeignList):
                 )
             )
             # add create button
-            dlg.add(
-                hgPushButton("Create Multitable", "create_multilist_table", parent=dlg)
-            )
+            dlg.add(hgPushButton("Create Multitable", "create_multilist_table", parent=dlg))
         return dlg

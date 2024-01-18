@@ -11,13 +11,9 @@ class HierarchyList(MultiList):
     # for compatibility
     listtype = "hierarchylist"
 
-    def __init__(
-        self, listname, manager, function, table, label="", map=None, docache=True
-    ):
+    def __init__(self, listname, manager, function, table, label="", map=None, docache=True):
         """Construct a MultiList."""
-        MultiList.__init__(
-            self, listname, manager, function, table, label, map, docache
-        )
+        MultiList.__init__(self, listname, manager, function, table, label, map, docache)
 
     def getHierarchyListParent(self, autoid):
         """Returns the parent-id (stored in rank for the beginning)
@@ -51,9 +47,7 @@ class HierarchyList(MultiList):
 
         for child in self.getEntriesByParent(autoid):
             descendants.append(child["autoid"])
-            descendants = descendants + self.getHierarchyListDescendants(
-                child["autoid"]
-            )
+            descendants = descendants + self.getHierarchyListDescendants(child["autoid"])
 
         return descendants
 
@@ -63,9 +57,7 @@ class HierarchyList(MultiList):
         # search entries
         for entry in entries:
             # test for parent = autoid
-            if (entry.get(ZC.RANK) or entry.get(ZC.RANK) == 0) and int(
-                entry[ZC.RANK]
-            ) == int(autoid):
+            if (entry.get(ZC.RANK) or entry.get(ZC.RANK) == 0) and int(entry[ZC.RANK]) == int(autoid):
                 # found a child
                 childid = entry.get(ZC.TCN_AUTOID)
                 # test it for own children

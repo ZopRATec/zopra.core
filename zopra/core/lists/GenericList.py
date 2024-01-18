@@ -43,9 +43,7 @@ class GenericList(SimpleItem):
         :rtype: str
         :return:  list of str containing the class name
         """
-        return [onetype.__name__ for onetype in self.__class__.__bases__] + [
-            self.getClassName()
-        ]
+        return [onetype.__name__ for onetype in self.__class__.__bases__] + [self.getClassName()]
 
     def createTable(self):
         """Create the database table."""

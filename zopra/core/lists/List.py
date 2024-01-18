@@ -157,9 +157,7 @@ class List(GenericList):
                     entry_dict[key] = kwargs[key]
             m_product = mgr.getManager(ZC.ZM_PM)
             my_id = mgr.getId()
-            m_product.simpleInsertInto(
-                my_id + self.listname, self._list_definition, entry_dict
-            )
+            m_product.simpleInsertInto(my_id + self.listname, self._list_definition, entry_dict)
 
             # we better get the id by this function than getTableLastId.
             entry_id = m_product.getLastId(ZC.TCN_AUTOID, my_id + self.listname)
@@ -214,9 +212,7 @@ class List(GenericList):
 
         m_product = mgr.getManager(ZC.ZM_PM)
         my_id = mgr.getId()
-        results = m_product.simpleSelectFrom(
-            my_id + self.listname, cols, list_definition, where_dict
-        )
+        results = m_product.simpleSelectFrom(my_id + self.listname, cols, list_definition, where_dict)
         entry_dict = {}
         if results:
             # entry is complete with translations
@@ -231,7 +227,7 @@ class List(GenericList):
                 elif key == ZC.SHOW:
                     value = bool(value)
                 elif value == None:
-                        value = u""
+                    value = u""
                 entry_dict[key] = value
 
         # do not put in cache. cache is either complete or empty, regulated by getEntries
@@ -280,9 +276,7 @@ class List(GenericList):
             safeWrite(self.cache)
 
         if not with_hidden:
-            completelist = [
-                entry for entry in completelist if entry.get(ZC.SHOW) != "no"
-            ]
+            completelist = [entry for entry in completelist if entry.get(ZC.SHOW) != "no"]
 
         return completelist
 
@@ -322,9 +316,7 @@ class List(GenericList):
             m_product = mgr.getManager(ZC.ZM_PM)
 
             # update Entry
-            res = m_product.simpleUpdate(
-                mgr.id + self.listname, self._list_definition, descr_dict, entry_id
-            )
+            res = m_product.simpleUpdate(mgr.id + self.listname, self._list_definition, descr_dict, entry_id)
 
             self.clearCache()
             return res
@@ -473,9 +465,7 @@ class List(GenericList):
                     value = "any"
             else:
                 assert (
-                    isinstance(aid, IntType)
-                    or isinstance(aid, StringType)
-                    or isinstance(aid, UnicodeType)
+                    isinstance(aid, IntType) or isinstance(aid, StringType) or isinstance(aid, UnicodeType)
                 ), ZC.E_PARAM_TYPE % ("aid", "IntType/StringType", aid)
 
                 aid = int(aid)
@@ -486,11 +476,7 @@ class List(GenericList):
                         self.getEntries(with_hidden=True)
                     if aid in self.cache:
                         entry = self.cache[aid]
-                        value = (
-                            lang
-                            and entry.get(ZC.VALUE + "_" + lang)
-                            or entry.get(ZC.VALUE)
-                        )
+                        value = lang and entry.get(ZC.VALUE + "_" + lang) or entry.get(ZC.VALUE)
                 else:
                     sel = lang and ZC.VALUE + "_" + lang + ", " or ""
                     query_text = "SELECT %svalue FROM %s%s WHERE autoid = %s;" % (
@@ -644,13 +630,9 @@ class List(GenericList):
 
             tab[row, 0] = hgCheckBox("", entry.get(ZC.TCN_AUTOID), name="entry")
 
-            tab[row, 2] = hgTextEdit(
-                value.encode("utf8"), name=self.listname + str(entry.get(ZC.TCN_AUTOID))
-            )
+            tab[row, 2] = hgTextEdit(value.encode("utf8"), name=self.listname + str(entry.get(ZC.TCN_AUTOID)))
             tab[row, 3] = hgTextEdit(rank, name=ZC.RANK + str(entry.get(ZC.TCN_AUTOID)))
-            tab[row, 5] = hgTextEdit(
-                notes.encode("utf8"), name=ZC.NOTES + str(entry.get(ZC.TCN_AUTOID))
-            )
+            tab[row, 5] = hgTextEdit(notes.encode("utf8"), name=ZC.NOTES + str(entry.get(ZC.TCN_AUTOID)))
             row += 1
 
         #

@@ -218,9 +218,7 @@ class ManagerFinderMixin(object):
 
         return None
 
-    def getAllManagersDownLoop(
-        self, folder, zopratype="", result_dict=None, classname=None
-    ):
+    def getAllManagersDownLoop(self, folder, zopratype="", result_dict=None, classname=None):
         """Helper method to loop through children of a folder.
 
         :param folder: object that provides IObjectManager
@@ -270,9 +268,7 @@ class ManagerFinderMixin(object):
         :return: list of Manager objects
         :rtype: list
         """
-        return self.getAllManagersDownLoop(
-            self.getParentNode(), zopratype, classname=classname
-        ).values()
+        return self.getAllManagersDownLoop(self.getParentNode(), zopratype, classname=classname).values()
 
     def getAllManagers(self, type_only=True, objects=False):
         """Returns a list with all managers of a special type.
@@ -331,15 +327,9 @@ class ManagerFinderMixin(object):
         while folder:
             # iterate over container content
             for obj in folder.objectValues():
-                if IZopRAProduct.providedBy(obj) and (
-                    zopratype is None or obj.getZopraType() == zopratype
-                ):
+                if IZopRAProduct.providedBy(obj) and (zopratype is None or obj.getZopraType() == zopratype):
                     product = obj
 
-            folder = (
-                None
-                if folder.isTopLevelPrincipiaApplicationObject
-                else folder.getParentNode()
-            )
+            folder = None if folder.isTopLevelPrincipiaApplicationObject else folder.getParentNode()
 
         return product

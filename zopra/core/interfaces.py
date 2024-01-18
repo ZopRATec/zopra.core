@@ -75,5 +75,6 @@ class IContactManager(IZopRAManager):
     managing functionality.
     """
 
+
 # add support for a renamed (persistent) interface
 alias_module("zopra.core.interfaces.IAddOnInstalled", IAddonInstalled)

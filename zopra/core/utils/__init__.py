@@ -12,8 +12,10 @@ from zopra.core.utils.Classes import XMLHandler
 try:
     from plone.protect.utils import safeWrite
 except ImportError:
+
     def safeWrite(obj, request=None):
         pass
+
 
 def getZopRAPath():
     """Return the path of the zopra.core package.

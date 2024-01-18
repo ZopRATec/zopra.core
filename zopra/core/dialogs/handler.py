@@ -120,9 +120,7 @@ class GUIHandler(object):
 
         # handle img-buttons
         if isinstance(widget, hgPushButton) and widget._pixmap:
-            if widget.name not in form and (
-                widget.name + ".x" in form and widget.name + ".y" in form
-            ):
+            if widget.name not in form and (widget.name + ".x" in form and widget.name + ".y" in form):
                 form[widget.name] = widget.btext
                 # form[widget.name] = widget.name
 

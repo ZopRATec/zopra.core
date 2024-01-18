@@ -11,9 +11,7 @@
 if context.doesWorkingCopies(table) and entry:
     orig = entry.get("iscopyof")
     if orig and not request.get("force_showcopy"):
-        entry = context.tableHandler[table].getEntry(
-            orig, ignore_permissions=ignore_permissions
-        )
+        entry = context.tableHandler[table].getEntry(orig, ignore_permissions=ignore_permissions)
 
 # FIXME: language check should be build in here as well
 

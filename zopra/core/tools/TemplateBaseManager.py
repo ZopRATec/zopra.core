@@ -17,9 +17,7 @@ from zopra.core.types import ListType
 from zopra.core.types import StringType
 
 
-protection_expression = re.compile(
-    r"(mailto\:)?[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})"
-)
+protection_expression = re.compile(r"(mailto\:)?[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})")
 
 
 class TemplateBaseManager(Manager):
@@ -47,6 +45,7 @@ class TemplateBaseManager(Manager):
     def getCurrentLanguage(self):
         try:
             from plone import api
+
             return api.portal.get_current_language()
         except Exception:
             return self.lang_default
@@ -120,9 +119,7 @@ class TemplateBaseManager(Manager):
                     html = html_generator()
                     if real_url:
                         # replace the url adding parts that are missing
-                        html = html.replace(repl_url1, real_url).replace(
-                            repl_url2, real_url
-                        )
+                        html = html.replace(repl_url1, real_url).replace(repl_url2, real_url)
                     rendered.append({"id": plugin.id, "html": html})
         return rendered
 
@@ -149,9 +146,7 @@ class TemplateBaseManager(Manager):
                 # replace the url adding parts that are missing
                 new_url = action["url"]
                 if real_url:
-                    new_url = new_url.replace(repl_url1, real_url).replace(
-                        repl_url2, real_url
-                    )
+                    new_url = new_url.replace(repl_url1, real_url).replace(repl_url2, real_url)
                 # build new dict for the action
                 result.append(
                     {
@@ -185,19 +180,14 @@ class TemplateBaseManager(Manager):
                 logger.info("Checking {}".format(table))
                 tobj = self.tableHandler[table]
                 coldefs = tobj.getColumnDefs()
-                translations = tobj.getEntryList(
-                    constraints={"istranslationof": "_not_NULL", "iscopyof": "NULL"}
-                )
+                translations = tobj.getEntryList(constraints={"istranslationof": "_not_NULL", "iscopyof": "NULL"})
                 for translation in translations:
                     entry_diff = {}
                     log_diff = {}
                     orig = tobj.getEntry(translation["istranslationof"])
                     for key in coldefs:
                         thetype = coldefs.get(key)["TYPE"]
-                        if (
-                            thetype not in ["string", "memo"]
-                            and key not in special_fields
-                        ):
+                        if thetype not in ["string", "memo"] and key not in special_fields:
                             val_orig = orig[key]
                             val_tran = translation[key]
                             if thetype in ["multilist", "hierarchylist"]:
@@ -217,11 +207,7 @@ class TemplateBaseManager(Manager):
                         logger.info("diff found: {}".format(str(log_diff)))
                         count += 1
                 if count:
-                    logger.info(
-                        "Corrected {} entries with differences for table {}".format(
-                            count, table
-                        )
-                    )
+                    logger.info("Corrected {} entries with differences for table {}".format(count, table))
         logger.info("Done")
 
     def doesWorkflows(self, table):
@@ -314,9 +300,7 @@ class TemplateBaseManager(Manager):
     def getWorkingCopy(self, table, autoid):
         """Return the working copy or None"""
         if self.doesWorkingCopies(table):
-            copy = self.tableHandler[table].getEntryList(
-                constraints={"iscopyof": autoid}, ignore_permissions=True
-            )
+            copy = self.tableHandler[table].getEntryList(constraints={"iscopyof": autoid}, ignore_permissions=True)
             if copy:
                 return copy[0]
         return None
@@ -551,14 +535,12 @@ class TemplateBaseManager(Manager):
             if constr_or:
                 fi = root.getFilter()
                 fi.setOperator(fi.OR)
-            return tobj.requestEntries(
-                root, show_number, start_number, ignore_permissions=True
-            )
+            return tobj.requestEntries(root, show_number, start_number, ignore_permissions=True)
         except Exception as ex:
             # try portal messaging
             try:
                 msg = ex[0]
-                self.plone_utils.addPortalMessage(msg, 'error')
+                self.plone_utils.addPortalMessage(msg, "error")
             except Exception:
                 pass
             raise
@@ -583,11 +565,7 @@ class TemplateBaseManager(Manager):
                 selectList = []
                 for item in cons[key]:
                     selectList.append(item)
-                    selectList.extend(
-                        self.listHandler.getList(
-                            table, key
-                        ).getHierarchyListDescendants(item)
-                    )
+                    selectList.extend(self.listHandler.getList(table, key).getHierarchyListDescendants(item))
                 cons[key] = selectList
 
     def prepareHierarchylistDisplayEntries(self, entries):
@@ -655,18 +633,12 @@ class TemplateBaseManager(Manager):
             return None
         # additionally check for request and not being on search form
         request = self.REQUEST
-        if (
-            request
-            and request.get("PUBLISHED")
-            and request.get("PUBLISHED").getId() == "zopra_table_search_form"
-        ):
+        if request and request.get("PUBLISHED") and request.get("PUBLISHED").getId() == "zopra_table_search_form":
             return None
         tobj = self.tableHandler[table]
         root = tobj.getTableNode()
         root.setConstraints({"autoid": autoid})
-        sql = root.getSQL(
-            col_list=["entrydate", "changedate"], distinct=True, checker=self
-        )
+        sql = root.getSQL(col_list=["entrydate", "changedate"], distinct=True, checker=self)
         results = self.getManager(ZC.ZM_PM).executeDBQuery(sql)
         if results:
             # use changedate, if set, entrydate otherwise
@@ -683,11 +655,7 @@ class TemplateBaseManager(Manager):
         # using string concat instead of print formatting for speed
         return "".join(
             [
-                whichCode == 0
-                and ch
-                or whichCode == 1
-                and "&#" + str(ord(ch)) + ";"
-                or "&#x" + str(hexlify(ch)) + ";"
+                whichCode == 0 and ch or whichCode == 1 and "&#" + str(ord(ch)) + ";" or "&#x" + str(hexlify(ch)) + ";"
                 for (ch, whichCode) in [(z, randint(0, 2)) for z in s.group()]
             ]
         )
@@ -793,9 +761,7 @@ class TemplateBaseManager(Manager):
             orig = tobj.getEntry(entry.get("iscopyof"), ignore_permissions=True)
         else:
             orig = entry
-            res = tobj.getEntryList(
-                constraints={"iscopyof": entry.get("autoid")}, ignore_permissions=True
-            )
+            res = tobj.getEntryList(constraints={"iscopyof": entry.get("autoid")}, ignore_permissions=True)
             if res:
                 copy = res[0]
         if copy and orig:
@@ -866,10 +832,7 @@ class TemplateBaseManager(Manager):
         # get getEntry function of table
         getEntry = self.tableHandler[table].getEntry
         # use list comprehension to get the entries for all references in the multilist
-        res = [
-            getEntry(otherid, ignore_permissions=True)
-            for otherid in lobj.getMLRef(None, autoid)
-        ]
+        res = [getEntry(otherid, ignore_permissions=True) for otherid in lobj.getMLRef(None, autoid)]
         # if lang is given and table allows translations, check to remove the language copies or originals
         if self.doesTranslations(table) and lang:
             if lang == self.lang_default:
@@ -932,12 +895,7 @@ class TemplateBaseManager(Manager):
 
     def val_translate(self, name, descr_dict, attr_name=None):
         """get list object, translate attr id from dict into value"""
-        return (
-            self.listHandler[name].getValueByAutoid(
-                descr_dict.get(attr_name or name, "")
-            )
-            or ""
-        )
+        return self.listHandler[name].getValueByAutoid(descr_dict.get(attr_name or name, "")) or ""
 
     def py2json(self, object, encoding="utf-8"):
         """translate python object to json"""
@@ -977,11 +935,7 @@ class TemplateBaseManager(Manager):
                     entry[col] = ("%s" % entry.get(col, "")).replace(",", ".")
             # this removes empty list entries from the resulting entry for search
             # (where adding and removing a selection from a multilist results in an empty list being transmitted as search param)
-            if (
-                search
-                and col_types[col] in (ZC.ZCOL_MLIST, ZC.ZCOL_HLIST)
-                and entry.get(col) == []
-            ):
+            if search and col_types[col] in (ZC.ZCOL_MLIST, ZC.ZCOL_HLIST) and entry.get(col) == []:
                 del entry[col]
 
         return entry
@@ -1022,9 +976,7 @@ class TemplateBaseManager(Manager):
             # end subtable constrained autoid list generation
 
         if request.get("form.button.Export"):
-            return self.zopra_table_search_result_export_csv(
-                table, columns, autoids, request
-            )
+            return self.zopra_table_search_result_export_csv(table, columns, autoids, request)
         else:
             for button in buttons:
                 if request.get(button["id"]):

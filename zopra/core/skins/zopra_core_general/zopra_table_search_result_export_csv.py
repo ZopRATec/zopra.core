@@ -26,9 +26,7 @@ tobj = manager.tableHandler[table]
 try:
     specials = manager.getGenericConfig(table).get("specials", [])
     # list of csv-like entries
-    exportList = tobj.exportCSV(
-        columns, autoids, flags, delim=u";", multilines="keep", special_columns=specials
-    )
+    exportList = tobj.exportCSV(columns, autoids, flags, delim=u";", multilines="keep", special_columns=specials)
 
     # replace the header with the human-readable labels
     coltypes = tobj.getColumnDefs(edit_tracking=True)

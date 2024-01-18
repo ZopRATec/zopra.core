@@ -156,9 +156,7 @@ class Column(object):
         return self.labelsearch
 
     def setLabelsearch(self, labelsearch):
-        assert isinstance(labelsearch, UnicodeType) or isinstance(
-            labelsearch, StringType
-        )
+        assert isinstance(labelsearch, UnicodeType) or isinstance(labelsearch, StringType)
         self.labelsearch = labelsearch
 
     def getMap(self):
@@ -266,9 +264,7 @@ class List(object):
         return self.translations
 
     def setTranslations(self, translations):
-        assert isinstance(translations, UnicodeType) or isinstance(
-            translations, StringType
-        )
+        assert isinstance(translations, UnicodeType) or isinstance(translations, StringType)
         self.translations = translations
 
     def storeXML(self, ioHandle, level=0):

@@ -123,9 +123,7 @@ class ZopRAProduct(Manager):
             # add the manager tables to the database
             # do not log before the creation of the log-table ;)
             for table in self._manager_table_dict:
-                self.tableHandler.addTable(
-                    table, self._manager_table_dict[table], self.nocreate, log=False
-                )
+                self.tableHandler.addTable(table, self._manager_table_dict[table], self.nocreate, log=False)
 
             # we also need the trackinglists for products
             self.createEditTrackingLists()
@@ -159,10 +157,7 @@ class ZopRAProduct(Manager):
             if "index_html" not in parent:
                 # use python script for redirect
                 content = "##title=Redirect to ZopRA Editorial\ncontext.REQUEST.RESPONSE.redirect(container.absolute_url() + '/zopra_main_form')"
-                parent.manage_addProduct["PythonScripts"].manage_addPythonScript(
-                    "index_html",
-                    "forward"
-                )
+                parent.manage_addProduct["PythonScripts"].manage_addPythonScript("index_html", "forward")
                 script = parent["index_html"]
                 script.write(content)
             # set the properties for zopra_path in parent, overwrite if present
@@ -354,9 +349,7 @@ class ZopRAProduct(Manager):
     # other Database functions, forwarded to the connector
     #
 
-    def checkType(
-        self, value, column_type, operator=False, label=None, do_replace=True
-    ):
+    def checkType(self, value, column_type, operator=False, label=None, do_replace=True):
         """forwards checkType to connector"""
         return self.connector.checkType(value, column_type, operator, label, do_replace)
 
@@ -368,10 +361,7 @@ class ZopRAProduct(Manager):
         except Exception:
             import sys
 
-            raise ValueError(
-                "SQLError: %s|<br>\n%s|<br>\n%s"
-                % (query_text, sys.exc_info()[0], sys.exc_info()[1])
-            )
+            raise ValueError("SQLError: %s|<br>\n%s|<br>\n%s" % (query_text, sys.exc_info()[0], sys.exc_info()[1]))
         return result
 
     def getRowCount(self, name, wherestring=""):
@@ -385,9 +375,7 @@ class ZopRAProduct(Manager):
     #
     # add log capability to sql-part functions
     #
-    def simpleUpdate(
-        self, name, origcols_dict, entry_dict, autoid, tabid=None, old_entry=None
-    ):
+    def simpleUpdate(self, name, origcols_dict, entry_dict, autoid, tabid=None, old_entry=None):
         # prepare update and write log
         # edit tracking
         # set changedate
@@ -471,15 +459,10 @@ class ZopRAProduct(Manager):
                     and key in backup
                     and backup[key] != newentry[key]
                     and unicode(backup[key]) != newentry[key]
-                    and (
-                        backup[key] not in false_values
-                        or newentry[key] not in false_values
-                    )
+                    and (backup[key] not in false_values or newentry[key] not in false_values)
                 ):
                     # ignore different line endings
-                    if isinstance(backup[key], basestring) and isinstance(
-                        newentry[key], basestring
-                    ):
+                    if isinstance(backup[key], basestring) and isinstance(newentry[key], basestring):
                         # convert str objects to unicode objects if needed
                         if isinstance(backup[key], str):
                             backup_value = unicode(backup[key], "utf8")
@@ -496,14 +479,10 @@ class ZopRAProduct(Manager):
                             continue
 
                     diff_before[key] = (
-                        isinstance(backup[key], basestring)
-                        and backup[key].splitlines()
-                        or [unicode(backup[key])]
+                        isinstance(backup[key], basestring) and backup[key].splitlines() or [unicode(backup[key])]
                     )
                     diff_after[key] = (
-                        isinstance(newentry[key], basestring)
-                        and newentry[key].splitlines()
-                        or [unicode(newentry[key])]
+                        isinstance(newentry[key], basestring) and newentry[key].splitlines() or [unicode(newentry[key])]
                     )
 
         # Writes a string in the log table.
@@ -512,32 +491,20 @@ class ZopRAProduct(Manager):
         ddict["username"] = str(getSecurityManager().getUser())
         ddict["entrydiff_before"] = pickle.dumps(diff_before).replace("\\", "\\\\")
         ddict["entrydiff_after"] = pickle.dumps(diff_after).replace("\\", "\\\\")
-        ddict["change_datetime"] = (
-            datetime.utcnow().isoformat().split(".")[0].replace("T", " ")
-        )
+        ddict["change_datetime"] = datetime.utcnow().isoformat().split(".")[0].replace("T", " ")
         # ddict[TCN_BACKUP] = str(backup)
         ddict["username"] = unicode(getSecurityManager().getUser())
-        ddict["entrydiff_before"] = unicode(
-            pickle.dumps(diff_before).replace("\\", "\\\\"), "iso-8859-15"
-        )
-        ddict["entrydiff_after"] = unicode(
-            pickle.dumps(diff_after).replace("\\", "\\\\"), "iso-8859-15"
-        )
-        ddict["change_datetime"] = unicode(
-            datetime.utcnow().isoformat().split(".")[0].replace("T", " ")
-        )
+        ddict["entrydiff_before"] = unicode(pickle.dumps(diff_before).replace("\\", "\\\\"), "iso-8859-15")
+        ddict["entrydiff_after"] = unicode(pickle.dumps(diff_after).replace("\\", "\\\\"), "iso-8859-15")
+        ddict["change_datetime"] = unicode(datetime.utcnow().isoformat().split(".")[0].replace("T", " "))
 
-        self.simpleInsertInto(
-            self.id + TN_LOG, self._manager_table_dict[TN_LOG], ddict, False
-        )
+        self.simpleInsertInto(self.id + TN_LOG, self._manager_table_dict[TN_LOG], ddict, False)
 
     def getEntryLogBlock(self, tabid, entryid):
         if not tabid or not entryid:
             return ""
         result = []
-        entries = self.tableHandler[TN_LOG].getEntries(
-            [tabid, entryid], [TCN_TABLE, TCN_ENTRYID]
-        )
+        entries = self.tableHandler[TN_LOG].getEntries([tabid, entryid], [TCN_TABLE, TCN_ENTRYID])
         for entry in entries:
             result.append(entry[TCN_ACTION])
         return "\n".join(result)
@@ -569,9 +536,7 @@ class ZopRAProduct(Manager):
                 elif isinstance(dictionary[key], list):
                     for i in range(len(dictionary[key])):
                         if isinstance(dictionary[key][i], unicode):
-                            dictionary[key][i] = dictionary[key][i].encode(
-                                "utf8", "replace"
-                            )
+                            dictionary[key][i] = dictionary[key][i].encode("utf8", "replace")
             result += "<h2>" + key + "</h2>"
             # generate diff in html format
             diff = d.make_file(
@@ -587,10 +552,7 @@ class ZopRAProduct(Manager):
             numlines = len(linelist)
             del linelist[numlines - 18 : numlines]
             # build line-wrap
-            linelist = [
-                x.replace("&nbsp;", " ").replace('<td nowrap="nowrap">', "<td>")
-                for x in linelist
-            ]
+            linelist = [x.replace("&nbsp;", " ").replace('<td nowrap="nowrap">', "<td>") for x in linelist]
             # delete colgroups
             del linelist[2:4]
             result += "\n".join(linelist)
@@ -616,16 +578,13 @@ class ZopRAProduct(Manager):
         if test1 and test2:
             if self.getManager(test1).getId() != test2:
                 raise ValueError(
-                    "Managertype and Id do not match, please select "
-                    + "only one of both or matching values."
+                    "Managertype and Id do not match, please select " + "only one of both or matching values."
                 )
         indict["notes"] = None
         indict["parent"] = None
         self.tableHandler["config"].addEntry(indict, ["config_str", "value", "key1"])
 
-    def getConfigParams(
-        self, autoid=None, config_str=None, key=None, mgrtype=None, mgrid=None
-    ):
+    def getConfigParams(self, autoid=None, config_str=None, key=None, mgrtype=None, mgrid=None):
         # Searches the configuration parameter 'name' optionally
         #          filtered, returns a dict{autoid->(valuetuple)}.
 
@@ -651,9 +610,7 @@ class ZopRAProduct(Manager):
     def editConfigParam(self, edit_dict):
         # Changes the Value of one entry row.
         table = self.tableHandler["config"]
-        return table.updateEntry(
-            edit_dict, edit_dict.get("autoid"), required=["config_str", "value"]
-        )
+        return table.updateEntry(edit_dict, edit_dict.get("autoid"), required=["config_str", "value"])
 
     def delConfigParam(self, autoid):
         # Deletes one entry row.
