@@ -5,7 +5,6 @@ from copy import deepcopy
 from AccessControl import Unauthorized
 from OFS.Folder import Folder
 from zope.interface import implementer
-
 from zopra.core import ZC
 from zopra.core import ClassSecurityInfo
 from zopra.core import managePermission

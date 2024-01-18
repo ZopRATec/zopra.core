@@ -4,7 +4,6 @@ from time import strftime
 from xml.sax.handler import ContentHandler
 
 from builtins import object
-
 from zopra.core.ImageProperties import ImageProperties
 
 

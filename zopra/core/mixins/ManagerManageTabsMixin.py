@@ -1,5 +1,4 @@
 from builtins import object
-
 from PyHtmlGUI.kernel.hgTable import hgTable
 from PyHtmlGUI.widgets.hgLabel import hgLabel
 from PyHtmlGUI.widgets.hgLabel import hgNEWLINE

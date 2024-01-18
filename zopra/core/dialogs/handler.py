@@ -1,7 +1,6 @@
 from __future__ import print_function
 
 from builtins import object
-
 from PyHtmlGUI.dialogs.hgWizard import hgWizard
 from PyHtmlGUI.widgets.hgCheckBox import hgCheckBox
 from PyHtmlGUI.widgets.hgComboBox import hgComboBox

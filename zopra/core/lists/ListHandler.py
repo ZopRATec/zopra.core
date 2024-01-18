@@ -1,7 +1,6 @@
 from __future__ import print_function
 
 from OFS.Folder import Folder
-
 from PyHtmlGUI.kernel.hgTable import hgTable
 from PyHtmlGUI.widgets.hgLabel import hgLabel
 from zopra.core import HTML

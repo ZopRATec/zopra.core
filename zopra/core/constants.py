@@ -1,6 +1,5 @@
-from builtins import object
-
 import PyHtmlGUI
+from builtins import object
 
 
 class ZC(object):

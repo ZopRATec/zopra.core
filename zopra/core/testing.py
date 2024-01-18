@@ -10,16 +10,16 @@ from plone.app.robotframework.server import Zope2ServerRemote
 from plone.app.robotframework.users import Users
 from plone.app.testing import PLONE_FIXTURE
 from plone.app.testing import FunctionalTesting
+from plone.app.testing import IntegrationTesting
 from plone.app.testing import PloneSandboxLayer
 from plone.app.testing import applyProfile
-from plone.app.testing import IntegrationTesting
 from plone.testing.zope import WSGI_SERVER_FIXTURE
 from plone.testing.zope import installProduct
-from ZServer.Testing.utils import setupCoreSessions
-
 from zopra.core import DBDA_ID
 from zopra.core import HAVE_WEBCMS
 from zopra.core.setuphandlers import ZopRATestEnvironmentMaker
+from ZServer.Testing.utils import setupCoreSessions
+
 
 # preparation for keywords implemented in python
 class Keywords(RemoteLibrary):

@@ -8,6 +8,7 @@ from zopra.core.interfaces import IZopRAManager
 from zopra.core.types import StringType
 from zopra.core.utils.Classes import XMLHandler
 
+
 # soft plone dependency, use plone.protect if it is available
 try:
     from plone.protect.utils import safeWrite

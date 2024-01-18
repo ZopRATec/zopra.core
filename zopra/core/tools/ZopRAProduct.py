@@ -7,13 +7,12 @@ from difflib import HtmlDiff
 from time import strftime
 
 from AccessControl import getSecurityManager
-from zope.interface import implementer
-
 from PyHtmlGUI.kernel.hgTable import hgTable
 from PyHtmlGUI.widgets.hgCheckBox import hgCheckBox
 from PyHtmlGUI.widgets.hgLabel import hgLabel
 from PyHtmlGUI.widgets.hgPushButton import hgPushButton
 from PyHtmlGUI.widgets.hgVBox import hgVBox
+from zope.interface import implementer
 from zopra.core import HAVE_PLONE
 from zopra.core import HTML
 from zopra.core import ZC

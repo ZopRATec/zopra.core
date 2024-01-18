@@ -5,10 +5,9 @@ from copy import deepcopy
 from random import randint
 from urllib import quote
 
+import icu
 from AccessControl import getSecurityManager
 from zope.component import getMultiAdapter
-
-import icu
 from zopra.core import ZC
 from zopra.core import ClassSecurityInfo
 from zopra.core import zopraMessageFactory as _

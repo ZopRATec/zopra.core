@@ -1,5 +1,5 @@
-from plone.app.upgrade.utils import alias_module
 from OFS.interfaces import IFolder
+from plone.app.upgrade.utils import alias_module
 from zope.interface import Interface
 
 

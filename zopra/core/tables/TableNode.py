@@ -5,7 +5,6 @@ from copy import copy
 
 from builtins import object
 from Persistence import Persistent
-
 from PyHtmlGUI.kernel.hgTable import hgTable
 from PyHtmlGUI.widgets.hgLabel import hgNEWLINE
 from zopra.core import ZC

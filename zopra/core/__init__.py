@@ -5,9 +5,9 @@ from __future__ import print_function
 
 import inspect
 import os
-import pkg_resources
 from importlib import import_module
 
+import pkg_resources
 # Zope Imports (some for reimport)
 from AccessControl import ClassSecurityInfo
 from AccessControl import allow_module
@@ -19,7 +19,6 @@ from OFS.DTMLDocument import DTMLDocument
 from OFS.interfaces import IObjectManager
 from OFS.SimpleItem import SimpleItem
 from zope.i18nmessageid import MessageFactory
-
 from zopra.core.constants import ZC
 from zopra.core.interfaces import IZopRAProduct
 

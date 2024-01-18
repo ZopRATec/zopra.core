@@ -1,16 +1,15 @@
 # -*- coding: utf-8 -*-
 import logging
 import os
-from MySQLdb import OperationalError
 
-from plone import api
 from builtins import object
-
-from zopra.core import DBDA_ID
-from zopra.core import HAVE_WEBCMS
+from MySQLdb import OperationalError
 from OFS.Folder import manage_addFolder
+from plone import api
 from Products.CMFPlone.interfaces import INonInstallable
 from zope.interface import implementer
+from zopra.core import DBDA_ID
+from zopra.core import HAVE_WEBCMS
 
 
 @implementer(INonInstallable)

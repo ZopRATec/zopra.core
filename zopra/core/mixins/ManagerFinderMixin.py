@@ -1,5 +1,4 @@
 from builtins import object
-
 from zopra.core import IObjectManager
 from zopra.core.constants import ZC
 from zopra.core.interfaces import IZopRAManager

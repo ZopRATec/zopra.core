@@ -3,12 +3,11 @@ from copy import deepcopy
 from itertools import izip
 
 from OFS.PropertyManager import PropertyManager
-from zope.interface import implementer
-
 from PyHtmlGUI.kernel.hgTable import hgTable
 from PyHtmlGUI.widgets.hgLabel import hgLabel
 from PyHtmlGUI.widgets.hgLabel import hgSPACE
 from PyHtmlGUI.widgets.hgPushButton import hgPushButton
+from zope.interface import implementer
 from zopra.core import HTML
 from zopra.core import ZC
 from zopra.core import SimpleItem
