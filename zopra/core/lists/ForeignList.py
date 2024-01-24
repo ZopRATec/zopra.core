@@ -38,9 +38,7 @@ class ForeignList(GenericList):
 
     listtype = "singlelist"
 
-    manage_options = (
-        {"label": "Overview", "action": "viewTab"},
-    ) + GenericList.manage_options
+    manage_options = ({"label": "Overview", "action": "viewTab"},) + GenericList.manage_options
 
     def __init__(self, listname, manager=None, function=None, label=None):
         """Constructs a ForeignList."""
@@ -180,9 +178,7 @@ class ForeignList(GenericList):
             foreign = local
         else:
             # try same container first and then up the hierarchy
-            foreign = local.getManager(self.manager) or local.getHierarchyUpManager(
-                self.manager
-            )
+            foreign = local.getManager(self.manager) or local.getHierarchyUpManager(self.manager)
             # if that does not work, try down
             # CAUTION: down could be multiple managers of same type, first found gets returned
             # FIXME: should build in zopratype differentiation somehow
@@ -286,9 +282,7 @@ class ForeignList(GenericList):
                         autoid = entry["autoid"]
                         if not self.cols:
                             # empty, use getLabelString
-                            val = manager.getLabelString(
-                                self.foreign, None, entry, lang
-                            )
+                            val = manager.getLabelString(self.foreign, None, entry, lang)
                         else:
                             vals = []
                             # switch to translated entry if necessary
@@ -451,9 +445,7 @@ class ForeignList(GenericList):
             if self.foreign in manager.tableHandler:
                 raise ValueError("Cannot cross foreign table-based lists.")
             elif self.foreign in manager.listHandler:
-                return manager.listHandler[self.foreign].crossLookupList(
-                    entry1, entry2, crossString
-                )
+                return manager.listHandler[self.foreign].crossLookupList(entry1, entry2, crossString)
             else:
                 raise ValueError("Couldn't find foreign list.")
 
@@ -523,9 +515,11 @@ class ForeignList(GenericList):
                 else:
                     value = "any"
             elif manager:
-                assert isinstance(aid, IntType) or isinstance(
-                    aid, StringType
-                ), ZC.E_PARAM_TYPE % ("aid", "IntType/StringType", aid)
+                assert isinstance(aid, IntType) or isinstance(aid, StringType), ZC.E_PARAM_TYPE % (
+                    "aid",
+                    "IntType/StringType",
+                    aid,
+                )
 
                 aid = int(aid)
 
@@ -543,9 +537,7 @@ class ForeignList(GenericList):
                         lobj = manager.listHandler[self.foreign]
                         value = lobj.getValueByAutoid(aid, lang)
                     else:
-                        raise ValueError(
-                            "Couldn't find foreign list '%s'." % self.foreign
-                        )
+                        raise ValueError("Couldn't find foreign list '%s'." % self.foreign)
 
             retlist.append(value)
 
@@ -630,13 +622,9 @@ class ForeignList(GenericList):
                     lab_target = hgLabel(self.foreign, url)
                 else:
                     target_type = "Missing"
-                    lab_target = hgLabel(
-                        '<span style="color:red;">%s</span>' % self.foreign
-                    )
+                    lab_target = hgLabel('<span style="color:red;">%s</span>' % self.foreign)
             else:
-                lab_target = hgLabel(
-                    '<span style="color:red;">%s</span>' % self.foreign
-                )
+                lab_target = hgLabel('<span style="color:red;">%s</span>' % self.foreign)
 
         tab[2, 5] = target_type
         tab[2, 6] = lab_target

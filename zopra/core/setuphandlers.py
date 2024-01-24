@@ -1,16 +1,15 @@
 # -*- coding: utf-8 -*-
 import logging
 import os
-from MySQLdb import OperationalError
 
-from plone import api
 from builtins import object
-
-from zopra.core import DBDA_ID
-from zopra.core import HAVE_WEBCMS
+from MySQLdb import OperationalError
 from OFS.Folder import manage_addFolder
+from plone import api
 from Products.CMFPlone.interfaces import INonInstallable
 from zope.interface import implementer
+from zopra.core import DBDA_ID
+from zopra.core import HAVE_WEBCMS
 
 
 @implementer(INonInstallable)
@@ -28,8 +27,7 @@ def uninstall(context):
 
 
 def setupTestScenario(context):
-    """test setup post handler
-    """
+    """test setup post handler"""
     logger = logging.getLogger("zopra.core")
     portal = api.portal.get()
 
@@ -152,11 +150,11 @@ class ZopRATestEnvironmentMaker(object):
         """
         if "zopra" in self.portal:
             base = self.portal["zopra"]
-            name = name.lower().replace(' ', '-')
+            name = name.lower().replace(" ", "-")
             if name in base:
                 # no need to suppress events anymore when deleting ZopRA installations
                 base._delObject(name)
-                self.logger.info('Deleted {} substructure.'.format(name))
+                self.logger.info("Deleted {} substructure.".format(name))
 
     def readEnvParam(self, name, suffix, default):
         """Try to read an environment parameter with the given name plus suffix.
@@ -180,7 +178,7 @@ class ZopRATestEnvironmentMaker(object):
                 return res
         return os.environ.get(name, default)
 
-    def addDatabaseAdapter(self, zoprafolder, suffix=''):
+    def addDatabaseAdapter(self, zoprafolder, suffix=""):
         """Add zmysql object inside the zopra context to provide database access.
 
         :param zoprafolder: the app folder containing the ZopRA Installation, in which the database adapter will be created
@@ -196,9 +194,7 @@ class ZopRATestEnvironmentMaker(object):
         db_user = self.readEnvParam("DB_USER", suffix, "zopratest")
         db_password = self.readEnvParam("DB_PASSWORD", suffix, "zopratest")
         db_name = self.readEnvParam("DB_NAME", suffix, "zopratest")
-        connection_string = "{}@{} {} {}".format(
-            db_name, db_server, db_user, db_password
-        )
+        connection_string = "{}@{} {} {}".format(db_name, db_server, db_user, db_password)
         try:
             return zoprafolder.manage_addProduct["ZMySQLDA"].manage_addZMySQLConnection(
                 DBDA_ID,
@@ -213,15 +209,7 @@ class ZopRATestEnvironmentMaker(object):
             msg += "Hint: You can define environment variables DB_SERVER, DB_USER, DB_PASSWORD and DB_NAME to configure your database connection."
             raise Exception(msg)
 
-    def addManager(
-        self,
-        zoprafolder,
-        module_name,
-        manager_classname,
-        manager_id,
-        manager_title,
-        nocreate=False
-    ):
+    def addManager(self, zoprafolder, module_name, manager_classname, manager_id, manager_title, nocreate=False):
         """Add the ZopRA Manager object to zoprafolder using the manage_addGeneric method from zopra.core.__init__.
         Use module_name and manager_classname to identify your module and class. Reuse for installing all ZopRA Managers.
 
@@ -313,12 +301,7 @@ class ZopRATestEnvironmentMaker(object):
         """
         dbc = database_adapter()
 
-        tables = [
-            table["table_name"]
-            for table in dbc.tables()
-            if table["table_type"] == "table"
-        ]
+        tables = [table["table_name"] for table in dbc.tables() if table["table_type"] == "table"]
 
         for table in tables:
             dbc.query("DROP TABLE {}".format(table.encode("utf-8")))
-

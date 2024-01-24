@@ -10,16 +10,16 @@ from plone.app.robotframework.server import Zope2ServerRemote
 from plone.app.robotframework.users import Users
 from plone.app.testing import PLONE_FIXTURE
 from plone.app.testing import FunctionalTesting
+from plone.app.testing import IntegrationTesting
 from plone.app.testing import PloneSandboxLayer
 from plone.app.testing import applyProfile
-from plone.app.testing import IntegrationTesting
 from plone.testing.zope import WSGI_SERVER_FIXTURE
 from plone.testing.zope import installProduct
-from ZServer.Testing.utils import setupCoreSessions
-
 from zopra.core import DBDA_ID
 from zopra.core import HAVE_WEBCMS
 from zopra.core.setuphandlers import ZopRATestEnvironmentMaker
+from ZServer.Testing.utils import setupCoreSessions
+
 
 # preparation for keywords implemented in python
 class Keywords(RemoteLibrary):
@@ -52,7 +52,7 @@ class ZopraCoreLayer(PloneSandboxLayer):
 
     def setUpZopRA(self, app):
         """Install all packages needed for basic WebCMS functionality
-            without tud.profiles.webcms dependencies to all ZopRA packages."""
+        without tud.profiles.webcms dependencies to all ZopRA packages."""
         if HAVE_WEBCMS:
             setupCoreSessions(app)
 
@@ -81,8 +81,8 @@ class ZopraCoreLayer(PloneSandboxLayer):
             self.loadZCML(package=tud.migration.plone52)
             self.loadZCML(package=tud.addons.datagridfield)
 
-            installProduct(app, 'Products.ATContentTypes')
-            installProduct(app, 'tud.migration.plone52')
+            installProduct(app, "Products.ATContentTypes")
+            installProduct(app, "tud.migration.plone52")
             installProduct(app, "raptus.multilanguagefields")
             installProduct(app, "collective.workspace")
             installProduct(app, "tud.addons.webcms")
@@ -141,6 +141,7 @@ class ZopraCoreLayer(PloneSandboxLayer):
 
         # commit the changes to counteract PloneSandBoxLayer not persisting our changes anymore
         import transaction
+
         transaction.commit()
 
     def tearDownPloneSite(self, portal):
@@ -159,9 +160,7 @@ class ZopraCoreLayer(PloneSandboxLayer):
 
 FIXTURE = ZopraCoreLayer()
 
-INTEGRATION_TESTING = IntegrationTesting(
-    bases=(FIXTURE,),
-    name="zopra.core:Integration")
+INTEGRATION_TESTING = IntegrationTesting(bases=(FIXTURE,), name="zopra.core:Integration")
 
 ROBOT_TESTING = FunctionalTesting(
     bases=(REMOTE_LIBRARY_BUNDLE_FIXTURE, WSGI_SERVER_FIXTURE, FIXTURE),

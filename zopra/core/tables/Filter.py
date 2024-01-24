@@ -5,7 +5,6 @@ from time import strftime
 from time import strptime
 
 from builtins import object
-
 from PyHtmlGUI.kernel.hgTable import hgTable
 from PyHtmlGUI.widgets.hgLabel import hgNEWLINE
 from zopra.core import ZC
@@ -61,9 +60,7 @@ def convertDateDeprecated(old_date):
     return new_date
 
 
-def checkTypeDeprecated(
-    value, column_type, operator=False, label=None, do_replace=True
-):
+def checkTypeDeprecated(value, column_type, operator=False, label=None, do_replace=True):
     """makes all standard conversions and checking for supported Types
     and returns altered value-string.
     Returns an operator as well, if param operator is True
@@ -95,9 +92,7 @@ def checkTypeDeprecated(
             oper = "IS"
         else:
             entry_list = map(
-                lambda onevalue: checkTypeDeprecated(
-                    onevalue, column_type, False, label
-                ),
+                lambda onevalue: checkTypeDeprecated(onevalue, column_type, False, label),
                 value,
             )
             value = "(%s)" % ", ".join(entry_list)
@@ -112,9 +107,7 @@ def checkTypeDeprecated(
     elif pos_to != -1:
         value = "%s and %s" % (
             checkTypeDeprecated(value[:pos_to].rstrip(), column_type, False, label),
-            checkTypeDeprecated(
-                value[pos_to + 4 :].lstrip(), column_type, False, label
-            ),
+            checkTypeDeprecated(value[pos_to + 4 :].lstrip(), column_type, False, label),
         )
         oper = "BETWEEN"
 
@@ -122,32 +115,22 @@ def checkTypeDeprecated(
         valuelist = value.split("__")
         oper = "IN"
         entry_list = map(
-            lambda onevalue: checkTypeDeprecated(
-                onevalue.strip(), column_type, False, label
-            ),
+            lambda onevalue: checkTypeDeprecated(onevalue.strip(), column_type, False, label),
             valuelist,
         )
         value = "(%s)" % ", ".join(entry_list)
     elif pos_lt != -1:
         oper = "<"
-        value = checkTypeDeprecated(
-            value[pos_lt + 3 :].strip(), column_type, False, label
-        )
+        value = checkTypeDeprecated(value[pos_lt + 3 :].strip(), column_type, False, label)
     elif pos_lte != -1:
         oper = "<="
-        value = checkTypeDeprecated(
-            value[pos_lte + 4 :].strip(), column_type, False, label
-        )
+        value = checkTypeDeprecated(value[pos_lte + 4 :].strip(), column_type, False, label)
     elif pos_gt != -1:
         oper = ">"
-        value = checkTypeDeprecated(
-            value[pos_gt + 3 :].strip(), column_type, False, label
-        )
+        value = checkTypeDeprecated(value[pos_gt + 3 :].strip(), column_type, False, label)
     elif pos_gte != -1:
         oper = ">="
-        value = checkTypeDeprecated(
-            value[pos_gte + 4 :].strip(), column_type, False, label
-        )
+        value = checkTypeDeprecated(value[pos_gte + 4 :].strip(), column_type, False, label)
     else:
         oper = ""
         labelstr = ""
@@ -375,18 +358,14 @@ class Filter(object):
                 if field:
 
                     # build where clause for string lists
-                    if field.get(ZC.COL_TYPE) in ["string", "memo"] and isinstance(
-                        consdict[pre + entry], ListType
-                    ):
+                    if field.get(ZC.COL_TYPE) in ["string", "memo"] and isinstance(consdict[pre + entry], ListType):
                         if pre + entry + "_AND" in consdict:
                             parent = Filter("AND")
                         else:
                             parent = Filter("OR")
                         for listentry in consdict[pre + entry]:
                             child = Filter("AND")
-                            child.setConstraints(
-                                {entry[plen:]: listentry}, manager, tableData=tableData
-                            )
+                            child.setConstraints({entry[plen:]: listentry}, manager, tableData=tableData)
                             child.setFinal()
                             parent.addChild(child)
                         parent.setFinal()
@@ -394,10 +373,7 @@ class Filter(object):
                         continue
 
                     # test AND-concatenated multi/hierarchy-lists ... done extra, continue here
-                    if (
-                        field.get(ZC.COL_TYPE) == "multilist"
-                        or field.get(ZC.COL_TYPE) == "hierarchylist"
-                    ):
+                    if field.get(ZC.COL_TYPE) == "multilist" or field.get(ZC.COL_TYPE) == "hierarchylist":
                         # and-concat is handled in the TableNode for len > 1 -> continue
                         if consdict.get(pre + entry + "_AND"):
                             values = consdict.get(pre + entry)
@@ -520,10 +496,7 @@ class Filter(object):
                 ctype = field.get(ZC.COL_TYPE)
 
             # ignore entry with NOT_IN flag
-            if (
-                len(cons) - 7 == cons.find("_NOT_IN")
-                and cons[: len(cons) - 7] in self.constraints
-            ):
+            if len(cons) - 7 == cons.find("_NOT_IN") and cons[: len(cons) - 7] in self.constraints:
                 continue
             # not for multi/hierarchy lists
             if ctype not in ZC.ZCOL_MLISTS:
@@ -537,15 +510,13 @@ class Filter(object):
 
                 # special handling for mysql <> x - handling of NULL-Values (for all fields)
                 if operator == "<>":
-                    wherepart.append(
-                        "(%s %s %s OR %s IS NULL)" % (conname, operator, value, conname)
-                    )
+                    wherepart.append("(%s %s %s OR %s IS NULL)" % (conname, operator, value, conname))
                 else:
                     # special case: in with NULL -> use COALESQUE
-                    if operator == 'IN' and isinstance(constraint, list) and 'NULL' in constraint:
+                    if operator == "IN" and isinstance(constraint, list) and "NULL" in constraint:
                         # recalculate the value with -1 instead of NULL
                         new_constraint = copy(constraint)
-                        new_constraint[new_constraint.index('NULL')] = -1
+                        new_constraint[new_constraint.index("NULL")] = -1
                         value = checkType(new_constraint, ctype, False, cons)
                         # use coalesce on the column with -1
                         conname = "COALESCE(%s, -1)" % conname

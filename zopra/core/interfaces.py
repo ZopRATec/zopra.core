@@ -1,5 +1,5 @@
-from plone.app.upgrade.utils import alias_module
 from OFS.interfaces import IFolder
+from plone.app.upgrade.utils import alias_module
 from zope.interface import Interface
 
 
@@ -74,6 +74,7 @@ class IContactManager(IZopRAManager):
     """The IContactManager interface marks a class to provide contact related
     managing functionality.
     """
+
 
 # add support for a renamed (persistent) interface
 alias_module("zopra.core.interfaces.IAddOnInstalled", IAddonInstalled)

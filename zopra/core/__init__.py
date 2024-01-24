@@ -5,9 +5,9 @@ from __future__ import print_function
 
 import inspect
 import os
-import pkg_resources
 from importlib import import_module
 
+import pkg_resources
 # Zope Imports (some for reimport)
 from AccessControl import ClassSecurityInfo
 from AccessControl import allow_module
@@ -19,7 +19,6 @@ from OFS.DTMLDocument import DTMLDocument
 from OFS.interfaces import IObjectManager
 from OFS.SimpleItem import SimpleItem
 from zope.i18nmessageid import MessageFactory
-
 from zopra.core.constants import ZC
 from zopra.core.interfaces import IZopRAProduct
 
@@ -27,9 +26,7 @@ from zopra.core.interfaces import IZopRAProduct
 # check for plone (Robot tests only run with plone, some functionality is removed when installing ZopRA as Plone Plugin)
 # use pkg_resources.parse_version(vstring) to compare Versions
 try:
-    PLONE_VERSION = pkg_resources.parse_version(
-        pkg_resources.get_distribution("plone").version
-    )
+    PLONE_VERSION = pkg_resources.parse_version(pkg_resources.get_distribution("plone").version)
     HAVE_PLONE = True
 except pkg_resources.DistributionNotFound:
     PLONE_VERSION = pkg_resources.parse_version("0")
@@ -38,9 +35,7 @@ except pkg_resources.DistributionNotFound:
 # check for WebCMS (for WebCMS dependent subpackages using NavigationExtender, Byline, etc)
 # use pkg_resources.parse_version(vstring) to compare Versions
 try:
-    WEBCMS_VERSION = pkg_resources.parse_version(
-        pkg_resources.get_distribution("tud.profiles.webcms").version
-    )
+    WEBCMS_VERSION = pkg_resources.parse_version(pkg_resources.get_distribution("tud.profiles.webcms").version)
     HAVE_WEBCMS = True
 except pkg_resources.DistributionNotFound:
     WEBCMS_VERSION = pkg_resources.parse_version("0")
@@ -192,16 +187,8 @@ def registerManager(context, managerClass):
     else:
 
         # try to get name suggestions
-        sid = (
-            managerClass.suggest_id
-            if hasattr(managerClass, "suggest_id")
-            else "<insert id>"
-        )
-        sname = (
-            managerClass.suggest_name
-            if hasattr(managerClass, "suggest_name")
-            else manager
-        )
+        sid = managerClass.suggest_id if hasattr(managerClass, "suggest_id") else "<insert id>"
+        sname = managerClass.suggest_name if hasattr(managerClass, "suggest_name") else manager
 
         # read from generic file, construct DTML document
         # workaround, because manage_edit of DTMLFile doesn't work

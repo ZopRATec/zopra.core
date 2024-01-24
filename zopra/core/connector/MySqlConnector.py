@@ -70,7 +70,7 @@ class MySqlConnector(SqlConnector):
         did_encode = False
         try:
             if isinstance(value, unicode):
-                value = value.encode('utf-8')
+                value = value.encode("utf-8")
                 did_encode = True
         except Exception:
             pass
@@ -78,7 +78,7 @@ class MySqlConnector(SqlConnector):
         res = zcon.sql_quote__(value)
         # decode if we had to encode
         if did_encode:
-            res = res.decode('utf-8')
+            res = res.decode("utf-8")
         return res
 
     #
@@ -121,10 +121,7 @@ class MySqlConnector(SqlConnector):
                 primary_keys.append(col)
 
         if primary_keys:
-            create_text.append(
-                ", PRIMARY KEY (%s)"
-                % ", ".join([self.escapeSQLName(key) for key in primary_keys])
-            )
+            create_text.append(", PRIMARY KEY (%s)" % ", ".join([self.escapeSQLName(key) for key in primary_keys]))
         else:
             create_text.append(", PRIMARY KEY (autoid)")
         create_text.append(") ENGINE = InnoDB")
@@ -251,9 +248,7 @@ class MySqlConnector(SqlConnector):
                     " %s = %s"
                     % (
                         self.escapeSQLName(colname),
-                        self.checkType(
-                            val, field.get(ZC.COL_TYPE), False, field.get(ZC.COL_LABEL)
-                        ),
+                        self.checkType(val, field.get(ZC.COL_TYPE), False, field.get(ZC.COL_LABEL)),
                     )
                 )
 

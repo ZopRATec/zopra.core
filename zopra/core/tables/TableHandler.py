@@ -1,5 +1,4 @@
 from OFS.Folder import Folder
-
 from zopra.core import ZC
 from zopra.core.interfaces import ISecurityManager
 from zopra.core.interfaces import IZopRAProduct
@@ -73,15 +72,11 @@ class TableHandler(Folder):
 
                 if not new_type == "multilist" and not new_type == "hierarchylist":
                     new_dict[column_name] = {}
-                    new_dict[column_name][ZC.COL_TYPE] = column.getType().encode(
-                        "utf-8"
-                    )
+                    new_dict[column_name][ZC.COL_TYPE] = column.getType().encode("utf-8")
                     new_dict[column_name][ZC.COL_LABEL] = column.getLabel()
                     new_dict[column_name][ZC.COL_INVIS] = invisible
 
-            self.addTable(
-                table_name, new_dict, nocreate, True, ebase, label, long(uniqueid)
-            )
+            self.addTable(table_name, new_dict, nocreate, True, ebase, label, long(uniqueid))
 
     def __getitem__(self, key):
         """This method handles the collection getter operator."""

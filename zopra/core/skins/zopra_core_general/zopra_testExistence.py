@@ -8,7 +8,6 @@
 ##title=Existance Check
 ##
 from zExceptions import Redirect
-
 from zopra.core import zopraMessageFactory as _
 
 

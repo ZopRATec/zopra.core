@@ -15,9 +15,7 @@ url = context.getParentNode().absolute_url()
 
 # get all entries of all doubleids
 if not doubleid:
-    message = _(
-        "zopra_list_unifier_param_error", default="Double list entry IDs are missing."
-    )
+    message = _("zopra_list_unifier_param_error", default="Double list entry IDs are missing.")
     context.plone_utils.addPortalMessage(context.translate(message), "error")
     context.REQUEST.RESPONSE.redirect(url + "/zopra_main_form")
 else:
@@ -71,9 +69,7 @@ else:
     for autoid in doubleid:
         lobj.delValue(autoid)
     msgs.append("Markierte Listeneintraege wurden entfernt.")
-    message = _(
-        "zopra_list_unifier_done", default="The marked list entries have been removed."
-    )
+    message = _("zopra_list_unifier_done", default="The marked list entries have been removed.")
     context.plone_utils.addPortalMessage(context.translate(message), "info")
 
 context.REQUEST.RESPONSE.redirect(url + "/zopra_main_form")
