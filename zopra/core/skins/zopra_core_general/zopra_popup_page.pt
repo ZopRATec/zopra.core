@@ -14,7 +14,7 @@
 <head tal:define="portal_url here/portal_url">
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 
-    <div tal:replace="structure provider:plone.scripts" />
+    <tal:block tal:replace="structure provider:plone.scripts" />
     <link rel="stylesheet" type="text/css" tal:attributes="href string:${portal_url}/autoupdate-widget/jquery.autoupdate-widget.css" media="screen" />
     <title i18n:translate="zopra_popup_title">Popup: TUD - Editorial</title>
     <script language="javascript">
@@ -55,5 +55,77 @@
 <body>
 <div class="background" i18n:translate="zopra_popup_working">Request in progress. Please wait...</div>
 <iframe tal:attributes="src request/url" frameborder="0" width="100%" frameborder="0" onload="siteLoaded();" id="iframe"></iframe>
+
+<div style="display: none;">
+    <header role="banner" id="header">
+        <div class="flyout-bar">
+            <div id="flyout-search"></div>
+            <div id="flyout-accessibility"></div>
+            <div id="flyout-internal"></div>
+            <div id="flyout-lang"></div>
+        </div>
+        <div id="flyout-content-wrapper" data-animation="slide-vertical" data-toggler=".open">
+            <div>
+                <div class="row">
+                    <section id="flyout-content" class="columns small-12">
+                    </section>
+                </div>
+            </div>
+        </div>
+        <div class="bg-blue">
+            <div class="row small-collapse xlarge-uncollapse">
+                <div class="columns small-12">
+                    <div class="table">
+                        <a id="navigator-branding">
+                        </a>
+                        <a class="flyout-button" href="#navigator-content">
+                        </a>
+                        <nav id="nav-meta"></nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="emergency-box"></div>
+        <div id="nav">
+            <div class="row nav-wrapper small-collapse xlarge-uncollapse">
+                <div class="column small-12 clearfix">
+                    <h1 id="portal-logo"></h1>
+                    <nav id="navigation"></nav>
+                </div>
+            </div>
+            <div class="row collapse">
+                <div id="nav-mobile"></div>
+            </div>
+            <div class="row">
+                <nav id="nav-breadcrumbs"></nav>
+            </div>
+        </div>
+    </header>
+    <div id="user-information"></div>
+    <div id="manage-content">
+        <div class="row">
+            <div class="columns small-12">
+                <ul id="manage-content-actions"> </ul>
+            </div>
+        </div>
+    </div>
+    <div class="slot" id="portal-message-slot">
+        <div class="row" id="portal-message"></div>
+        <div id="multilanguage-information"></div>
+    </div>
+    <main role="main" id="main">
+        <article role="article" class="row">
+            <div id="contentSlot" class="contentSlot">
+                <div id="content"></div>
+            </div>
+        </article>
+        <section id="ads"></section>
+        <div id="article-byline"></div>
+    </main>
+    <footer role="contentinfo" id="portal-footer">
+        <div id="prefooter"></div>
+        <div class="slot" id="bottom-footer"></div>
+    </footer>
+</div>
 </body>
 </html>
