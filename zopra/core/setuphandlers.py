@@ -1,27 +1,35 @@
 # -*- coding: utf-8 -*-
+import logging
 import os
 
-import plone.api
 from builtins import object
-
+from MySQLdb import OperationalError
+from OFS.Folder import manage_addFolder
+from plone import api
+from Products.CMFPlone.interfaces import INonInstallable
+from zope.interface import implementer
 from zopra.core import DBDA_ID
 from zopra.core import HAVE_WEBCMS
-from zopra.core import manage_addFolder
 
 
-def setupTestSzenario(context):
-    """setups various when installing add-on
+@implementer(INonInstallable)
+class HiddenProfiles(object):
+    def getNonInstallableProfiles(self):
+        """Hide uninstall profile from site-creation and quickinstaller."""
+        return [
+            "zopra.core:uninstall",
+        ]
 
-    Ordinarily, GenericSetup handlers check for the existence of XML files.
-    Here, we are not parsing an XML file, but we use a text file as a
-    flag to check that we actually meant for this import step to be run.
-    The file is found in profiles/default.
-    """
 
-    if context.readDataFile("zopra.core-test.txt") is None:
-        return
-    logger = context.getLogger("zopra.core")
-    portal = context.getSite()
+def uninstall(context):
+    """Uninstall script"""
+    # Do something at the end of the uninstallation of this package.
+
+
+def setupTestScenario(context):
+    """test setup post handler"""
+    logger = logging.getLogger("zopra.core")
+    portal = api.portal.get()
 
     tenv = ZopRATestEnvironmentMaker(logger, portal)
     logger.info("Setting up ZopRA Test Environment")
@@ -29,22 +37,41 @@ def setupTestSzenario(context):
 
 
 class ZopRATestEnvironmentMaker(object):
-    """Test Environment Setup via methods in a class so parts of it can be overwritten for the subpackages"""
+    """Test Environment Setup via methods in a class so parts of it can be reused and even overwritten
+    for the subpackages. The database adapter env settings used depend on whether the Maker is used
+    in a testing setup or in a normal setup (e.g. for showcase creation)"""
 
     def __init__(self, logger, portal):
         self.logger = logger
         self.portal = portal
+        self.manual_test_mode = None
+
+    def overrideTestMode(self, test_mode):
+        """Test mode is determined via api.env.test_mode. You can override this by setting True or False
+        with this method. In test mode, the env params used for database connectivity will always use
+        the prefix "ZOPRA_" (instead of individual prefixes for different ZopRA packages).
+
+        :param test_mode: override test mode setting (with True or False)
+        :type test_mode: bool
+        """
+        self.manual_test_mode = test_mode
+
+    def getTestMode(self):
+        if self.manual_test_mode is None:
+            return api.env.test_mode()
+        else:
+            return self.manual_test_mode
 
     def setup(self):
         """Main method calling all other methods."""
         self.createInitialUsers()
         # build zopra environment down to the app folder
         if HAVE_WEBCMS:
-            zoprafolder = self.buildWebCMSEnvironment()
+            zoprafolder = self.buildWebCMSEnvironment("test")
         else:
-            zoprafolder = self.buildEnvironment()
+            zoprafolder = self.buildEnvironment("test")
         # add database Adapter
-        self.addDatabaseAdapter(zoprafolder)
+        self.addDatabaseAdapter(zoprafolder, "_ZOPRA")
         # add the zopra Product
         self.addProductManager(zoprafolder, DBDA_ID, "pm", "ZopRA Product Manager")
         # set zopra_path in upper structure
@@ -53,17 +80,16 @@ class ZopRATestEnvironmentMaker(object):
         # add the test manager
         self.addManager(
             zoprafolder,
-            DBDA_ID,
             "zopra.core.tools.mgrTest",
             "mgrTest",
             "testapp",
             "Test Manager",
         )
 
-    def buildEnvironment(self):
+    def buildEnvironment(self, name):
         """Create container structure down to the ZopRA container and the app folder inside.
         Overwrite for special handling (applying interfaces or using special containers).
-        Resulting structure should be /base/zopra/app.
+        Resulting structure is /zopra/<name>/app.
 
         :param portal: Plone Site
         :type portal: Products.CMFPlone.Portal.PloneSite
@@ -71,11 +97,11 @@ class ZopRATestEnvironmentMaker(object):
         """
 
         # add plone folder ZopRATest
-        self.portal.invokeFactory("Folder", "base")
+        self.portal.invokeFactory("Folder", "zopra")
         base = self.portal["base"]
 
         # add plone folder ZopRATest
-        base.invokeFactory("Folder", "zopra")
+        base.invokeFactory("Folder", name)
         folder = base["zopra"]
 
         # add zope folder app via import and manage_addFolder direct call
@@ -84,48 +110,91 @@ class ZopRATestEnvironmentMaker(object):
         # return the created folder
         return folder["app"]
 
-    def buildWebCMSEnvironment(self):
+    def buildWebCMSEnvironment(self, name):
         """Create container structure down to the ZopRA container and the app folder inside.
         Overwrite for special handling (applying interfaces or using special containers).
-        Resulting structure should be /base/zopra/app.
+        Resulting structure is /zopra/<name>/app.
 
         :param portal: Plone Site
         :type portal: Products.CMFPlone.Portal.PloneSite
         :return:
         """
-        # add Section
-        self.portal.invokeFactory("MainTopicSubsection", "base")
-        base = self.portal["base"]
-        base.setTitle({"en": "Base"})
-
+        # add MainTopicSubsection
+        if "zopra" in self.portal:
+            base = self.portal["zopra"]
+        else:
+            api.content.create(type="MainTopicSubsection", title="ZopRA", container=self.portal)
+            base = self.portal["zopra"]
+            api.content.transition(obj=base, transition="publish")
         # add Subsection
-        base.invokeFactory("Subsection", "zopra")
-        subsection = base["zopra"]
-        subsection.setTitle({"en": "ZopRA"})
+        if name.islower():
+            title = name.capitalize()
+        else:
+            title = name
+        subsection = api.content.create(type="Subsection", title=title, container=base)
+        api.content.transition(obj=subsection, transition="publish")
 
-        # add zope folder app via import and manage_addFolder direct call
-        manage_addFolder(subsection, "app")
+        # add zope folder
+        manage_addFolder(subsection, "app", "app")
 
         # return the created folder
         return subsection["app"]
 
-    def addDatabaseAdapter(self, zoprafolder):
+    def cleanupSubstructure(self, name):
+        """Remove existing ZopRA project installation of given name, if it exists.
+
+            This will not do any removal from the database.
+
+        :param name: name for the main folder
+        :type name: str
+        """
+        if "zopra" in self.portal:
+            base = self.portal["zopra"]
+            name = name.lower().replace(" ", "-")
+            if name in base:
+                # no need to suppress events anymore when deleting ZopRA installations
+                base._delObject(name)
+                self.logger.info("Deleted {} substructure.".format(name))
+
+    def readEnvParam(self, name, suffix, default):
+        """Try to read an environment parameter with the given name plus suffix.
+
+            If no suffix was given or no environment parameter was found, try to read
+            the original name from the environment. If this fails, return the given default.
+
+        :param name: environment parameter name
+        :type name: str
+        :param suffix: a suffix that will be added to the name directly
+        :type suffix: str
+        :param default: the default for when everything else fails
+        :type default: str
+        :return: the looked up value
+        :rtype: str
+        """
+        # first read the param with given suffix
+        if suffix:
+            res = os.environ.get(name + suffix, None)
+            if res:
+                return res
+        return os.environ.get(name, default)
+
+    def addDatabaseAdapter(self, zoprafolder, suffix=""):
         """Add zmysql object inside the zopra context to provide database access.
 
         :param zoprafolder: the app folder containing the ZopRA Installation, in which the database adapter will be created
         :type zoprafolder: Folder
+        :param suffix: env lookup for all database params is first done with suffix, then without
+        :type suffix: str
         """
         title = "Z MySQL Database Connection"
-        db_server = os.environ.get("DB_SERVER", "localhost")
-        db_user = os.environ.get("DB_USER", "zopratest")
-        db_password = os.environ.get("DB_PASSWORD", "zopratest")
-        db_name = os.environ.get("DB_NAME", "zopratest")
-        connection_string = "{}@{} {} {}".format(
-            db_name, db_server, db_user, db_password
-        )
-        # tests are dependent on MySQLdb
-        from MySQLdb import OperationalError
-
+        if self.getTestMode():
+            # override the given suffix, always use _ZOPRA
+            suffix = "_ZOPRA"
+        db_server = self.readEnvParam("DB_SERVER", suffix, "localhost")
+        db_user = self.readEnvParam("DB_USER", suffix, "zopratest")
+        db_password = self.readEnvParam("DB_PASSWORD", suffix, "zopratest")
+        db_name = self.readEnvParam("DB_NAME", suffix, "zopratest")
+        connection_string = "{}@{} {} {}".format(db_name, db_server, db_user, db_password)
         try:
             return zoprafolder.manage_addProduct["ZMySQLDA"].manage_addZMySQLConnection(
                 DBDA_ID,
@@ -140,22 +209,12 @@ class ZopRATestEnvironmentMaker(object):
             msg += "Hint: You can define environment variables DB_SERVER, DB_USER, DB_PASSWORD and DB_NAME to configure your database connection."
             raise Exception(msg)
 
-    def addManager(
-        self,
-        zoprafolder,
-        dbda_id,
-        module_name,
-        manager_classname,
-        manager_id,
-        manager_title,
-    ):
+    def addManager(self, zoprafolder, module_name, manager_classname, manager_id, manager_title, nocreate=False):
         """Add the ZopRA Manager object to zoprafolder using the manage_addGeneric method from zopra.core.__init__.
         Use module_name and manager_classname to identify your module and class. Reuse for installing all ZopRA Managers.
 
         :param zoprafolder: the app folder containing the ZopRA Installation, in which the database adapter will be created
         :type zoprafolder: Folder
-        :param dbda_id: ID of the Database Adapter Object in the ZODB
-        :type dbda_id: string
         :param module_name: Module path in dot-notation of the Manager Module (down to the py-file)
         :type module_name: string
         :param manager_classname: Class name of the Manager
@@ -171,12 +230,12 @@ class ZopRATestEnvironmentMaker(object):
             manager_title,
             manager_classname,
             module_name,
-            nocreate=0,
+            nocreate=nocreate,
             zopratype="",
             REQUEST=None,
         )
 
-    def addProductManager(self, zoprafolder, dbda_id, pm_id, pm_title):
+    def addProductManager(self, zoprafolder, dbda_id, pm_id, pm_title, nocreate=False):
         """
 
         :param zoprafolder: the app folder containing the ZopRA Installation, in which the database adapter will be created
@@ -195,7 +254,7 @@ class ZopRATestEnvironmentMaker(object):
             "ZopRAProduct",
             "zopra.core.tools.ZopRAProduct",
             dbda_id,
-            nocreate=0,
+            nocreate=nocreate,
             zopratype="",
             REQUEST=None,
         )
@@ -207,28 +266,42 @@ class ZopRATestEnvironmentMaker(object):
         """
         user_data = [
             {
-                "username": "user",
-                "password": "user",
-                "email": "user@tu-dresden.de",
-                "properties": {"fullname": "User"},
-                "roles": ("ZopRAUser"),
+                "username": "redakteur",
+                "password": "redakteur",
+                "email": "redakteur@tu-dresden.de",
+                "properties": {"fullname": "Redakteur"},
+                "roles": ("Contributor", "Editor"),
             },
             {
-                "username": "reviewer",
-                "password": "reviewer",
-                "email": "reviewer@zopratec.de",
+                "username": "chefredakteur",
+                "password": "chefredakteur",
+                "email": "chefredakteur@tu-dresden.de",
                 "properties": {"fullname": "Chefredakteur"},
-                "roles": ("ZopRAUser", "ZopRAReviewer"),
+                "roles": ("Contributor", "Editor", "Reviewer"),
             },
             {
-                "username": "zopraadmin",
-                "password": "zopraadmin",
-                "email": "zopraadmin@zopratec.de",
-                "properties": {"fullname": "ZopRAAdmin"},
-                "roles": (),
+                "username": "testadmin",
+                "password": "testadmin",
+                "email": "testadmin@tu-dresden.de",
+                "properties": {"fullname": "Testadmin"},
+                "roles": ("Contributor", "Editor", "Reviewer", "Section Administrator"),
             },
         ]
         for datum in user_data:
-            user = plone.api.user.get(datum["username"])
+            user = api.user.get(datum["username"])
             if user is None:
-                user = plone.api.user.create(**datum)
+                user = api.user.create(**datum)
+
+    @classmethod
+    def clearDatabase(cls, database_adapter):
+        """Removes all tables in database of given database_adapter.
+
+        :param database_adapter: the app folder containing the ZopRA Installation, in which the database adapter will be created
+        :type database_adapter: Products.ZMySQLDA.DA.Connection
+        """
+        dbc = database_adapter()
+
+        tables = [table["table_name"] for table in dbc.tables() if table["table_type"] == "table"]
+
+        for table in tables:
+            dbc.query("DROP TABLE {}".format(table.encode("utf-8")))

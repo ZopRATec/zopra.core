@@ -7,7 +7,8 @@
       i18n:domain="zopra">
 
   <body>
-
+    <metal:block fill-slot="top_slot"
+             tal:define="dummy python:request.set('disable_toolbar',1)" />
     <metal:javascriptslot fill-slot="javascript_head_slot">
         <script type="text/javascript" tal:attributes="src string:${portal_url}/dragtable.js"></script>
         <script language="javascript">
@@ -27,40 +28,34 @@
         </script>
     </metal:javascriptslot>
 
-    <metal:topslot fill-slot="top_slot">
-        <tal:block tal:define="global isAnon context/@@plone_portal_state/anonymous;"></tal:block>
-    </metal:topslot>
-
-    <metal:main fill-slot="main"
-         tal:define="table string:log;
-                     zpath python: hasattr(here, 'zopra_path') and here.zopra_path or 'app/pm';
-                     pm python:here.path2ob(zpath);
-                     heck python: pm or here.zopra_raiser('Product not found, check the zopra_path property or name your Product Manager pm.');
-                     tobj python: pm.tableHandler[table];
-                     actionlist python: [];
-                     offset python:request.get('offset') and int(request.get('offset')) or 0;
-                     count python: request.get('count') and int(request.get('count')) or 100;
-                     cons python: pm.getTableEntryFromRequest(table, request, search=True);
-                     actionlist python: not request.get('entryid',0) and actionlist or [];
-                     dummy python: request.get('table') and actionlist.append('*infoapp'+request.get('table')+'*');
-                     dummy python: actionlist and cons.update({'action':actionlist,'action_AND':''});
-                     rowcount python: tobj.getEntryListCount(cons);
-                     cols python: request.get('sel_attr') or ['change_datetime', 'username'];
-                     dummy python: cols.insert(0,'autoid');
-                     order python: ['autoid'] or request.get('sort_attr') or cols;
-                     direction python: ['desc'];
-                     entries python: tobj.getEntryList(count, offset, None, cons, order, direction=direction);
-                     coltypes python:tobj.getColumnDefs();
-
-                     ">
-
-        <tal:block tal:condition="isAnon">
+    <metal:main fill-slot="main">
+        <tal:block tal:define="isAnon context/@@plone_portal_state/anonymous;"
+                   tal:condition="isAnon">
             <tal:block replace="context/raiseUnauthorized"></tal:block>
         </tal:block>
 
         <form id="search_result_form"
               action="zopra_manager_show_log" method="post"
-              tal:define="global quotedcons string:;">
+              tal:define="global quotedcons string:;
+                        table string:log;
+                        zpath python: hasattr(here, 'zopra_path') and here.zopra_path or 'app/pm';
+                        pm python:here.path2ob(zpath);
+                        heck python: pm or here.zopra_raiser('Product not found, check the zopra_path property or name your Product Manager pm.');
+                        tobj python: pm.tableHandler[table];
+                        actionlist python: [];
+                        offset python:request.get('offset') and int(request.get('offset')) or 0;
+                        count python: request.get('count') and int(request.get('count')) or 100;
+                        cons python: pm.getTableEntryFromRequest(table, request, search=True);
+                        actionlist python: not request.get('entryid',0) and actionlist or [];
+                        dummy python: request.get('table') and actionlist.append('*infoapp'+request.get('table')+'*');
+                        dummy python: actionlist and cons.update({'action':actionlist,'action_AND':''});
+                        rowcount python: tobj.getEntryListCount(cons);
+                        cols python: request.get('sel_attr') or ['change_datetime', 'username'];
+                        dummy python: cols.insert(0,'autoid');
+                        order python: ['autoid'] or request.get('sort_attr') or cols;
+                        direction python: ['desc'];
+                        entries python: tobj.getEntryList(count, offset, None, cons, order, direction=direction);
+                        coltypes python:tobj.getColumnDefs();">
 
             <h1>Log-Tabelle</h1>
             <metal:block metal:use-macro="here/zopra_button_link_bar/macros/buttons_search_result" />

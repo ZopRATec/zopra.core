@@ -90,18 +90,10 @@ mpfSelectHLButton = hgPushButton(BTN_HL_SELECT, DLG_FUNCTION + BTN_HL_SELECT)
 mpfRemoveHLButton = hgPushButton(BTN_HL_REMOVE, DLG_FUNCTION + BTN_HL_REMOVE)
 
 # basketbuttons
-mpfBasketActivateButton = hgPushButton(
-    BTN_BASKET_ACTIVATE, DLG_FUNCTION + BTN_BASKET_ACTIVATE
-)
-mpfBasketDeactivateButton = hgPushButton(
-    BTN_BASKET_DEACTIVATE, DLG_FUNCTION + BTN_BASKET_DEACTIVATE
-)
-mpfBasketRemoveButton = hgPushButton(
-    BTN_BASKET_REMOVE, DLG_FUNCTION + BTN_BASKET_REMOVE
-)
-mpfBasketRemoveAllButton = hgPushButton(
-    BTN_BASKET_REMOVEALL, DLG_FUNCTION + BTN_BASKET_REMOVEALL
-)
+mpfBasketActivateButton = hgPushButton(BTN_BASKET_ACTIVATE, DLG_FUNCTION + BTN_BASKET_ACTIVATE)
+mpfBasketDeactivateButton = hgPushButton(BTN_BASKET_DEACTIVATE, DLG_FUNCTION + BTN_BASKET_DEACTIVATE)
+mpfBasketRemoveButton = hgPushButton(BTN_BASKET_REMOVE, DLG_FUNCTION + BTN_BASKET_REMOVE)
+mpfBasketRemoveAllButton = hgPushButton(BTN_BASKET_REMOVEALL, DLG_FUNCTION + BTN_BASKET_REMOVEALL)
 mpfBasketAddButton = hgPushButton(BTN_BASKET_ADD, DLG_FUNCTION + BTN_BASKET_ADD)
 mpfBasketPopButton = hgPushButton(BTN_BASKET_POP, DLG_FUNCTION + BTN_BASKET_POP)
 mpfBasketGetButton = hgPushButton(BTN_BASKET_GET, DLG_FUNCTION + BTN_BASKET_GET)

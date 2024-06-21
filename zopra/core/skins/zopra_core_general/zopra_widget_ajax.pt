@@ -18,7 +18,8 @@
 
     <tal:else condition="python: not request.get('checkCopy')" i18n:domain="zopra">
         <tal:block define="
-            global lang here/portal_languages/getPreferredLanguage|here/language_used|here/Language|site_properties/default_language;
+            portal_state context/@@plone_portal_state;
+            lang portal_state/language;
             errors python: {};
             table request/table|nothing;
             autoid request/autoid|nothing;

@@ -7,14 +7,17 @@
 
     </tal:comment>
 
+    <metal:block fill-slot="top_slot"
+             tal:define="dummy python:request.set('disable_toolbar',1)" />
+
 <metal:javascriptslot fill-slot="javascript_head_slot">
     <tal:block tal:condition="request/zopra_popup|nothing">
-        <script type="text/javascript" tal:attributes="src string:${portal_url}/zopra_popup.js"></script>
+        <script type="text/javascript" tal:attributes="src string:${portal_url}/zopra_popup/zopra_popup.js"></script>
     </tal:block>
 </metal:javascriptslot>
 
 <metal:styleslot fill-slot="style_slot" tal:condition="request/zopra_popup|nothing">
-    <link rel="stylesheet" type="text/css" media="all" tal:attributes="href python:portal_url + '/zopra_popup.css'">
+    <link rel="stylesheet" type="text/css" media="all" tal:attributes="href python:portal_url + '/zopra_popup/zopra_popup.css'">
 </metal:styleslot>
 
     <metal:main fill-slot="main"

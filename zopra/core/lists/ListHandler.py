@@ -1,12 +1,10 @@
 from __future__ import print_function
 
+from OFS.Folder import Folder
 from PyHtmlGUI.kernel.hgTable import hgTable
 from PyHtmlGUI.widgets.hgLabel import hgLabel
 from zopra.core import HTML
 from zopra.core import ZC
-from zopra.core import ZM_PM
-from zopra.core import ZM_SCM
-from zopra.core import Folder
 from zopra.core.dialogs.Dialog import Dialog
 from zopra.core.lists.ForeignList import ForeignList
 from zopra.core.lists.HierarchyList import HierarchyList
@@ -81,10 +79,7 @@ class ListHandler(Folder):
 
                     if not lobj:
                         column_name = column.getName().encode("utf-8")
-                        raise ValueError(
-                            "Cannot create list for column '%s' in table '%s'"
-                            % (column_name, table_name)
-                        )
+                        raise ValueError("Cannot create list for column '%s' in table '%s'" % (column_name, table_name))
 
                     if column.getNotes():
                         notes = column.getNotes().encode("utf-8")
@@ -123,9 +118,7 @@ class ListHandler(Folder):
         counter2 = 0
         # create index for multilists / hierarchylists on multi-table
         for table in manager.tableHandler.keys():
-            for lobj in manager.listHandler.getLists(
-                table, ["multilist", "hierarchylist"]
-            ):
+            for lobj in manager.listHandler.getLists(table, ["multilist", "hierarchylist"]):
                 try:
                     # add index to multitable for tableid
                     name = mapname(lobj, manager)
@@ -310,7 +303,7 @@ class ListHandler(Folder):
         lobj = self[listname]
 
         if dboperate:
-            lobj.deleteTable(omit_log=[ZM_SCM, ZM_PM])
+            lobj.deleteTable(omit_log=[ZC.ZM_SCM, ZC.ZM_PM])
 
         self._delObject(listname)
         return True
@@ -327,7 +320,7 @@ class ListHandler(Folder):
             return
 
         if dboperate:
-            lobj.deleteTable(omit_log=[ZM_SCM, ZM_PM])
+            lobj.deleteTable(omit_log=[ZC.ZM_SCM, ZC.ZM_PM])
 
         del self.mapcol2list[(table, column)]
         self.maptable2lists[table][lobj.listtype].remove(lobj.listname)
@@ -339,9 +332,7 @@ class ListHandler(Folder):
     def getList(self, table, column):
         """Get access list for column in table"""
         try:
-            return self[
-                "%s_%s" % (table, column)
-            ]  # self.mapcol2list.get( (table, column), None )
+            return self["%s_%s" % (table, column)]  # self.mapcol2list.get( (table, column), None )
         except Exception:
             msg = "No list found for column [%s] in table [%s]" % (column, table)
             raise ValueError(msg)
@@ -482,9 +473,7 @@ class ListHandler(Folder):
             table = str(table)
             list_obj = self[table + "_" + column]
 
-            assert isinstance(
-                list_obj, ForeignList
-            ), "List object %s should be of type ForeignList, but got %s" % (
+            assert isinstance(list_obj, ForeignList), "List object %s should be of type ForeignList, but got %s" % (
                 table + "_" + column,
                 type(list_obj),
             )
@@ -507,9 +496,7 @@ class ListHandler(Folder):
                     lab_mgr = hgLabel(lab, url)
                 else:
                     # external mgr not present
-                    lab_mgr = hgLabel(
-                        '<span style="color:red;">%s</span>' % list_obj.manager
-                    )
+                    lab_mgr = hgLabel('<span style="color:red;">%s</span>' % list_obj.manager)
             else:
                 list_mgr = manager
                 lab = manager.getId() + " (" + manager.getClassName() + ")"
@@ -555,13 +542,9 @@ class ListHandler(Folder):
                         lab_target = hgLabel(list_obj.foreign, url)
                     else:
                         target_type = "Missing"
-                        lab_target = hgLabel(
-                            '<span style="color:red;">%s</span>' % list_obj.foreign
-                        )
+                        lab_target = hgLabel('<span style="color:red;">%s</span>' % list_obj.foreign)
                 else:
-                    lab_target = hgLabel(
-                        '<span style="color:red;">%s</span>' % list_obj.foreign
-                    )
+                    lab_target = hgLabel('<span style="color:red;">%s</span>' % list_obj.foreign)
 
             tab[r, 1] = lab_table
             tab[r, 2] = column

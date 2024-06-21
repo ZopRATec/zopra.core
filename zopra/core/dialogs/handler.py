@@ -1,7 +1,6 @@
 from __future__ import print_function
 
 from builtins import object
-
 from PyHtmlGUI.dialogs.hgWizard import hgWizard
 from PyHtmlGUI.widgets.hgCheckBox import hgCheckBox
 from PyHtmlGUI.widgets.hgComboBox import hgComboBox
@@ -120,9 +119,7 @@ class GUIHandler(object):
 
         # handle img-buttons
         if isinstance(widget, hgPushButton) and widget._pixmap:
-            if widget.name not in form and (
-                widget.name + ".x" in form and widget.name + ".y" in form
-            ):
+            if widget.name not in form and (widget.name + ".x" in form and widget.name + ".y" in form):
                 form[widget.name] = widget.btext
                 # form[widget.name] = widget.name
 

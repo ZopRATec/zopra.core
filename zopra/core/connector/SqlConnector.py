@@ -190,9 +190,7 @@ class SqlConnector(SimpleItem):
 
         return new_date
 
-    def checkType(
-        self, value, column_type, operator=False, label=None, do_replace=True
-    ):
+    def checkType(self, value, column_type, operator=False, label=None, do_replace=True):
         """makes all standard conversions and checking for supported Types
         and returns altered value-string. Returns an operator as well, if param operator is True
         """
@@ -232,19 +230,14 @@ class SqlConnector(SimpleItem):
                 oper = "IS"
             else:
                 entry_list = map(
-                    lambda onevalue: self.checkType(
-                        onevalue, column_type, False, label
-                    ),
+                    lambda onevalue: self.checkType(onevalue, column_type, False, label),
                     value,
                 )
                 value = u"(%s)" % u", ".join(entry_list)
                 oper = "IN"
 
         # check for _not_ NULL
-        elif (
-            value.replace(" ", "") == "_not_NULL"
-            or value.replace(" ", "") == "_not__0_"
-        ):
+        elif value.replace(" ", "") == "_not_NULL" or value.replace(" ", "") == "_not__0_":
             value = "NOT NULL"
             oper = "IS"
 
@@ -260,33 +253,23 @@ class SqlConnector(SimpleItem):
             valuelist = value.split("__")
             oper = "IN"
             entry_list = map(
-                lambda onevalue: self.checkType(
-                    onevalue.strip(), column_type, False, label
-                ),
+                lambda onevalue: self.checkType(onevalue.strip(), column_type, False, label),
                 valuelist,
             )
             value = u"(%s)" % u", ".join(entry_list)
 
         elif pos_lt != -1:
             oper = "<"
-            value = self.checkType(
-                value[pos_lt + 3 :].strip(), column_type, False, label
-            )
+            value = self.checkType(value[pos_lt + 3 :].strip(), column_type, False, label)
         elif pos_lte != -1:
             oper = "<="
-            value = self.checkType(
-                value[pos_lte + 4 :].strip(), column_type, False, label
-            )
+            value = self.checkType(value[pos_lte + 4 :].strip(), column_type, False, label)
         elif pos_gt != -1:
             oper = ">"
-            value = self.checkType(
-                value[pos_gt + 3 :].strip(), column_type, False, label
-            )
+            value = self.checkType(value[pos_gt + 3 :].strip(), column_type, False, label)
         elif pos_gte != -1:
             oper = ">="
-            value = self.checkType(
-                value[pos_gte + 4 :].strip(), column_type, False, label
-            )
+            value = self.checkType(value[pos_gte + 4 :].strip(), column_type, False, label)
         else:
             oper = ""
             labelstr = ""
@@ -419,9 +402,7 @@ class SqlConnector(SimpleItem):
             reference = " REFERENCES %s" % col_ref if col_ref else ""
 
             # join the column statement
-            cols_str.append(
-                "%s%s%s%s" % (self.escapeSQLName(col), dbtype, default, reference)
-            )
+            cols_str.append("%s%s%s%s" % (self.escapeSQLName(col), dbtype, default, reference))
 
         return ", ".join(cols_str)
 
@@ -585,10 +566,7 @@ class SqlConnector(SimpleItem):
         query = []
         where = []
 
-        query.append(
-            "SELECT %s FROM %s"
-            % (", ".join(self.escapeSQLName(col) for col in col_list), name)
-        )
+        query.append("SELECT %s FROM %s" % (", ".join(self.escapeSQLName(col) for col in col_list), name))
         for colname in where_dict:
             if colname in origcols_dict:
                 field = origcols_dict[colname]
@@ -650,9 +628,7 @@ class SqlConnector(SimpleItem):
 
             if field and val:
                 try:
-                    self.checkType(
-                        val, field.get(ZC.COL_TYPE), False, field.get(ZC.COL_LABEL)
-                    )
+                    self.checkType(val, field.get(ZC.COL_TYPE), False, field.get(ZC.COL_LABEL))
                 except Exception:
                     errors[colname] = ("Invalid input", val)
         return errors

@@ -3,7 +3,6 @@ import unittest
 
 import robotsuite
 from plone.testing import layered
-
 from zopra.core.testing import ROBOT_TESTING
 
 

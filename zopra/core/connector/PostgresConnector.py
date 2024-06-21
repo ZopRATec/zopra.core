@@ -26,12 +26,12 @@ class PostgresConnector(SqlConnector):
         """
         # this method only works for basestrings
         if not isinstance(value, basestring):
-            raise TypeError("%r must be a str or unicode" % (value, ))
+            raise TypeError("%r must be a str or unicode" % (value,))
         # use repr to escape the string
         escaped = repr(value)
         # remove potential "u" in front of the repr string
         if isinstance(value, unicode):
-            assert escaped[:1] == 'u'
+            assert escaped[:1] == "u"
             escaped = escaped[1:]
         # check repr style just to be safe and escape included '-chars
         if escaped[:1] == '"':
@@ -39,7 +39,7 @@ class PostgresConnector(SqlConnector):
         elif escaped[:1] != "'":
             raise AssertionError("unexpected repr: %s", escaped)
         # now remove the outer "-chars and use the PostgreS escape style, return final product
-        return "E'%s'" % (escaped[1:-1], )
+        return "E'%s'" % (escaped[1:-1],)
 
     def _createSequence(self, table_name, col_name="autoid"):
         """Creates a sequence for the given column of the given table.
@@ -118,9 +118,7 @@ class PostgresConnector(SqlConnector):
         assert ZC.checkType("edit_tracking", edit_tracking, BooleanType)
 
         create_text = ["CREATE TABLE %s (" % name]
-        create_text.append(
-            "autoid INT4 DEFAULT nextval('%s')," % self._createSequence(name)
-        )
+        create_text.append("autoid INT4 DEFAULT nextval('%s')," % self._createSequence(name))
 
         if edit_tracking:
             create_text.append(self.getColumnDefinition(ZC._edit_tracking_cols))

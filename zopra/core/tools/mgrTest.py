@@ -1,13 +1,13 @@
 """The test manager for tests with templates"""
 
-from zopra.core import ZM_TEST2
+from zopra.core import ZC
 from zopra.core.tools.TemplateBaseManager import TemplateBaseManager
 
 
 class mgrTest(TemplateBaseManager):
     """Test Manager"""
 
-    _className = ZM_TEST2
+    _className = "mgrTest"
     _classType = TemplateBaseManager._classType + [_className]
     meta_type = _className
 

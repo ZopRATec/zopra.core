@@ -2,11 +2,11 @@
 
 from copy import deepcopy
 
+from AccessControl import Unauthorized
+from OFS.Folder import Folder
 from zope.interface import implementer
-
 from zopra.core import ZC
 from zopra.core import ClassSecurityInfo
-from zopra.core import Folder
 from zopra.core import managePermission
 from zopra.core import modifyPermission
 from zopra.core import viewPermission
@@ -131,9 +131,7 @@ class Manager(Folder, ManagerFinderMixin, ManagerManageTabsMixin):
         :rtype: str
         :return:  list of str containing the class name
         """
-        return [onetype.__name__ for onetype in self.__class__.__bases__] + [
-            self.getClassName()
-        ]
+        return [onetype.__name__ for onetype in self.__class__.__bases__] + [self.getClassName()]
 
     def getTitle(self):
         """Returns the title of the object.
@@ -157,6 +155,15 @@ class Manager(Folder, ManagerFinderMixin, ManagerManageTabsMixin):
         """Returns the internal type of the manager (to have different handling
         for same managers with different type)."""
         return self.zopratype
+
+    security.declarePublic("raiseUnauthorized")
+
+    def raiseUnauthorized(self):
+        """Raises unauthorized. Does nothing else.
+
+        :raises Unauthorized: always raise Unauthorized
+        """
+        raise Unauthorized
 
     ###########################################################################
     #                                                                         #
@@ -183,9 +190,7 @@ class Manager(Folder, ManagerFinderMixin, ManagerManageTabsMixin):
         """Get the required attributes for the table"""
 
         if table not in self.tableHandler:
-            raise ValueError(
-                "Table '%s' does not exist in %s" % (table, self.getTitle())
-            )
+            raise ValueError("Table '%s' does not exist in %s" % (table, self.getTitle()))
 
         required = []
 
@@ -295,9 +300,7 @@ class Manager(Folder, ManagerFinderMixin, ManagerManageTabsMixin):
         # performed (usually only in case of errors)
         return None
 
-    def actionBeforeSearch(
-        self, table, REQUEST, descr_dict, firstSearch=True, prefix=""
-    ):
+    def actionBeforeSearch(self, table, REQUEST, descr_dict, firstSearch=True, prefix=""):
         """Hook Function called by zopra_table_search_result (and legacy searchForm and showList).
 
         This hook is invoked on first search by searchForm and later on by
@@ -646,9 +649,7 @@ class Manager(Folder, ManagerFinderMixin, ManagerManageTabsMixin):
         # get row count right away to provide value for BTN_L_LAST
         func = "count(distinct %sautoid)"
 
-        total = self.getManager(ZC.ZM_PM).executeDBQuery(
-            root.getSQL(function=func, checker=self)
-        )[0][0]
+        total = self.getManager(ZC.ZM_PM).executeDBQuery(root.getSQL(function=func, checker=self))[0][0]
 
         if show > -1 and tolerance > 0 and show + tolerance >= total:
             show += tolerance
@@ -698,43 +699,9 @@ class Manager(Folder, ManagerFinderMixin, ManagerManageTabsMixin):
 
         return res
 
-    def getAttributeEditPermissions(self, table):
-        """Return List of editable attributes for current user (used by multiedit)
-        Overwrite to specify which permission is needed to edit which attributes.
-        The dlgMultiEdit uses this function to determine which attributes to
-        display in edit-mode and which not."""
-
-        # get current userlevel
-        m_security = self.getHierarchyUpManager(ZC.ZM_SCM)
-        tobj = self.tableHandler[table]
-        if not m_security:
-            return tobj.getColumnTypes(True).keys()
-
-        # get level
-        level = m_security.getCurrentLevel()
-
-        # < 6 don't edit
-        if level < 6:
-            return []
-
-        # normal attributes available for everybody
-        elif level < 20:
-            return tobj.getColumnTypes(True).keys()
-
-        # admins edit all
-        else:
-            attrs = tobj.getColumnTypes().keys()
-            m_product = self.getManager(ZC.ZM_PM)
-            for column in m_product._edit_tracking_cols:
-                if column not in attrs:
-                    attrs.append(column)
-            return attrs
-
     security.declareProtected(viewPermission, "forwardCheckType")
 
-    def forwardCheckType(
-        self, value, column_type, operator=False, label=None, do_replace=True
-    ):
+    def forwardCheckType(self, value, column_type, operator=False, label=None, do_replace=True):
         """forward the type check call to the next ZopRAProduct"""
         m_prod = self.getManager(ZC.ZM_PM)
         # m_prod could be self, but doesnt matter
@@ -796,11 +763,7 @@ class Manager(Folder, ManagerFinderMixin, ManagerManageTabsMixin):
                         pass
 
                 # wildcard search
-                if (
-                    value
-                    and do_wilds
-                    and typedefs[name] in [ZC.ZCOL_STRING, ZC.ZCOL_MEMO, ZC.ZCOL_DATE]
-                ):
+                if value and do_wilds and typedefs[name] in [ZC.ZCOL_STRING, ZC.ZCOL_MEMO, ZC.ZCOL_DATE]:
                     wcs = True
                     for skw in SEARCH_KEYWORDS:
                         if value.find(skw) != -1:
@@ -823,9 +786,7 @@ class Manager(Folder, ManagerFinderMixin, ManagerManageTabsMixin):
             if listobj.listtype in ["multilist", "hierarchylist"]:
                 if entry:
                     # the entry has to be a list
-                    if not isinstance(entry, ListType) and not isinstance(
-                        entry, TupleType
-                    ):
+                    if not isinstance(entry, ListType) and not isinstance(entry, TupleType):
                         entry = [entry]
 
                     # we take the note-entries from the REQUEST as well
@@ -1045,9 +1006,7 @@ class Manager(Folder, ManagerFinderMixin, ManagerManageTabsMixin):
 
         return False
 
-    def sendSecureMail(
-        self, mto, mfrom, subject="", message="", mcc=None, mbcc=None, charset="utf-8"
-    ):
+    def sendSecureMail(self, mto, mfrom, subject="", message="", mcc=None, mbcc=None, charset="utf-8"):
         """Tries to send a email via the next available secure mail host."""
         mailHost = self.getObjByMetaType("Secure Mail Host")
         if not mailHost:

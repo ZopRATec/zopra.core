@@ -2,15 +2,14 @@ from copy import copy
 from copy import deepcopy
 from itertools import izip
 
-from zope.interface import implementer
-
+from OFS.PropertyManager import PropertyManager
 from PyHtmlGUI.kernel.hgTable import hgTable
 from PyHtmlGUI.widgets.hgLabel import hgLabel
 from PyHtmlGUI.widgets.hgLabel import hgSPACE
 from PyHtmlGUI.widgets.hgPushButton import hgPushButton
+from zope.interface import implementer
 from zopra.core import HTML
 from zopra.core import ZC
-from zopra.core import PropertyManager
 from zopra.core import SimpleItem
 from zopra.core.dialogs import getStdDialog
 from zopra.core.elements.Buttons import BTN_L_RESET2
@@ -29,6 +28,7 @@ from zopra.core.types import ListType
 from zopra.core.types import StringType
 from zopra.core.types import TupleType
 from zopra.core.utils import getParentManager
+from zopra.core.utils import safeWrite
 
 
 # deprecated -> Table.ExportFlags
@@ -171,9 +171,7 @@ class Table(SimpleItem, PropertyManager):
 
         for field, value in zip(idfield, idvalue):
             f_info = self.getField(field)
-            value, operator = mgr.forwardCheckType(
-                value, f_info[ZC.COL_TYPE], True, f_info[ZC.COL_LABEL]
-            )
+            value, operator = mgr.forwardCheckType(value, f_info[ZC.COL_TYPE], True, f_info[ZC.COL_LABEL])
 
             wherepart.append("%s %s %s" % (field, operator, value))
 
@@ -208,9 +206,7 @@ class Table(SimpleItem, PropertyManager):
 
         return entry
 
-    def getEntry(
-        self, entry_id=None, data_tuple=None, col_list=None, ignore_permissions=False
-    ):
+    def getEntry(self, entry_id=None, data_tuple=None, col_list=None, ignore_permissions=False):
         """Returns a table entry.
         If no entry was found the method will return None. For more than
         one entry it will throw an exception because only one entry for a
@@ -307,9 +303,7 @@ class Table(SimpleItem, PropertyManager):
                     and y.strftime("%d.%m.%Y")
                     or y
                     or (
-                        ""
-                        if (y is None and self.getField(x)[ZC.COL_TYPE] != "singlelist")
-                        else (0 if y == 0 else None)
+                        "" if (y is None and self.getField(x)[ZC.COL_TYPE] != "singlelist") else (0 if y == 0 else None)
                     )
                 )
                 return x, new_y
@@ -318,9 +312,7 @@ class Table(SimpleItem, PropertyManager):
             # add multilist ids
             autoid = entry[ZC.TCN_AUTOID]
             # get all multilists for the table
-            multilists = mgr.listHandler.getLists(
-                self.tablename, types=["singlelist"], include=False
-            )
+            multilists = mgr.listHandler.getLists(self.tablename, types=["singlelist"], include=False)
             # fetch multilist ids
             for multilist in multilists:
                 field = multilist.listname
@@ -481,14 +473,8 @@ class Table(SimpleItem, PropertyManager):
 
             # field is not in entry_dict and no multilist
             if not (
-                (
-                    entry_dict.get(field, None) is not None
-                    and entry_dict.get(field, None) != "NULL"
-                )
-                or (
-                    mgr.listHandler.hasList(self.tablename, field)
-                    and descr_dict.get(field)
-                )
+                (entry_dict.get(field, None) is not None and entry_dict.get(field, None) != "NULL")
+                or (mgr.listHandler.hasList(self.tablename, field) and descr_dict.get(field))
             ):
                 missing.append(field)
 
@@ -507,14 +493,10 @@ class Table(SimpleItem, PropertyManager):
         # legacy hook
         self.legacyInsertHook(mgr, entry_dict)
 
-        lastid = m_product.simpleInsertInto(
-            mgr.id + self.tablename, self.tabledict, entry_dict, log, self._uid
-        )
+        lastid = m_product.simpleInsertInto(mgr.id + self.tablename, self.tabledict, entry_dict, log, self._uid)
 
         # handle multilist entries
-        multilists = mgr.listHandler.getLists(
-            self.tablename, types=["singlelist"], include=False
-        )
+        multilists = mgr.listHandler.getLists(self.tablename, types=["singlelist"], include=False)
 
         for multilist in multilists:
             name = multilist.listname
@@ -567,9 +549,7 @@ class Table(SimpleItem, PropertyManager):
             return False
 
         # handle multilists
-        multilists = mgr.listHandler.getLists(
-            self.tablename, types=["singlelist"], include=False
-        )
+        multilists = mgr.listHandler.getLists(self.tablename, types=["singlelist"], include=False)
 
         for multilist in multilists:
             multilist.delMLRef(autoid)
@@ -607,14 +587,8 @@ class Table(SimpleItem, PropertyManager):
             missing = []
             for field in required:
                 if not (
-                    (
-                        descr_dict.get(field, None) is not None
-                        and descr_dict.get(field, None) != "NULL"
-                    )
-                    or (
-                        mgr.listHandler.hasList(self.tablename, field)
-                        and descr_dict.get(field)
-                    )
+                    (descr_dict.get(field, None) is not None and descr_dict.get(field, None) != "NULL")
+                    or (mgr.listHandler.hasList(self.tablename, field) and descr_dict.get(field))
                 ):
                     missing.append(field)
 
@@ -666,9 +640,7 @@ class Table(SimpleItem, PropertyManager):
                 )
 
                 # update Multi/Hierarchy-Lists
-                multilists = mgr.listHandler.getLists(
-                    self.tablename, types=["singlelist"], include=False
-                )
+                multilists = mgr.listHandler.getLists(self.tablename, types=["singlelist"], include=False)
 
                 for multilist in multilists:
                     # only update multi lists, if key in dict
@@ -695,12 +667,8 @@ class Table(SimpleItem, PropertyManager):
                             else:
                                 # item still in there, check notes
                                 if multilist.notes:
-                                    notes_new = descr_dict.get(
-                                        multilist.listname + "notes" + unicode(item)
-                                    )
-                                    notes_new = (
-                                        notes_new != "NULL" and notes_new or None
-                                    )
+                                    notes_new = descr_dict.get(multilist.listname + "notes" + unicode(item))
+                                    notes_new = notes_new != "NULL" and notes_new or None
                                     notes_old = multilist.getMLNotes(autoid, item)
                                     # notes differ, change them in the DB
                                     if notes_new != notes_old:
@@ -711,9 +679,7 @@ class Table(SimpleItem, PropertyManager):
                         # insert remaining new items
                         for item in valuelist:
                             # check for notes
-                            notes = descr_dict.get(
-                                multilist.listname + "notes" + unicode(item), ""
-                            )
+                            notes = descr_dict.get(multilist.listname + "notes" + unicode(item), "")
                             multilist.addMLRef(autoid, item, notes)
                             res = True
             except Exception as all_:
@@ -742,10 +708,7 @@ class Table(SimpleItem, PropertyManager):
         for field in required:
             if not (
                 descr_dict.get(field) not in [None, "", "NULL"]
-                or (
-                    mgr.listHandler.hasList(self.tablename, field)
-                    and descr_dict.get(field)
-                )
+                or (mgr.listHandler.hasList(self.tablename, field) and descr_dict.get(field))
             ):
                 errors[field] = ("Input required", "")
         return errors
@@ -789,9 +752,7 @@ class Table(SimpleItem, PropertyManager):
             root.setOrder(order, orderdir)
         return self.requestEntries(root, show, start, oneCol)
 
-    def requestEntries(
-        self, treeRoot, show=None, start=None, oneCol=None, ignore_permissions=False
-    ):
+    def requestEntries(self, treeRoot, show=None, start=None, oneCol=None, ignore_permissions=False):
         """Returns an entry list (or a list of values of oneCol),
         Constraints and order are transported by treeRoot (TableNode tree),
         number and offset of entries controlled by show and start."""
@@ -833,9 +794,7 @@ class Table(SimpleItem, PropertyManager):
             # get the entry (for all via map/lambda def)
             # data_tuple parameter speeds up entry creation, contains base values
             entries = map(
-                lambda result, cols=cols: local_getEntry(
-                    result[0], result, cols, ignore_permissions
-                ),
+                lambda result, cols=cols: local_getEntry(result[0], result, cols, ignore_permissions),
                 results,
             )
 
@@ -859,9 +818,7 @@ class Table(SimpleItem, PropertyManager):
         else:
             return 0
 
-    def getEntries(
-        self, idvalue=None, idfield=ZC.TCN_AUTOID, order=None, direction=Asc
-    ):
+    def getEntries(self, idvalue=None, idfield=ZC.TCN_AUTOID, order=None, direction=Asc):
         """Uses requestEntries to return a list of descr_dicts."""
         # should replace getEntries after speed test
         assert direction in self.Order, ZC.E_PARAM_TYPE % (
@@ -979,9 +936,7 @@ class Table(SimpleItem, PropertyManager):
         if constr_or:
             fi = root.getFilter()
             fi.setOperator(fi.OR)
-        return self.requestEntries(
-            root, show_number, start_number, ignore_permissions=ignore_permissions
-        )
+        return self.requestEntries(root, show_number, start_number, ignore_permissions=ignore_permissions)
 
     def getEntryDict(self, idfield=ZC.TCN_AUTOID, constraints=None):
         """Returns a dict of entries, key is the idfield (default: autoid), uses getEntryList"""
@@ -1223,6 +1178,8 @@ class Table(SimpleItem, PropertyManager):
 
         if not self.treeTemplate:
             self.treeTemplate = mgr.generateTableSearchTreeTemplate(self.tablename)
+            safeWrite(self)
+            safeWrite(self.treeTemplate)
 
         return self.treeTemplate.copy(mgr, mgr.getZopraType())
 
@@ -1274,18 +1231,10 @@ class Table(SimpleItem, PropertyManager):
             # handle newlines
             if multilines == "remove":
                 # replace with space
-                valuestr = (
-                    valuestr.replace(u"\r\n", u" ")
-                    .replace(u"\r", u" ")
-                    .replace(u"\n", u"")
-                )
+                valuestr = valuestr.replace(u"\r\n", u" ").replace(u"\r", u" ").replace(u"\n", u"")
             elif multilines == "replace":
                 # replace with an escaped linebreak char
-                valuestr = (
-                    valuestr.replace(u"\r\n", u"\n")
-                    .replace(u"\r", u"\n")
-                    .replace(u"\n", u"\\n")
-                )
+                valuestr = valuestr.replace(u"\r\n", u"\n").replace(u"\r", u"\n").replace(u"\n", u"\\n")
             else:
                 # keep (but use \r for excel to accept it)
                 valuestr = valuestr.replace(u"\r\n", u"\r").replace(u"\n", u"\r")
@@ -1298,11 +1247,7 @@ class Table(SimpleItem, PropertyManager):
                     del_rep = u" "
                 valuestr = valuestr.replace(delim, del_rep)
             # check for special chars that induce escaping
-            if (
-                valuestr.find(u'"') != -1
-                or valuestr.find(u"\n") != -1
-                or valuestr.find(u"\r") != -1
-            ):
+            if valuestr.find(u'"') != -1 or valuestr.find(u"\n") != -1 or valuestr.find(u"\r") != -1:
                 valuestr = u'"%s"' % valuestr.replace(u'"', u'""')
             return valuestr
 
@@ -1548,9 +1493,7 @@ class Table(SimpleItem, PropertyManager):
             if flags & TE_WITHPROPERTIES:
                 export_list.append(u"%s<title>%s</title>" % (pad, mgr.getTitle()))
                 export_list.append(u"%s<class>%s</class>" % (pad, mgr.getClassName()))
-                export_list.append(
-                    u"%s<zopratype>%s</zopratype>" % (pad, mgr.getZopraType())
-                )
+                export_list.append(u"%s<zopratype>%s</zopratype>" % (pad, mgr.getZopraType()))
                 export_list.append(u"%s<path>%s</path>" % (pad, rel_url))
 
         if flags & TE_LVLTABLE:
@@ -1594,9 +1537,7 @@ class Table(SimpleItem, PropertyManager):
                     for item in value:
                         export_list.append(u"\t%s<%s>%s</%s>" % (pad, col, item, col))
                 else:
-                    export_list.append(
-                        u"\t%s<%s>%s</%s>" % (pad, col, unicode(value), col)
-                    )
+                    export_list.append(u"\t%s<%s>%s</%s>" % (pad, col, unicode(value), col))
 
             export_list.append(u"%s</entry>" % pad)
 

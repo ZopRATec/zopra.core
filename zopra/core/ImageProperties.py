@@ -1,7 +1,6 @@
 from time import strftime
 
 from builtins import object
-
 from PyHtmlGUI.widgets.hgPushButton import hgPushButton
 from zopra.core.types import IntType
 

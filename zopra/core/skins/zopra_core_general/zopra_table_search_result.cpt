@@ -8,24 +8,28 @@
 
   <body>
 
+    <metal:block fill-slot="top_slot"
+             tal:define="dummy python:request.set('disable_toolbar',1)" />
+
     <metal:javascriptslot fill-slot="javascript_head_slot">
         <script type="text/javascript" tal:attributes="src string:${portal_url}/dragtable.js"></script>
     </metal:javascriptslot>
 
-    <metal:topslot fill-slot="top_slot">
-          <tal:block tal:define="global isAnon context/@@plone_portal_state/anonymous;"></tal:block>
-    </metal:topslot>
-
     <metal:main fill-slot="main"
-         tal:define="table request/table;
+            tal:define="isAnon context/@@plone_portal_state/anonymous;">
+        <tal:block tal:condition="isAnon">
+            <tal:block tal:replace="context/raiseUnauthorized"></tal:block>
+        </tal:block>
+        <tal:block tal:define="table request/table;
                      tobj python: here.tableHandler[table];
                      offset python:request.get('offset') and int(request.get('offset')) or 0;
                      count python: request.get('count') and int(request.get('count')) or 20;
+                     offset python: (offset // count * count == offset) and offset or 0;
                      constraints python: context.getTableEntryFromRequest(table, request, search=True);
                      cons python: {};
                      dummy python: cons.update(constraints);
                      dummy python: context.doesWorkingCopies(table) and cons.update({'iscopyof': 'NULL'});
-                     dummy python: context.doesTranslations(table) and not cons.has_key('language') and cons.update({'language': context.lang_default});
+                     dummy python: context.doesTranslations(table) and 'language' not in cons and cons.update({'language': context.lang_default});
                      listall python: here.getPermissionInfo(table, 'table_list');
                      listown python: here.getPermissionInfo(table, 'table_list_own');
                      dummy python: not listall and listown and cons.update(here.getListOwnUsers(table));
@@ -44,12 +48,9 @@
                      has_real_constraints python: context.filterRealSearchConstraints(cons);
                      global quotedcons string:;
                      ">
-    <tal:block tal:condition="isAnon">
-        <tal:block replace="context/raiseUnauthorized"></tal:block>
-    </tal:block>
-    <tal:block tal:condition="python: not listall and not listown">
-        <tal:block replace="context/raiseUnauthorized"></tal:block>
-    </tal:block>
+        <tal:block tal:condition="python: not listall and not listown">
+            <tal:block replace="context/raiseUnauthorized"></tal:block>
+        </tal:block>
 <div class="row">
     <div class="contentSlot">
         <h1 class="documentFirstHeading">
@@ -254,16 +255,17 @@
                     Export:
                 </h2>
                 <div class="result_options_subfield"
-                     tal:define="buttons python: here.getGenericConfig(table).get('ownButtonActions') or []">
+                     tal:define="buttons python: here.getGenericConfig(table).get('ownButtonActions') or [];
+                                 ListType nocall: modules/types/ListType">
                     <tal:block repeat="cons_key python:cons.keys()">
                         <input type="hidden" name="cons_key:list" tal:attributes="value cons_key" />
-                        <tal:if condition="python:same_type(cons[cons_key], [])">
+                        <tal:if condition="python:isinstance(cons[cons_key], ListType)">
                             <tal:block repeat="val python:cons[cons_key]">
                                 <input type="hidden" tal:attributes="name python:cons_key+'_values:list';
                                                                                  value val" />
                             </tal:block>
                         </tal:if>
-                        <tal:else condition="python:not same_type(cons[cons_key], [])">
+                        <tal:else condition="python:not isinstance(cons[cons_key], ListType)">
                                 <input type="hidden" tal:attributes="name python:cons_key+'_values';
                                                                      value python:cons[cons_key]" />
                         </tal:else>
@@ -283,6 +285,7 @@
         </form>
     </div>
 </div>
+        </tal:block>
     </metal:main>
 
   </body>

@@ -3,24 +3,20 @@ import re
 from binascii import hexlify
 from copy import deepcopy
 from random import randint
-from sets import Set as set
 from urllib import quote
 
-from zope.component import getMultiAdapter
-
 import icu
+from AccessControl import getSecurityManager
+from zope.component import getMultiAdapter
 from zopra.core import ZC
 from zopra.core import ClassSecurityInfo
-from zopra.core import getSecurityManager
 from zopra.core import zopraMessageFactory as _
 from zopra.core.Manager import Manager
 from zopra.core.types import ListType
 from zopra.core.types import StringType
 
 
-protection_expression = re.compile(
-    r"(mailto\:)?[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})"
-)
+protection_expression = re.compile(r"(mailto\:)?[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})")
 
 
 class TemplateBaseManager(Manager):
@@ -47,9 +43,9 @@ class TemplateBaseManager(Manager):
 
     def getCurrentLanguage(self):
         try:
-            import plone.api.portal
+            from plone import api
 
-            return plone.api.portal.get_current_language()
+            return api.portal.get_current_language()
         except Exception:
             return self.lang_default
 
@@ -122,9 +118,7 @@ class TemplateBaseManager(Manager):
                     html = html_generator()
                     if real_url:
                         # replace the url adding parts that are missing
-                        html = html.replace(repl_url1, real_url).replace(
-                            repl_url2, real_url
-                        )
+                        html = html.replace(repl_url1, real_url).replace(repl_url2, real_url)
                     rendered.append({"id": plugin.id, "html": html})
         return rendered
 
@@ -151,9 +145,7 @@ class TemplateBaseManager(Manager):
                 # replace the url adding parts that are missing
                 new_url = action["url"]
                 if real_url:
-                    new_url = new_url.replace(repl_url1, real_url).replace(
-                        repl_url2, real_url
-                    )
+                    new_url = new_url.replace(repl_url1, real_url).replace(repl_url2, real_url)
                 # build new dict for the action
                 result.append(
                     {
@@ -187,19 +179,14 @@ class TemplateBaseManager(Manager):
                 logger.info("Checking {}".format(table))
                 tobj = self.tableHandler[table]
                 coldefs = tobj.getColumnDefs()
-                translations = tobj.getEntryList(
-                    constraints={"istranslationof": "_not_NULL", "iscopyof": "NULL"}
-                )
+                translations = tobj.getEntryList(constraints={"istranslationof": "_not_NULL", "iscopyof": "NULL"})
                 for translation in translations:
                     entry_diff = {}
                     log_diff = {}
                     orig = tobj.getEntry(translation["istranslationof"])
                     for key in coldefs:
                         thetype = coldefs.get(key)["TYPE"]
-                        if (
-                            thetype not in ["string", "memo"]
-                            and key not in special_fields
-                        ):
+                        if thetype not in ["string", "memo"] and key not in special_fields:
                             val_orig = orig[key]
                             val_tran = translation[key]
                             if thetype in ["multilist", "hierarchylist"]:
@@ -219,11 +206,7 @@ class TemplateBaseManager(Manager):
                         logger.info("diff found: {}".format(str(log_diff)))
                         count += 1
                 if count:
-                    logger.info(
-                        "Corrected {} entries with differences for table {}".format(
-                            count, table
-                        )
-                    )
+                    logger.info("Corrected {} entries with differences for table {}".format(count, table))
         logger.info("Done")
 
     def doesWorkflows(self, table):
@@ -316,9 +299,7 @@ class TemplateBaseManager(Manager):
     def getWorkingCopy(self, table, autoid):
         """Return the working copy or None"""
         if self.doesWorkingCopies(table):
-            copy = self.tableHandler[table].getEntryList(
-                constraints={"iscopyof": autoid}, ignore_permissions=True
-            )
+            copy = self.tableHandler[table].getEntryList(constraints={"iscopyof": autoid}, ignore_permissions=True)
             if copy:
                 return copy[0]
         return None
@@ -414,12 +395,15 @@ class TemplateBaseManager(Manager):
         if self.doesWorkingCopies(table):
             cons["iscopyof"] = "NULL"
         tobj = self.tableHandler[table]
-        res = tobj.getEntryAutoidList(constraints=cons)
-        if res:
-            return res[0]
-        else:
-            # fallback to original entry
-            return autoid
+        try:
+            res = tobj.getEntryAutoidList(constraints=cons)
+            if res:
+                return res[0]
+        except Exception:
+            pass
+
+        # fallback to original entry
+        return autoid
 
     def removeTranslationInfo(self, table, autoid):
         """after deleting a translation entry, the orginal entry needs to be corrected (removing the hastranslation marker)"""
@@ -477,8 +461,54 @@ class TemplateBaseManager(Manager):
             root.setConstraints(constraints)
         return tobj.requestEntryCount(root)
 
-    def calculatePaginationPages(self, rowcount, count):
-        return (rowcount + count - 1) // count
+    def calculatePaginationPages(self, rowcount, pagesize):
+        """calculate how many pages pagination will display to fit rowcount entries
+        when one page contains count entries.
+
+        :param rowcount: total number of entries in the result
+        :type rowcount: int
+        :param count: number of entries per page
+        :type count: int
+        :return: number of pages needed for display
+        """
+        return (rowcount + pagesize - 1) // pagesize
+
+    def calculateActivePages(self, pagecount, offset, pagesize):
+        """When there are too many pages, this method is used to calculate, which ones (including first and last)
+        should be displayed.
+
+        :param pagecount: number of pages
+        :type pagecount: int
+        :param offset: current offset
+        :type offset: int
+        :param pagesize: number of entries per page
+        :type pagesize: int
+        :return: list of page numbers and ellipsis markers
+        :rtype: list
+        """
+        # how many pages is the offset
+        pages_offset = offset // pagesize
+        # start of display range
+        first = max(0, pages_offset - 5)
+        # end of display range
+        last = min(pagecount, pages_offset + 6)
+        # list of pagenumbers in the range
+        pages = list(xrange(first, last))
+
+        # add special stuff
+        # ellipsis marker between first page and first page in range (unless range starts at 2)
+        if 1 not in pages:
+            pages.insert(0, -1)
+        # first page
+        if 0 not in pages:
+            pages.insert(0, 0)
+        # ellipsis marker between last page and last page in range (unless range ends at -2)
+        if pagecount > 6 and (pagecount - 2) not in pages:
+            pages.append(-1)
+        # last page
+        if (pagecount - 1) not in pages:
+            pages.append(pagecount - 1)
+        return pages
 
     def getEntryListProxy(
         self,
@@ -492,20 +522,27 @@ class TemplateBaseManager(Manager):
         constr_or=False,
     ):
         """Proxy for Table.getEntryList using searchTreeTemplate"""
-        tobj = self.tableHandler[table]
-        root = tobj.getSearchTreeTemplate()
-        if order:
-            root.setOrder(order, direction)
-        else:
-            root.setOrder(idfield, direction)
-        if constraints:
-            root.setConstraints(constraints)
-        if constr_or:
-            fi = root.getFilter()
-            fi.setOperator(fi.OR)
-        return tobj.requestEntries(
-            root, show_number, start_number, ignore_permissions=True
-        )
+        try:
+            tobj = self.tableHandler[table]
+            root = tobj.getSearchTreeTemplate()
+            if order:
+                root.setOrder(order, direction)
+            else:
+                root.setOrder(idfield, direction)
+            if constraints:
+                root.setConstraints(constraints)
+            if constr_or:
+                fi = root.getFilter()
+                fi.setOperator(fi.OR)
+            return tobj.requestEntries(root, show_number, start_number, ignore_permissions=True)
+        except Exception as ex:
+            # try portal messaging
+            try:
+                msg = ex[0]
+                self.plone_utils.addPortalMessage(msg, "error")
+            except Exception:
+                pass
+            raise
 
     def isHierarchyList(self, listname):
         # check if a List with that name is referenced by a table attribute
@@ -527,11 +564,7 @@ class TemplateBaseManager(Manager):
                 selectList = []
                 for item in cons[key]:
                     selectList.append(item)
-                    selectList.extend(
-                        self.listHandler.getList(
-                            table, key
-                        ).getHierarchyListDescendants(item)
-                    )
+                    selectList.extend(self.listHandler.getList(table, key).getHierarchyListDescendants(item))
                 cons[key] = selectList
 
     def prepareHierarchylistDisplayEntries(self, entries):
@@ -599,18 +632,12 @@ class TemplateBaseManager(Manager):
             return None
         # additionally check for request and not being on search form
         request = self.REQUEST
-        if (
-            request
-            and request.get("PUBLISHED")
-            and request.get("PUBLISHED").getId() == "zopra_table_search_form"
-        ):
+        if request and request.get("PUBLISHED") and request.get("PUBLISHED").getId() == "zopra_table_search_form":
             return None
         tobj = self.tableHandler[table]
         root = tobj.getTableNode()
         root.setConstraints({"autoid": autoid})
-        sql = root.getSQL(
-            col_list=["entrydate", "changedate"], distinct=True, checker=self
-        )
+        sql = root.getSQL(col_list=["entrydate", "changedate"], distinct=True, checker=self)
         results = self.getManager(ZC.ZM_PM).executeDBQuery(sql)
         if results:
             # use changedate, if set, entrydate otherwise
@@ -627,11 +654,7 @@ class TemplateBaseManager(Manager):
         # using string concat instead of print formatting for speed
         return "".join(
             [
-                whichCode == 0
-                and ch
-                or whichCode == 1
-                and "&#" + str(ord(ch)) + ";"
-                or "&#x" + str(hexlify(ch)) + ";"
+                whichCode == 0 and ch or whichCode == 1 and "&#" + str(ord(ch)) + ";" or "&#x" + str(hexlify(ch)) + ";"
                 for (ch, whichCode) in [(z, randint(0, 2)) for z in s.group()]
             ]
         )
@@ -737,9 +760,7 @@ class TemplateBaseManager(Manager):
             orig = tobj.getEntry(entry.get("iscopyof"), ignore_permissions=True)
         else:
             orig = entry
-            res = tobj.getEntryList(
-                constraints={"iscopyof": entry.get("autoid")}, ignore_permissions=True
-            )
+            res = tobj.getEntryList(constraints={"iscopyof": entry.get("autoid")}, ignore_permissions=True)
             if res:
                 copy = res[0]
         if copy and orig:
@@ -810,10 +831,7 @@ class TemplateBaseManager(Manager):
         # get getEntry function of table
         getEntry = self.tableHandler[table].getEntry
         # use list comprehension to get the entries for all references in the multilist
-        res = [
-            getEntry(otherid, ignore_permissions=True)
-            for otherid in lobj.getMLRef(None, autoid)
-        ]
+        res = [getEntry(otherid, ignore_permissions=True) for otherid in lobj.getMLRef(None, autoid)]
         # if lang is given and table allows translations, check to remove the language copies or originals
         if self.doesTranslations(table) and lang:
             if lang == self.lang_default:
@@ -876,12 +894,7 @@ class TemplateBaseManager(Manager):
 
     def val_translate(self, name, descr_dict, attr_name=None):
         """get list object, translate attr id from dict into value"""
-        return (
-            self.listHandler[name].getValueByAutoid(
-                descr_dict.get(attr_name or name, "")
-            )
-            or ""
-        )
+        return self.listHandler[name].getValueByAutoid(descr_dict.get(attr_name or name, "")) or ""
 
     def py2json(self, object, encoding="utf-8"):
         """translate python object to json"""
@@ -921,11 +934,7 @@ class TemplateBaseManager(Manager):
                     entry[col] = ("%s" % entry.get(col, "")).replace(",", ".")
             # this removes empty list entries from the resulting entry for search
             # (where adding and removing a selection from a multilist results in an empty list being transmitted as search param)
-            if (
-                search
-                and col_types[col] in (ZC.ZCOL_MLIST, ZC.ZCOL_HLIST)
-                and entry.get(col) == []
-            ):
+            if search and col_types[col] in (ZC.ZCOL_MLIST, ZC.ZCOL_HLIST) and entry.get(col) == []:
                 del entry[col]
 
         return entry
@@ -966,9 +975,7 @@ class TemplateBaseManager(Manager):
             # end subtable constrained autoid list generation
 
         if request.get("form.button.Export"):
-            return self.zopra_table_search_result_export_csv(
-                table, columns, autoids, request
-            )
+            return self.zopra_table_search_result_export_csv(table, columns, autoids, request)
         else:
             for button in buttons:
                 if request.get(button["id"]):
